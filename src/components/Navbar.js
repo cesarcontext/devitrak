@@ -2,7 +2,7 @@ import React from "react";
 
 export const Navbar = () => {
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#212529', color: '#fff'}}>
+    <nav style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgba(69, 104, 220, 5)', color: '#fff'}}>
       <div>
         <img src="https://picsum.photos/100" alt="" />
       </div>
