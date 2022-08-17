@@ -1,23 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
+import { userInfoSaved } from "../components/userInfoSaved";
 import { onAddNewContact } from "../store/slices/contactInfoSlice";
 
 export const useContactInfoStore = () => {
 
   const dispatch = useDispatch();
-
-  const { contacts } = useSelector((state) => state.contactInfo);
-
-  const { user } = contacts
+  
+  const { user } = useSelector( state => state.contactInfo)
   
 
-  const startSavingContactInfo = ( user ) => {
+  const startSavingContactInfo = async ( userInfoSaved ) => {
 
-    if ( contacts._id ){
+    if ( userInfoSaved._id ){
       //updating contactInfo
     } else{
       //creating new contactInfo
 
-      dispatch( onAddNewContact({ _id:new Date().getTime(), user }) )
+      dispatch( onAddNewContact({ ...userInfoSaved, _id: new Date().getTime() }) )
     }
   }
 
