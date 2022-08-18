@@ -4,7 +4,6 @@ import { ConfirmationModal } from "../ui/ConfirmationModal";
 import { useDispatch, useSelector } from "react-redux";
 import { decrement, increment, reset } from "../store/slices/deviceSlice";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { userInfoSaved } from "../components/userInfoSaved";
 
 export const Home = () => {
   const [nameOnCard, setNameOnCard] = useState("");
@@ -15,11 +14,12 @@ export const Home = () => {
   const [country, setCountry] = useState("");
 
   const device = useSelector((state) => state.device.value);
+
+  localStorage.setItem('device', device)
+
   const dispatch = useDispatch();
 
   const { startSavingContactInfo } = useContactInfoStore();
-
-  // const [formSubmitted, setFormSubmitted] = useState(false); //trigger formvalue
 
   const initalFormValues = {
     groupName: "",
@@ -89,8 +89,13 @@ export const Home = () => {
     <>
       <div style={{ height: "100%", marginBottom: "18vh"}}>
         <form  onSubmit={handleOnSubmit}>
-          <div className="container">
-            <div style={{ display: "flex", margin: "2px auto" }}>
+          <div className="container" style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent:"center",
+            width:" 50%"
+          }}>
+            <div style={{ display: "flex",justifyContent: "space-evenly", marginTop: "5%", marginBottom: "2%",}}>
               <h5>HOW MANY RECEIVERS DO YOU NEED?</h5>
               <div
                 style={{
@@ -109,7 +114,9 @@ export const Home = () => {
               </div>
             </div>
 
-            <div>
+            <div 
+              style={{display: "flex", justifyContent: "space-evenly", alignItems: "center"}}>
+                <div className="col-4"></div>
               <h5>DEPOSIT TOTAL:</h5>
               <h3>
                 <strong>${amountToDeposit}</strong>
@@ -117,9 +124,9 @@ export const Home = () => {
             </div>
           </div>
 
-          <section className="vh-100 gradient-custom">
+          <section className="gradient-custom">
             <div className="container py-5 h-100">
-              <div className="row justify-content-center align-items-center h-100">
+              <div className="row justify-content-center align-items-center">
                 <div className="col-12 col-lg-9 col-xl-7">
                   <div
                     className="card shadow-2-strong card-registration"
