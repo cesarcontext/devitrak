@@ -1,10 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
+
 body {
   margin: 0;
+  height: calc( 100vh - 16vh );
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
 }
 
 code {
@@ -30,6 +34,8 @@ input{
     margin: 2px auto;
     padding-left: 15px;
   }
+
+
   
 }
 
