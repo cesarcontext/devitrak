@@ -1,25 +1,27 @@
 import { saveAs } from "file-saver";
 import React from "react";
 import QRCode from "react-qr-code";
+import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
 export const QRCodeConfirmation = () => {
-
   const { user } = useContactInfoStore();
 
-  const QRCodeGenerated = (
-    <QRCode
-      fgColor="#000"
-      bgColor="#ffff"
-      level="Q"
-      size={150}
-      value="hereCLient_keyFromStripe"
-    />
-  );
-    //posible option to download qr code
-    // const downloadQRCode = () => {
-    //   saveAs(QRCodeGenerated, "testingSavingQRCode.jpg");
-    // };
+  const QRCodeGenerated = user.map((item) => {
+    return (
+      <QRCode
+        fgColor="#000"
+        bgColor="#ffff"
+        level="Q"
+        size={150}
+        value={item.email}
+      />
+    );
+  });
+  //posible option to download qr code
+  // const downloadQRCode = () => {
+  //   saveAs(QRCodeGenerated, "testingSavingQRCode.jpg");
+  // };
 
 
   return (
@@ -59,25 +61,42 @@ export const QRCodeConfirmation = () => {
       </div>
       <div className="qr-code-div" style={{ margin: "40px" }}>
         <div className="qr-code">{QRCodeGenerated}</div>
-        {/* <button onClick={downloadQRCode}>Download your QR Code</button> */}
+        {/* <button onClick={downloadQRCode}>Download your QR Code</button> */}{" "}
+        {/** button to download qr code */}
       </div>
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
-        <span>159-753-1580</span>
+        <span>
+          {user.map((item) => {
+            return <>{item.phoneNumber.split("")}</>;
+          })}
+        </span>
       </div>
-      <div className="links-help" style={{ margin: "40px" }}>
-        <div>
-          <span>OTHER RESOURCES</span>
-        </div>
-        <div>
-          <span>HOW TO USE THE RECEIVERS</span>
-        </div>
-        <div>
-          <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
-        </div>
-        <div>
-          <span>HOW TO RETURN DEVICES</span>
-        </div>
+      <div className="links-help" style={{ margin: "40px", display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center" }}>
+          <div>
+            <span>OTHER RESOURCES</span>
+          </div>
+        <Link to="/how_to_use_the_receiver">
+          <div style={{
+            margin: "10px"
+          }}>
+            <span>HOW TO USE THE RECEIVERS</span>
+          </div>
+        </Link>
+        <Link to="/request_support_during_even">
+          <div style={{
+            margin: "10px"
+          }}>
+            <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
+          </div>
+        </Link>
+        <Link to="/how_to_return_the_devices">
+          <div style={{
+            margin: "10px"
+          }}>
+            <span>HOW TO RETURN DEVICES</span>
+          </div>
+        </Link>
       </div>
     </div>
   );
