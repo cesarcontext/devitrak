@@ -25,12 +25,12 @@ function App() {
         <Route exact path="more_info" element={<MoreInfo />} />
         <Route
           exact
-          path="/how_to_use_the_receiver"
+          path="/how_to_return_the_devices"
           element={<HowToReturnTheDevices />}
         />
         <Route
           exact
-          path="/how_to_return_the_devices"
+          path="/how_to_use_the_receiver" //how_to_return_the_devices
           element={<HowToUseTheReceiver />}
         />
         <Route
