@@ -4,18 +4,14 @@ import { ConfirmationModal } from "../ui/ConfirmationModal";
 import { useDispatch, useSelector } from "react-redux";
 import { decrement, increment, reset } from "../store/slices/deviceSlice";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { usePaymentInfoStore } from "../hooks/usePaymentInfoStore";
+import { ElementStripe } from "../stripe/ElementStripe";
 
 export const Home = () => {
-  const [nameOnCard, setNameOnCard] = useState("");
-  const [creditCardNumber, setCreditCardNumber] = useState("");
-  const [expirationDate, setExpirationDate] = useState("");
-  const [securityCode, setSecurityCode] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [country, setCountry] = useState("");
 
   const device = useSelector((state) => state.device.value);
 
-  localStorage.setItem('device', device)
+  localStorage.setItem("device", device);
 
   const dispatch = useDispatch();
 
@@ -82,20 +78,31 @@ export const Home = () => {
     }
 
     await startSavingContactInfo(formValues);
-    await openModal();
+    // await startSavingPaymentInfo()
+    openModal();
   };
 
   return (
     <>
-      <div style={{ height: "100%", marginBottom: "18vh"}}>
-        <form  onSubmit={handleOnSubmit}>
-          <div className="container" style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent:"center",
-            width:" 50%"
-          }}>
-            <div style={{ display: "flex",justifyContent: "space-evenly", marginTop: "5%", marginBottom: "2%",}}>
+      <div style={{ height: "100%", marginBottom: "18vh" }}>
+        <form onSubmit={handleOnSubmit}>
+          <div
+            className="container"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              width: " 50%",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                marginTop: "5%",
+                marginBottom: "2%",
+              }}
+            >
               <h5>HOW MANY RECEIVERS DO YOU NEED?</h5>
               <div
                 style={{
@@ -114,9 +121,14 @@ export const Home = () => {
               </div>
             </div>
 
-            <div 
-              style={{display: "flex", justifyContent: "space-evenly", alignItems: "center"}}>
-                <div className="col-4"></div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-evenly",
+                alignItems: "center",
+              }}
+            >
+              <div className="col-4"></div>
               <h5>DEPOSIT TOTAL:</h5>
               <h3>
                 <strong>${amountToDeposit}</strong>
@@ -178,9 +190,6 @@ export const Home = () => {
                             </div>
                           </div>
                         </div>
-
-                        <div className="row"></div>
-
                         <div className="row">
                           <div className="col-md-10 m-4 pb-2">
                             <div className="form-outline">
@@ -216,119 +225,132 @@ export const Home = () => {
               </div>
             </div>
           </section>
-          <div>
-            <h3>ENTER YOUR CREDIT CARD INFORMATION</h3>
-            <>
-              <div className="container mt-2 px-5">
-                <div className="row">
-                  <div className="col-md-8">
-                    {/* <div className="card p-3">
-                      <h6 className="text-uppercase">Payment details</h6>
-                      <div className="inputbox mt-3">
-                        {" "}
-                        <input
-                          type="text"
-                          name="nameOnCard"
-                          className="form-control"
-                          required="required"
-                          placeholder="Name on card"
-                          value={OnCard}
-                          onchange={(event) => setNameOnCard(event.target.value)}
-                        />{" "}
-                        <span></span>{" "}
-                      </div>
-    
-                      <div className="row">
-                        <div className="col-md-6">
-                          <div className="inputbox mt-3 mr-2">
-                            {" "}
-                            <input
-                              type="text"
-                              name="creditCardNumber"
-                              className="form-control"
-                              required="required"
-                              placeholder="Credit card numbers"
-                              value={itCardNumber}
-                              onchange={(event) =>
-                                setCreditCardNumber(event.target.value)
-                              }
-                            />{" "}
-                            <i className="fa fa-credit-card"></i>{" "}
+          <section 
+          className="gradient-custom" 
+          style={{
+            marginTop: "-3%"
+          }}>
+            <div className="container py-5 h-100">
+              <div className="row justify-content-center align-items-center">
+                <div className="col-12 col-lg-9 col-xl-7">
+                  <div
+                    className="card shadow-2-strong card-registration"
+                    style={{ bordeRadius: "15px" }}
+                  >
+                    <div className="card-body p-4 p-md-5">
+                      <h3>ENTER YOUR CREDIT CARD INFORMATION</h3>
+                      <>
+                        <div className="container mt-2 px-5">
+                          <div className="row">
+                            {/* <Elements options={options} stripe={stripePromise}>
+                              <CardElement />
+                            </Elements> */}
+                            
+                            <h6 className="text-uppercase">Payment details</h6>
+                            <div className="row">
+                            <ElementStripe />
+                              {/* <div className="col-md-11 m-4 pb-2">
+                                <div className="form-outline">
+                                  <input
+                                    type="text"
+                                    className="form-control form-control-lg"
+                                    placeholder="Name on card"
+                                    name="nameOnCard"
+                                    required="required"
+                                    />
+                                </div>
+                              </div> */}
+                              {/* <div className="col-md-11 m-4 pb-2">
+                                <div className="form-outline">
+                                  <input
+                                    type="text"
+                                    className="form-control form-control-lg"
+                                    placeholder="Credit card numbers"
+                                    required="required"
+                                    name="creditCardNumber"
+
+                                  />
+                                </div>
+                              </div> */}
+                            </div>
+                            {/* <div className="row">
+                              <div className="col-md-5 m-2 pb-2">
+                                <div className="form-outline col-md-5">
+                                  <input
+                                    type="text"
+                                    className="form-control form-control-lg" 
+                                    placeholder="CVV"
+                                    name="CVV"
+                                    required="required"
+
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-6 m-2 pb-2" style={{ display: "flex"}}>
+                                <div className="form-outline col-md-4">
+                                  <input
+                                    type="text"
+                                    className="form-control form-control-lg" 
+                                    placeholder="MM"
+                                    name="expirationMM"
+                                    required="required"
+
+                                  />
+                                </div>
+                                <div className="form-outline col-md-4">
+                                  <input
+                                    type="text"
+                                    className="form-control form-control-lg" 
+                                    placeholder="YY"
+                                    name="expirationYY"
+                                    required="required"
+
+                                  />
+                                </div>
+                              </div>
+                            </div> */}
+
+                            {/* <div className="row">
+                              <div className="col-md-12">
+                                <div className="d-flex flex-row">
+                                  <div className="col-md-5 mr-2">
+                                    <div className="inputbox mt-3 mr-2">
+                                      {" "}
+                                      <input
+                                        type="text"
+                                        name="name"
+                                        className="form-control"
+                                        required="required"
+                                        placeholder="Zip code"
+                                      
+                                      />{" "}
+                                    </div>
+                                  </div>
+                                  <div className="col-md-5">
+                                    <div className="inputbox mt-3 mr-2">
+                                      {" "}
+                                      <input
+                                        type="text"
+                                        name="name"
+                                        className="form-control"
+                                        required="required"
+                                        placeholder="Country"
+                                        
+                                      />{" "}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div> */}
                           </div>
                         </div>
-    
-                        <div className="col-md-6">
-                          <div className="d-flex flex-row">
-                            <div className="inputbox mt-3 mr-2">
-                              {" "}
-                              <input
-                                type="text"
-                                name="name"
-                                className="form-control"
-                                required="required"
-                                placeholder="Expiration date"
-                                value={rationDate}
-                                onchange={(event) =>
-                                  setExpirationDate(event.target.value)
-                                }
-                              />{" "}
-                            </div>
-    
-                            <div className="inputbox mt-3 mr-2">
-                              {" "}
-                              <input
-                                type="text"
-                                name="name"
-                                className="form-control"
-                                required="required"
-                                placeholder="CVV"
-                                value={rityCode}
-                                onchange={(event) =>
-                                  setSecurityCode(event.target.value)
-                                }
-                              />{" "}
-                            </div>
-                            <div className="col-md-6">
-                              <div className="inputbox mt-3 mr-2">
-                                {" "}
-                                <input
-                                  type="text"
-                                  name="name"
-                                  className="form-control"
-                                  required="required"
-                                  placeholder="Zip code"
-                                  value={ode}
-                                  onchange={(event) =>
-                                    setZipCode(event.target.value)
-                                  }
-                                />{" "}
-                              </div>
-                            </div>
-                            <div className="col-md-6">
-                              <div className="inputbox mt-3 mr-2">
-                                {" "}
-                                <input
-                                  type="text"
-                                  name="name"
-                                  className="form-control"
-                                  required="required"
-                                  placeholder="Country"
-                                  value={try}
-                                  onchange={(event) =>
-                                    setCountry(event.target.value)
-                                  }
-                                />{" "}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
+                      </>
+                    </div>
                   </div>
                 </div>
               </div>
-            </>
-          </div>
+            </div>
+          </section>
           <div>
             <div
               style={{
