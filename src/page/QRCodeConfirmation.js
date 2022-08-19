@@ -23,9 +23,14 @@ export const QRCodeConfirmation = () => {
   //   saveAs(QRCodeGenerated, "testingSavingQRCode.jpg");
   // };
 
-
   return (
-    <div>
+    <div
+      style={{
+        width: "50%",
+        margin: "50px auto 150px",
+        height: "calc(100% - 18vh)",
+      }}
+    >
       <div className="top-icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -72,28 +77,43 @@ export const QRCodeConfirmation = () => {
           })}
         </span>
       </div>
-      <div className="links-help" style={{ margin: "40px", display: "flex", flexDirection: "column", justifyContent: "space-around", alignItems: "center" }}>
-          <div>
-            <span>OTHER RESOURCES</span>
-          </div>
+      <div
+        className="links-help"
+        style={{
+          margin: "40px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <span>OTHER RESOURCES</span>
+        </div>
         <Link to="/how_to_use_the_receiver">
-          <div style={{
-            margin: "10px"
-          }}>
+          <div
+            style={{
+              margin: "10px",
+            }}
+          >
             <span>HOW TO USE THE RECEIVERS</span>
           </div>
         </Link>
         <Link to="/request_support_during_even">
-          <div style={{
-            margin: "10px"
-          }}>
+          <div
+            style={{
+              margin: "10px",
+            }}
+          >
             <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
           </div>
         </Link>
         <Link to="/how_to_return_the_devices">
-          <div style={{
-            margin: "10px"
-          }}>
+          <div
+            style={{
+              margin: "10px",
+            }}
+          >
             <span>HOW TO RETURN DEVICES</span>
           </div>
         </Link>
