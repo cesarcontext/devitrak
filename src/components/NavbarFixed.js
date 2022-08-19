@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import "./navbar-fixed.css";
+import "./navbar-bottom.css";
 
 export const NavbarFixed = () => {
   return (
