@@ -6,9 +6,8 @@ export const MoreInfo = () => {
     <div
       style={{
         width: "50%",
-        margin: "auto",
+        margin: "50px auto 150px",
         height: "calc(100% - 18vh)",
-        marginBottom: "16vh",
       }}
     >
       <div>
@@ -24,7 +23,6 @@ export const MoreInfo = () => {
           border: "solid 1px blue",
           borderRadius: "15px",
           margin: "5%",
-          height: "",
           padding: "15px",
         }}
       >
@@ -60,7 +58,6 @@ export const MoreInfo = () => {
           border: "solid 1px blue",
           borderRadius: "15px",
           margin: "5%",
-          height: "",
           padding: "15px",
         }}
       >
@@ -96,7 +93,6 @@ export const MoreInfo = () => {
           border: "solid 1px blue",
           borderRadius: "15px",
           margin: "5%",
-          height: "",
           padding: "15px",
         }}
       >
@@ -132,7 +128,6 @@ export const MoreInfo = () => {
           border: "solid 1px blue",
           borderRadius: "15px",
           margin: "5%",
-          height: "",
           padding: "15px",
         }}
       >
@@ -168,7 +163,6 @@ export const MoreInfo = () => {
           border: "solid 1px blue",
           borderRadius: "15px",
           margin: "5%",
-          height: "",
           padding: "15px",
         }}
       >
@@ -199,6 +193,12 @@ export const MoreInfo = () => {
           </div>
         </Link>
       </div>
+      <div
+        style={{
+          color: "transparent",
+          height: "16vh",
+        }}
+      ></div>
     </div>
   );
 };
