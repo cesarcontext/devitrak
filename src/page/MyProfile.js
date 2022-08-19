@@ -18,8 +18,8 @@ export const MyProfile = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItem: "center",
-      }}
-    >
+        height: "calc(100vh - 16vh)"
+      }}>
       <div
         style={{
           margin: "20px",
@@ -183,7 +183,7 @@ export const MyProfile = () => {
             </div>
           </div>
         </div>
-        <div style={{ width: "40%", margin: "auto" }}>
+        <div style={{ width: "20%", margin: "auto" }}>
           {deviceSelected > 0 ? (
             <div style={{ width: "100%", margin: "auto" }}>
               <div
