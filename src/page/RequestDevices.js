@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export const RequestDevices = () => {
@@ -8,8 +7,14 @@ export const RequestDevices = () => {
   return (
     <div
       style={{
-        width: "80%",
-        margin: "auto",
+        width: "50%",
+        height: "60vh",
+        margin: "1% auto",
+        marginTop: "10%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+        alignItems: "center"
       }}
     >
       <div>
@@ -17,8 +22,8 @@ export const RequestDevices = () => {
       </div>
       <div
         style={{
-          width: "50%",
-          margin: "auto",
+          width: "40%",
+          margin: " 3% auto",
           border: "solid 1px #212529",
           borderRadius: "15px",
         }}
@@ -37,7 +42,9 @@ export const RequestDevices = () => {
           <p>${deviceSelected * 200} deposit</p>
         </div>
       </div>
-      <div>
+      <div style={{
+        marginTon: "2%"
+      }}>
         <Link to="/my_profile">
           <span>
             VIEW MORE DETAILS IN YOUR ACCOUNT{" "}
@@ -54,19 +61,21 @@ export const RequestDevices = () => {
             justifyContent: "space-between",
             AlignItems: "center",
             margin: "5%",
+            width: "100%"
           }}
         >
           <span>Would you like to request more?</span>
           <Link to="/">
             <button
               style={{
-                margin: "15px 20%",
+                margin: "15px auto",
                 backgroundColor: "rgba(69, 104, 220, 1)",
                 color: "#ffff",
                 height: "5vh",
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
+                width: "100%"
               }}
             >
               REQUEST MORE DEVICES
@@ -83,22 +92,35 @@ export const RequestDevices = () => {
           margin: "5%",
         }}
       >
-        <div>
+        <div
+        style={{
+          marginTop: "1%",
+          marginBottom: "3%"
+        }}>
           <Link to="/">
             <span>OTHER RESOURCES</span>
           </Link>
         </div>
-        <div>
+        <div
+        style={{
+          marginBottom: "3%"
+        }}>
           <Link to="/how_to_use_the_receiver">
             <span>HOW TO USE THE RECEIVERS</span>
           </Link>
         </div>
-        <div>
+        <div
+        style={{
+          marginBottom: "3%"
+        }}>
           <Link to="/request_support_during_event">
             <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
           </Link>
         </div>
-        <div>
+        <div
+        style={{
+          marginBottom: "3%"
+        }}>
           <Link to="/how_to_return_the_devices">
             <span>HOW TO RETURN THE DEVICES</span>
           </Link>
