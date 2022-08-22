@@ -65,7 +65,7 @@ export const RequestDevices = () => {
           }}
         >
           <span>Would you like to request more?</span>
-          <Link to="/">
+          <Link to="/more_devices">
             <button
               style={{
                 margin: "15px auto",
