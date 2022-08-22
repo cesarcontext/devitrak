@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { userInfoSaved } from "../components/userInfoSaved";
-import { onAddNewContact } from "../store/slices/contactInfoSlice";
+import { onAddNewContact, onUpdateContact } from "../store/slices/contactInfoSlice";
 
 export const useContactInfoStore = () => {
   const dispatch = useDispatch();
@@ -8,8 +8,9 @@ export const useContactInfoStore = () => {
   const { user } = useSelector((state) => state.contactInfo);
 
   const startSavingContactInfo = async (userInfoSaved) => {
-    if (userInfoSaved._id) {
+    if (userInfoSaved.email) {
       //updating contactInfo
+      dispatch( onUpdateContact({ ...userInfoSaved}))
     } else {
       //creating new contactInfo
 
@@ -26,5 +27,6 @@ export const useContactInfoStore = () => {
 
     //* Métodos
     startSavingContactInfo,
+    // startUpdatingContactInfo,
   };
 };
