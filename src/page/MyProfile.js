@@ -18,8 +18,9 @@ export const MyProfile = () => {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItem: "center",
-        height: "calc(100vh - 16vh)"
-      }}>
+        height: "calc(100vh - 16vh)",
+      }}
+    >
       <div
         style={{
           margin: "20px",
@@ -138,7 +139,9 @@ export const MyProfile = () => {
                 textAlign: "left",
               }}
             >
-              <div>
+              {userParseStored.map((item) => {
+                return <>
+                <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -150,7 +153,7 @@ export const MyProfile = () => {
                   <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
                   <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
                 </svg>
-                <span> ***********5785</span>
+                <span> {item.cardNumber}</span>
               </div>
               <div>
                 <svg
@@ -164,7 +167,7 @@ export const MyProfile = () => {
                   <path d="M6.445 11.688V6.354h-.633A12.6 12.6 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61h.675zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82h-.684zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23z" />
                   <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                 </svg>
-                <span> 05/2025</span>
+                <span> {item.mm} / {item.yy}</span>
               </div>
               <div>
                 <svg
@@ -178,8 +181,10 @@ export const MyProfile = () => {
                   <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
                   <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                 </svg>
-                <span> 55685</span>
-              </div>
+                <span> {item.zip}</span>
+              </div></>;
+              })}
+              
             </div>
           </div>
         </div>
@@ -200,7 +205,7 @@ export const MyProfile = () => {
                   width="50"
                   height="35"
                   fill="currentColor"
-                  class="bi bi-exclamation-triangle"
+                  className="bi bi-exclamation-triangle"
                   viewBox="0 0 16 16"
                 >
                   <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z" />
@@ -212,15 +217,16 @@ export const MyProfile = () => {
                     {deviceSelected > 1 ? "devices" : "device"}
                   </h4>
                   <span>
-                    You have 3 days remaining. <br />Devices not returned within 3
-                    days will be charged to your credit card on file.
+                    You have 3 days remaining. <br />
+                    Devices not returned within 3 days will be charged to your
+                    credit card on file.
                   </span>
                 </div>
               </div>
             </div>
           ) : (
             <div
-              class="alert alert-success d-flex align-items-center"
+              className="alert alert-success d-flex align-items-center"
               role="alert"
               style={{
                 display: "flex",
@@ -233,19 +239,17 @@ export const MyProfile = () => {
                 width="50"
                 height="35"
                 fill="currentColor"
-                class="bi bi-check-circle-fill"
+                className="bi bi-check-circle-fill"
                 viewBox="0 0 16 16"
               >
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
               </svg>
               <div>
                 <h4>
-                  You have {deviceSelected} pending {" "}
+                  You have {deviceSelected} pending{" "}
                   {deviceSelected > 1 ? "devices" : "device"}
                 </h4>
-                <span>
-                  You have returned all your devices.
-                </span>
+                <span>You have returned all your devices.</span>
               </div>
             </div>
           )}
@@ -300,7 +304,7 @@ export const MyProfile = () => {
                   data-bs-parent="#accordionExample"
                 >
                   <div className="accordion-body">
-                    {deviceArray.map((item, index) => {
+                    {deviceArray?.map((item, index) => {
                       return (
                         <div key={index}>
                           {item}
