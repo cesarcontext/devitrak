@@ -12,6 +12,7 @@ import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuri
 import { MyProfile } from "./page/MyProfile";
 import { QRCodeConfirmation } from "./page/QRCodeConfirmation";
 import { RequestDevices } from "./page/RequestDevices";
+import { MoreDevices } from "./page/requestDevices/MoreDevices";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route exact path="/confirmation" element={<QRCodeConfirmation />} />
         <Route exact path="/request_devices" element={<RequestDevices />} />
+        <Route exact path="/more_devices" element={ <MoreDevices />} />
         <Route exact path="more_info" element={<MoreInfo />} />
         <Route
           exact
