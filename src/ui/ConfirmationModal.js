@@ -90,7 +90,7 @@ export const ConfirmationModal = () => {
             }}
           >
             <div className="card-body">
-              <p className="card-text">
+              <div className="card-text">
                 {user.map((item) => {
                   return (
                     <div key={item.id}>
@@ -109,7 +109,7 @@ export const ConfirmationModal = () => {
                     </div>
                   );
                 })}
-              </p>
+              </div>
             </div>
           </div>
           <br />
@@ -128,16 +128,22 @@ export const ConfirmationModal = () => {
                     return (
                       <div key={item._id}>
                         <div>
-                          <span>Card number: {item.name}</span>
+                          <span>Card name: {item.cardName}</span>
                         </div>
                         <div>
-                          <span>Expiration date: {item.lastName}</span>
+                          <span>Card number: {item.cardNumber}</span>
                         </div>
                         <div>
-                          <span>CVV: {item.email}</span>
+                          <span>Expiration date: {item.mm} / {item.yy}</span>
                         </div>
                         <div>
-                          <span>Zip code: {item.phoneNumber}</span>
+                          <span>CVV: {item.cvv}</span>
+                        </div>
+                        <div>
+                          <span>Zip code: {item.zip}</span>
+                        </div>
+                        <div>
+                          <span>Country: {item.country}</span>
                         </div>
                       </div>
                     );
