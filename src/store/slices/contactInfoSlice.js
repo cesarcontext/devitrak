@@ -6,6 +6,13 @@ const user = {
     name: "",
     email: "",
     phoneNumber: "",
+    cardName: '',
+    cardNumber: '',
+    mm: '',
+    yy: '',
+    cvv: '',
+    zip: '',
+    country: '',
 };
 
 const contactInfoSlice = createSlice({
@@ -18,7 +25,7 @@ const contactInfoSlice = createSlice({
       state.user.push( payload );
       state.user.shift();
     },
-    onUpdateEvent: (state, { payload }) => {
+    onUpdateContact: (state, { payload }) => {
       state.user = state.user.map((contact) => {
         if (contact._id === payload._id) {
           return payload;
