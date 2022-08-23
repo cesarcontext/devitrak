@@ -13,7 +13,7 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     width: "30%",
-    height: "90%",
+    height: "85%",
     borderRadius: "15px",
   },
 };
@@ -24,6 +24,8 @@ Modal.setAppElement("#root");
 export const ConfirmationModal = () => {
   const { user } = useContactInfoStore();
 
+  console.log('user', user )
+
   const { isModalOpen, closeModal } = useUiStore();
 
   const onCloseModal = () => {
@@ -33,7 +35,7 @@ export const ConfirmationModal = () => {
   return (
     <div
       style={{
-        width: "80%",
+        width: "90%",
         border: "solid 1px #212529",
       }}
     >
