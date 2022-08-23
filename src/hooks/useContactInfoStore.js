@@ -8,9 +8,9 @@ export const useContactInfoStore = () => {
   const { user } = useSelector((state) => state.contactInfo);
 
   const startSavingContactInfo = async (userInfoSaved) => {
-    if (userInfoSaved.email) {
+    if (userInfoSaved._id) {
       //updating contactInfo
-      dispatch( onUpdateContact({ ...userInfoSaved}))
+      // dispatch( onUpdateContact({ ...userInfoSaved}))
     } else {
       //creating new contactInfo
 
