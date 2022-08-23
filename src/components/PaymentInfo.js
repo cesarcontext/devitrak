@@ -3,6 +3,21 @@ import { useUiStore } from "../hooks/useUiStore";
 import { ConfirmationModal } from "../ui/ConfirmationModal";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useDeviceCount } from "../hooks/useDeviceCount";
+import Swal from "sweetalert2";
+// import {
+//   validationGroupName,
+//   validationName,
+//   validationLastName,
+//   validationEmail,
+//   validationPhoneNumber,
+//   validationCardName,
+//   validationCardNumber,
+//   validationExpirationDateMM,
+//   validationExpirationDateYY,
+//   validationCvv,
+//   validationZip,
+//   validationCountry,
+// } from "../hooks/useValidation";
 
 export const PaymentInfo = () => {
   const { openModal } = useUiStore();
@@ -44,49 +59,117 @@ export const PaymentInfo = () => {
     });
   };
 
-  const validation = useMemo(() => {
-    if (!formSubmitted) return "";
+    const validationGroupName = useMemo(() => {
+      return formValues.groupName.length > 2 ? "" : "is-invalid";
+    }, [formValues.groupName, formSubmitted]);
 
-    if (formValues.groupName.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.name.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.lastName.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.email.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.phoneNumber.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.cardName.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.cardNumber.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.mm.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.yy.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.cvv.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.zip.length < 0) {
-      return "is-invalid";
-    }
-    if (formValues.country.length < 0) {
-      return "is-invalid";
-    }
-  }, [formSubmitted]);
+    const validationName = useMemo(() => {
+      return formValues.name.length > 0 ? "" : "is-invalid";
+    }, [formValues.name, formSubmitted]);
+
+    const validationLastName = useMemo(() => {
+      return formValues.lastName.length > 0 ? "" : "is-invalid";
+    }, [formValues.lastName, formSubmitted]);
+
+    const validationEmail = useMemo(() => {
+      return formValues.email.length > 3 &&
+        formValues.email
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          )
+        ? ""
+        : "is-invalid";
+    }, [formValues.email, formSubmitted]);
+
+    const validationPhoneNumber = useMemo(() => {
+      return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
+    }, [formValues.phoneNumber, formSubmitted]);
+
+    const validationCardName = useMemo(() => {
+      return formValues.cardName.length > 2 ? "" : "is-invalid";
+    }, [formValues.cardName, formSubmitted]);
+
+    const validationCardNumber = useMemo(() => {
+      return formValues.cardNumber.length > 12 ? "" : "is-invalid";
+    }, [formValues.cardNumber, formSubmitted]);
+
+    const validationExpirationDateMM = useMemo(() => {
+      if ( formValues.mm < ( new Date().getMonth() + 1) && formValues.yy <= new Date().getFullYear().toString()){
+        return "is-invalid"
+      }
+    }, [formValues.mm, formValues.yy, formSubmitted]);
+
+    console.log('mm', formValues.mm)
+  console.log('yy', typeof formValues.yy)
+
+    const validationExpirationDateYY = useMemo(() => {
+      if (formValues.yy.valueOf() < new Date().getFullYear().toString()) {
+        return "is-invalid";
+      }
+    }, [formValues.yy, formSubmitted]);
+
+    const validationCvv = useMemo(() => {
+      return formValues.cvv.length > 2 ? "" : "is-invalid";
+    }, [formValues.cvv, formSubmitted]);
+
+    const validationZip = useMemo(() => {
+      return formValues.zip.length > 0 ? "" : "is-invalid";
+    }, [formValues.zip, formSubmitted]);
+
+    const validationCountry = useMemo(() => {
+      return formValues.country.length > 0 ? "" : "is-invalid";
+    }, [formValues.country, formSubmitted]);
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
+
+    if (validationGroupName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Group Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationName === "is-invalid") {
+      return Swal.fire("", "Name must be provided", "error");
+    }
+    if (validationLastName === "is-invalid") {
+      return Swal.fire("", "Last name must be provided", "error");
+    }
+    if (validationEmail === "is-invalid") {
+      return Swal.fire("", "Email is invalid", "error");
+    }
+    if (validationPhoneNumber === "is-invalid") {
+      return Swal.fire("", "Phone number must be provided", "error");
+    }
+    if (validationExpirationDateMM === "is-invalid") {
+      return Swal.fire("", "Please provide a valid expiration date", "error");
+    }
+    if (validationExpirationDateYY === "is-invalid") {
+      return Swal.fire("", "Please provide a valid expiration date", "error");
+    }
+    if (validationCardName === "is-invalid") {
+      return Swal.fire("", "Card name must be provided", "error");
+    }
+    if (validationCardNumber === "is-invalid") {
+      return Swal.fire("", "Card number must be provided", "error");
+    }
+    if (validationCvv === "is-invalid") {
+      return Swal.fire("", "Cvv must be provided", "error");
+    }
+    if (validationZip === "is-invalid") {
+      return Swal.fire("", "Zip must be provided", "error");
+    }
+    if (validationCountry === "is-invalid") {
+      return Swal.fire("", "Country name must be provided", "error");
+    }
+
+    if (formValues.cvv.valueOf().length < 0) {
+      return;
+    }
+
     setFormSubmitted(true);
     await startSavingContactInfo(formValues);
     openModal();
@@ -164,12 +247,13 @@ export const PaymentInfo = () => {
                             <div className="form-outline datepicker w-100">
                               <input
                                 type="text"
-                                className="form-control  form-control-lg"
+                                className={`form-control ${validationGroupName}  form-control-lg`}
                                 id="groupName"
                                 placeholder="Group name"
                                 onChange={onInputCHange}
                                 name="groupName"
                                 value={formValues.groupName}
+                                minLength={3}
                               />
                             </div>
                           </div>
@@ -180,9 +264,10 @@ export const PaymentInfo = () => {
                                 id="firstName"
                                 name="name"
                                 value={formValues.name}
-                                className="form-control  form-control-lg"
+                                className={`form-control ${validationName} form-control-lg`}
                                 placeholder="First name"
                                 onChange={onInputCHange}
+                                minLength={1}
                               />
                             </div>
                           </div>
@@ -191,11 +276,12 @@ export const PaymentInfo = () => {
                               <input
                                 type="text"
                                 id="lastName"
-                                className="form-control  form-control-lg"
+                                className={`form-control ${validationLastName} form-control-lg`}
                                 placeholder="Last name"
                                 onChange={onInputCHange}
                                 name="lastName"
                                 value={formValues.lastName}
+                                minLength={1}
                               />
                             </div>
                           </div>
@@ -206,11 +292,12 @@ export const PaymentInfo = () => {
                               <input
                                 type="email"
                                 id="emailAddress"
-                                className="form-control  form-control-lg"
+                                className={`form-control ${validationEmail} form-control-lg`}
                                 placeholder="Email"
                                 onChange={onInputCHange}
                                 name="email"
                                 value={formValues.email}
+                                minLength={4}
                               />
                             </div>
                           </div>
@@ -219,11 +306,13 @@ export const PaymentInfo = () => {
                               <input
                                 type="tel"
                                 id="phoneNumber"
-                                className="form-control  form-control-lg"
+                                className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
                                 placeholder="Phone number"
                                 onChange={onInputCHange}
                                 name="phoneNumber"
                                 value={formValues.phoneNumber}
+                                maxLength={15}
+                                minLength={5}
                               />
                             </div>
                           </div>
@@ -254,11 +343,11 @@ export const PaymentInfo = () => {
                               <input
                                 type="text"
                                 className="form-control  form-control-lg"
-                                id=""
                                 placeholder="Card name"
                                 onChange={onInputCHange}
                                 name="cardName"
                                 value={formValues.cardName}
+                                minLength={3}
                               />
                             </div>
                           </div>
@@ -266,52 +355,56 @@ export const PaymentInfo = () => {
                             <div className="form-outline">
                               <input
                                 type="text"
-                                className="form-control  form-control-lg"
-                                id=""
+                                className="form-control form-control-lg cardNumber"
                                 placeholder="Card number"
                                 onChange={onInputCHange}
                                 name="cardNumber"
                                 value={formValues.cardNumber}
+                                maxLength={19}
+                                minLength={13}
                               />
                             </div>
                           </div>
                           <div className="col-md-10 m-4 d-flex">
-                            <div className="col-md-2 m-4">
+                            <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
                                   type="text"
-                                  className="form-control  form-control-lg"
-                                  id=""
+                                  className={`form-control ${validationExpirationDateMM}  form-control-lg`}
                                   placeholder="MM"
                                   onChange={onInputCHange}
                                   name="mm"
                                   value={formValues.mm}
+                                  maxLength={2}
+                                  minLength={2}
                                 />
                               </div>
                             </div>
-                            <div className="col-md-2 m-4">
+                            <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
                                   type="text"
-                                  className="form-control  form-control-lg"
-                                  id=""
+                                  className={`form-control ${validationExpirationDateYY}  form-control-lg`}
                                   placeholder="YYYY"
                                   onChange={onInputCHange}
                                   name="yy"
                                   value={formValues.yy}
+                                  maxLength={4}
+                                  minLength={4}
                                 />
                               </div>
                             </div>
-                            <div className="col-md-2 m-4">
+                            <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
                                   type="text"
                                   className="form-control  form-control-lg"
-                                  id=""
                                   placeholder="CVV"
                                   onChange={onInputCHange}
                                   name="cvv"
                                   value={formValues.cvv}
+                                  maxLength={4}
+                                  minLength={3}
                                 />
                               </div>
                             </div>
@@ -322,12 +415,12 @@ export const PaymentInfo = () => {
                             <div className="form-outline">
                               <input
                                 type="text"
-                                className="form-control  form-control-lg"
-                                id=""
+                                className={`form-control ${validationZip}  form-control-lg`}
                                 placeholder="Zip"
                                 onChange={onInputCHange}
                                 name="zip"
                                 value={formValues.zip}
+                                minLength={4}
                               />
                             </div>
                           </div>
@@ -335,12 +428,12 @@ export const PaymentInfo = () => {
                             <div className="form-outline">
                               <input
                                 type="text"
-                                className="form-control  form-control-lg"
-                                id=""
+                                className={`form-control ${validationCountry}  form-control-lg`}
                                 placeholder="Country"
                                 onChange={onInputCHange}
                                 name="country"
                                 value={formValues.country}
+                                minLength={3}
                               />
                             </div>
                           </div>
