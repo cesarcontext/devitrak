@@ -18,11 +18,7 @@ export const QRCodeConfirmation = () => {
       />
     );
   });
-  //posible option to download qr code
-  // const downloadQRCode = () => {
-  //   saveAs(QRCodeGenerated, "testingSavingQRCode.jpg");
-  // };
-
+  
   return (
     <div
       style={{
@@ -73,7 +69,7 @@ export const QRCodeConfirmation = () => {
         <h4>Your reference number is:</h4>
         <span>
           {user.map((item) => {
-            return <>{item.phoneNumber.split("")}</>;
+            return <div key={item._id}>{item.phoneNumber.split("")}</div>;
           })}
         </span>
       </div>
