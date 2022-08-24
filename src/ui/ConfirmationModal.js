@@ -24,8 +24,6 @@ Modal.setAppElement("#root");
 export const ConfirmationModal = () => {
   const { user } = useContactInfoStore();
 
-  console.log('user', user )
-
   const { isModalOpen, closeModal } = useUiStore();
 
   const onCloseModal = () => {
