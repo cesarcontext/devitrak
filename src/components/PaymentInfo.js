@@ -2,22 +2,9 @@ import React, { useMemo, useState } from "react";
 import { useUiStore } from "../hooks/useUiStore";
 import { ConfirmationModal } from "../ui/ConfirmationModal";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { useDeviceCount } from "../hooks/useDeviceCount";
+import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import Swal from "sweetalert2";
-// import {
-//   validationGroupName,
-//   validationName,
-//   validationLastName,
-//   validationEmail,
-//   validationPhoneNumber,
-//   validationCardName,
-//   validationCardNumber,
-//   validationExpirationDateMM,
-//   validationExpirationDateYY,
-//   validationCvv,
-//   validationZip,
-//   validationCountry,
-// } from "../hooks/useValidation";
+
 
 export const PaymentInfo = () => {
   const { openModal } = useUiStore();
@@ -59,67 +46,67 @@ export const PaymentInfo = () => {
     });
   };
 
-    const validationGroupName = useMemo(() => {
-      return formValues.groupName.length > 2 ? "" : "is-invalid";
-    }, [formValues.groupName, formSubmitted]);
+  const validationGroupName = useMemo(() => {
+    return formValues.groupName.length > 2 ? "" : "is-invalid";
+  }, [formValues.groupName, formSubmitted]);
 
-    const validationName = useMemo(() => {
-      return formValues.name.length > 0 ? "" : "is-invalid";
-    }, [formValues.name, formSubmitted]);
+  const validationName = useMemo(() => {
+    return formValues.name.length > 0 ? "" : "is-invalid";
+  }, [formValues.name, formSubmitted]);
 
-    const validationLastName = useMemo(() => {
-      return formValues.lastName.length > 0 ? "" : "is-invalid";
-    }, [formValues.lastName, formSubmitted]);
+  const validationLastName = useMemo(() => {
+    return formValues.lastName.length > 0 ? "" : "is-invalid";
+  }, [formValues.lastName, formSubmitted]);
 
-    const validationEmail = useMemo(() => {
-      return formValues.email.length > 3 &&
-        formValues.email
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          )
-        ? ""
-        : "is-invalid";
-    }, [formValues.email, formSubmitted]);
+  const validationEmail = useMemo(() => {
+    return formValues.email.length > 3 &&
+      formValues.email
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ? ""
+      : "is-invalid";
+  }, [formValues.email, formSubmitted]);
 
-    const validationPhoneNumber = useMemo(() => {
-      return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
-    }, [formValues.phoneNumber, formSubmitted]);
+  const validationPhoneNumber = useMemo(() => {
+    return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
+  }, [formValues.phoneNumber, formSubmitted]);
 
-    const validationCardName = useMemo(() => {
-      return formValues.cardName.length > 2 ? "" : "is-invalid";
-    }, [formValues.cardName, formSubmitted]);
+  const validationCardName = useMemo(() => {
+    return formValues.cardName.length > 2 ? "" : "is-invalid";
+  }, [formValues.cardName, formSubmitted]);
 
-    const validationCardNumber = useMemo(() => {
-      return formValues.cardNumber.length > 12 ? "" : "is-invalid";
-    }, [formValues.cardNumber, formSubmitted]);
+  const validationCardNumber = useMemo(() => {
+    return formValues.cardNumber.length > 12 ? "" : "is-invalid";
+  }, [formValues.cardNumber, formSubmitted]);
 
-    const validationExpirationDateMM = useMemo(() => {
-      if ( formValues.mm < ( new Date().getMonth() + 1) && formValues.yy <= new Date().getFullYear().toString()){
-        return "is-invalid"
-      }
-    }, [formValues.mm, formValues.yy, formSubmitted]);
+  const validationExpirationDateMM = useMemo(() => {
+    if (
+      formValues.mm < new Date().getMonth() + 1 &&
+      formValues.yy <= new Date().getFullYear().toString()
+    ) {
+      return "is-invalid";
+    }
+  }, [formValues.mm, formValues.yy, formSubmitted]);
 
-    console.log('mm', formValues.mm)
-  console.log('yy', typeof formValues.yy)
+  const validationExpirationDateYY = useMemo(() => {
+    if (formValues.yy.valueOf() < new Date().getFullYear().toString()) {
+      return "is-invalid";
+    }
+  }, [formValues.yy, formSubmitted]);
 
-    const validationExpirationDateYY = useMemo(() => {
-      if (formValues.yy.valueOf() < new Date().getFullYear().toString()) {
-        return "is-invalid";
-      }
-    }, [formValues.yy, formSubmitted]);
+  const validationCvv = useMemo(() => {
+    return formValues.cvv.length > 2 ? "" : "is-invalid";
+  }, [formValues.cvv, formSubmitted]);
 
-    const validationCvv = useMemo(() => {
-      return formValues.cvv.length > 2 ? "" : "is-invalid";
-    }, [formValues.cvv, formSubmitted]);
+  const validationZip = useMemo(() => {
+    return formValues.zip.length > 0 ? "" : "is-invalid";
+  }, [formValues.zip, formSubmitted]);
 
-    const validationZip = useMemo(() => {
-      return formValues.zip.length > 0 ? "" : "is-invalid";
-    }, [formValues.zip, formSubmitted]);
-
-    const validationCountry = useMemo(() => {
-      return formValues.country.length > 0 ? "" : "is-invalid";
-    }, [formValues.country, formSubmitted]);
+  const validationCountry = useMemo(() => {
+    return formValues.country.length > 0 ? "" : "is-invalid";
+  }, [formValues.country, formSubmitted]);
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
@@ -174,6 +161,8 @@ export const PaymentInfo = () => {
     await startSavingContactInfo(formValues);
     openModal();
   };
+
+  
 
   return (
     <>
@@ -369,7 +358,7 @@ export const PaymentInfo = () => {
                             <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
-                                  type="text"
+                                  type="number"
                                   className={`form-control ${validationExpirationDateMM}  form-control-lg`}
                                   placeholder="MM"
                                   onChange={onInputCHange}
@@ -377,13 +366,15 @@ export const PaymentInfo = () => {
                                   value={formValues.mm}
                                   maxLength={2}
                                   minLength={2}
+                                  min={1}
+                                  max={12}
                                 />
                               </div>
                             </div>
                             <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
-                                  type="text"
+                                  type="number"
                                   className={`form-control ${validationExpirationDateYY}  form-control-lg`}
                                   placeholder="YYYY"
                                   onChange={onInputCHange}
@@ -391,6 +382,7 @@ export const PaymentInfo = () => {
                                   value={formValues.yy}
                                   maxLength={4}
                                   minLength={4}
+                                  min={new Date().getFullYear()}
                                 />
                               </div>
                             </div>
