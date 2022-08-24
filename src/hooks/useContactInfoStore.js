@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { userInfoSaved } from "../components/userInfoSaved";
-import { onAddNewContact, onUpdateContact } from "../store/slices/contactInfoSlice";
+import {
+  onAddNewContact,
+  onUpdateContact,
+} from "../store/slices/contactInfoSlice";
 
 export const useContactInfoStore = () => {
   const dispatch = useDispatch();
@@ -8,25 +10,28 @@ export const useContactInfoStore = () => {
   const { user } = useSelector((state) => state.contactInfo);
 
   const startSavingContactInfo = async (userInfoSaved) => {
-    if (userInfoSaved._id) {
-      //updating contactInfo
-      // dispatch( onUpdateContact({ ...userInfoSaved}))
-    } else {
-      //creating new contactInfo
-
-      dispatch(
-        onAddNewContact({ ...userInfoSaved, _id: new Date().getTime() })
-      );
-      localStorage.setItem("user", JSON.stringify(userInfoSaved));
-    }
+    dispatch(onAddNewContact({ ...userInfoSaved, _id: new Date().getTime() }));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ ...userInfoSaved, _id: new Date().getTime() })
+    );
   };
+
+  const startUpdatingContactInfo = async (userInfoSaved) => {
+    dispatch(onUpdateContact({...userInfoSaved}));
+    localStorage.setItem('editPaymentInfo', JSON.stringify({...userInfoSaved }))
+  };
+  const checking = localStorage.getItem("user");
+
+  const userParseStored = [JSON.parse(checking)];
 
   return {
     //* Propiedades
     user,
+    userParseStored,
 
     //* Métodos
     startSavingContactInfo,
-    // startUpdatingContactInfo,
+    startUpdatingContactInfo,
   };
 };
