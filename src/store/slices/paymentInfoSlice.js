@@ -1,26 +1,27 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const payment = {
-    _id: new Date().getTime(),
-    cardNumber: '',
-    mm: '',
-    yy: '',
-    cvc: '',
-    zip: ''
-}
+const paymentState = {
+  cardName: "",
+  cardNumber: "",
+  country: "",
+  cvv: "",
+  mm: "",
+  yy: "",
+  zip: "",
+};
 
 const paymentInfoSlice = createSlice({
-    name: 'paymentInfo',
-    initialState: {
-        payment: [payment]
-    },
-        reducers: {
-            onAddNewPaymentInfo: (state, { payload }) => {
-                state.payment.push( payload );
-                state.payment.shift();
-              },
-        },
-    });
+  name: "paymentInfo",
+  initialState: {
+    paymentState: [ paymentState ]
+  },
+  reducers: {
+    onAddNewPaymentInfo: (state, { payload }) => {
+        state.paymentState.push( payload );
+        state.paymentState.shift();
+      },
+  },
+});
 
 // action creators are generated for each case reducer function
 
