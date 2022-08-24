@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router";
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { NavbarFixed } from "./components/NavbarFixed";
-import { EventSchedule } from "./page/EventSchedule";
+import { EventScheduled } from "./page/EventScheduled";
 import { Home } from "./page/Home";
 import { MoreInfo } from "./page/MoreInfo";
 import { HowToReturnTheDevices } from "./page/moreInfo/HowToReturnTheDevices";
@@ -40,7 +40,7 @@ function App() {
           path="/request_support_during_event"
           element={<RequestSupportDuringTheEvent />}
         />
-        <Route exact path="/event_schedule" element={<EventSchedule />} />
+        <Route exact path="/event_schedule" element={<EventScheduled />} />
         <Route exact path="/my_profile" element={<MyProfile />} />
       </Routes>
       <NavbarFixed />
