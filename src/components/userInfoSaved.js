@@ -2,10 +2,10 @@ import React from "react";
 
 export const userInfoSaved = ({ user }) => {
 
-  const {groupName, name, lastName, email, phoneNumber,cardName, cardNumber, mm, yy, cvv, zip, country} = user
+  const {_id, groupName, name, lastName, email, phoneNumber,cardName, cardNumber, mm, yy, cvv, zip, country} = user
 
   return (
-    <>
+    <div key={_id}>
       <div>{groupName}</div>
       <div>{name}</div>
       <div>{lastName}</div>
@@ -18,6 +18,6 @@ export const userInfoSaved = ({ user }) => {
       <div>{yy}</div>
       <div>{zip}</div>
       <div>{country}</div>
-    </>
+    </div>
   );
 };
