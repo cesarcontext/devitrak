@@ -1,14 +1,11 @@
 import React from "react";
-import { useDeviceCount } from "../hooks/useDeviceCount";
+import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const MyProfile = () => {
-  const { deviceArray } = useDeviceCount();
 
-  const deviceSelected = localStorage.getItem("device");
-
-  const checking = localStorage.getItem("user");
-
-  const userParseStored = [JSON.parse(checking)];
+const { deviceRented, deviceSelected } = useDeviceCount()
+const { userParseStored } = useContactInfoStore()
 
   return (
     <div
@@ -304,13 +301,10 @@ export const MyProfile = () => {
                   data-bs-parent="#accordionExample"
                 >
                   <div className="accordion-body">
-                    {deviceArray?.map((item, index) => {
+                    {deviceRented?.map(( device, index ) => {
                       return (
-                        <div key={index}>
-                          {item}
-                          <p>1</p>
-                        </div>
-                      );
+                        <div key={index}>{device+1}<input disabled /></div>
+                      )
                     })}
                   </div>
                 </div>
