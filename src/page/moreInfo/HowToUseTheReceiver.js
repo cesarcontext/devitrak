@@ -6,8 +6,8 @@ export const HowToUseTheReceiver = () => {
   return (
     <div
       style={{
-        width: "40%",
-        height: "90vh",
+        width: "50%",
+        height: "115vh",
         margin: "auto",
         display: "flex",
         flexDirection: "column",
@@ -21,7 +21,7 @@ export const HowToUseTheReceiver = () => {
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          marginTop: "3%"
+          marginTop: "3%",
         }}
       >
         <Link to="/more_info">
@@ -46,7 +46,6 @@ export const HowToUseTheReceiver = () => {
       <div
         style={{
           width: "75%",
-          // height: "35vh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-around",
@@ -112,7 +111,7 @@ export const HowToUseTheReceiver = () => {
               margin: "5px 0",
             }}
           >
-              <span>OTHER QUESTIONS</span>
+            <span>OTHER QUESTIONS</span>
           </div>
           <div
             style={{

@@ -6,8 +6,8 @@ export const RequestSupportDuringTheEvent = () => {
   return (
     <div
       style={{
-        width: "40%",
-        height: "90vh",
+        width: "50%",
+        height: "115vh",
         margin: "auto",
         display: "flex",
         flexDirection: "column",
@@ -21,7 +21,7 @@ export const RequestSupportDuringTheEvent = () => {
           display: "flex",
           justifyContent: "flex-start",
           alignItems: "center",
-          marginTop: "3%"
+          marginTop: "3%",
         }}
       >
         <Link to="/more_info">
@@ -114,7 +114,7 @@ export const RequestSupportDuringTheEvent = () => {
               margin: "5px 0",
             }}
           >
-              <span>OTHER QUESTIONS</span>
+            <span>OTHER QUESTIONS</span>
           </div>
           <div
             style={{
