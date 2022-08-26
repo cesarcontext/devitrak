@@ -53,7 +53,6 @@ export const PaymentInfo = () => {
     });
   };
 
-
   const onInputChangePayment = ({ target }) => {
     setPaymentFormValues({
       ...paymentFormValues,
@@ -62,7 +61,6 @@ export const PaymentInfo = () => {
   };
 
   const validationGroupName = useMemo(() => {
-
     return formValues.groupName.length > 2 ? "" : "is-invalid";
   }, [formValues.groupName, formSubmitted]);
 
@@ -224,7 +222,7 @@ export const PaymentInfo = () => {
       });
     }
 
-    if (validationCvv === 'is-invalid') {
+    if (validationCvv === "is-invalid") {
       return Swal.fire({
         title: "",
         text: "Group Name must be provided",
@@ -310,7 +308,6 @@ export const PaymentInfo = () => {
                           <div className="col-md-10 m-4 d-flex align-items-center">
                             <div className="form-outline datepicker w-100">
                               <input
-                              
                                 type="text"
                                 className={`form-control ${validationGroupName}  form-control-lg`}
                                 id="groupName"
@@ -434,7 +431,7 @@ export const PaymentInfo = () => {
                             <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
-                                
+
                                   type="number"
                                   className={`form-control ${validationExpirationDateMM}  form-control-lg`}
                                   placeholder="MM"
@@ -451,6 +448,7 @@ export const PaymentInfo = () => {
                             <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
+
                                   type="number"
                                   className={`form-control ${validationExpirationDateYY}  form-control-lg`}
                                   placeholder="YYYY"
@@ -466,6 +464,7 @@ export const PaymentInfo = () => {
                             <div className="col-md-3 m-4">
                               <div className="form-outline">
                                 <input
+
                                   type="text"
                                   className="form-control  form-control-lg"
                                   placeholder="CVV"
@@ -483,7 +482,7 @@ export const PaymentInfo = () => {
                           <div className="col-md-10 m-4">
                             <div className="form-outline">
                               <input
-                              id="zip"
+                                id="zip"
                                 type="text"
                                 className={`form-control ${validationZip}  form-control-lg`}
                                 placeholder="Zip"
