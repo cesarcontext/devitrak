@@ -2,19 +2,22 @@ import React from "react";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 
 const customStyles = {
   content: {
+    position: "absolute",
     top: "50%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    width: "30%",
-    height: "85%",
+    width: "35%",
+    height: "95%",
     borderRadius: "15px",
+    zIndex: "7"
   },
 };
 
@@ -23,17 +26,20 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
   const { user } = useContactInfoStore();
-
+  const { paymentState } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
   const onCloseModal = () => {
     closeModal();
   };
 
+  const lastElement = [paymentState.at(-1)]
+  
+  console.log("lastElement",lastElement)
   return (
     <div
       style={{
-        width: "90%",
+        width: "95%",
         border: "solid 1px #212529",
       }}
     >
@@ -124,7 +130,10 @@ export const ConfirmationModal = () => {
             >
               <div className="card-body">
                 <p className="card-text">
-                  {user.map((item) => {
+                  {
+                  //for(let item of paymentState.length -)
+                
+                  lastElement.map((item) => {
                     return (
                       <div key={item._id}>
                         <div>
@@ -134,7 +143,9 @@ export const ConfirmationModal = () => {
                           <span>Card number: {item.cardNumber}</span>
                         </div>
                         <div>
-                          <span>Expiration date: {item.mm} / {item.yy}</span>
+                          <span>
+                            Expiration date: {item.mm} / {item.yy}
+                          </span>
                         </div>
                         <div>
                           <span>CVV: {item.cvv}</span>
@@ -164,10 +175,12 @@ export const ConfirmationModal = () => {
               }}
               onClick={closeModal}
             >
-              <p style={{
-                width: "100%",
-                fontSize: "15px"
-              }}>
+              <p
+                style={{
+                  width: "100%",
+                  fontSize: "15px",
+                }}
+              >
                 <i className="bi bi-chevron-left"></i> GO BACK AND MAKE
                 CORRECTIONS
               </p>
@@ -203,7 +216,6 @@ export const ConfirmationModal = () => {
                   border: "rgba(69, 104, 220, 1)",
                   fontSize: "10px",
                   width: "100%",
-                  
                 }}
                 onClick={closeModal}
               >
