@@ -1,18 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const user = {
-    // _id: new Date().getTime(),
+    _id: "",
     groupName: "",
     name: "",
     email: "",
     phoneNumber: "",
-    // cardName: '',
-    // cardNumber: '',
-    // mm: '',
-    // yy: '',
-    // cvv: '',
-    // zip: '',
-    // country: '',
+    amount: ""
 };
 
 const contactInfoSlice = createSlice({
