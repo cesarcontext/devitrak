@@ -6,8 +6,7 @@ const user = {
     name: "",
     email: "",
     phoneNumber: "",
-    amount: ""
-};
+}
 
 const contactInfoSlice = createSlice({
   name: "contactInfo",
