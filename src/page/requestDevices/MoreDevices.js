@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { PaymentInfo } from "../../components/PaymentInfo";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import { usePaymentStore } from "../../hooks/usePaymentStore";
+import { useUiStore } from "../../hooks/useUiStore";
+import { ConfirmationModal } from "../../ui/ConfirmationModal";
 
 const editInfoSubmitted = {
   cardName: "",
@@ -22,23 +25,15 @@ export const MoreDevices = () => {
   } = useDeviceCount();
 
   const {
-    validationGroupName,
-    validationName,
-    validationLastName,
-    validationEmail,
-    validationPhoneNumber,
-  } = PaymentInfo;
-
-  const { userParseStored } = useContactInfoStore();
-
-  const { startUpdatingContactInfo } = useContactInfoStore(); //startSavingContactInfo is resulting undefined
-
-  const {
     validationExpirationDateMM,
     validationExpirationDateYY,
     validationZip,
     validationCountry,
   } = PaymentInfo;
+
+  const { userParseStored, startSavingContactInfo } = useContactInfoStore();
+  const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
+  const { openModal } = useUiStore();
 
   const [editInfoValue, setEditInfoValue] = useState(true);
 
@@ -51,20 +46,24 @@ export const MoreDevices = () => {
     });
   };
 
-  const handleEdit = () => {
-    return setEditInfoValue(!editInfoValue);
+  const handleEditInfo = (event) => {
+    event.preventDefault();
+    setEditInfoValue(!editInfoValue);
   };
+
+  console.log("first", editFormValues);
 
   const onSubmitEditPaymentInfo = async (event) => {
     event.preventDefault();
+
+    await startSavingPaymentInfo(editFormValues);
+    openModal();
   };
 
   return (
     <>
       <div className="container">
-        <form
-        // onSubmit={handleOnSubmit}
-        >
+        <form onSubmit={onSubmitEditPaymentInfo}>
           <div
             className="container"
             style={{
@@ -135,12 +134,11 @@ export const MoreDevices = () => {
                                   <input
                                     disabled={true}
                                     type="text"
-                                    className={`form-control ${validationGroupName}  form-control-lg`}
+                                    className={`form-control   form-control-lg`}
                                     id="groupName"
                                     placeholder={user.groupName}
                                     name="groupName"
                                     value={user.groupName}
-                                    minLength={3}
                                   />
                                 </div>
                               </div>
@@ -152,9 +150,8 @@ export const MoreDevices = () => {
                                     id="firstName"
                                     name="name"
                                     value={user.name}
-                                    className={`form-control ${validationName} form-control-lg`}
+                                    className={`form-control form-control-lg`}
                                     placeholder={user.name}
-                                    minLength={1}
                                   />
                                 </div>
                               </div>
@@ -164,11 +161,10 @@ export const MoreDevices = () => {
                                     disabled={true}
                                     type="text"
                                     id="lastName"
-                                    className={`form-control ${validationLastName} form-control-lg`}
+                                    className={`form-control  form-control-lg`}
                                     placeholder={user.lastName}
                                     name="lastName"
                                     value={user.lastName}
-                                    minLength={1}
                                   />
                                 </div>
                               </div>
@@ -180,11 +176,10 @@ export const MoreDevices = () => {
                                     disabled={true}
                                     type="email"
                                     id="emailAddress"
-                                    className={`form-control ${validationEmail} form-control-lg`}
+                                    className={`form-control  form-control-lg`}
                                     placeholder={user.email}
                                     name="email"
                                     value={user.email}
-                                    minLength={4}
                                   />
                                 </div>
                               </div>
@@ -194,12 +189,10 @@ export const MoreDevices = () => {
                                     disabled={true}
                                     type="tel"
                                     id="phoneNumber"
-                                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                                    className={`form-control  form-control-lg phoneNumber`}
                                     placeholder={user.phoneNumber}
                                     name="phoneNumber"
                                     value={user.phoneNumber}
-                                    maxLength={15}
-                                    minLength={5}
                                   />
                                 </div>
                               </div>
@@ -227,112 +220,229 @@ export const MoreDevices = () => {
                         ENTER YOUR PAYMENT INFORMATION
                       </h3>
                       <div>
-                        <div className="row">
-                          <div className="col-md-10 m-4">
-                            <div className="form-outline">
-                              <input
-                                type="text"
-                                className="form-control  form-control-lg"
-                                placeholder="Card name"
-                                // onChange={onInputChangePayment}
-                                name="cardName"
-                                // value={paymentFormValues.cardName}
-                                minLength={3}
-                              />
+                        <button onClick={handleEditInfo}>
+                          <i className="bi bi-pencil-square"></i> Edit
+                          information
+                        </button>
+                      </div>
+                      {editInfoValue === true ? (
+                        <div>
+                          {paymentInfoParse.map((item) => {
+                            return (
+                              <div className="row">
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      disabled={editInfoValue}
+                                      type="text"
+                                      className="form-control  form-control-lg"
+                                      placeholder="Card name"
+                                      name="cardName"
+                                      value={item.cardName}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      disabled={editInfoValue}
+                                      type="text"
+                                      className="form-control form-control-lg cardNumber"
+                                      placeholder="Card number"
+                                      name="cardNumber"
+                                      value={item.cardNumber}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <div className="col-md-4 m-4">
+                                    <div className="form-outline">
+                                      <input
+                                        disabled={editInfoValue}
+                                        type="number"
+                                        className={`form-control ${validationExpirationDateMM}  form-control-lg`}
+                                        placeholder="MM"
+                                        name="mm"
+                                        value={item.mm}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-5 m-4 mr-4">
+                                    <div className="form-outline">
+                                      <input
+                                        disabled={editInfoValue}
+                                        type="number"
+                                        className={`form-control ${validationExpirationDateYY}  form-control-lg`}
+                                        placeholder="YYYY"
+                                        name="yy"
+                                        value={item.yy}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-md-4 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      disabled={editInfoValue}
+                                      type="text"
+                                      className="form-control  form-control-lg"
+                                      placeholder="CVV"
+                                      name="cvv"
+                                      value={item.cvv}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-5 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      disabled={editInfoValue}
+                                      id="zip"
+                                      type="text"
+                                      className={`form-control ${validationZip}  form-control-lg`}
+                                      placeholder="Zip"
+                                      name="zip"
+                                      value={item.zip}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      disabled={editInfoValue}
+                                      type="text"
+                                      className={`form-control ${validationCountry}  form-control-lg`}
+                                      placeholder="Country"
+                                      name="country"
+                                      value={item.country}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="row">
+                            <div className="col-md-10 m-4">
+                              <div className="form-outline">
+                                <input
+                                  disabled={editInfoValue}
+                                  type="text"
+                                  className="form-control  form-control-lg"
+                                  placeholder="Card name"
+                                  onChange={onInputChange}
+                                  name="cardName"
+                                  value={editInfoValue.cardName}
+                                  minLength={3}
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div className="col-md-10 m-4">
-                            <div className="form-outline">
-                              <input
-                                type="text"
-                                className="form-control form-control-lg cardNumber"
-                                placeholder="Card number"
-                                // onChange={onInputChangePayment}
-                                name="cardNumber"
-                                // value={paymentFormValues.cardNumber}
-                                maxLength={19}
-                                minLength={13}
-                              />
+                            <div className="col-md-10 m-4">
+                              <div className="form-outline">
+                                <input
+                                  disabled={editInfoValue}
+                                  type="text"
+                                  className="form-control form-control-lg cardNumber"
+                                  placeholder="Card number"
+                                  onChange={onInputChange}
+                                  name="cardNumber"
+                                  value={editInfoValue.cardNumber}
+                                  maxLength={19}
+                                  minLength={13}
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <div style={{
-                            display: 'flex',
-                          }}>
+                            <div
+                              style={{
+                                display: "flex",
+                              }}
+                            >
+                              <div className="col-md-4 m-4">
+                                <div className="form-outline">
+                                  <input
+                                    disabled={editInfoValue}
+                                    type="number"
+                                    className={`form-control ${validationExpirationDateMM}  form-control-lg`}
+                                    placeholder="MM"
+                                    onChange={onInputChange}
+                                    name="mm"
+                                    value={editInfoValue.mm}
+                                    maxLength={2}
+                                    minLength={2}
+                                    min={1}
+                                    max={12}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-5 m-4 mr-4">
+                                <div className="form-outline">
+                                  <input
+                                    disabled={editInfoValue}
+                                    type="number"
+                                    className={`form-control ${validationExpirationDateYY}  form-control-lg`}
+                                    placeholder="YYYY"
+                                    onChange={onInputChange}
+                                    name="yy"
+                                    value={editInfoValue.yy}
+                                    maxLength={4}
+                                    minLength={4}
+                                    min={new Date().getFullYear()}
+                                  />
+                                </div>
+                              </div>
+                            </div>
                             <div className="col-md-4 m-4">
                               <div className="form-outline">
                                 <input
-                                  type="number"
-                                  className={`form-control ${validationExpirationDateMM}  form-control-lg`}
-                                  placeholder="MM"
-                                  // onChange={onInputChangePayment}
-                                  name="mm"
-                                  // value={paymentFormValues.mm}
-                                  maxLength={2}
-                                  minLength={2}
-                                  min={1}
-                                  max={12}
+                                  disabled={editInfoValue}
+                                  type="text"
+                                  className="form-control  form-control-lg"
+                                  placeholder="CVV"
+                                  onChange={onInputChange}
+                                  name="cvv"
+                                  value={editInfoValue.cvv}
+                                  maxLength={4}
+                                  minLength={3}
                                 />
                               </div>
                             </div>
-                            <div className="col-md-5 m-4 mr-4">
+                            <div className="col-md-5 m-4">
                               <div className="form-outline">
                                 <input
-                                  type="number"
-                                  className={`form-control ${validationExpirationDateYY}  form-control-lg`}
-                                  placeholder="YYYY"
-                                  // onChange={onInputChangePayment}
-                                  name="yy"
-                                  // value={paymentFormValues.yy}
-                                  maxLength={4}
+                                  disabled={editInfoValue}
+                                  id="zip"
+                                  type="text"
+                                  className={`form-control ${validationZip}  form-control-lg`}
+                                  placeholder="Zip"
+                                  onChange={onInputChange}
+                                  name="zip"
+                                  value={editInfoValue.zip}
                                   minLength={4}
-                                  min={new Date().getFullYear()}
                                 />
                               </div>
                             </div>
-                          </div>
-                          <div className="col-md-4 m-4">
-                            <div className="form-outline">
-                              <input
-                                type="text"
-                                className="form-control  form-control-lg"
-                                placeholder="CVV"
-                                // onChange={onInputChangePayment}
-                                name="cvv"
-                                // value={paymentFormValues.cvv}
-                                maxLength={4}
-                                minLength={3}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-5 m-4">
-                            <div className="form-outline">
-                              <input
-                                id="zip"
-                                type="text"
-                                className={`form-control ${validationZip}  form-control-lg`}
-                                placeholder="Zip"
-                                // onChange={onInputChangePayment}
-                                name="zip"
-                                // value={paymentFormValues.zip}
-                                minLength={4}
-                              />
-                            </div>
-                          </div>
-                          <div className="col-md-10 m-4">
-                            <div className="form-outline">
-                              <input
-                                type="text"
-                                className={`form-control ${validationCountry}  form-control-lg`}
-                                placeholder="Country"
-                                // onChange={onInputChangePayment}
-                                name="country"
-                                // value={paymentFormValues.country}
-                                minLength={3}
-                              />
+                            <div className="col-md-10 m-4">
+                              <div className="form-outline">
+                                <input
+                                  disabled={editInfoValue}
+                                  type="text"
+                                  className={`form-control ${validationCountry}  form-control-lg`}
+                                  placeholder="Country"
+                                  onChange={onInputChange}
+                                  name="country"
+                                  value={editInfoValue.country}
+                                  minLength={3}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -372,6 +482,8 @@ export const MoreDevices = () => {
           </button>
         </form>
       </div>
+
+      <ConfirmationModal />
     </>
   );
 };
