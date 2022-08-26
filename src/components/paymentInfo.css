@@ -1,15 +1,7 @@
-body{
-
-    background-color: #eee;
+.container{
+    height: 150vh;
+    margin-bottom: 18vh;
 }
-
-/* .container{
-
-    height: 100vh;
-
-} */
-
-
 .card{
     border:none;
 }
