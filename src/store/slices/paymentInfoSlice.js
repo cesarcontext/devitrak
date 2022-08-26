@@ -18,7 +18,7 @@ const paymentInfoSlice = createSlice({
   reducers: {
     onAddNewPaymentInfo: (state, { payload }) => {
         state.paymentState.push( payload );
-        state.paymentState.shift();
+        // state.paymentState.shift();
       },
   },
 });
