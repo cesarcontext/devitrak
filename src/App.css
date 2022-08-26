@@ -1,11 +1,69 @@
-.App {
-  text-align: center;
-  height: calc(150vh - 16vh );
+:root {
+  --black: 
+rgba(0, 0, 0, 1);
+  --main-colorsfresh-blue-of-bel-air: 
+rgba(21, 170, 245, 1);
+  --bunting: 
+rgba(22, 22, 81, 0.502);
+  --main-colorsfly-by-night: 
+rgba(22, 22, 81, 1);
+  --haddocks-sweater: 
+rgba(30, 115, 190, 1);
+  --eucalyptus: 
+rgba(33, 150, 83, 1);
+  --main-colorscarbon: 
+rgba(51, 51, 51, 1);
+  --main-colorsbluetiful: 
+rgba(69, 104, 220, 1);
+  --main-colorsfading-horizon: 
+rgba(72, 33, 118, 1);
+  --cover-of-night: 
+rgba(73, 76, 79, 1);
+  --main-colorsexcalibur: 
+rgba(102, 102, 102, 1);
+  --main-colorsaluminium: 
+rgba(129, 138, 145, 1);
+  --lavender: 
+rgba(187, 107, 217, 1);
+  --main-colorslobster: 
+rgba(192, 43, 10, 1);
+  --main-colorszen: 
+rgba(210, 214, 220, 1);
+  --alto: 
+rgba(217, 217, 217, 1);
+  --glacial-ice: 
+rgba(232, 232, 232, 1);
+  --concrete: 
+rgba(242, 242, 242, 1);
+  --wild-sand: 
+rgba(244, 244, 244, 1);
+  --cultured-pearl: 
+rgba(245, 245, 245, 1);
+  --white: 
+rgba(255, 255, 255, 0);
+  --main-colorswhite: 
+rgba(255, 255, 255, 1);
+
+  --font-size-xs: 8px;
+  --font-size-s: 10px;
+  --font-size-s: 14px;
+  --font-size-m2: 16px;
+  --font-size-l2: 20px;
+  --font-size-xs2: 12px;
+  --font-size-xl2: 24px;
+  --font-size-xxl2: 32px;
+
+  --font-family-inter: "Inter";
+  --font-family-open_sans: "Open Sans";
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+
+
+
+
+.App {
+  text-align: center;
+  height: 150vh;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -15,14 +73,19 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  min-height: 150vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.App-footer{
+  width: 100%;
+  height: 15vh;
 }
 
 .App-link {
@@ -37,3 +100,5 @@
     transform: rotate(360deg);
   }
 }
+
+
