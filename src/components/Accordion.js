@@ -2,8 +2,7 @@ import React from "react";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const Accordion = () => {
-
-    const {deviceRented} = useDeviceCount()
+  const { deviceRented } = useDeviceCount();
   return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
@@ -32,7 +31,7 @@ export const Accordion = () => {
                   return (
                     <div key={index}>
                       {device + 1}
-                      <input disabled />
+                      <input className="input-field" disabled />
                     </div>
                   );
                 })}
@@ -58,8 +57,7 @@ export const Accordion = () => {
               aria-labelledby="headingTwo"
               data-bs-parent="#accordionExample"
             >
-              <div className="accordion-body">
-              </div>
+              <div className="accordion-body"></div>
             </div>
           </div>
         </div>
