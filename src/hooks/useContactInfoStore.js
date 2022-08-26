@@ -8,22 +8,23 @@ export const useContactInfoStore = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.contactInfo);
+  
 
   const startSavingContactInfo = async (userInfoSaved) => {
     dispatch(onAddNewContact({ ...userInfoSaved, _id: new Date().getTime() }));
     localStorage.setItem(
       "user",
-      JSON.stringify({ ...userInfoSaved, _id: new Date().getTime() })
+      JSON.stringify({ ...userInfoSaved})
     );
   };
 
   const startUpdatingContactInfo = async (userInfoSaved) => {
     dispatch(onUpdateContact({...userInfoSaved}));
-    localStorage.setItem('editPaymentInfo', JSON.stringify({...userInfoSaved }))
   };
-  const checking = localStorage.getItem("user");
 
+  const checking = localStorage.getItem("user");
   const userParseStored = [JSON.parse(checking)];
+
 
   return {
     //* Propiedades
