@@ -6,6 +6,8 @@ import { usePaymentStore } from "../../hooks/usePaymentStore";
 import { useUiStore } from "../../hooks/useUiStore";
 import { ConfirmationModal } from "../../ui/ConfirmationModal";
 
+
+
 const editInfoSubmitted = {
   cardName: "",
   cardNumber: "",
@@ -31,7 +33,7 @@ export const MoreDevices = () => {
     validationCountry,
   } = PaymentInfo;
 
-  const { userParseStored, startSavingContactInfo } = useContactInfoStore();
+  const { userParseStored } = useContactInfoStore();
   const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
   const { openModal } = useUiStore();
 
@@ -48,14 +50,17 @@ export const MoreDevices = () => {
 
   const handleEditInfo = (event) => {
     event.preventDefault();
+
     setEditInfoValue(!editInfoValue);
   };
 
-  console.log("first", editFormValues);
 
   const onSubmitEditPaymentInfo = async (event) => {
     event.preventDefault();
 
+    if(editInfoValue === true){
+      return paymentInfoParse
+    }
     await startSavingPaymentInfo(editFormValues);
     openModal();
   };
