@@ -4,8 +4,6 @@ import { MyProfile } from '../page/MyProfile';
 
 export const ContactInfoProfile = () => {
 
-  const {setShowInfo} = MyProfile
-
     const {userParseStored} = useContactInfoStore()
   return (
     <div>
