@@ -22,8 +22,14 @@ input{
   border-radius: 5px;
   margin: 2px auto;
   padding-left: 15px;
+  
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 @media only screen and ( max-width: 650px) {
 
