@@ -6,7 +6,7 @@ export const ReturnDeviceAlert = () => {
     const {deviceSelected} = useDeviceCount()
   return (
     <div>
-        <div style={{ width: "20%", margin: "auto" }}>
+        <div style={{ width: "30%", margin: "auto" }}>
           {deviceSelected > 0 ? (
             <div style={{ width: "100%", margin: "auto" }}>
               <div
