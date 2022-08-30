@@ -20,6 +20,9 @@ export const useContactInfoStore = () => {
 
   const startUpdatingContactInfo = async (userInfoSaved) => {
     dispatch(onUpdateContact({...userInfoSaved}));
+    
+    localStorage.setItem("user", JSON.stringify({...userInfoSaved}))
+    
   };
 
   const checking = localStorage.getItem("user");
