@@ -7,17 +7,16 @@ import { useUiStore } from "../hooks/useUiStore";
 
 const customStyles = {
   content: {
-    position: "absolute",
-    top: "50%",
+    // top: "50%",
     left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
+    // right: "auto",
+    // bottom: "auto",
+    // marginRight: "-50%",
+    transform: "translate(-50%)",
     width: "35%",
-    height: "95%",
+    height: "85%",
     borderRadius: "15px",
-    zIndex: "7"
+    zIndex: "7",
   },
 };
 
@@ -33,16 +32,14 @@ export const ConfirmationModal = () => {
     closeModal();
   };
 
-  const lastElement = [paymentState.at(-1)]
-  
-  console.log("lastElement",lastElement)
+  const lastElement = [paymentState.at(-1)];
+
   return (
     <div
       style={{
-        width: "95%",
+        width: "80%",
         border: "solid 1px #212529",
-      }}
-    >
+      }}>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={onCloseModal}
@@ -131,34 +128,35 @@ export const ConfirmationModal = () => {
               <div className="card-body">
                 <p className="card-text">
                   {
-                  //for(let item of paymentState.length -)
-                
-                  lastElement.map((item) => {
-                    return (
-                      <div key={item._id}>
-                        <div>
-                          <span>Card name: {item.cardName}</span>
+                    //for(let item of paymentState.length -)
+
+                    lastElement.map((item) => {
+                      return (
+                        <div key={item._id}>
+                          <div>
+                            <span>Card name: {item.cardName}</span>
+                          </div>
+                          <div>
+                            <span>Card number: {item.cardNumber}</span>
+                          </div>
+                          <div>
+                            <span>
+                              Expiration date: {item.mm} / {item.yy}
+                            </span>
+                          </div>
+                          <div>
+                            <span>CVV: {item.cvv}</span>
+                          </div>
+                          <div>
+                            <span>Zip code: {item.zip}</span>
+                          </div>
+                          <div>
+                            <span>Country: {item.country}</span>
+                          </div>
                         </div>
-                        <div>
-                          <span>Card number: {item.cardNumber}</span>
-                        </div>
-                        <div>
-                          <span>
-                            Expiration date: {item.mm} / {item.yy}
-                          </span>
-                        </div>
-                        <div>
-                          <span>CVV: {item.cvv}</span>
-                        </div>
-                        <div>
-                          <span>Zip code: {item.zip}</span>
-                        </div>
-                        <div>
-                          <span>Country: {item.country}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  }
                 </p>
               </div>
             </div>
