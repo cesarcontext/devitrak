@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import Swal from "sweetalert2";
 import { Accordion } from "../components/Accordion";
 import { ContactInfoProfile } from "../components/ContactInfoProfile";
 import { PaymentInfoProfile } from "../components/PaymentInfoProfile";
 import { ReturnDeviceAlert } from "../components/ReturnDeviceAlert";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
-const editContactFormValues = {
+const initalFormValues = {
+  groupName: "",
   name: "",
   lastName: "",
   email: "",
@@ -13,14 +15,14 @@ const editContactFormValues = {
 };
 
 export const MyProfile = () => {
-  const { userParseStored, startUpdatingContactInfo, startSavingContactInfo } = useContactInfoStore();
+  const { startSavingContactInfo } = useContactInfoStore();
 
   const [showInfo, setShowInfo] = useState(false);
-  const [editContactInfo, setEditContactInfo] = useState(editContactFormValues);
+  const [formValues, setFormValues] = useState(initalFormValues);
 
   const onInputCHange = ({ target }) => {
-    setEditContactInfo({
-      ...editContactInfo,
+    setFormValues({
+      ...formValues,
       [target.name]: target.value,
     });
   };
@@ -29,14 +31,86 @@ export const MyProfile = () => {
     setShowInfo(!showInfo);
   };
 
+  const validationGroupName = useMemo(() => {
+    return formValues.groupName.length > 2 ? "" : "is-invalid";
+  }, [formValues.groupName]);
+
+  const validationName = useMemo(() => {
+    return formValues.name.length > 0 ? "" : "is-invalid";
+  }, [formValues.name]);
+
+  const validationLastName = useMemo(() => {
+    return formValues.lastName.length > 0 ? "" : "is-invalid";
+  }, [formValues.lastName]);
+
+  const validationEmail = useMemo(() => {
+    return formValues.email.length > 3 &&
+      formValues.email
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ? ""
+      : "is-invalid";
+  }, [formValues.email]);
+
+  const validationPhoneNumber = useMemo(() => {
+    return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
+  }, [formValues.phoneNumber]);
+
   const handleEditContactInfo = async (event) => {
     event.preventDefault();
 
-   await startSavingContactInfo(editContactInfo)
+    if (validationGroupName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Group Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationLastName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Last name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationEmail === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Email must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationPhoneNumber === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Phone number must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+
+    await startSavingContactInfo(formValues); //function must be changed for update instead of create
+    Swal.fire({
+      title: "",
+      text: "Your information was updated successfully",
+      icon: "success",
+      confirmButtonColor: "rgb(30, 115, 190)",
+    });
+    setShowInfo(false);
   };
-
-  console.log({editContactInfo})
-
 
   return (
     <div
@@ -77,7 +151,7 @@ export const MyProfile = () => {
               className=""
               style={{
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: "start",
                 alignItem: "center",
               }}
             >
@@ -88,7 +162,7 @@ export const MyProfile = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    borderRadius: "0px 15px ",
+                    borderRadius: "15px 0 ",
                     borderRight: "transparent",
                     borderTop: "transparent",
                     border: "solid 1px #212529",
@@ -110,33 +184,74 @@ export const MyProfile = () => {
                   </h5>
                 </button>
               ) : (
-                <button
-                  onClick={(handleEditContactInfo, handleButtonState)}
+                <div
                   style={{
-                    width: "25%",
+                    width: "100%",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "0px 15px ",
-                    borderRight: "transparent",
-                    borderTop: "transparent",
-                    border: "solid 1px #212529",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <h5>
-                    SAVE{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      fill="currentColor"
-                      className="bi bi-save"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
-                    </svg>
-                  </h5>
-                </button>
+                  <button
+                    onClick={handleButtonState}
+                    style={{
+                      width: "25%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: "15px 0",
+                      borderLeft: "transparent",
+                      borderTop: "transparent",
+                      border: "solid 1px #212529",
+                    }}
+                  >
+                    <h5>
+                      CANCEL{" "}
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
+                          fill="currentColor"
+                        />
+                        <path d="M9 9H11V17H9V9Z" fill="currentColor" />
+                        <path d="M13 9H15V17H13V9Z" fill="currentColor" />
+                      </svg>
+                    </h5>
+                  </button>
+                  <button
+                    onClick={handleEditContactInfo}
+                    style={{
+                      width: "25%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: "0 15px",
+                      borderRight: "transparent",
+                      borderTop: "transparent",
+                      border: "solid 1px #212529",
+                    }}
+                  >
+                    <h5>
+                      SAVE{" "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="15"
+                        fill="currentColor"
+                        className="bi bi-save"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                      </svg>
+                    </h5>
+                  </button>
+                </div>
               )}
             </div>
             <div>
@@ -153,40 +268,74 @@ export const MyProfile = () => {
                   flexDirection: "column",
                 }}
               >
-                {userParseStored?.map((item) => {
-                  return (
-                    <>
-                      <input
-                        style={{ width: "50%" }}
-                        type="text"
-                        name="name"
-                        onChange={onInputCHange}
-                        placeholder={item.name}
-                      />
-                      <input
-                        style={{ width: "50%" }}
-                        type="text"
-                        name="lastName"
-                        onChange={onInputCHange}
-                        placeholder={item.lastName}
-                      />
-                      <input
-                        style={{ width: "50%" }}
-                        type="text"
-                        name="email"
-                        onChange={onInputCHange}
-                        placeholder={item.email}
-                      />
-                      <input
-                        style={{ width: "50%" }}
-                        type="number"
-                        name="phoneNumber"
-                        onChange={onInputCHange}
-                        placeholder={item.phoneNumber}
-                      />
-                    </>
-                  );
-                })}
+                <>
+                  <input
+                  style={{
+                    width: "50%"
+                  }}
+                    type="text"
+                    className={`form-control ${validationGroupName}  form-control-lg`}
+                    id="groupName"
+                    placeholder="Group name"
+                    onChange={onInputCHange}
+                    name="groupName"
+                    value={formValues.groupName}
+                    minLength={3}
+                  />
+                  <input
+                    style={{
+                      width: "50%",
+                    }}
+                    type="text"
+                    id="firstName"
+                    name="name"
+                    value={formValues.name}
+                    className={`form-control ${validationName} form-control-lg`}
+                    placeholder="name"
+                    onChange={onInputCHange}
+                    minLength={1}
+                  />
+                  <input
+                    style={{
+                      width: "50%",
+                    }}
+                    type="text"
+                    id="lastName"
+                    className={`form-control ${validationLastName} form-control-lg`}
+                    placeholder="Last name"
+                    onChange={onInputCHange}
+                    name="lastName"
+                    value={formValues.lastName}
+                    minLength={1}
+                  />
+                  <input
+                    style={{
+                      width: "50%",
+                    }}
+                    type="email"
+                    id="emailAddress"
+                    className={`form-control ${validationEmail} form-control-lg`}
+                    placeholder="Email"
+                    onChange={onInputCHange}
+                    name="email"
+                    value={formValues.email}
+                    minLength={4}
+                  />
+                  <input
+                    style={{
+                      width: "50%",
+                    }}
+                    type="number"
+                    id="phoneNumber"
+                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                    placeholder="Phone number"
+                    onChange={onInputCHange}
+                    name="phoneNumber"
+                    value={formValues.phoneNumber}
+                    creditCardMaxLength={15}
+                    minLength={5}
+                  />
+                </>
               </div>
             )}
 
