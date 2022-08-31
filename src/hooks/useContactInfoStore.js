@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import devitrackApi from "../apis/devitrackApi";
 import {
   onAddNewContact,
   onUpdateContact,
@@ -11,18 +12,32 @@ export const useContactInfoStore = () => {
   
 
   const startSavingContactInfo = async (userInfoSaved) => {
-    dispatch(onAddNewContact({ ...userInfoSaved, _id: new Date().getTime() }));
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ ...userInfoSaved})
-    );
+
+    dispatch(onAddNewContact({ ...userInfoSaved}));
+
+
+    try {
+        
+      const { data } = await devitrackApi.post('/auth/new', {...userInfoSaved})
+      console.log({ data })
+      
+      localStorage.setItem(
+        "user",
+        JSON.stringify( data.user )
+      );
+  
+    } catch (error) {
+      console.log({ error })
+    }
   };
 
-  const startUpdatingContactInfo = async (userInfoSaved) => {
-    dispatch(onUpdateContact({...userInfoSaved}));
-    
-    localStorage.setItem("user", JSON.stringify({...userInfoSaved}))
-    
+  const startUpdatingContactInfo = async (userInfoEditedSaved) => {
+    dispatch(onUpdateContact({ ...userInfoEditedSaved}));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ ...userInfoEditedSaved})
+    );
+        
   };
 
   const checking = localStorage.getItem("user");
