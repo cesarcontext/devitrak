@@ -2,7 +2,9 @@ import React from "react";
 
 export const EventScheduled = () => {
   return (
-    <div className="event-schedule-container">
+    <div className="event-schedule-container" style={{
+      marginTop: "5%"
+    }}>
       <div>
         <h2>Event Schedule</h2>
       </div>
@@ -13,7 +15,7 @@ export const EventScheduled = () => {
       </div>
       <div>
         <div>
-          <img src={require("../image/event-scheduled-img.jpg")} />
+          <img src={require("../image/event-scheduled-img.jpg")} alt="event-scheduled" />
         </div>
       </div>
       <div>
