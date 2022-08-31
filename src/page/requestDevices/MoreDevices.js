@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { PaymentInfo } from "../../components/PaymentInfo";
+import React, { useState, useMemo } from "react";
+import Swal from "sweetalert2";
+import { scrollUp } from "../../helper/ScrollUp";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { usePaymentStore } from "../../hooks/usePaymentStore";
 import { useUiStore } from "../../hooks/useUiStore";
 import { ConfirmationModal } from "../../ui/ConfirmationModal";
-
-
 
 const editInfoSubmitted = {
   cardName: "",
@@ -26,13 +25,6 @@ export const MoreDevices = () => {
     handleResetDevice,
   } = useDeviceCount();
 
-  const {
-    validationExpirationDateMM,
-    validationExpirationDateYY,
-    validationZip,
-    validationCountry,
-  } = PaymentInfo;
-
   const { userParseStored } = useContactInfoStore();
   const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
   const { openModal } = useUiStore();
@@ -40,6 +32,7 @@ export const MoreDevices = () => {
   const [editInfoValue, setEditInfoValue] = useState(true);
 
   const [editFormValues, setEditFormValues] = useState(editInfoSubmitted);
+
 
   const onInputChange = ({ target }) => {
     setEditFormValues({
@@ -54,6 +47,111 @@ export const MoreDevices = () => {
     setEditInfoValue(!editInfoValue);
   };
 
+  const validationCardName = useMemo(() => {
+    return editFormValues.cardName.length > 2  ? "" : "is-invalid";
+  }, [editFormValues.cardName]);
+
+  const validationCardNumber = useMemo(() => {
+    return editFormValues.cardNumber.length > 12 &&
+    editFormValues.cardNumber.match(
+      /^\d+$/
+    )? "" : "is-invalid";
+  }, [editFormValues.cardNumber]);
+
+  const validationExpirationDateMM = useMemo(() => {
+    if (
+      (editFormValues.mm < new Date().getMonth() + 1 &&
+      editFormValues.yy <= new Date().getFullYear().toString()) ||
+      editFormValues.mm > 12
+    ) {
+      return "is-invalid";
+    }
+  }, [editFormValues.mm, editFormValues.yy]);
+
+  const validationExpirationDateYY = useMemo(() => {
+    if (editFormValues.yy.valueOf() < new Date().getFullYear().toString()) {
+      return "is-invalid";
+    }
+  }, [editFormValues.yy]);
+
+  const validationCvv = useMemo(() => {
+    return editFormValues.cvv.length > 2 ? "" : "is-invalid";
+  }, [editFormValues.cvv]);
+
+  const validationZip = useMemo(() => {
+    return editFormValues.zip.length > 0 ? "" : "is-invalid";
+  }, [editFormValues.zip]);
+
+  const validationCountry = useMemo(() => {
+    return editFormValues.country.length > 0 ? "" : "is-invalid";
+  }, [editFormValues.country]);
+
+  const creditCard = editFormValues.cardNumber;
+
+  const creditCardLength = () => {
+    const result = creditCard.slice(0, 2);
+
+    switch (result) {
+      case "34":
+        return 15;
+      case "37":
+        return 15;
+      case "36":
+        return 19;
+      case "54":
+        return 19;
+      case "60":
+        return 19;
+      case "51":
+        return 16;
+      case "55":
+        return 16;
+      case "22":
+        return 16;
+      case "27":
+        return 16;
+      case "40":
+        return 16;
+      case "41":
+        return 16;
+      case "42":
+        return 16;
+      case "43":
+        return 16;
+      case "44":
+        return 16;
+      case "45":
+        return 16;
+      case "46":
+        return 16;
+      case "47":
+        return 16;
+      case "48":
+        return 16;
+      case "49":
+        return 16;
+
+      default:
+        return 19;
+    }
+  };
+
+  const maxLengthAttribute = creditCardLength(creditCard);
+
+  const CVVLength = () => {
+    const result = creditCard.slice(0, 2);
+
+    switch (result) {
+      case "34":
+        return 4;
+      case "37":
+        return 4;
+      default:
+        return 3;
+    }
+  };
+
+  const CVVMaxLength = CVVLength(creditCard);
 
   const onSubmitEditPaymentInfo = async (event) => {
     event.preventDefault();
@@ -61,7 +159,75 @@ export const MoreDevices = () => {
     if(editInfoValue === true){
       return paymentInfoParse
     }
+
+    if (validationExpirationDateMM === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Please provide a valid expiration date",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationExpirationDateYY === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Please provide a valid expiration date",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationCardName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Card name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationCardNumber === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Card number format is not valid",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationCvv === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "CVV must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationZip === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Zip code must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationCountry === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Country must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+
+    if (validationCvv === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Group Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+
     await startSavingPaymentInfo(editFormValues);
+    scrollUp()
     openModal();
   };
 
@@ -194,7 +360,7 @@ export const MoreDevices = () => {
                                     disabled={true}
                                     type="tel"
                                     id="phoneNumber"
-                                    className={`form-control  form-control-lg phoneNumber`}
+                                    className={`form-control  form-control-lg`}
                                     placeholder={user.phoneNumber}
                                     name="phoneNumber"
                                     value={user.phoneNumber}
@@ -240,7 +406,7 @@ export const MoreDevices = () => {
                                     <input
                                       disabled={editInfoValue}
                                       type="text"
-                                      className="form-control  form-control-lg"
+                                      className={`form-control ${ validationCardName} form-control-lg`}
                                       placeholder="Card name"
                                       name="cardName"
                                       value={item.cardName}
@@ -251,8 +417,7 @@ export const MoreDevices = () => {
                                   <div className="form-outline">
                                     <input
                                       disabled={editInfoValue}
-                                      type="text"
-                                      className="form-control form-control-lg cardNumber"
+                                      className={`form-control ${ validationCardNumber} form-control-lg`}
                                       placeholder="Card number"
                                       name="cardNumber"
                                       value={item.cardNumber}
@@ -351,13 +516,13 @@ export const MoreDevices = () => {
                               <div className="form-outline">
                                 <input
                                   disabled={editInfoValue}
-                                  type="text"
+                                  type="tel"
                                   className="form-control form-control-lg cardNumber"
                                   placeholder="Card number"
                                   onChange={onInputChange}
                                   name="cardNumber"
                                   value={editInfoValue.cardNumber}
-                                  maxLength={19}
+                                  maxLength={maxLengthAttribute}
                                   minLength={13}
                                 />
                               </div>
@@ -371,7 +536,7 @@ export const MoreDevices = () => {
                                 <div className="form-outline">
                                   <input
                                     disabled={editInfoValue}
-                                    type="number"
+                                    type="tel"
                                     className={`form-control ${validationExpirationDateMM}  form-control-lg`}
                                     placeholder="MM"
                                     onChange={onInputChange}
@@ -388,7 +553,7 @@ export const MoreDevices = () => {
                                 <div className="form-outline">
                                   <input
                                     disabled={editInfoValue}
-                                    type="number"
+                                    type="tel"
                                     className={`form-control ${validationExpirationDateYY}  form-control-lg`}
                                     placeholder="YYYY"
                                     onChange={onInputChange}
@@ -405,13 +570,13 @@ export const MoreDevices = () => {
                               <div className="form-outline">
                                 <input
                                   disabled={editInfoValue}
-                                  type="text"
+                                  type="tel"
                                   className="form-control  form-control-lg"
                                   placeholder="CVV"
                                   onChange={onInputChange}
                                   name="cvv"
                                   value={editInfoValue.cvv}
-                                  maxLength={4}
+                                  maxLength={CVVMaxLength}
                                   minLength={3}
                                 />
                               </div>
@@ -421,7 +586,7 @@ export const MoreDevices = () => {
                                 <input
                                   disabled={editInfoValue}
                                   id="zip"
-                                  type="text"
+                                  type="tel"
                                   className={`form-control ${validationZip}  form-control-lg`}
                                   placeholder="Zip"
                                   onChange={onInputChange}
