@@ -4,6 +4,7 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { scrollUp } from "../helper/ScrollUp";
 
 export const Forms = () => {
   const { openModal } = useUiStore();
@@ -41,7 +42,7 @@ export const Forms = () => {
     initalPaymentFormValues
   );
 
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  // const [formSubmitted, setFormSubmitted] = useState(false);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -59,15 +60,15 @@ export const Forms = () => {
 
   const validationGroupName = useMemo(() => {
     return formValues.groupName.length > 2 ? "" : "is-invalid";
-  }, [formValues.groupName, formSubmitted]);
+  }, [formValues.groupName]);
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
-  }, [formValues.name, formSubmitted]);
+  }, [formValues.name]);
 
   const validationLastName = useMemo(() => {
     return formValues.lastName.length > 0 ? "" : "is-invalid";
-  }, [formValues.lastName, formSubmitted]);
+  }, [formValues.lastName]);
 
   const validationEmail = useMemo(() => {
     return formValues.email.length > 3 &&
@@ -78,22 +79,22 @@ export const Forms = () => {
         )
       ? ""
       : "is-invalid";
-  }, [formValues.email, formSubmitted]);
+  }, [formValues.email]);
 
   const validationPhoneNumber = useMemo(() => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
-  }, [formValues.phoneNumber, formSubmitted]);
+  }, [formValues.phoneNumber]);
 
   const validationCardName = useMemo(() => {
     return paymentFormValues.cardName.length > 2  ? "" : "is-invalid";
-  }, [paymentFormValues.cardName, formSubmitted]);
+  }, [paymentFormValues.cardName]);
 
   const validationCardNumber = useMemo(() => {
     return paymentFormValues.cardNumber.length > 12 &&
     paymentFormValues.cardNumber.match(
       /^\d+$/
     )? "" : "is-invalid";
-  }, [paymentFormValues.cardNumber, formSubmitted]);
+  }, [paymentFormValues.cardNumber]);
 
   const validationExpirationDateMM = useMemo(() => {
     if (
@@ -102,25 +103,25 @@ export const Forms = () => {
     ) {
       return "is-invalid";
     }
-  }, [paymentFormValues.mm, paymentFormValues.yy, formSubmitted]);
+  }, [paymentFormValues.mm, paymentFormValues.yy]);
 
   const validationExpirationDateYY = useMemo(() => {
     if (paymentFormValues.yy.valueOf() < new Date().getFullYear().toString()) {
       return "is-invalid";
     }
-  }, [paymentFormValues.yy, formSubmitted]);
+  }, [paymentFormValues.yy]);
 
   const validationCvv = useMemo(() => {
     return paymentFormValues.cvv.length > 2 ? "" : "is-invalid";
-  }, [paymentFormValues.cvv, formSubmitted]);
+  }, [paymentFormValues.cvv]);
 
   const validationZip = useMemo(() => {
     return paymentFormValues.zip.length > 0 ? "" : "is-invalid";
-  }, [paymentFormValues.zip, formSubmitted]);
+  }, [paymentFormValues.zip]);
 
   const validationCountry = useMemo(() => {
     return paymentFormValues.country.length > 0 ? "" : "is-invalid";
-  }, [paymentFormValues.country, formSubmitted]);
+  }, [paymentFormValues.country]);
 
   const creditCard = paymentFormValues.cardNumber;
 
@@ -169,7 +170,6 @@ export const Forms = () => {
 
       default:
         return 19;
-        break;
     }
   };
 
@@ -188,9 +188,10 @@ export const Forms = () => {
     }
   };
 
+
+
   const CVVMaxLength = CVVLength(creditCard);
 
-  console.log({paymentFormValues})
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
@@ -300,9 +301,10 @@ export const Forms = () => {
       });
     }
 
-    setFormSubmitted(true);
+    // setFormSubmitted(true);
     await startSavingContactInfo(formValues);
     await startSavingPaymentInfo(paymentFormValues);
+    await scrollUp()
     openModal();
   };
 
@@ -441,7 +443,7 @@ export const Forms = () => {
                               onChange={onInputCHange}
                               name="phoneNumber"
                               value={formValues.phoneNumber}
-                              creditCardMaxLength={15}
+                              maxLength={15}
                               minLength={5}
                             />
                           </div>
@@ -484,7 +486,6 @@ export const Forms = () => {
                         <div className="col-md-10 m-4">
                           <div className="form-outline">
                             <input
-                            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
                               type="tel"
                               className="form-control form-control-lg cardNumber"
                               placeholder="Card number"
