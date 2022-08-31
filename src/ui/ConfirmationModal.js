@@ -7,7 +7,7 @@ import { useUiStore } from "../hooks/useUiStore";
 
 const customStyles = {
   content: {
-    // top: "50%",
+    top: "3%",
     left: "50%",
     // right: "auto",
     // bottom: "auto",
@@ -36,10 +36,11 @@ export const ConfirmationModal = () => {
 
   return (
     <div
-      style={{
-        width: "80%",
-        border: "solid 1px #212529",
-      }}>
+      // style={{
+      //   width: "80%",
+      //   border: "solid 1px #212529",
+      // }}
+      >
       <Modal
         isOpen={isModalOpen}
         onRequestClose={onCloseModal}
