@@ -15,7 +15,7 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { startSavingContactInfo } = useContactInfoStore();
+  const { startUpdatingContactInfo } = useContactInfoStore();
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -102,13 +102,14 @@ export const MyProfile = () => {
       });
     }
 
-    await startSavingContactInfo(formValues); //function must be changed for update instead of create
+    await startUpdatingContactInfo({ groupName: formValues.groupName, name: formValues.name, lastName: formValues.lastName, email: formValues.email, phoneNumber: formValues.phoneNumber });
     Swal.fire({
       title: "",
       text: "Your information was updated successfully",
       icon: "success",
       confirmButtonColor: "rgb(30, 115, 190)",
     });
+    localStorage.setItem("user", JSON.stringify(formValues))
     setShowInfo(false);
   };
 
@@ -214,8 +215,8 @@ export const MyProfile = () => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
+                          fillRule="evenodd"
+                          clipRule="evenodd"
                           d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
                           fill="currentColor"
                         />
@@ -287,7 +288,7 @@ export const MyProfile = () => {
                       width: "50%",
                     }}
                     type="text"
-                    id="firstName"
+                    id="name"
                     name="name"
                     value={formValues.name}
                     className={`form-control ${validationName} form-control-lg`}
@@ -325,14 +326,14 @@ export const MyProfile = () => {
                     style={{
                       width: "50%",
                     }}
-                    type="number"
+                    type="tel"
                     id="phoneNumber"
                     className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
                     placeholder="Phone number"
                     onChange={onInputCHange}
                     name="phoneNumber"
                     value={formValues.phoneNumber}
-                    creditCardMaxLength={15}
+                    maxLength={15}
                     minLength={5}
                   />
                 </>
