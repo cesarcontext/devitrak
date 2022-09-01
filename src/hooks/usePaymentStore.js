@@ -8,27 +8,29 @@ export const usePaymentStore = () => {
 
   const startSavingPaymentInfo = async (paymentInfoSaved) => {
     dispatch(
-      onAddNewPaymentInfo({ ...paymentInfoSaved, _id: new Date().getTime() })
+      onAddNewPaymentInfo({ ...paymentInfoSaved, id: new Date().getTime() })
     );
+
+    const paymentRecord = [];
     
-    const paymentRecord = []
-    paymentRecord.push({...paymentInfoSaved})
-    console.log("record", paymentRecord )
+    paymentRecord.push({ ...paymentInfoSaved });
 
     localStorage.setItem(
       "paymentInfo",
-      JSON.stringify({ ...paymentInfoSaved})
+      JSON.stringify({ ...paymentInfoSaved })
     );
 
-    localStorage.setItem('paymentRecord', JSON.stringify(paymentRecord))
+    localStorage.setItem("paymentRecord", JSON.stringify(paymentRecord));
   };
 
-  const paymentRecordGotten = localStorage.getItem('paymentRecord')
-  const paymentRecordParse = JSON.parse( paymentRecordGotten )
+  
+  const paymentRecordGotten = localStorage.getItem("paymentRecord");
 
-  const paymentInfoStored = localStorage.getItem('paymentInfo')
+  const paymentRecordParse = JSON.parse(paymentRecordGotten);
 
-  const paymentInfoParse = [JSON.parse( paymentInfoStored )]
+  const paymentInfoStored = localStorage.getItem("paymentInfo");
+
+  const paymentInfoParse = [JSON.parse(paymentInfoStored)];
 
   return {
     //* Propiedades
