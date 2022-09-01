@@ -1,13 +1,12 @@
-import { saveAs } from "file-saver";
 import React from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
 export const QRCodeConfirmation = () => {
-  const { user } = useContactInfoStore();
+  const { users } = useContactInfoStore();
 
-  const QRCodeGenerated = user.map((item) => {
+  const QRCodeGenerated = users.map((item) => {
     return (
       <QRCode
         fgColor="#000"
@@ -62,14 +61,13 @@ export const QRCodeConfirmation = () => {
       </div>
       <div className="qr-code-div" style={{ margin: "40px" }}>
         <div className="qr-code">{QRCodeGenerated}</div>
-        {/* <button onClick={downloadQRCode}>Download your QR Code</button> */}{" "}
-        {/** button to download qr code */}
+
       </div>
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
         <span>
-          {user.map((item) => {
-            return <div key={item._id}>{item.phoneNumber.split("")}</div>;
+          {users.map((item) => {
+            return <div key={item.id}>{item.id}</div>;
           })}
         </span>
       </div>
