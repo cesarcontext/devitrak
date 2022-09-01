@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const user = {
-    _id: "",
+const users = {
+    id: "",
     groupName: "",
     name: "",
     email: "",
@@ -11,19 +11,19 @@ const user = {
 const contactInfoSlice = createSlice({
   name: "contactInfo",
   initialState: {
-    user: [ user ],
+    users: [ users ],
   },
   reducers: {
     onAddNewContact: (state, { payload }) => {
-      state.user.push( payload );
-      state.user.shift();
+      state.users.push( payload );
+      state.users.shift();
     },
     onUpdateContact: (state, { payload }) => {
-      state.user = state.user.map((contact) => {
-        if (contact._id === payload._id) {
+      state.users = state.users.map((user) => {
+        if (user.id === payload._id) {
           return payload;
         }
-        return contact;
+        return users;
       });
     },
   },
