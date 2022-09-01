@@ -9,9 +9,6 @@ const customStyles = {
   content: {
     top: "3%",
     left: "50%",
-    // right: "auto",
-    // bottom: "auto",
-    // marginRight: "-50%",
     transform: "translate(-50%)",
     width: "35%",
     height: "85%",
@@ -24,7 +21,7 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
-  const { user } = useContactInfoStore();
+  const { users } = useContactInfoStore();
   const { paymentState } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
@@ -95,7 +92,7 @@ export const ConfirmationModal = () => {
           >
             <div className="card-body">
               <div className="card-text">
-                {user.map((item) => {
+                {users.map((item) => {
                   return (
                     <div key={item.id}>
                       <div>
@@ -127,13 +124,11 @@ export const ConfirmationModal = () => {
               }}
             >
               <div className="card-body">
-                <p className="card-text">
+                <div className="card-text">
                   {
-                    //for(let item of paymentState.length -)
-
                     lastElement.map((item) => {
                       return (
-                        <div key={item._id}>
+                        <div key={item.id}>
                           <div>
                             <span>Card name: {item.cardName}</span>
                           </div>
@@ -158,7 +153,7 @@ export const ConfirmationModal = () => {
                       );
                     })
                   }
-                </p>
+                </div>
               </div>
             </div>
           </div>
