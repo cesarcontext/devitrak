@@ -1,6 +1,5 @@
 import React from 'react'
 import { useContactInfoStore } from '../hooks/useContactInfoStore';
-import { MyProfile } from '../page/MyProfile';
 
 export const ContactInfoProfile = () => {
 
