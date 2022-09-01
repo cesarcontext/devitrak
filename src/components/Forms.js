@@ -188,8 +188,6 @@ export const Forms = () => {
     }
   };
 
-
-
   const CVVMaxLength = CVVLength(creditCard);
 
   const handleOnSubmit = async (event) => {
