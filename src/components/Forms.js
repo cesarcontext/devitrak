@@ -7,8 +7,8 @@ import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { scrollUp } from "../helper/ScrollUp";
 
 export const Forms = () => {
-  const { openModal } = useUiStore();
-  const { startSavingContactInfo } = useContactInfoStore();
+  // const { openModal } = useUiStore();
+  const { startSavingContactInfo, startVerificationContactInfoBeforeSaveIt} = useContactInfoStore();
   const { startSavingPaymentInfo } = usePaymentStore();
 
   const {
@@ -300,11 +300,14 @@ export const Forms = () => {
     }
 
     // setFormSubmitted(true);
-    await startSavingContactInfo(formValues);
+    await startVerificationContactInfoBeforeSaveIt( formValues )
+    // await startSavingContactInfo(formValues);
     await startSavingPaymentInfo(paymentFormValues);
-    await scrollUp()
-    openModal();
+    scrollUp()
+    // openModal();
+
   };
+
 
   return (
     <div className="container">
