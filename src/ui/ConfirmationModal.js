@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
@@ -21,7 +21,7 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
-  const { users } = useContactInfoStore();
+  const { users, startSavingContactInfo } = useContactInfoStore();
   const { paymentState } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
@@ -31,13 +31,54 @@ export const ConfirmationModal = () => {
 
   const lastElement = [paymentState.at(-1)];
 
+  let groupName;
+  let name;
+  let lastName;
+  let email;
+  let phoneNumber;
+
+  users.map((item) => {
+    return (
+      <>
+        {(groupName = item.groupName)}
+        {(name = item.name)}
+        {(lastName = item.lastName)}
+        {(email = item.email)}
+        {(phoneNumber = item.phoneNumber)}
+      </>
+    );
+  });
+
+  const inputRefGroupName = useRef("");
+  const inputRefName = useRef("");
+  const inputRefLastName = useRef("");
+  const inputRefEmail = useRef("");
+  const inputRefPhoneNumber = useRef("");
+
+
+  const check = {
+    groupName: inputRefGroupName.current.value,
+    name: inputRefName.current.value,
+    lastName: inputRefLastName.current.value,
+    email: inputRefEmail.current.value,
+    phoneNumber: inputRefPhoneNumber.current.value,
+  }
+
+  console.log({check})
+  const submitInfoToSaveInDataBase = () => {
+    startSavingContactInfo({
+      groupName: inputRefGroupName.current.value,
+      name: inputRefName.current.value,
+      lastName: inputRefLastName.current.value,
+      email: inputRefEmail.current.value,
+      phoneNumber: inputRefPhoneNumber.current.value,
+    })
+
+    closeModal();
+  };
+
   return (
-    <div
-      // style={{
-      //   width: "80%",
-      //   border: "solid 1px #212529",
-      // }}
-      >
+    <div>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={onCloseModal}
@@ -92,20 +133,43 @@ export const ConfirmationModal = () => {
           >
             <div className="card-body">
               <div className="card-text">
-                {users.map((item) => {
+                {users.map((item, index) => {
                   return (
-                    <div key={item.id}>
-                      <div>
-                        <span>Name: {item.name}</span>
+                    <div key={index}>
+                       <div>
+                        <span>
+                          Name:
+                          {/* {item.name} */}
+                        </span>
+                        <input defaultValue={groupName} ref={inputRefGroupName} />
                       </div>
                       <div>
-                        <span>Last name: {item.lastName}</span>
+                        <span>
+                          Name:
+                          {/* {item.name} */}
+                        </span>
+                        <input defaultValue={name} ref={inputRefName} />
                       </div>
                       <div>
-                        <span>Email: {item.email}</span>
+                        <span>
+                          Last name:
+                          {/* {item.lastName} */}
+                        </span>
+                        <input defaultValue={lastName} ref={inputRefLastName} />
                       </div>
                       <div>
-                        <span>Phone number: {item.phoneNumber}</span>
+                        <span>
+                          Email:
+                          {/* {item.email} */}
+                        </span>
+                        <input defaultValue={email} ref={inputRefEmail} />
+                      </div>
+                      <div>
+                        <span>
+                          Phone number:
+                          {/* {item.phoneNumber} */}
+                        </span>
+                        <input defaultValue={phoneNumber} ref={inputRefPhoneNumber} />
                       </div>
                     </div>
                   );
@@ -125,34 +189,32 @@ export const ConfirmationModal = () => {
             >
               <div className="card-body">
                 <div className="card-text">
-                  {
-                    lastElement.map((item) => {
-                      return (
-                        <div key={item.id}>
-                          <div>
-                            <span>Card name: {item.cardName}</span>
-                          </div>
-                          <div>
-                            <span>Card number: {item.cardNumber}</span>
-                          </div>
-                          <div>
-                            <span>
-                              Expiration date: {item.mm} / {item.yy}
-                            </span>
-                          </div>
-                          <div>
-                            <span>CVV: {item.cvv}</span>
-                          </div>
-                          <div>
-                            <span>Zip code: {item.zip}</span>
-                          </div>
-                          <div>
-                            <span>Country: {item.country}</span>
-                          </div>
+                  {lastElement.map((item) => {
+                    return (
+                      <div key={item.id}>
+                        <div>
+                          <span>Card name: {item.cardName}</span>
                         </div>
-                      );
-                    })
-                  }
+                        <div>
+                          <span>Card number: {item.cardNumber}</span>
+                        </div>
+                        <div>
+                          <span>
+                            Expiration date: {item.mm} / {item.yy}
+                          </span>
+                        </div>
+                        <div>
+                          <span>CVV: {item.cvv}</span>
+                        </div>
+                        <div>
+                          <span>Zip code: {item.zip}</span>
+                        </div>
+                        <div>
+                          <span>Country: {item.country}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -211,7 +273,7 @@ export const ConfirmationModal = () => {
                   fontSize: "10px",
                   width: "100%",
                 }}
-                onClick={closeModal}
+                onClick={submitInfoToSaveInDataBase}
               >
                 AUTORIZED CARD & PROCEED
               </button>
