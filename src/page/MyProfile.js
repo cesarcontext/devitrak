@@ -15,7 +15,7 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { startUpdatingContactInfo } = useContactInfoStore();
+  const { startUpdatingContactInfo, startShowingData } = useContactInfoStore();
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -102,14 +102,14 @@ export const MyProfile = () => {
       });
     }
 
-    await startUpdatingContactInfo({ groupName: formValues.groupName, name: formValues.name, lastName: formValues.lastName, email: formValues.email, phoneNumber: formValues.phoneNumber });
-    Swal.fire({
-      title: "",
-      text: "Your information was updated successfully",
-      icon: "success",
-      confirmButtonColor: "rgb(30, 115, 190)",
-    });
-    localStorage.setItem("user", JSON.stringify(formValues))
+    await startUpdatingContactInfo(formValues); /**
+    {
+      groupName: formValues.groupName,
+      name: formValues.name,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      phoneNumber: formValues.phoneNumber,
+    } */
     setShowInfo(false);
   };
 
@@ -271,9 +271,9 @@ export const MyProfile = () => {
               >
                 <>
                   <input
-                  style={{
-                    width: "50%"
-                  }}
+                    style={{
+                      width: "50%",
+                    }}
                     type="text"
                     className={`form-control ${validationGroupName}  form-control-lg`}
                     id="groupName"
