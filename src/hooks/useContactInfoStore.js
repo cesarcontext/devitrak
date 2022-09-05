@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import devitrackApi from "../apis/devitrackApi";
 import {
@@ -10,17 +10,17 @@ import { useUiStore } from "./useUiStore";
 
 export const useContactInfoStore = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { users } = useSelector((state) => state.contactInfo);
   const { openModal, closeModal } = useUiStore();
 
-  const userInfo = {
-    groupName: users.groupName,
-    name: users.name,
-    lastName: users.lastName,
-    email: users.email,
-    phoneNumber: users.phoneNumber,
-  };
+  // const userInfo = {
+  //   groupName: users.groupName,
+  //   name: users.name,
+  //   lastName: users.lastName,
+  //   email: users.email,
+  //   phoneNumber: users.phoneNumber,
+  // };
 
   const startVerificationContactInfoBeforeSaveIt = (userInfoSaved) => {
     dispatch(onAddNewContact({ ...userInfoSaved }));
@@ -29,19 +29,16 @@ export const useContactInfoStore = () => {
     openModal();
   };
 
-  const startSavingContactInfo = async (user) => {
+  const startSavingContactInfo = async (userInfoSaved) => {
     try {
       const { data } = await devitrackApi.post("/auth/new", {
-        ...user,
+        ...userInfoSaved,
       });
-      console.log({ data });
 
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("id", JSON.stringify(data.user.id));
 
-      dispatch(onAddNewContact({ ...user, id: data.user.id }));
-
-      console.log(data.user.id);
+      dispatch(onAddNewContact({ ...userInfoSaved, id: data.user.id }));
 
       if (data) {
         Swal.fire({
@@ -49,7 +46,7 @@ export const useContactInfoStore = () => {
           width: 600,
           padding: "3em",
           text: `REFERENCE NUMBER: ${data.user.id}`,
-          icon:"success",
+          icon: "success",
           color: "#rgb(30, 115, 190)",
           background: "#fff",
           confirmButtonColor: "rgb(30, 115, 190)",
@@ -60,27 +57,30 @@ export const useContactInfoStore = () => {
             no-repeat
           `,
         });
+
+        return data;
       }
     } catch (error) {
       console.log({ error });
-      <Link to="/">
-        {Swal.fire({
-          title: "Something went wrong",
-          width: 600,
-          padding: "3em",
-          text: error.response.data.msg,
-          icon: "error",
-          color: "rgb(30, 115, 190)",
-          background: "#fff",
-          confirmButtonColor: "rgb(30, 115, 190)",
-          backdrop: `
+
+      Swal.fire({
+        title: "Something went wrong",
+        width: 600,
+        padding: "3em",
+        text: error.response.data.msg,
+        icon: "error",
+        color: "rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
           rgb(30, 115, 190)
             url("../image/logo.jpg")
             left top
             no-repeat
           `,
-        })}
-      </Link>;
+      });
+
+      navigate("/");
 
       closeModal();
     }
@@ -89,25 +89,44 @@ export const useContactInfoStore = () => {
   const checkingId = localStorage.getItem("id");
   const Id = JSON.parse(checkingId);
 
+  const startShowingData = () => {
+    try {
+      const { data } = devitrackApi.get(`/auth/${Id}`);
+
+      console.log("data show", data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const startUpdatingContactInfo = async (userInfoSaved) => {
-    dispatch(onUpdateContact({ userInfoSaved, id: Id }));
+    try {
+      const { data } = devitrackApi.put(`/auth/${Id}`, { ...userInfoSaved });
 
-    localStorage.setItem("user", JSON.stringify({ userInfoSaved, id: Id }));
+      dispatch(onUpdateContact({ ...userInfoSaved }));
 
-    const { data } = devitrackApi.put(`/auth/${Id}`, userInfoSaved);
+      localStorage.setItem("user", JSON.stringify({ ...userInfoSaved }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const checking = localStorage.getItem("user");
+  console.log({ checking });
   const userParseStored = [JSON.parse(checking)];
+  console.log({ userParseStored });
 
   return {
     //* Propiedades
     users,
     userParseStored,
+    Id,
 
     //* Métodos
     startVerificationContactInfoBeforeSaveIt,
     startSavingContactInfo,
     startUpdatingContactInfo,
+    startShowingData,
   };
 };
