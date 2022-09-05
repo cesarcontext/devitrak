@@ -3,8 +3,6 @@ import { getEnvVariables } from '../helper/getEnvVariables'
 
 const { REACT_APP_URL } = getEnvVariables()
 
-console.log( REACT_APP_URL )
-
 const devitrackApi = axios.create({
     baseURL: REACT_APP_URL
 });
