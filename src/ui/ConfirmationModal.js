@@ -22,14 +22,13 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
   const { users, startSavingContactInfo } = useContactInfoStore();
-  const { paymentState } = usePaymentStore();
+  const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
+
 
   const onCloseModal = () => {
     closeModal();
   };
-
-  const lastElement = [paymentState.at(-1)];
 
   let groupName;
   let name;
@@ -49,30 +48,59 @@ export const ConfirmationModal = () => {
     );
   });
 
-  const inputRefGroupName = useRef("");
-  const inputRefName = useRef("");
-  const inputRefLastName = useRef("");
-  const inputRefEmail = useRef("");
-  const inputRefPhoneNumber = useRef("");
+  let cardName;
+  let cardNumber;
+  let mm;
+  let yy;
+  let cvv;
+  let zip;
+  let country;
 
+  console.log({ paymentInfoParse })
+  paymentInfoParse.map((item) => {
+    return (
+      <>
+        {(cardName = item.cardName)}
+        {(cardNumber = item.cardNumber)}
+        {(mm = item.mm)}
+        {(yy = item.yy)}
+        {(cvv = item.cvv)}
+        {(zip = item.zip)}
+        {(country = item.country)}
+      </>
+    );
+  });
 
   const check = {
-    groupName: inputRefGroupName.current.value,
-    name: inputRefName.current.value,
-    lastName: inputRefLastName.current.value,
-    email: inputRefEmail.current.value,
-    phoneNumber: inputRefPhoneNumber.current.value,
+    cardName,
+      cardNumber,
+      mm,
+      yy ,
+      cvv,
+      zip,
+      country,
   }
+  console.log({ check })
+  
+  const submitInfoToSaveInDataBase = async () => {
 
-  console.log({check})
-  const submitInfoToSaveInDataBase = () => {
-    startSavingContactInfo({
-      groupName: inputRefGroupName.current.value,
-      name: inputRefName.current.value,
-      lastName: inputRefLastName.current.value,
-      email: inputRefEmail.current.value,
-      phoneNumber: inputRefPhoneNumber.current.value,
-    })
+    await startSavingContactInfo({
+      groupName,
+      name,
+      lastName,
+      email,
+      phoneNumber,
+    });
+
+    await startSavingPaymentInfo({
+      cardName,
+      cardNumber,
+      mm,
+      yy,
+      cvv,
+      zip,
+      country,
+    });
 
     closeModal();
   };
@@ -133,47 +161,30 @@ export const ConfirmationModal = () => {
           >
             <div className="card-body">
               <div className="card-text">
-                {users.map((item, index) => {
-                  return (
-                    <div key={index}>
-                       <div>
-                        <span>
-                          Name:
-                          {/* {item.name} */}
-                        </span>
-                        <input defaultValue={groupName} ref={inputRefGroupName} />
-                      </div>
-                      <div>
-                        <span>
-                          Name:
-                          {/* {item.name} */}
-                        </span>
-                        <input defaultValue={name} ref={inputRefName} />
-                      </div>
-                      <div>
-                        <span>
-                          Last name:
-                          {/* {item.lastName} */}
-                        </span>
-                        <input defaultValue={lastName} ref={inputRefLastName} />
-                      </div>
-                      <div>
-                        <span>
-                          Email:
-                          {/* {item.email} */}
-                        </span>
-                        <input defaultValue={email} ref={inputRefEmail} />
-                      </div>
-                      <div>
-                        <span>
-                          Phone number:
-                          {/* {item.phoneNumber} */}
-                        </span>
-                        <input defaultValue={phoneNumber} ref={inputRefPhoneNumber} />
-                      </div>
-                    </div>
-                  );
-                })}
+                <div>
+                  <div>
+                    <span>Group name:   </span>
+                    {groupName}
+                  </div>
+                  <div>
+                    <span>Name:   </span>
+                    {name}
+                  </div>
+                  <div>
+                    <span>Last name:    </span>
+                    {lastName}
+                  </div>
+                  <div>
+                    <span>Email:    </span>
+                    {email}
+                  </div>
+                  <div>
+                    <span>Phone number:   </span>
+                    {phoneNumber}
+
+                  </div>
+                </div>
+             
               </div>
             </div>
           </div>
@@ -189,32 +200,42 @@ export const ConfirmationModal = () => {
             >
               <div className="card-body">
                 <div className="card-text">
-                  {lastElement.map((item) => {
-                    return (
-                      <div key={item.id}>
-                        <div>
-                          <span>Card name: {item.cardName}</span>
-                        </div>
-                        <div>
-                          <span>Card number: {item.cardNumber}</span>
-                        </div>
-                        <div>
-                          <span>
-                            Expiration date: {item.mm} / {item.yy}
-                          </span>
-                        </div>
-                        <div>
-                          <span>CVV: {item.cvv}</span>
-                        </div>
-                        <div>
-                          <span>Zip code: {item.zip}</span>
-                        </div>
-                        <div>
-                          <span>Country: {item.country}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <div>
+                    <div>
+                      <span>
+                        Card name:
+                        {cardName}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        Card number:
+                         {cardNumber}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        Expiration date:{mm} / {yy}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        CVV: {cvv}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        Zip code: {zip}
+                      </span>
+                    </div>
+                    <div>
+                      <span>
+                        Country:
+                        {country}
+                      </span>
+                    </div>
+                  </div>
+                
                 </div>
               </div>
             </div>
