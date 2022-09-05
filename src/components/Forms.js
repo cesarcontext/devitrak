@@ -4,12 +4,11 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
-import { scrollUp } from "../helper/ScrollUp";
 
 export const Forms = () => {
-  // const { openModal } = useUiStore();
-  const { startSavingContactInfo, startVerificationContactInfoBeforeSaveIt} = useContactInfoStore();
-  const { startSavingPaymentInfo } = usePaymentStore();
+  const { openModal } = useUiStore();
+  const { startVerificationContactInfoBeforeSaveIt } = useContactInfoStore();
+  const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
 
   const {
     amountToDeposit,
@@ -58,9 +57,9 @@ export const Forms = () => {
     });
   };
 
-  const validationGroupName = useMemo(() => {
-    return formValues.groupName.length > 2 ? "" : "is-invalid";
-  }, [formValues.groupName]);
+  // const validationGroupName = useMemo(() => {
+  //   return formValues.groupName.length > 2 ? "" : "is-invalid";
+  // }, [formValues.groupName]);
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -86,14 +85,14 @@ export const Forms = () => {
   }, [formValues.phoneNumber]);
 
   const validationCardName = useMemo(() => {
-    return paymentFormValues.cardName.length > 2  ? "" : "is-invalid";
+    return paymentFormValues.cardName.length > 2 ? "" : "is-invalid";
   }, [paymentFormValues.cardName]);
 
   const validationCardNumber = useMemo(() => {
     return paymentFormValues.cardNumber.length > 12 &&
-    paymentFormValues.cardNumber.match(
-      /^\d+$/
-    )? "" : "is-invalid";
+      paymentFormValues.cardNumber.match(/^\d+$/)
+      ? ""
+      : "is-invalid";
   }, [paymentFormValues.cardNumber]);
 
   const validationExpirationDateMM = useMemo(() => {
@@ -193,14 +192,14 @@ export const Forms = () => {
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
-    if (validationGroupName === "is-invalid") {
-      return Swal.fire({
-        title: "",
-        text: "Group Name must be provided",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
-    }
+    // if (validationGroupName === "is-invalid") {
+    //   return Swal.fire({
+    //     title: "",
+    //     text: "Group Name must be provided",
+    //     icon: "error",
+    //     confirmButtonColor: "rgb(30, 115, 190)",
+    //   });
+    // }
     if (validationName === "is-invalid") {
       return Swal.fire({
         title: "",
@@ -299,15 +298,11 @@ export const Forms = () => {
       });
     }
 
-    // setFormSubmitted(true);
-    await startVerificationContactInfoBeforeSaveIt( formValues )
-    // await startSavingContactInfo(formValues);
-    await startSavingPaymentInfo(paymentFormValues);
-    scrollUp()
-    // openModal();
+    startVerificationContactInfoBeforeSaveIt(formValues);
+    startVerificationCreditCardInfoBeforeSaveIt(paymentFormValues);
+    openModal()
 
   };
-
 
   return (
     <div className="container">
@@ -380,7 +375,7 @@ export const Forms = () => {
                           <div className="form-outline datepicker w-100">
                             <input
                               type="text"
-                              className={`form-control ${validationGroupName}  form-control-lg`}
+                              className={`form-control form-control-lg`} //${validationGroupName}  
                               id="groupName"
                               placeholder="Group name"
                               onChange={onInputCHange}
