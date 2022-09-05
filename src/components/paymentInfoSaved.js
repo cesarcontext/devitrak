@@ -1,8 +1,7 @@
 import React from "react";
 
-export const userInfoSaved = ({ paymentState }) => {
-
-  const {cardName, cardNumber, mm, yy, cvv, zip, country} = paymentState
+export const userInfoSaved = ({ creditCardState }) => {
+  const { cardName, cardNumber, mm, yy, cvv, zip, country } = creditCardState;
 
   return (
     <div>
