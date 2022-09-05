@@ -20,11 +20,15 @@ const contactInfoSlice = createSlice({
     },
     onUpdateContact: (state, { payload }) => {
       state.users = state.users.map((user) => {
-        if (user.id === payload._id) {
+        if (user.id === payload.id) {
           return payload;
+          
         }
+        state.users.shift()
         return users;
+
       });
+      state.users.shift()
     },
   },
 });
