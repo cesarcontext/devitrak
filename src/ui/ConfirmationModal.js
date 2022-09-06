@@ -70,19 +70,6 @@ export const ConfirmationModal = () => {
     );
   });
 
-  console.log({creditCardState})
-
-  const check = {
-    cardName,
-      cardNumber,
-      mm,
-      yy ,
-      cvv,
-      zip,
-      country,
-  }
-  console.log({ check })
-  
   const submitInfoToSaveInDataBase = async () => {
 
     await startSavingContactInfo({
