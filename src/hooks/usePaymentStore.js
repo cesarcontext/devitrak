@@ -2,29 +2,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import devitrackApi from "../apis/devitrackApi";
-import { onAddNewCreditCardInfo, onUpdateCreditCardInfo } from "../store/slices/paymentInfoSlice";
+import {
+  onAddNewCreditCardInfo,
+  onUpdateCreditCardInfo,
+} from "../store/slices/paymentInfoSlice";
 import { useContactInfoStore } from "./useContactInfoStore";
 import { useDeviceCount } from "./useDeviceCountStore";
+import { useUiStore } from "./useUiStore";
 
 export const usePaymentStore = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { creditCardState } = useSelector((state) => state.paymentInfo);
-  const { userParseStored, Id } = useContactInfoStore();
+  const { users } = useContactInfoStore();
   const { device } = useDeviceCount();
+  const { openModal } = useUiStore();
 
   const startVerificationCreditCardInfoBeforeSaveIt = (paymentInfoSaved) => {
     dispatch(onAddNewCreditCardInfo({ ...paymentInfoSaved }));
     localStorage.setItem("credit-card", JSON.stringify(paymentInfoSaved));
+    openModal();
   };
 
   const startSavingPaymentInfo = async (paymentInfoSaved) => {
+
     try {
       const { data } = await devitrackApi.post("/creditCard/new_credit_card", {
-        ...paymentInfoSaved,
-        user:Id,
+        cardName: paymentInfoSaved.cardName,
+        cardNumber: paymentInfoSaved.cardNumber,
+        mm: paymentInfoSaved.mm,
+        yy: paymentInfoSaved.yy,
+        cvv: paymentInfoSaved.cvv,
+        zip: paymentInfoSaved.zip,
+        country: paymentInfoSaved.country,
+        user: users.id
       });
 
       localStorage.setItem(
@@ -32,12 +44,18 @@ export const usePaymentStore = () => {
         JSON.stringify({
           ...data.creditCard,
           id: data.creditCard.id,
-          user: userParseStored.id,
+          user: users.id,
           device,
-          user:Id
         })
       );
-      dispatch( onAddNewCreditCardInfo({...paymentInfoSaved })) //pasar el id del usuario
+      localStorage.setItem("card-card-id", JSON.stringify(data.creditCard.id));
+      dispatch(
+        onAddNewCreditCardInfo({
+          ...data.creditCard,
+          id: data.creditCard.id,
+          users,
+        })
+      ); //pasar el id del usuario
     } catch (error) {
       console.log({ error });
 
@@ -61,12 +79,14 @@ export const usePaymentStore = () => {
     }
   };
 
+  const checkCreditcardId = localStorage.getItem("card-card-id");
+  const CCId = JSON.parse(checkCreditcardId);
+
   const startUpdatingCreditCardInfo = async (paymentInfoSaved) => {
     try {
-      const { data } = devitrackApi.put(`/creditCard/${Id}`, {
+      const { data } = devitrackApi.put(`/creditCard/${CCId}`, {
         ...paymentInfoSaved,
       });
-      console.log({ data })
 
       dispatch(onUpdateCreditCardInfo({ ...paymentInfoSaved })); //, id: Id
 
@@ -89,6 +109,6 @@ export const usePaymentStore = () => {
     //* Métodos
     startVerificationCreditCardInfoBeforeSaveIt,
     startSavingPaymentInfo,
-    startUpdatingCreditCardInfo
+    startUpdatingCreditCardInfo,
   };
 };
