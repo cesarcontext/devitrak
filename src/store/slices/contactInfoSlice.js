@@ -22,13 +22,9 @@ const contactInfoSlice = createSlice({
       state.users = state.users.map((user) => {
         if (user.id === payload.id) {
           return payload;
-          
         }
-        state.users.shift()
         return users;
-
       });
-      state.users.shift()
     },
   },
 });
