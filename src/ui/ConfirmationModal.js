@@ -22,7 +22,7 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
   const { users, startSavingContactInfo } = useContactInfoStore();
-  const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
+  const { creditCardState, startSavingPaymentInfo } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
 
@@ -56,8 +56,7 @@ export const ConfirmationModal = () => {
   let zip;
   let country;
 
-  console.log({ paymentInfoParse })
-  paymentInfoParse.map((item) => {
+  creditCardState.map((item) => {
     return (
       <>
         {(cardName = item.cardName)}
@@ -70,6 +69,8 @@ export const ConfirmationModal = () => {
       </>
     );
   });
+
+  console.log({creditCardState})
 
   const check = {
     cardName,
