@@ -300,7 +300,6 @@ export const Forms = () => {
 
     startVerificationContactInfoBeforeSaveIt(formValues);
     startVerificationCreditCardInfoBeforeSaveIt(paymentFormValues);
-    openModal()
 
   };
 
