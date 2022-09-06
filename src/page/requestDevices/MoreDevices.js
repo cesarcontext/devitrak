@@ -4,7 +4,6 @@ import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { usePaymentStore } from "../../hooks/usePaymentStore";
 import { useUiStore } from "../../hooks/useUiStore";
-import { ConfirmationModal } from "../../ui/ConfirmationModal";
 import { ConfirmationModalEditSection } from "../../ui/ConfirmationModalEditSection";
 
 const editInfoSubmitted = {
@@ -77,9 +76,6 @@ export const MoreDevices = () => {
     zip,
     country,
   };
-
-  console.log('items mapped',{ infoSelectedAsDefault });
-
 
   const validationCardName = useMemo(() => {
     return editFormValues.cardName.length > 2 ? "" : "is-invalid";
