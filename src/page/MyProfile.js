@@ -12,10 +12,11 @@ const initalFormValues = {
   lastName: "",
   email: "",
   phoneNumber: "",
+  id:""
 };
 
 export const MyProfile = () => {
-  const { startUpdatingContactInfo, startShowingData } = useContactInfoStore();
+  const { startUpdatingContactInfo, Id } = useContactInfoStore();
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -101,6 +102,8 @@ export const MyProfile = () => {
         confirmButtonColor: "rgb(30, 115, 190)",
       });
     }
+
+    formValues.id = Id
 
     await startUpdatingContactInfo(formValues); /**
     {
