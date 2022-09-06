@@ -1,20 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
 export const QRCodeConfirmation =  () => {
-  const { users, userParseStored } = useContactInfoStore();
+  const { users, Id } = useContactInfoStore();
 
-  const findId = userParseStored.map( item => {
-    return <>
-    {item.id}
-    </>
-  })
-
-  const referenceNumber = Object.values(findId[0].props)
-
-  const myJSON = JSON.stringify(referenceNumber)
+  const reference = Id.replace(/[^0-9]/gi, '');
   
   const QRCodeGenerated = users.map((item) => {
     return (
@@ -76,7 +68,7 @@ export const QRCodeConfirmation =  () => {
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
         <span>
-          { myJSON.slice(2, -2) }  
+          { reference }  
         </span>
       </div>
       <div
