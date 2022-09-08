@@ -22,7 +22,7 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModalEditSection = () => {
   const { userParseStored } = useContactInfoStore();
-  const { paymentInfoParse, startSavingPaymentInfo } = usePaymentStore();
+  const { paymentInfoParse, startSavingPaymentInfo} = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
 
@@ -83,7 +83,7 @@ export const ConfirmationModalEditSection = () => {
       country,
     });
 
-    closeModal();
+    closeModal()
   };
 
   return (
@@ -113,7 +113,7 @@ export const ConfirmationModalEditSection = () => {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width=""
+              width="30"
               height="30"
               fill="currentColor"
               className="bi bi-exclamation-diamond"
