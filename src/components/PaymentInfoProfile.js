@@ -18,7 +18,7 @@ export const PaymentInfoProfile = () => {
       {paymentInfoParse?.map((item) => {
         return (
           <>
-            <div>
+            <div key={item.cardNumber}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
