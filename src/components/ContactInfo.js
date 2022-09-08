@@ -8,7 +8,7 @@ export const ContactInfo = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   return (
-    <section className="vh-100 gradient-custom">
+    <section className="gradient-custom">
       <div className="container py-5 h-100">
         <div className="row justify-content-center align-items-center h-100">
           <div className="col-12 col-lg-9 col-xl-7">
