@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
@@ -23,8 +23,7 @@ Modal.setAppElement("#root");
 export const ConfirmationModal = () => {
   const { users, startSavingContactInfo } = useContactInfoStore();
   const { creditCardState, startSavingPaymentInfo } = usePaymentStore();
-  const { isModalOpen, closeModal } = useUiStore();
-
+  const { isModalOpen, openModal, closeModal } = useUiStore();
 
   const onCloseModal = () => {
     closeModal();
@@ -118,17 +117,7 @@ export const ConfirmationModal = () => {
               marginBottom: "5%",
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width=""
-              height="30"
-              fill="currentColor"
-              className="bi bi-exclamation-diamond"
-              viewBox="0 0 16 16"
-            >
-              <path d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.482 1.482 0 0 1 0-2.098L6.95.435zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z" />
-              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z" />
-            </svg>
+            <i className="bi bi-question-diamond"></i>
           </div>
           <br />
           <h4
@@ -151,28 +140,26 @@ export const ConfirmationModal = () => {
               <div className="card-text">
                 <div>
                   <div>
-                    <span>Group name:   </span>
+                    <span>Group name: </span>
                     {groupName}
                   </div>
                   <div>
-                    <span>Name:   </span>
+                    <span>Name: </span>
                     {name}
                   </div>
                   <div>
-                    <span>Last name:    </span>
+                    <span>Last name: </span>
                     {lastName}
                   </div>
                   <div>
-                    <span>Email:    </span>
+                    <span>Email: </span>
                     {email}
                   </div>
                   <div>
-                    <span>Phone number:   </span>
+                    <span>Phone number: </span>
                     {phoneNumber}
-
                   </div>
                 </div>
-             
               </div>
             </div>
           </div>
@@ -198,7 +185,7 @@ export const ConfirmationModal = () => {
                     <div>
                       <span>
                         Card number:
-                         {cardNumber}
+                        {cardNumber}
                       </span>
                     </div>
                     <div>
@@ -207,14 +194,10 @@ export const ConfirmationModal = () => {
                       </span>
                     </div>
                     <div>
-                      <span>
-                        CVV: {cvv}
-                      </span>
+                      <span>CVV: {cvv}</span>
                     </div>
                     <div>
-                      <span>
-                        Zip code: {zip}
-                      </span>
+                      <span>Zip code: {zip}</span>
                     </div>
                     <div>
                       <span>
@@ -223,7 +206,6 @@ export const ConfirmationModal = () => {
                       </span>
                     </div>
                   </div>
-                
                 </div>
               </div>
             </div>
