@@ -6,7 +6,6 @@ import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const Forms = () => {
-  const { openModal } = useUiStore();
   const { startVerificationContactInfoBeforeSaveIt } = useContactInfoStore();
   const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
 
@@ -41,8 +40,6 @@ export const Forms = () => {
     initalPaymentFormValues
   );
 
-  // const [formSubmitted, setFormSubmitted] = useState(false);
-
   const onInputCHange = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -57,9 +54,6 @@ export const Forms = () => {
     });
   };
 
-  // const validationGroupName = useMemo(() => {
-  //   return formValues.groupName.length > 2 ? "" : "is-invalid";
-  // }, [formValues.groupName]);
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -192,14 +186,6 @@ export const Forms = () => {
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
-    // if (validationGroupName === "is-invalid") {
-    //   return Swal.fire({
-    //     title: "",
-    //     text: "Group Name must be provided",
-    //     icon: "error",
-    //     confirmButtonColor: "rgb(30, 115, 190)",
-    //   });
-    // }
     if (validationName === "is-invalid") {
       return Swal.fire({
         title: "",
@@ -300,7 +286,6 @@ export const Forms = () => {
 
     startVerificationContactInfoBeforeSaveIt(formValues);
     startVerificationCreditCardInfoBeforeSaveIt(paymentFormValues);
-
   };
 
   return (
@@ -374,7 +359,7 @@ export const Forms = () => {
                           <div className="form-outline datepicker w-100">
                             <input
                               type="text"
-                              className={`form-control form-control-lg`} //${validationGroupName}  
+                              className={`form-control form-control-lg`} //${validationGroupName}
                               id="groupName"
                               placeholder="Group name"
                               onChange={onInputCHange}
