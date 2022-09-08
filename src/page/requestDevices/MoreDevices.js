@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { usePaymentStore } from "../../hooks/usePaymentStore";
+import { ConfirmationModal } from "../../ui/ConfirmationModal";
 import { useUiStore } from "../../hooks/useUiStore";
 import { ConfirmationModalEditSection } from "../../ui/ConfirmationModalEditSection";
 
@@ -23,16 +24,13 @@ export const MoreDevices = () => {
     handleIncreaseDevice,
     handleResetDevice,
   } = useDeviceCount();
-  const { paymentInfoParse, startUpdatingCreditCardInfo} = usePaymentStore();
-  const { openModal } = useUiStore();
-
+  const { paymentInfoParse, startVerificationCreditCardInfoBeforeSaveIt } =
+    usePaymentStore();
   const { userParseStored } = useContactInfoStore();
+  const { openModal } = useUiStore();
   const infoSaved = userParseStored;
-
   const [editInfoValue, setEditInfoValue] = useState(true);
-
   const [editFormValues, setEditFormValues] = useState(editInfoSubmitted);
-
   const onInputChange = ({ target }) => {
     setEditFormValues({
       ...editFormValues,
@@ -40,42 +38,11 @@ export const MoreDevices = () => {
     });
   };
 
-  const handleEditInfo = (event) => {
-    event.preventDefault();
+  // const handleEditInfo = (event) => {
+  //   event.preventDefault();
 
-    setEditInfoValue(!editInfoValue);
-  };
-
-  let cardName;
-  let cardNumber;
-  let mm;
-  let yy;
-  let cvv;
-  let zip;
-  let country;
-
-  paymentInfoParse?.map((item) => {
-    return (
-      <>
-        {(cardName = item.cardName)}
-        {(cardNumber = item.cardNumber)}
-        {(mm = item.mm)}
-        {(yy = item.yy)}
-        {(cvv = item.cvv)}
-        {(zip = item.zip)}
-        {(country = item.country)}
-      </>
-    );
-  });
-  const infoSelectedAsDefault = {
-    cardName,
-    cardNumber,
-    mm,
-    yy,
-    cvv,
-    zip,
-    country,
-  };
+  //   setEditInfoValue(!editInfoValue);
+  // };
 
   const validationCardName = useMemo(() => {
     return editFormValues.cardName.length > 2 ? "" : "is-invalid";
@@ -186,9 +153,9 @@ export const MoreDevices = () => {
   const onSubmitEditPaymentInfo = async (event) => {
     event.preventDefault();
 
-    if (editInfoValue === true) {
-      return paymentInfoParse;
-    }
+    // if (editInfoValue === true) {
+    //   return paymentInfoParse;
+    // }
 
     if (validationExpirationDateMM === "is-invalid") {
       return Swal.fire({
@@ -255,14 +222,7 @@ export const MoreDevices = () => {
         confirmButtonColor: "rgb(30, 115, 190)",
       });
     }
-
-    // if (editInfoValue === true) {
-    //   console.log("submitted", editFormValues);
-    // } else {
-    //   console.log("submitted", infoSelectedAsDefault);
-    // }
-
-    await startUpdatingCreditCardInfo(editFormValues)
+    startVerificationCreditCardInfoBeforeSaveIt(editFormValues);
     openModal()
   };
 
@@ -425,13 +385,176 @@ export const MoreDevices = () => {
                       <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">
                         ENTER YOUR PAYMENT INFORMATION
                       </h3>
+         
                       <div>
-                        <button onClick={handleEditInfo}>
-                          <i className="bi bi-pencil-square"></i> Edit
-                          information
-                        </button>
+                        <div className="row">
+                          {paymentInfoParse?.map((item) => {
+                            return (
+                              <>
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      // disabled={editInfoValue}
+                                      type="text"
+                                      className={`form-control ${validationCardName} form-control-lg`}
+                                      // placeholder={item.cardName}00
+                                      onChange={onInputChange}
+                                      name="cardName"
+                                      value={editInfoValue.cardName}
+                                      minLength={3}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      // disabled={editInfoValue}
+                                      type="tel"
+                                      className={`form-control ${validationCardNumber} form-control-lg`}
+                                      // placeholder={item.cardNumber}
+                                      onChange={onInputChange}
+                                      name="cardNumber"
+                                      value={editInfoValue.cardNumber}
+                                      maxLength={maxLengthAttribute}
+                                      minLength={13}
+                                    />
+                                  </div>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                  }}
+                                >
+                                  <div className="col-md-4 m-4">
+                                    <div className="form-outline">
+                                      <input
+                                        // disabled={editInfoValue}
+                                        type="tel"
+                                        className={`form-control ${validationExpirationDateMM} form-control-lg`}
+                                        // placeholder={item.mm}
+                                        onChange={onInputChange}
+                                        name="mm"
+                                        value={editInfoValue.mm}
+                                        maxLength={2}
+                                        minLength={2}
+                                        min={1}
+                                        max={12}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-md-5 m-4 mr-4">
+                                    <div className="form-outline">
+                                      <input
+                                        // disabled={editInfoValue}
+                                        type="tel"
+                                        className={`form-control ${validationExpirationDateYY} form-control-lg`}
+                                        // placeholder={item.yy}
+                                        onChange={onInputChange}
+                                        name="yy"
+                                        value={editInfoValue.yy}
+                                        maxLength={4}
+                                        minLength={4}
+                                        min={new Date().getFullYear()}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-md-4 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      // disabled={editInfoValue}
+                                      type="tel"
+                                      className="form-control  form-control-lg"
+                                      // placeholder={item.cvv}
+                                      onChange={onInputChange}
+                                      name="cvv"
+                                      value={editInfoValue.cvv}
+                                      maxLength={CVVMaxLength}
+                                      minLength={3}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-5 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      // disabled={editInfoValue}
+                                      id="zip"
+                                      type="tel"
+                                      className={`form-control ${validationZip} form-control-lg`}
+                                      // placeholder={item.zip}
+                                      onChange={onInputChange}
+                                      name="zip"
+                                      value={editInfoValue.zip}
+                                      minLength={4}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col-md-10 m-4">
+                                  <div className="form-outline">
+                                    <input
+                                      // disabled={editInfoValue}
+                                      type="text"
+                                      className={`form-control ${validationCountry} form-control-lg`}
+                                      // placeholder={item.country}
+                                      onChange={onInputChange}
+                                      name="country"
+                                      value={editInfoValue.country}
+                                      minLength={3}
+                                    />
+                                  </div>
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
                       </div>
-                      {editInfoValue === true ? (
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div>
+            <div
+              style={{
+                width: "40%",
+                margin: " 0 auto",
+                textAlign: "justify",
+                fontSize: "10px",
+              }}
+            >
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit
+                amet nisl suscipit adipiscing bibendum est ultricies integer.
+              </p>
+            </div>
+          </div>
+
+          <button
+            style={{
+              margin: "auto",
+              backgroundColor: "rgba(69, 104, 220, 1)",
+              color: "#ffff",
+              height: "5vh",
+              borderRadius: "10px",
+              outline: "transparency",
+              border: "rgba(69, 104, 220, 1)",
+            }}
+            type="submit"
+          >
+            SUBMIT AND REQUEST DEVICES
+          </button>
+        </form>
+      </div>
+
+      <ConfirmationModalEditSection />
+    </>
+  );
+};
+
+{
+  /* {editInfoValue === true ? (
                         <div>
                           {paymentInfoParse.map((item) => {
                             return (
@@ -653,48 +776,5 @@ export const MoreDevices = () => {
                             })}
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <div>
-            <div
-              style={{
-                width: "40%",
-                margin: " 0 auto",
-                textAlign: "justify",
-                fontSize: "10px",
-              }}
-            >
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Sit
-                amet nisl suscipit adipiscing bibendum est ultricies integer.
-              </p>
-            </div>
-          </div>
-
-          <button
-            style={{
-              margin: "auto",
-              backgroundColor: "rgba(69, 104, 220, 1)",
-              color: "#ffff",
-              height: "5vh",
-              borderRadius: "10px",
-              outline: "transparency",
-              border: "rgba(69, 104, 220, 1)",
-            }}
-            type="submit"
-          >
-            SUBMIT AND REQUEST DEVICES
-          </button>
-        </form>
-      </div>
-
-      <ConfirmationModalEditSection />
-    </>
-  );
-};
+                      )} */
+}
