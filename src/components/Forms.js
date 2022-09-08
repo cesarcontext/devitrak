@@ -8,6 +8,7 @@ import { useDeviceCount } from "../hooks/useDeviceCountStore";
 export const Forms = () => {
   const { startVerificationContactInfoBeforeSaveIt } = useContactInfoStore();
   const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
+  const { openModal } = useUiStore()
 
   const {
     amountToDeposit,
@@ -286,6 +287,7 @@ export const Forms = () => {
 
     startVerificationContactInfoBeforeSaveIt(formValues);
     startVerificationCreditCardInfoBeforeSaveIt(paymentFormValues);
+    openModal()
   };
 
   return (
