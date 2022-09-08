@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useStytchSession, useStytch } from "@stytch/stytch-react";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
+  const session = useStytchSession();
+  const client = useStytch();
+  const navigate = useNavigate();
+
+  const user = session.authentication_factors[0].email_factor.email_address;
+  console.log(user);
 
   const switchNavbarState = () => {
     setShowNavbar(!showNavbar);
   };
+
+  const handleLogout = useCallback(async () => {
+    await client.session.revoke();
+    alert("Your session is finished");
+    navigate("/");
+  }, [client]);
+
   return (
     <div
       style={{
@@ -42,7 +57,7 @@ export const Navbar = () => {
                   // position: "absolute",
                   backgroundColor: "rgba(30, 115, 190, 1)",
                   borderRadius: "50%",
-                  padding: "15px"
+                  padding: "15px",
                 }}
                 className="bi bi-list"
               ></i>
@@ -51,9 +66,23 @@ export const Navbar = () => {
           <div
             style={{
               width: "30%",
+              display: "flex",
             }}
           >
-            <h4>Event Name</h4>
+            <div>
+              <h4>Event Name</h4>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>{user}</div>
+              <div>
+                {session && <button onClick={handleLogout}>Logout</button>}
+              </div>
+            </div>
           </div>
         </nav>
       ) : (
@@ -75,8 +104,7 @@ export const Navbar = () => {
               style={{
                 padding: "5px",
                 width: "80px",
-                height: "80px"
-
+                height: "80px",
               }}
               src={require("../image/logo.jpg")}
               alt="logo"
@@ -121,9 +149,24 @@ export const Navbar = () => {
           <div
             style={{
               width: "30%",
+              display: "flex",
+              justifyContent: "space-around",
             }}
           >
-            <h4>Event Name</h4>
+            <div>
+              <h4>Event Name</h4>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>{user}</div>
+              <div>
+                {session && <button onClick={handleLogout}>Logout</button>}
+              </div>
+            </div>
           </div>
         </nav>
       )}
