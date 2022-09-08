@@ -8,7 +8,7 @@ export const ContactInfoProfile = () => {
     <div>
       {userParseStored?.map((item) => {
         return (
-          <div>
+          <div key={item.email}>
             <div
               style={{
                 display: "flex",
