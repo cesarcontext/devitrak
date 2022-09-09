@@ -430,6 +430,4 @@ export const PaymentForms = () => {
       </form>
     </div>
   );
-
-  <ConfirmationModal />
 };
