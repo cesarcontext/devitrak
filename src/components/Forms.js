@@ -6,7 +6,7 @@ import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const Forms = () => {
-  const { startVerificationContactInfoBeforeSaveIt } = useContactInfoStore();
+  const { startVerificationContactInfoBeforeSaveIt, startCheckingUser } = useContactInfoStore();
   const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
   const { openModal } = useUiStore()
 
@@ -184,6 +184,11 @@ export const Forms = () => {
 
   const CVVMaxLength = CVVLength(creditCard);
 
+  const checkEmailUser = ( event ) => {
+    event.preventDefault()
+    startCheckingUser(formValues.email)
+  }
+
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
@@ -357,6 +362,21 @@ export const Forms = () => {
                     </h3>
                     <div>
                       <div className="row">
+                      <div className="col-md-10 m-4 pb-2">
+                          <div className="form-outline">
+                            <input
+                              type="email"
+                              id="emailAddress"
+                              className={`form-control ${validationEmail} form-control-lg`}
+                              placeholder="Email"
+                              onChange={onInputCHange}
+                              name="email"
+                              value={formValues.email}
+                              minLength={4}
+                            />
+                            {/* <button onClick={ checkEmailUser }>check</button> */}
+                          </div>
+                        </div>
                         <div className="col-md-10 m-4 d-flex align-items-center">
                           <div className="form-outline datepicker w-100">
                             <input
@@ -401,20 +421,6 @@ export const Forms = () => {
                         </div>
                       </div>
                       <div className="row">
-                        <div className="col-md-10 m-4 pb-2">
-                          <div className="form-outline">
-                            <input
-                              type="email"
-                              id="emailAddress"
-                              className={`form-control ${validationEmail} form-control-lg`}
-                              placeholder="Email"
-                              onChange={onInputCHange}
-                              name="email"
-                              value={formValues.email}
-                              minLength={4}
-                            />
-                          </div>
-                        </div>
                         <div className="col-md-10 m-4 pb-2">
                           <div className="form-outline">
                             <input
