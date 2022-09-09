@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
-import { ConfirmationModal } from "../ui/ConfirmationModal";
 
 export const PaymentForms = () => {
   const { openModal } = useUiStore();
