@@ -8,7 +8,6 @@ import {
 } from "../store/slices/paymentInfoSlice";
 import { useContactInfoStore } from "./useContactInfoStore";
 import { useDeviceCount } from "./useDeviceCountStore";
-import { useUiStore } from "./useUiStore";
 
 export const usePaymentStore = () => {
   const dispatch = useDispatch();
@@ -17,7 +16,6 @@ export const usePaymentStore = () => {
   const { creditCardState } = useSelector((state) => state.paymentInfo);
   const { users } = useContactInfoStore();
   const { device } = useDeviceCount();
-  const { openModal, closeModal  } = useUiStore()
 
   const startVerificationCreditCardInfoBeforeSaveIt = (paymentInfoSaved) => {
     dispatch(onAddNewCreditCardInfo({ ...paymentInfoSaved }));
@@ -34,9 +32,7 @@ export const usePaymentStore = () => {
         cvv: paymentInfoSaved.cvv,
         zip: paymentInfoSaved.zip,
         country: paymentInfoSaved.country,
-        user: users.id,
       });
-
       localStorage.setItem(
         "credit-card",
         JSON.stringify({
