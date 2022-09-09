@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { useStytchSession, useStytch } from "@stytch/stytch-react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
@@ -8,8 +9,7 @@ export const Navbar = () => {
   const client = useStytch();
   const navigate = useNavigate();
 
-  const user = session.authentication_factors[0].email_factor.email_address;
-  console.log(user);
+  const user = session?.authentication_factors[0].email_factor.email_address;
 
   const switchNavbarState = () => {
     setShowNavbar(!showNavbar);
@@ -17,7 +17,16 @@ export const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     await client.session.revoke();
-    alert("Your session is finished");
+    Swal.fire({
+      title: `Your session is finished`,
+      confirmButtonColor: "rgb(30, 115, 190)",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+    });
     navigate("/");
   }, [client]);
 
