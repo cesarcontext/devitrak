@@ -12,28 +12,33 @@ export const useContactInfoStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { users } = useSelector((state) => state.contactInfo);
-  const { closeModal } = useUiStore();
+  const { openModal, closeModal } = useUiStore();
 
   const startVerificationContactInfoBeforeSaveIt = (userInfoSaved) => {
     dispatch(onAddNewContact({ ...userInfoSaved }));
     localStorage.setItem("user", JSON.stringify(userInfoSaved));
+    openModal()
   };
 
   const startSavingContactInfo = async ({ groupName, name, lastName, email, phoneNumber}) => {
+
+    console.log({ groupName, name, lastName, email, phoneNumber})
     try {
       const { data } = await devitrackApi.post("/auth/new", { groupName, name, lastName, email, phoneNumber});
+      console.log({data})
+      localStorage.setItem("user", JSON.stringify({...data}));
+      localStorage.setItem("uid", JSON.stringify(data.uid));
+      localStorage.setItem("token", JSON.stringify(data.token));
 
-      localStorage.setItem("user", JSON.stringify({...data.user, id:data.user.id}));
-      localStorage.setItem("id", JSON.stringify(data.user.id));
 
-      dispatch(onAddNewContact({ groupName: data.user.groupName, name: data.user.name, lastName: data.user.lastName, email: data.user.email, phoneNumber: data.user.phoneNumber, id: data.id}));
+      dispatch(onAddNewContact({ groupName: data.groupName, name: data.name, lastName: data.lastName, email: data.email, phoneNumber: data.phoneNumber, id: data.uid}));
 
       if (data) {
         Swal.fire({
           title: "Your account was created successfully",
           width: 600,
           padding: "3em",
-          text: `REFERENCE NUMBER: ${data.user.id}`,
+          text: `REFERENCE NUMBER: ${data.uid}`,
           icon: "success",
           color: "#rgb(30, 115, 190)",
           background: "#fff",
@@ -55,7 +60,7 @@ export const useContactInfoStore = () => {
         title: "Something went wrong",
         width: 600,
         padding: "3em",
-        text: error.response.data.msg,
+        text: error.message,
         icon: "error",
         color: "rgb(30, 115, 190)",
         background: "#fff",
@@ -87,7 +92,7 @@ export const useContactInfoStore = () => {
     }
   };
 
-  const startUpdatingContactInfo = async ({groupName, name, lastName, email, phoneNumber, id}) => {
+  const startUpdatingContactInfo = async ({groupName, name, lastName, email, phoneNumber }) => {
     try {
       const { data } = devitrackApi.put(`/auth/${ Id }`, {groupName, name, lastName, email, phoneNumber});
 
@@ -99,6 +104,19 @@ export const useContactInfoStore = () => {
       console.log(error);
     }
   };
+
+  const startCheckingUser = ({email}) => {
+    try {
+      const response = devitrackApi.get(`/auth/`, email)
+
+
+      console.log('response', response)
+
+    } catch (error) {
+      console.log(error)
+      
+    }
+  }
 
   const checking = localStorage.getItem("user");
   const userParseStored = [JSON.parse(checking)];
@@ -114,5 +132,6 @@ export const useContactInfoStore = () => {
     startSavingContactInfo,
     startUpdatingContactInfo,
     startShowingData,
+    startCheckingUser,
   };
 };
