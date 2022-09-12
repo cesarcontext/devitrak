@@ -1,13 +1,17 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { MagicLink } from "./MagicLink";
 
 export const Forms = () => {
-  const { startVerificationContactInfoBeforeSaveIt, startCheckingUser } =
-    useContactInfoStore();
+  const {
+    startVerificationContactInfoBeforeSaveIt,
+    startCheckingUser,
+    userParseStored,
+  } = useContactInfoStore();
   const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
   const { openModal } = useUiStore();
 
@@ -56,6 +60,18 @@ export const Forms = () => {
     });
   };
 
+  startCheckingUser(formValues.email);
+
+  let status;
+
+  userParseStored?.map((item) => {
+    return (status = item?.status);
+  });
+
+  useEffect(() => {
+    localStorage.clear()
+  }, [formValues.email])
+  
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
   }, [formValues.name]);
@@ -183,16 +199,6 @@ export const Forms = () => {
   };
 
   const CVVMaxLength = CVVLength(creditCard);
-
-  const checkEmailUser = (event) => {
-    console.log({ event });
-
-    startCheckingUser(event);
-  };
-
-  console.log(formValues.email);
-  startCheckingUser(formValues.email);
-
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
@@ -374,16 +380,19 @@ export const Forms = () => {
                               id="emailAddress"
                               className={`form-control ${validationEmail} form-control-lg`}
                               placeholder="Email"
-                              onChange={onInputCHange}
+                              onChange={onInputCHange} //event => setUserEmail( event.target.value )
                               name="email"
                               value={formValues.email}
                               minLength={4}
                             />
-                            {/* <button onClick={checkEmailUser}>check</button> */}
+                            {/* <button onClick={handleEmailUserCheck}>check</button> */}
                           </div>
                         </div>
-                        {formValues.email.length < 1 ? (
-                          ""
+                        {status === false ? (
+                          <MagicLink
+                            formValues={formValues.email}
+                            // onInputCHange={onInputCHange}
+                          />
                         ) : (
                           <>
                             <div className="col-md-10 m-4 d-flex align-items-center">
