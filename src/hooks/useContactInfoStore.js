@@ -148,13 +148,21 @@ export const useContactInfoStore = () => {
     }
   };
 
-  const startCheckingUser = async (email) => {
-    console.log({email})
+  const startCheckingUser = async (userInfoEmailCheck) => {
     try {
-      const response = await devitrackApi.get(`/auth/`, { email });
-      console.log({response})
-      // console.log({...data.user})
-
+      const { data } = await devitrackApi.post("/auth/", {
+        userInfoEmailCheck,
+      });
+      console.log({ data });
+      if (data) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...data.user, status: data.ok, id: data.user.id })
+        );
+        localStorage.setItem("uid", JSON.stringify(data.user.id));
+      }
+      return;
+      
     } catch (error) {
       console.log(error);
     }
@@ -164,12 +172,12 @@ export const useContactInfoStore = () => {
   const userParseStored = [JSON.parse(checking)];
 
   return {
-    //* Propiedades
+    //* Properties
     users,
     userParseStored,
     Id,
 
-    //* Métodos
+    //* Methods
     startVerificationContactInfoBeforeSaveIt,
     startSavingContactInfo,
     startUpdatingContactInfo,
