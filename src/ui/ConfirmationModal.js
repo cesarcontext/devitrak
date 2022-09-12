@@ -23,7 +23,7 @@ Modal.setAppElement("#root");
 export const ConfirmationModal = () => {
   const { users, startSavingContactInfo } = useContactInfoStore();
   const { creditCardState, startSavingPaymentInfo } = usePaymentStore();
-  const { isModalOpen, openModal, closeModal } = useUiStore();
+  const { isModalOpen, closeModal } = useUiStore();
 
   const onCloseModal = () => {
     closeModal();

@@ -7,15 +7,21 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/Store";
+import { StytchProvider, initStytch } from "@stytch/stytch-react";
 
+const stytch = initStytch(
+  "public-token-test-dc912c5e-a5d5-41db-b832-22535b2428c6"
+);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={ store }>
+  <Provider store={store}>
     <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <StytchProvider stytch={stytch}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </StytchProvider>
     </React.StrictMode>
   </Provider>
 );

@@ -5,11 +5,11 @@ const devitrackApi = axios.create({
 });
 
 //TODO: config interceptors
-devitrackApi.interceptors.request.use( config => {
-    config.headers = {
-        'x-token' : localStorage.getItem('token')
-    }
-})
+// devitrackApi.interceptors.request.use( config => {
+//     config.headers = {
+//         'x-token' : localStorage.getItem('token')
+//     }
+// })
 
 
 

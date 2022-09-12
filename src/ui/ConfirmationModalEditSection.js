@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
@@ -22,7 +22,7 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModalEditSection = () => {
   const { userParseStored } = useContactInfoStore();
-  const { paymentInfoParse, startSavingPaymentInfo} = usePaymentStore();
+  const { paymentInfoParse, startUpdatingCreditCardInfo} = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
 
@@ -73,7 +73,7 @@ export const ConfirmationModalEditSection = () => {
 
   const submitInfoToSaveInDataBase = async () => {
 
-    await startSavingPaymentInfo({
+    await startUpdatingCreditCardInfo({
       cardName,
       cardNumber,
       mm,

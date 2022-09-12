@@ -15,23 +15,44 @@ export const useContactInfoStore = () => {
   const { openModal, closeModal } = useUiStore();
 
   const startVerificationContactInfoBeforeSaveIt = (userInfoSaved) => {
+    console.log({ userInfoSaved });
+
     dispatch(onAddNewContact({ ...userInfoSaved }));
     localStorage.setItem("user", JSON.stringify(userInfoSaved));
-    openModal()
+    openModal();
   };
 
-  const startSavingContactInfo = async ({ groupName, name, lastName, email, phoneNumber}) => {
-
-    console.log({ groupName, name, lastName, email, phoneNumber})
+  const startSavingContactInfo = async ({
+    groupName,
+    name,
+    lastName,
+    email,
+    phoneNumber,
+  }) => {
+    console.log({ groupName, name, lastName, email, phoneNumber });
     try {
-      const { data } = await devitrackApi.post("/auth/new", { groupName, name, lastName, email, phoneNumber});
-      console.log({data})
-      localStorage.setItem("user", JSON.stringify({...data}));
+      const { data } = await devitrackApi.post("/auth/new", {
+        groupName,
+        name,
+        lastName,
+        email,
+        phoneNumber,
+      });
+      console.log({ data });
+      localStorage.setItem("user", JSON.stringify({ ...data }));
       localStorage.setItem("uid", JSON.stringify(data.uid));
       localStorage.setItem("token", JSON.stringify(data.token));
 
-
-      dispatch(onAddNewContact({ groupName: data.groupName, name: data.name, lastName: data.lastName, email: data.email, phoneNumber: data.phoneNumber, id: data.uid}));
+      dispatch(
+        onAddNewContact({
+          groupName: data.groupName,
+          name: data.name,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          id: data.uid,
+        })
+      );
 
       if (data) {
         Swal.fire({
@@ -92,31 +113,52 @@ export const useContactInfoStore = () => {
     }
   };
 
-  const startUpdatingContactInfo = async ({groupName, name, lastName, email, phoneNumber }) => {
+  const startUpdatingContactInfo = async ({
+    groupName,
+    name,
+    lastName,
+    email,
+    phoneNumber,
+  }) => {
     try {
-      const { data } = devitrackApi.put(`/auth/${ Id }`, {groupName, name, lastName, email, phoneNumber});
+      const { data } = devitrackApi.put(`/auth/${Id}`, {
+        groupName,
+        name,
+        lastName,
+        email,
+        phoneNumber,
+      });
 
-      dispatch(onUpdateContact({ groupName: data.user.groupName, name: data.user.name, lastName: data.user.lastName, email: data.user.email, phoneNumber: data.user.phoneNumberid}));
+      dispatch(
+        onUpdateContact({
+          groupName: data.user.groupName,
+          name: data.user.name,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          phoneNumber: data.user.phoneNumberid,
+        })
+      );
 
-      localStorage.setItem("user", JSON.stringify({...data.user, id: data.user.id}));
-
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...data.user, id: data.user.id })
+      );
     } catch (error) {
       console.log(error);
     }
   };
 
-  const startCheckingUser = ({email}) => {
+  const startCheckingUser = async (email) => {
+    console.log({email})
     try {
-      const response = devitrackApi.get(`/auth/`, email)
-
-
-      console.log('response', response)
+      const response = await devitrackApi.get(`/auth/`, { email });
+      console.log({response})
+      // console.log({...data.user})
 
     } catch (error) {
-      console.log(error)
-      
+      console.log(error);
     }
-  }
+  };
 
   const checking = localStorage.getItem("user");
   const userParseStored = [JSON.parse(checking)];

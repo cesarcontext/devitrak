@@ -1,48 +1,73 @@
 import React from "react";
 import { Routes, Route } from "react-router";
-import "./App.css";
+import { Navigate } from "react-router-dom";
+import { useStytchSession } from "@stytch/stytch-react";
 import { Navbar } from "./components/Navbar";
 import { NavbarBottom } from "./components/NavbarBottom";
-import { PaymentForms } from "./components/PaymentForms";
-import { EventScheduled } from "./page/EventScheduled";
+import { PrivateRoute } from "./layout/PrivateRoute";
+import { Authenticate } from "./page/Authenticate";
+import { AuthenticatedRoute } from "./page/AuthenticatedRoute";
 import { Home } from "./page/Home";
-import { MoreInfo } from "./page/MoreInfo";
 import { HowToReturnTheDevices } from "./page/moreInfo/HowToReturnTheDevices";
 import { HowToUseTheReceiver } from "./page/moreInfo/HowToUseTheReceiver";
 import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuringTheEvent";
-import { MyProfile } from "./page/MyProfile";
+import { MoreDevices } from "./page/requestDevices/MoreDevices";
+import { PaymentFormat } from "./page/PaymentFormat";
 import { QRCodeConfirmation } from "./page/QRCodeConfirmation";
 import { RequestDevices } from "./page/RequestDevices";
-import { MoreDevices } from "./page/requestDevices/MoreDevices";
+import { MoreInfo } from "./page/MoreInfo";
+import { EventScheduled } from "./page/EventScheduled";
+import { MyProfile } from "./page/MyProfile";
+
+import "./App.css";
 
 function App() {
+  const session = useStytchSession();
+  console.log({session})
   return (
     <div className="App">
       <Navbar />
 
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/paymentForm" element={<PaymentForms />} />
-        <Route exact path="/confirmation" element={<QRCodeConfirmation />} />
-        <Route exact path="/request_devices" element={<RequestDevices />} />
-        <Route exact path="/more_devices" element={<MoreDevices />} />
-        <Route exact path="/more_info" element={<MoreInfo />} />
-          {/* <Route index element={<MoreInfo />} /> */}
-          <Route
-            path="/how_to_return_the_devices"
-            element={<HowToReturnTheDevices />}
-          />
-          <Route
-            path="/how_to_use_the_receiver"
-            element={<HowToUseTheReceiver />}
-          />
-          <Route
-            path="/request_support_during_event"
-            element={<RequestSupportDuringTheEvent />}
-          />
-        {/* </Route> */}
-        <Route exact path="/event_schedule" element={<EventScheduled />} />
-        <Route exact path="/my_profile" element={<MyProfile />} />
+        {session !== null ? (
+          <>
+            <Route exact path="/" element={<Home />} />
+            <Route path="/*" element={<Navigate to="/" replace />} />
+          </>
+        ) : (
+          <>
+            <Route index path="/checkout" element={<PaymentFormat />} />
+            <Route path="/confirmation" element={<QRCodeConfirmation />} />
+            <Route path="/request_devices" element={<RequestDevices />} />
+            <Route path="/more_devices" element={<MoreDevices />} />
+            <Route path="/more_info" element={<MoreInfo />} />
+            <Route index element={<MoreInfo />} />
+            <Route
+              path="/how_to_return_the_devices"
+              element={<HowToReturnTheDevices />}
+            />
+            <Route
+              path="/how_to_use_the_receiver"
+              element={<HowToUseTheReceiver />}
+            />
+            <Route
+              path="/request_support_during_event"
+              element={<RequestSupportDuringTheEvent />}
+            />
+            <Route path="/event_schedule" element={<EventScheduled />} />
+            <Route path="/my_profile" element={<MyProfile />} />
+          </>
+        )}
+
+        <Route path="/authenticate" element={<Authenticate />} />
+        <Route
+          path="/authenticated-route"
+          element={
+            <PrivateRoute>
+              <AuthenticatedRoute />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
       <div className="App-footer">

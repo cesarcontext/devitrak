@@ -6,9 +6,10 @@ import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const Forms = () => {
-  const { startVerificationContactInfoBeforeSaveIt, startCheckingUser } = useContactInfoStore();
+  const { startVerificationContactInfoBeforeSaveIt, startCheckingUser } =
+    useContactInfoStore();
   const { startVerificationCreditCardInfoBeforeSaveIt } = usePaymentStore();
-  const { openModal } = useUiStore()
+  const { openModal } = useUiStore();
 
   const {
     amountToDeposit,
@@ -54,7 +55,6 @@ export const Forms = () => {
       [target.name]: target.value,
     });
   };
-
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -184,10 +184,15 @@ export const Forms = () => {
 
   const CVVMaxLength = CVVLength(creditCard);
 
-  const checkEmailUser = ( event ) => {
-    event.preventDefault()
-    startCheckingUser(formValues.email)
-  }
+  const checkEmailUser = (event) => {
+    console.log({ event });
+
+    startCheckingUser(event);
+  };
+
+  console.log(formValues.email);
+  startCheckingUser(formValues.email);
+
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
@@ -292,7 +297,7 @@ export const Forms = () => {
 
     startVerificationContactInfoBeforeSaveIt(formValues);
     startVerificationCreditCardInfoBeforeSaveIt(paymentFormValues);
-    openModal()
+    openModal();
   };
 
   return (
@@ -362,7 +367,7 @@ export const Forms = () => {
                     </h3>
                     <div>
                       <div className="row">
-                      <div className="col-md-10 m-4 pb-2">
+                        <div className="col-md-10 m-4 pb-2">
                           <div className="form-outline">
                             <input
                               type="email"
@@ -374,68 +379,74 @@ export const Forms = () => {
                               value={formValues.email}
                               minLength={4}
                             />
-                            {/* <button onClick={ checkEmailUser }>check</button> */}
+                            {/* <button onClick={checkEmailUser}>check</button> */}
                           </div>
                         </div>
-                        <div className="col-md-10 m-4 d-flex align-items-center">
-                          <div className="form-outline datepicker w-100">
-                            <input
-                              type="text"
-                              className={`form-control form-control-lg`} //${validationGroupName}
-                              id="groupName"
-                              placeholder="Group name"
-                              onChange={onInputCHange}
-                              name="groupName"
-                              value={formValues.groupName}
-                              minLength={3}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-10 m-4">
-                          <div className="form-outline">
-                            <input
-                              type="text"
-                              id="firstName"
-                              name="name"
-                              value={formValues.name}
-                              className={`form-control ${validationName} form-control-lg`}
-                              placeholder="First name"
-                              onChange={onInputCHange}
-                              minLength={1}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-10 m-4">
-                          <div className="form-outline">
-                            <input
-                              type="text"
-                              id="lastName"
-                              className={`form-control ${validationLastName} form-control-lg`}
-                              placeholder="Last name"
-                              onChange={onInputCHange}
-                              name="lastName"
-                              value={formValues.lastName}
-                              minLength={1}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-md-10 m-4 pb-2">
-                          <div className="form-outline">
-                            <input
-                              type="tel"
-                              id="phoneNumber"
-                              className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                              placeholder="Phone number"
-                              onChange={onInputCHange}
-                              name="phoneNumber"
-                              value={formValues.phoneNumber}
-                              maxLength={15}
-                              minLength={5}
-                            />
-                          </div>
-                        </div>
+                        {formValues.email.length < 1 ? (
+                          ""
+                        ) : (
+                          <>
+                            <div className="col-md-10 m-4 d-flex align-items-center">
+                              <div className="form-outline datepicker w-100">
+                                <input
+                                  type="text"
+                                  className={`form-control form-control-lg`} //${validationGroupName}
+                                  id="groupName"
+                                  placeholder="Group name"
+                                  onChange={onInputCHange}
+                                  name="groupName"
+                                  value={formValues.groupName}
+                                  minLength={3}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-10 m-4">
+                              <div className="form-outline">
+                                <input
+                                  type="text"
+                                  id="firstName"
+                                  name="name"
+                                  value={formValues.name}
+                                  className={`form-control ${validationName} form-control-lg`}
+                                  placeholder="First name"
+                                  onChange={onInputCHange}
+                                  minLength={1}
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-10 m-4">
+                              <div className="form-outline">
+                                <input
+                                  type="text"
+                                  id="lastName"
+                                  className={`form-control ${validationLastName} form-control-lg`}
+                                  placeholder="Last name"
+                                  onChange={onInputCHange}
+                                  name="lastName"
+                                  value={formValues.lastName}
+                                  minLength={1}
+                                />
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-md-10 m-4 pb-2">
+                                <div className="form-outline">
+                                  <input
+                                    type="tel"
+                                    id="phoneNumber"
+                                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                                    placeholder="Phone number"
+                                    onChange={onInputCHange}
+                                    name="phoneNumber"
+                                    value={formValues.phoneNumber}
+                                    maxLength={15}
+                                    minLength={5}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

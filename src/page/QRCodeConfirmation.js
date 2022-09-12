@@ -6,7 +6,7 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 export const QRCodeConfirmation =  () => {
   const { users, Id } = useContactInfoStore();
 
-  const reference = Id.replace(/[^0-9]/gi, '');
+  // const reference = Id.replace(/[^0-9]/gi, '');
   
   const QRCodeGenerated = users.map((item) => {
     return (
@@ -68,7 +68,7 @@ export const QRCodeConfirmation =  () => {
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
         <span>
-          { reference }  
+          { Id }
         </span>
       </div>
       <div
