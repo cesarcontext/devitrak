@@ -8,6 +8,7 @@ import {
 } from "../store/slices/paymentInfoSlice";
 import { useContactInfoStore } from "./useContactInfoStore";
 import { useDeviceCount } from "./useDeviceCountStore";
+import { useUiStore } from "./useUiStore";
 
 export const usePaymentStore = () => {
   const dispatch = useDispatch();
@@ -16,10 +17,12 @@ export const usePaymentStore = () => {
   const { creditCardState } = useSelector((state) => state.paymentInfo);
   const { users } = useContactInfoStore();
   const { device } = useDeviceCount();
+  const { openModal, closeModal } = useUiStore()
 
   const startVerificationCreditCardInfoBeforeSaveIt = (paymentInfoSaved) => {
     dispatch(onAddNewCreditCardInfo({ ...paymentInfoSaved }));
     localStorage.setItem("credit-card", JSON.stringify(paymentInfoSaved));
+    openModal()
   };
 
   const startSavingPaymentInfo = async (paymentInfoSaved) => {
@@ -33,6 +36,8 @@ export const usePaymentStore = () => {
         zip: paymentInfoSaved.zip,
         country: paymentInfoSaved.country,
       });
+
+      console.log('payment data', {data})
       localStorage.setItem(
         "credit-card",
         JSON.stringify({
@@ -51,7 +56,7 @@ export const usePaymentStore = () => {
         })
       ); //pasar el id del usuario
 
-      //stripe api
+      closeModal()
 
     } catch (error) {
       console.log({ error });
@@ -103,7 +108,6 @@ export const usePaymentStore = () => {
     //* Propiedades
     creditCardState,
     paymentInfoParse,
-    // paymentRecordParse,
 
     //* Métodos
     startVerificationCreditCardInfoBeforeSaveIt,
