@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import devitrackApi from "../apis/devitrackApi";
+import {devitrackApi, devitrackApiPayment} from "../apis/devitrackApi";
 import {
   onAddNewCreditCardInfo,
   onUpdateCreditCardInfo,
@@ -20,14 +20,18 @@ export const usePaymentStore = () => {
   const { openModal, closeModal } = useUiStore()
 
   const startVerificationCreditCardInfoBeforeSaveIt = (paymentInfoSaved) => {
+
+    console.log('cc-state', paymentInfoSaved )
     dispatch(onAddNewCreditCardInfo({ ...paymentInfoSaved }));
     localStorage.setItem("credit-card", JSON.stringify(paymentInfoSaved));
     openModal()
   };
 
   const startSavingPaymentInfo = async (paymentInfoSaved) => {
+
+    console.log('payment info submitted', paymentInfoSaved)
     try {
-      const { data } = await devitrackApi.post("/creditCard/new_credit_card", {
+      const { data } = await devitrackApiPayment.post("/new_credit_card", {
         cardName: paymentInfoSaved.cardName,
         cardNumber: paymentInfoSaved.cardNumber,
         mm: paymentInfoSaved.mm,
@@ -70,7 +74,7 @@ export const usePaymentStore = () => {
 
   const startUpdatingCreditCardInfo = async (paymentInfoSaved) => {
     try {
-      const { data } = devitrackApi.put(`/creditCard/${CCId}`, {
+      const { data } = devitrackApiPayment.put(`/${CCId}`, {
         ...paymentInfoSaved,
       });
 
