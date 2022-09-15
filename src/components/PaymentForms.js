@@ -211,66 +211,70 @@ export const PaymentForms = () => {
       });
     }
 
-    
     await startSavingPaymentInfo(paymentFormValues);
-    openModal()
-
+    openModal();
   };
 
   return (
-    <div className="container">
+    <div className="container"  style={{ paddingBottom: "5vh"}}>
       <form onSubmit={handleOnSubmit}>
-        <div
-          className="container"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            width: " 50%",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              marginTop: "5%",
-              marginBottom: "2%",
-            }}
-          >
-            <h5>HOW MANY RECEIVERS DO YOU NEED?</h5>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "0  20px",
-                width: "25%",
-              }}
-            >
-              <button onClick={handleDecreaseDevice}>-</button>
-              <div>
-                <strong>{device}</strong>
+        <section className="gradient-custom">
+          <div className="container">
+            <div className="row justify-content-center align-items-center">
+              <div className="col-12 col-lg-9 col-xl-7">
+                <div className="row">
+                  <div className="col-md-12 mt-4 mb-2">
+                    <div className="form-outline">
+                      <div
+                        className="card shadow-2-strong card-registration"
+                        style={{ bordeRadius: "15px" }}
+                      >
+                        <div
+                          style={{
+                            display:"flex",
+                            padding: "15px",
+                            justifyContent: "space-evenly",
+                          }}
+                        >
+                          <h5 style={{ padding: "15px"}}>HOW MANY RECEIVERS DO YOU NEED?</h5>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              margin: "0  auto",
+                            }}
+                          >
+                            <button onClick={handleDecreaseDevice}>-</button>
+                            <div>
+                              <strong>{device}</strong>
+                            </div>
+                            <button onClick={handleIncreaseDevice}>+</button>
+                            <button onClick={handleResetDevice}>Reset</button>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-evenly",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div className="col-4"></div>
+                            <h5>DEPOSIT TOTAL:</h5>
+                            <h3>
+                              <strong>${amountToDeposit}</strong>
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button onClick={handleIncreaseDevice}>+</button>
-              <button onClick={handleResetDevice}>Reset</button>
             </div>
           </div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-            }}
-          >
-            <div className="col-4"></div>
-            <h5>DEPOSIT TOTAL:</h5>
-            <h3>
-              <strong>${amountToDeposit}</strong>
-            </h3>
-          </div>
-        </div>
+        </section>
         <section className="gradient-custom">
-          <div className="container py-5 h-100">
+          <div className="container">
             <div className="row justify-content-center align-items-center">
               <div className="col-12 col-lg-9 col-xl-7">
                 <div
@@ -411,7 +415,6 @@ export const PaymentForms = () => {
             </p>
           </div>
         </div>
-
         <button
           style={{
             margin: "auto",
@@ -427,6 +430,7 @@ export const PaymentForms = () => {
           SUBMIT AND REQUEST DEVICES
         </button>
       </form>
+
     </div>
   );
 };
