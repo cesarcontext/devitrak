@@ -105,14 +105,7 @@ export const MyProfile = () => {
 
     formValues.id = Id
 
-    await startUpdatingContactInfo(formValues); /**
-    {
-      groupName: formValues.groupName,
-      name: formValues.name,
-      lastName: formValues.lastName,
-      email: formValues.email,
-      phoneNumber: formValues.phoneNumber,
-    } */
+    await startUpdatingContactInfo(formValues); 
     setShowInfo(false);
   };
 
