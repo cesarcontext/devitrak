@@ -20,40 +20,62 @@ import { EventScheduled } from "./page/EventScheduled";
 import { MyProfile } from "./page/MyProfile";
 
 import "./App.css";
+import { Checkout } from "./page/Checkout";
+import { ContactInfo } from "./components/ContactInfo";
 
 function App() {
   const session = useStytchSession();
-  console.log({session})
+  console.log({ session });
   return (
     <div className="App">
       <Navbar />
 
       <Routes>
-        {session !== null ? (
+        <Route index path="/" element={<ContactInfo />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/confirmation" element={<QRCodeConfirmation />} />
+        <Route path="/request_devices" element={<RequestDevices />} />
+        <Route path="/more_devices" element={<MoreDevices />} />
+        <Route path="/more_info" element={<MoreInfo />} />
+        <Route
+          path="/how_to_return_the_devices"
+          element={<HowToReturnTheDevices />}
+        />
+        <Route
+          path="/how_to_use_the_receiver"
+          element={<HowToUseTheReceiver />}
+        />
+        <Route
+          path="/request_support_during_event"
+          element={<RequestSupportDuringTheEvent />}
+        />
+        <Route path="/event_schedule" element={<EventScheduled />} />
+        <Route path="/my_profile" element={<MyProfile />} />
+        <Route path="/authenticate" element={<Authenticate />} />
+      </Routes>
+      <NavbarBottom />
+    </div>
+  );
+}
+
+export default App;
+
+
+  {/* {session !== null ? (
           <>
             <Route exact path="/" element={<Home />} />
             <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         ) : (
           <>
-            <Route index path="/checkout" element={<PaymentFormat />} />
+            <Route index path="/" element={<PaymentFormat />} />
             <Route path="/confirmation" element={<QRCodeConfirmation />} />
             <Route path="/request_devices" element={<RequestDevices />} />
             <Route path="/more_devices" element={<MoreDevices />} />
             <Route path="/more_info" element={<MoreInfo />} />
-            <Route index element={<MoreInfo />} />
-            <Route
-              path="/how_to_return_the_devices"
-              element={<HowToReturnTheDevices />}
-            />
-            <Route
-              path="/how_to_use_the_receiver"
-              element={<HowToUseTheReceiver />}
-            />
-            <Route
-              path="/request_support_during_event"
-              element={<RequestSupportDuringTheEvent />}
-            />
+            <Route path="/how_to_return_the_devices" element={<HowToReturnTheDevices />} />
+            <Route path="/how_to_use_the_receiver" element={<HowToUseTheReceiver />} />
+            <Route path="/request_support_during_event" element={<RequestSupportDuringTheEvent />} />
             <Route path="/event_schedule" element={<EventScheduled />} />
             <Route path="/my_profile" element={<MyProfile />} />
           </>
@@ -67,14 +89,4 @@ function App() {
               <AuthenticatedRoute />
             </PrivateRoute>
           }
-        />
-      </Routes>
-
-      <div className="App-footer">
-        <NavbarBottom />
-      </div>
-    </div>
-  );
-}
-
-export default App;
+        /> */}
