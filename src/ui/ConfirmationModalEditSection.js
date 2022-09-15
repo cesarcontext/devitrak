@@ -22,7 +22,7 @@ Modal.setAppElement("#root");
 
 export const ConfirmationModalEditSection = () => {
   const { userParseStored } = useContactInfoStore();
-  const { paymentInfoParse, startUpdatingCreditCardInfo} = usePaymentStore();
+  const { paymentInfoParse, startUpdatingCreditCardInfo, startSavingPaymentInfo} = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
 
@@ -30,7 +30,6 @@ export const ConfirmationModalEditSection = () => {
     closeModal();
   };
 
-  let groupName;
   let name;
   let lastName;
   let email;
@@ -39,7 +38,6 @@ export const ConfirmationModalEditSection = () => {
   userParseStored.map((item) => {
     return (
       <>
-        {(groupName = item.groupName)}
         {(name = item.name)}
         {(lastName = item.lastName)}
         {(email = item.email)}
@@ -73,7 +71,7 @@ export const ConfirmationModalEditSection = () => {
 
   const submitInfoToSaveInDataBase = async () => {
 
-    await startUpdatingCreditCardInfo({
+    await startSavingPaymentInfo({
       cardName,
       cardNumber,
       mm,
@@ -143,10 +141,10 @@ export const ConfirmationModalEditSection = () => {
             <div className="card-body">
               <div className="card-text">
                 <div>
-                  <div>
+                  {/* <div>
                     <span>Group name:   </span>
                     {groupName}
-                  </div>
+                  </div> */}
                   <div>
                     <span>Name:   </span>
                     {name}
