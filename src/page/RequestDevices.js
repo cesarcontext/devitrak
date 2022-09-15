@@ -1,9 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { useStytchSession, useStytch } from "@stytch/stytch-react";
+
 
 export const RequestDevices = () => {
-  const deviceSelected = localStorage.getItem("device");
 
+  const session = useStytchSession()
+  const deviceSelected = localStorage.getItem("device");
+  const { users } = useContactInfoStore();
+  let navigation;
+
+  if (deviceSelected == 0 && !session ||deviceSelected == 0 && users[0].id === "") {
+    navigation = "/";
+  }
+  if (deviceSelected == 0 &&  session ||deviceSelected == 0 && users[0].id !== "") {
+    navigation = "/checkout";
+  }
+
+  if (deviceSelected > 0 &&  session ||deviceSelected == 0 && users[0].id !== "") {
+    navigation = "/checkout";
+  }
+
+  console.log({ navigation, deviceSelected },'users', users[0].id);
   return (
     <div
       style={{
@@ -14,7 +33,7 @@ export const RequestDevices = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-around",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <div>
@@ -42,9 +61,11 @@ export const RequestDevices = () => {
           <p>${deviceSelected * 200} deposit</p>
         </div>
       </div>
-      <div style={{
-        marginTon: "2%"
-      }}>
+      <div
+        style={{
+          marginTon: "2%",
+        }}
+      >
         <Link to="/my_profile">
           <span>
             VIEW MORE DETAILS IN YOUR ACCOUNT{" "}
@@ -61,11 +82,12 @@ export const RequestDevices = () => {
             justifyContent: "space-between",
             AlignItems: "center",
             margin: "5%",
-            width: "100%"
+            width: "100%",
           }}
         >
           <span>Would you like to request more?</span>
-          <Link to="/more_devices">
+
+          <Link to={navigation}>
             <button
               style={{
                 margin: "15px auto",
@@ -75,7 +97,7 @@ export const RequestDevices = () => {
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
-                width: "100%"
+                width: "100%",
               }}
             >
               REQUEST MORE DEVICES
@@ -93,34 +115,38 @@ export const RequestDevices = () => {
         }}
       >
         <div
-        style={{
-          marginTop: "1%",
-          marginBottom: "3%"
-        }}>
-          <Link to="/">
+          style={{
+            marginTop: "1%",
+            marginBottom: "3%",
+          }}
+        >
+          <Link to="/more_info">
             <span>OTHER RESOURCES</span>
           </Link>
         </div>
         <div
-        style={{
-          marginBottom: "3%"
-        }}>
+          style={{
+            marginBottom: "3%",
+          }}
+        >
           <Link to="/how_to_use_the_receiver">
             <span>HOW TO USE THE RECEIVERS</span>
           </Link>
         </div>
         <div
-        style={{
-          marginBottom: "3%"
-        }}>
+          style={{
+            marginBottom: "3%",
+          }}
+        >
           <Link to="/request_support_during_event">
             <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
           </Link>
         </div>
         <div
-        style={{
-          marginBottom: "3%"
-        }}>
+          style={{
+            marginBottom: "3%",
+          }}
+        >
           <Link to="/how_to_return_the_devices">
             <span>HOW TO RETURN THE DEVICES</span>
           </Link>
