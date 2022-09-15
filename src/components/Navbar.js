@@ -2,12 +2,17 @@ import React, { useState, useCallback } from "react";
 import { useStytchSession, useStytch } from "@stytch/stytch-react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
 export const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
   const session = useStytchSession();
   const client = useStytch();
   const navigate = useNavigate();
+
+  const { users } = useContactInfoStore()
+
+  console.log(users[0].email)
 
   const user = session?.authentication_factors[0].email_factor.email_address;
 
@@ -17,6 +22,7 @@ export const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     await client.session.revoke();
+    localStorage.clear()
     Swal.fire({
       title: `Your session is finished`,
       confirmButtonColor: "rgb(30, 115, 190)",
@@ -81,17 +87,17 @@ export const Navbar = () => {
             <div>
               <h4>Event Name</h4>
             </div>
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              <div>{user}</div>
+              <div>{session ? user : users[0].email}</div>
               <div>
-                {session && <button onClick={handleLogout}>Logout</button>}
+                {session ? <button onClick={handleLogout}>Logout</button> : <button onClick={handleLogout}>Logout</button>}
               </div>
-            </div>
+            </div> */}
           </div>
         </nav>
       ) : (
@@ -165,17 +171,17 @@ export const Navbar = () => {
             <div>
               <h4>Event Name</h4>
             </div>
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              <div>{user}</div>
+              <div>{session ? user : users[0].email}</div>
               <div>
-                {session && <button onClick={handleLogout}>Logout</button>}
+                {session ? <button onClick={handleLogout}>Logout</button> : <button onClick={handleLogout}>Logout</button>}
               </div>
-            </div>
+            </div> */}
           </div>
         </nav>
       )}
