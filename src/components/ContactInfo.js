@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { useUiStore } from "../hooks/useUiStore";
 import { Checkout } from "../page/Checkout";
 import { MagicLink } from "./MagicLink";
 
@@ -20,7 +19,8 @@ export const ContactInfo = () => {
   const [formValues, setFormValues] = useState(initalFormValues);
   const [status, setStatus] = useState(false);
   const [proceed, setProceed] = useState(false);
-  const [visible, setVisible] = useState("none")
+  const [visible, setVisible] = useState("none");
+  const [buttonVisible, setButtonVisible] = useState("content")
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -73,7 +73,6 @@ export const ContactInfo = () => {
 
   const magicLinkParam = formValues.email;
 
-
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
@@ -112,14 +111,14 @@ export const ContactInfo = () => {
 
     startSavingContactInfo(formValues);
     setProceed(!proceed);
-    setVisible("content")
-
+    setVisible("content");
+    setButtonVisible("none")
   };
 
   return (
-    <div className="container">
+    <div className="container mt-4">
       <section className="gradient-custom">
-        <div className="container py-5 h-100">
+        <div className="container">
           <div className="row justify-content-center align-items-center">
             <div className="col-12 col-lg-9 col-xl-7">
               <div
@@ -130,11 +129,12 @@ export const ContactInfo = () => {
                   <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">
                     ENTER YOUR CONTACT INFORMATION
                   </h3>
-                  <div>
-                    <div className="row">
-                      <div className="col-md-10 m-4 pb-2">
+                  <div className="row">
+                    <form>
+                      <div className="col-md-10 m-4">
                         <div className="form-outline">
                           <input
+                          
                             type="email"
                             id="emailAddress"
                             className={`form-control ${validationEmail} form-control-lg`}
@@ -146,9 +146,10 @@ export const ContactInfo = () => {
                           />
                         </div>
                       </div>
-                      <div className="col-md-10 m-4">
+                      <div className="col-md-10 m-4 mb-0">
                         <div className="form-outline">
                           <input
+                          
                             type="text"
                             id="firstName"
                             name="name"
@@ -160,58 +161,62 @@ export const ContactInfo = () => {
                           />
                         </div>
                       </div>
-
-                      {formValues.email.length > 1 && status === true ? (
-                        <MagicLink magicLinkParam={magicLinkParam} />
-                      ) : (
-                        <>
-                          <form onSubmit={handleOnSubmit}>
-                            <div className="col-md-10 m-4">
-                              <div className="form-outline">
-                                <input
-                                  type="text"
-                                  id="lastName"
-                                  className={`form-control ${validationLastName} form-control-lg`}
-                                  placeholder="Last name"
-                                  onChange={onInputCHange}
-                                  name="lastName"
-                                  value={formValues.lastName}
-                                  minLength={1}
-                                />
-                              </div>
+                    </form>
+                    {formValues.email.length > 1 && status === true ? (
+                      <MagicLink magicLinkParam={magicLinkParam} />
+                    ) : (
+                      <>
+                        <form onSubmit={handleOnSubmit}>
+                          <div className="col-md-10 m-4">
+                            <div className="form-outline">
+                              <input
+                              
+                                type="text"
+                                id="lastName"
+                                className={`form-control ${validationLastName} form-control-lg`}
+                                placeholder="Last name"
+                                onChange={onInputCHange}
+                                name="lastName"
+                                value={formValues.lastName}
+                                minLength={1}
+                              />
                             </div>
-                            <div className="col-md-10 m-4 d-flex align-items-center">
-                              <div className="form-outline datepicker w-100">
-                                <input
-                                  type="text"
-                                  className={`form-control form-control-lg`} //${validationGroupName}
-                                  id="groupName"
-                                  placeholder="Group name"
-                                  onChange={onInputCHange}
-                                  name="groupName"
-                                  value={formValues.groupName}
-                                  minLength={3}
-                                />
-                              </div>
+                          </div>
+                          <div className="col-md-10 m-4">
+                            <div className="form-outline">
+                              <input
+                              
+                                type="text"
+                                className={`form-control form-control-lg`} //${validationGroupName}
+                                id="groupName"
+                                placeholder="Group name"
+                                onChange={onInputCHange}
+                                name="groupName"
+                                value={formValues.groupName}
+                                minLength={3}
+                              />
                             </div>
-                            <div className="col-md-10 m-4 pb-2">
-                              <div className="form-outline">
-                                <input
-                                  type="tel"
-                                  id="phoneNumber"
-                                  className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                                  placeholder="Phone number"
-                                  onChange={onInputCHange}
-                                  name="phoneNumber"
-                                  value={formValues.phoneNumber}
-                                  maxLength={15}
-                                  minLength={5}
-                                />
-                              </div>
+                          </div>
+                          <div className="col-md-10 m-4">
+                            <div className="form-outline">
+                              <input
+                              
+                                type="tel"
+                                id="phoneNumber"
+                                className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                                placeholder="Phone number"
+                                onChange={onInputCHange}
+                                name="phoneNumber"
+                                value={formValues.phoneNumber}
+                                maxLength={15}
+                                minLength={5}
+                              />
                             </div>
-                            {formValues.phoneNumber.length < 4 ? (
-                              <></>
-                            ) : (
+                          </div>
+                          {formValues.phoneNumber.length < 5 ? (
+                            <></>
+                          ) : (
+                            <div className={`d-${buttonVisible}`}>
                               <button
                                 style={{
                                   margin: "auto",
@@ -226,11 +231,11 @@ export const ContactInfo = () => {
                               >
                                 Looks right?
                               </button>
-                            )}
-                          </form>
-                        </>
-                      )}
-                    </div>
+                            </div>
+                          )}
+                        </form>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -238,7 +243,9 @@ export const ContactInfo = () => {
           </div>
         </div>
       </section>
-      <div className={`d-${visible}`}><Checkout/></div>
+      <div className={`d-${visible}`}>
+        <Checkout />
+      </div>
     </div>
   );
 };
