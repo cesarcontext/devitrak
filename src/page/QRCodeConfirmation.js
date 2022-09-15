@@ -3,23 +3,21 @@ import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 
-export const QRCodeConfirmation =  () => {
-  const { users, Id } = useContactInfoStore();
+export const QRCodeConfirmation = () => {
+  const { uidParsed, Id} = useContactInfoStore();
 
-  // const reference = Id.replace(/[^0-9]/gi, '');
-  
-  const QRCodeGenerated = users.map((item) => {
+  const QRCodeGenerated = uidParsed?.map((item) => {
     return (
       <QRCode
         fgColor="#000"
         bgColor="#ffff"
         level="Q"
         size={150}
-        value={item.email}
+        value={item}
       />
     );
   });
-  
+
   return (
     <div
       style={{
@@ -62,13 +60,16 @@ export const QRCodeConfirmation =  () => {
         </div>
       </div>
       <div className="qr-code-div" style={{ margin: "40px" }}>
-        <div className="qr-code">{QRCodeGenerated}</div>
-
+        <div className="qr-code">
+          {
+            QRCodeGenerated
+          }
+        </div>
       </div>
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
         <span>
-          { Id }
+          {Id}
         </span>
       </div>
       <div
@@ -93,7 +94,7 @@ export const QRCodeConfirmation =  () => {
             <span>HOW TO USE THE RECEIVERS</span>
           </div>
         </Link>
-        <Link to="/request_support_during_even">
+        <Link to="/request_support_during_event">
           <div
             style={{
               margin: "10px",
