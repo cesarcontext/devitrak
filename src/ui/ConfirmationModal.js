@@ -21,7 +21,7 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 export const ConfirmationModal = () => {
-  const { users, startSavingContactInfo } = useContactInfoStore();
+  const { users, userParseStored  } = useContactInfoStore();
   const { creditCardState, startSavingPaymentInfo } = usePaymentStore();
   const { isModalOpen, closeModal } = useUiStore();
 
@@ -29,13 +29,15 @@ export const ConfirmationModal = () => {
     closeModal();
   };
 
+  console.log("users in modal", users)
+
   let groupName;
   let name;
   let lastName;
   let email;
-  let phoneNumber;
-
-  users.map((item) => {
+  let phoneNumber
+  
+  userParseStored.map((item) => {
     return (
       <>
         {(groupName = item.groupName)}
@@ -70,14 +72,6 @@ export const ConfirmationModal = () => {
   });
 
   const submitInfoToSaveInDataBase = async () => {
-
-    await startSavingContactInfo({
-      groupName,
-      name,
-      lastName,
-      email,
-      phoneNumber,
-    });
 
     await startSavingPaymentInfo({
       cardName,

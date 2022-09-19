@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Accordion } from "../components/Accordion";
 import { ContactInfoProfile } from "../components/ContactInfoProfile";
@@ -12,7 +12,6 @@ const initalFormValues = {
   lastName: "",
   email: "",
   phoneNumber: "",
-  id:""
 };
 
 export const MyProfile = () => {
@@ -20,6 +19,7 @@ export const MyProfile = () => {
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
+  const [buttonState, setButtonState] = useState(true)
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -31,6 +31,15 @@ export const MyProfile = () => {
   const handleButtonState = () => {
     setShowInfo(!showInfo);
   };
+
+
+  useEffect(() => {
+
+    if ( Id !== ""){
+      return setButtonState(false)
+    }
+  }, [Id])
+  
 
   const validationGroupName = useMemo(() => {
     return formValues.groupName.length > 2 ? "" : "is-invalid";
@@ -103,10 +112,8 @@ export const MyProfile = () => {
       });
     }
 
-    formValues.id = Id
-
-    await startUpdatingContactInfo(formValues); 
-    setShowInfo(false);
+    await startUpdatingContactInfo(formValues);
+    setShowInfo(!showInfo);
   };
 
   return (
@@ -154,6 +161,7 @@ export const MyProfile = () => {
             >
               {showInfo !== true ? (
                 <button
+                  disabled={ buttonState }
                   style={{
                     width: "25%",
                     display: "flex",

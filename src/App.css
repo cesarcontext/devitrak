@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --black: 
 rgba(0, 0, 0, 1);
   --main-colorsfresh-blue-of-bel-air: 
@@ -55,10 +55,10 @@ rgba(255, 255, 255, 1);
 
   --font-family-inter: "Inter";
   --font-family-open_sans: "Open Sans";
-}
+} */
 .App {
   text-align: center;
-  height: 150vh;
+  height: 100vh;
 }
 
 @media (prefers-reduced-motion: no-preference) {

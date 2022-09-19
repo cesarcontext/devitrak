@@ -3,11 +3,12 @@ import Swal from "sweetalert2";
 import { usePaymentStore } from "../hooks/usePaymentStore";
 import { useUiStore } from "../hooks/useUiStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const PaymentForms = () => {
-  const { openModal } = useUiStore();
   const { startSavingPaymentInfo } = usePaymentStore();
 
+  const navigate = useNavigate();
   const {
     amountToDeposit,
     device,
@@ -212,12 +213,12 @@ export const PaymentForms = () => {
     }
 
     await startSavingPaymentInfo(paymentFormValues);
-    openModal();
+    navigate("/confirmation");
   };
 
   return (
-    <div className="container"  style={{ paddingBottom: "5vh"}}>
-      <form onSubmit={handleOnSubmit}>
+    <div className="container" style={{ paddingBottom: "5vh" }}>
+      <form onSubmit={handleOnSubmit} style={{ paddingBottom: "10vh"}}>
         <section className="gradient-custom">
           <div className="container">
             <div className="row justify-content-center align-items-center">
@@ -231,12 +232,14 @@ export const PaymentForms = () => {
                       >
                         <div
                           style={{
-                            display:"flex",
+                            display: "flex",
                             padding: "15px",
                             justifyContent: "space-evenly",
                           }}
                         >
-                          <h5 style={{ padding: "15px"}}>HOW MANY RECEIVERS DO YOU NEED?</h5>
+                          <h5 style={{ padding: "15px" }}>
+                            HOW MANY RECEIVERS DO YOU NEED?
+                          </h5>
                           <div
                             style={{
                               display: "flex",
@@ -430,7 +433,6 @@ export const PaymentForms = () => {
           SUBMIT AND REQUEST DEVICES
         </button>
       </form>
-
     </div>
   );
 };

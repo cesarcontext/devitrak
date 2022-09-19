@@ -1,23 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { usePaymentStore } from "../hooks/usePaymentStore";
 
 export const QRCodeConfirmation = () => {
-  const { uidParsed, Id} = useContactInfoStore();
-
-  const QRCodeGenerated = uidParsed?.map((item) => {
-    return (
-      <QRCode
-        fgColor="#000"
-        bgColor="#ffff"
-        level="Q"
-        size={150}
-        value={item}
-      />
-    );
-  });
-
+  const { tokenParsed } = useContactInfoStore();
+console.log(tokenParsed.slice(0,15))
+  const QRCodeGenerated = (
+    <QRCode
+      fgColor="#000"
+      bgColor="#ffff"
+      level="Q"
+      size={150}
+      value={tokenParsed.slice(0,20)}
+    />
+  );
   return (
     <div
       style={{
@@ -60,17 +59,11 @@ export const QRCodeConfirmation = () => {
         </div>
       </div>
       <div className="qr-code-div" style={{ margin: "40px" }}>
-        <div className="qr-code">
-          {
-            QRCodeGenerated
-          }
-        </div>
+        <div className="qr-code">{QRCodeGenerated}</div>
       </div>
       <div className="reference-number" style={{ margin: "40px" }}>
         <h4>Your reference number is:</h4>
-        <span>
-          {Id}
-        </span>
+        <span>{tokenParsed.slice(0,15)}</span>
       </div>
       <div
         className="links-help"

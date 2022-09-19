@@ -1,28 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { useStytchSession, useStytch } from "@stytch/stytch-react";
+import { useStytchSession } from "@stytch/stytch-react";
 
 
 export const RequestDevices = () => {
 
   const session = useStytchSession()
   const deviceSelected = localStorage.getItem("device");
-  const { users } = useContactInfoStore();
+  const {  userParseStored } = useContactInfoStore();
   let navigation;
 
-  if (deviceSelected == 0 && !session ||deviceSelected == 0 && users[0].id === "") {
+  if (!session || userParseStored[0].id === "") {
     navigation = "/";
   }
-  if (deviceSelected == 0 &&  session ||deviceSelected == 0 && users[0].id !== "") {
+  if (session || userParseStored[0].id !== "") {
     navigation = "/checkout";
   }
 
-  if (deviceSelected > 0 &&  session ||deviceSelected == 0 && users[0].id !== "") {
-    navigation = "/checkout";
-  }
+  console.log({ navigation })
 
-  console.log({ navigation, deviceSelected },'users', users[0].id);
   return (
     <div
       style={{
@@ -87,7 +84,7 @@ export const RequestDevices = () => {
         >
           <span>Would you like to request more?</span>
 
-          <Link to={navigation}>
+          <Link to={`${navigation}`}>
             <button
               style={{
                 margin: "15px auto",

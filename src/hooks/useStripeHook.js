@@ -1,4 +1,4 @@
-import devitrackApi from "../apis/devitrackApi";
+import { devitrackApi } from "../apis/devitrackApi";
 import { useDeviceCount } from "./useDeviceCountStore";
 
 export const useStripeHook = () => {
@@ -20,6 +20,7 @@ export const useStripeHook = () => {
       // payment_method_types: "card"
 
       console.log("stripe", { data });
+
     } catch (error) {
       console.log(error);
     }

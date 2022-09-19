@@ -12,8 +12,6 @@ export const Navbar = () => {
 
   const { users } = useContactInfoStore()
 
-  console.log(users[0].email)
-
   const user = session?.authentication_factors[0].email_factor.email_address;
 
   const switchNavbarState = () => {

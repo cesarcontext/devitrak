@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import adminSlice from "./slices/adminSlice";
 import contactInfoSlice from "./slices/contactInfoSlice";
 import deviceSlice from "./slices/deviceSlice";
 import paymentInfoSlice from "./slices/paymentInfoSlice";
@@ -10,6 +11,6 @@ export const store = configureStore({
     ui: uiSlice,
     contactInfo: contactInfoSlice,
     paymentInfo: paymentInfoSlice,
-    
+    admin: adminSlice    
   },
 });
