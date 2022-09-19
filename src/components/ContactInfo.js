@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { Checkout } from "../page/Checkout";
 import { MagicLink } from "./MagicLink";
+import { PaymentForms } from "./PaymentForms";
 
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users } =
@@ -20,7 +20,7 @@ export const ContactInfo = () => {
   const [status, setStatus] = useState(false);
   const [proceed, setProceed] = useState(false);
   const [visible, setVisible] = useState("none");
-  const [buttonVisible, setButtonVisible] = useState("content")
+  const [buttonVisible, setButtonVisible] = useState("content");
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -112,7 +112,7 @@ export const ContactInfo = () => {
     startSavingContactInfo(formValues);
     setProceed(!proceed);
     setVisible("content");
-    setButtonVisible("none")
+    setButtonVisible("none");
   };
 
   return (
@@ -134,7 +134,6 @@ export const ContactInfo = () => {
                       <div className="col-md-10 m-4">
                         <div className="form-outline">
                           <input
-                          
                             type="email"
                             id="emailAddress"
                             className={`form-control ${validationEmail} form-control-lg`}
@@ -149,7 +148,6 @@ export const ContactInfo = () => {
                       <div className="col-md-10 m-4 mb-0">
                         <div className="form-outline">
                           <input
-                          
                             type="text"
                             id="firstName"
                             name="name"
@@ -170,7 +168,6 @@ export const ContactInfo = () => {
                           <div className="col-md-10 m-4">
                             <div className="form-outline">
                               <input
-                              
                                 type="text"
                                 id="lastName"
                                 className={`form-control ${validationLastName} form-control-lg`}
@@ -185,7 +182,6 @@ export const ContactInfo = () => {
                           <div className="col-md-10 m-4">
                             <div className="form-outline">
                               <input
-                              
                                 type="text"
                                 className={`form-control form-control-lg`} //${validationGroupName}
                                 id="groupName"
@@ -200,7 +196,6 @@ export const ContactInfo = () => {
                           <div className="col-md-10 m-4">
                             <div className="form-outline">
                               <input
-                              
                                 type="tel"
                                 id="phoneNumber"
                                 className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
@@ -244,7 +239,7 @@ export const ContactInfo = () => {
         </div>
       </section>
       <div className={`d-${visible}`}>
-        <Checkout />
+        <PaymentForms />
       </div>
     </div>
   );
