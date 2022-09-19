@@ -12,9 +12,24 @@ export const devitrackApiPayment = axios.create({
 devitrackApiPayment.interceptors.request.use((config) => {
   if (localStorage.getItem("token")) {
     config.headers = {
-      "x-token": localStorage.getItem("token").slice(1, -1),
+      "x-token": localStorage.getItem("token"),
     };
     console.log('config', config.headers )
   }
   return config
 });
+
+export const devitrackApiAdmin = axios.create({
+  baseURL: "http://localhost:34001/api/admin"
+})
+
+devitrackApiAdmin.interceptors.request.use((config) => {
+  if (localStorage.getItem("token")) {
+    config.headers = {
+      "x-token": localStorage.getItem("token"),
+    };
+    console.log('config', config.headers )
+  }
+  return config
+});
+
