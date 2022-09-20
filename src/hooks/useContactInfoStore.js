@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -12,6 +13,8 @@ export const useContactInfoStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { users } = useSelector((state) => state.contactInfo);
+  const [visible, setVisible] = useState("none")
+  const [visibleButton, setVisibleButton] = useState("content")
 
   const startSavingContactInfo = async ({
     name,
@@ -31,6 +34,8 @@ export const useContactInfoStore = () => {
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
       localStorage.setItem("status", data.ok);
+      setVisible("content")
+      setVisibleButton("none")
 
       dispatch(
         onAddNewContact({
@@ -43,7 +48,6 @@ export const useContactInfoStore = () => {
       );
     } catch (error) {
       console.log({ error });
-
       Swal.fire({
         title: "Something went wrong",
         width: 600,
@@ -67,10 +71,7 @@ export const useContactInfoStore = () => {
     }
   };
 
-  const checkingId = localStorage.getItem("uid");
-
-  console.log(typeof checkingId, checkingId)
-  
+  const checkingId = localStorage.getItem("uid");  
 
   const startShowingData = () => {
     try {
@@ -139,6 +140,7 @@ export const useContactInfoStore = () => {
   };
 
   const startCheckingUser = async (userInfoEmailCheck) => {
+    console.log(userInfoEmailCheck)
     try {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,
@@ -200,16 +202,20 @@ export const useContactInfoStore = () => {
   const userParseStored = [JSON.parse(checking)];
   const uidParsed = localStorage.getItem("uid");
   // const uidParsed = [JSON.parse(uidStored)];
-  const tokenParsed = localStorage.getItem("token");
-  // const tokenParsed = [JSON.parse(tokenStored)];
+  const token = localStorage.getItem("token");
+  // const token = [JSON.parse(tokenStored)];
 
+  console.log(visibleButton)
+  console.log(visible)
   return {
     //* Properties
     users,
     userParseStored,
     checkingId,
     uidParsed,
-    tokenParsed,
+    token,
+    visibleButton,
+    visible,
 
     //* Methods
     // startVerificationContactInfoBeforeSaveIt,
