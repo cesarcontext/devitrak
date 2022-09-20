@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+// import { useNavigate } from "react-router-dom";
+// import Swal from "sweetalert2";
 import {devitrackApiPayment} from "../apis/devitrackApi";
 import {
   onAddNewCreditCardInfo,
-  onUpdateCreditCardInfo,
+  // onUpdateCreditCardInfo,
 } from "../store/slices/paymentInfoSlice";
 import { useContactInfoStore } from "./useContactInfoStore";
 import { useDeviceCount } from "./useDeviceCountStore";
@@ -12,7 +12,7 @@ import { useUiStore } from "./useUiStore";
 
 export const usePaymentStore = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { creditCardState } = useSelector((state) => state.paymentInfo);
   const { users } = useContactInfoStore();
@@ -65,8 +65,8 @@ export const usePaymentStore = () => {
     }
   };
 
-  const checkCreditcardId = localStorage.getItem("card-card-id");
-  const CCId = JSON.parse(checkCreditcardId);
+  // const checkCreditcardId = localStorage.getItem("card-card-id");
+  // const CCId = JSON.parse(checkCreditcardId);
 
   // const startUpdatingCreditCardInfo = async (paymentInfoSaved) => {
   //   try {
