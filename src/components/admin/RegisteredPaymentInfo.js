@@ -2,14 +2,15 @@ import React, { useEffect } from "react";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { Navbar } from "./Navbar";
 
-export const RegisteredUser = () => {
-  const { startLoadingUsers } = useAdminStore();
+export const RegisteredPaymentInfo = () => {
+  const { userRegitered, startLoadingUsers } = useAdminStore();
 
   useEffect(() => {
     startLoadingUsers();
   }, []);
 
-  
+  console.log("start loading users", userRegitered);
+
   return (
     <div
       style={{
@@ -24,16 +25,17 @@ export const RegisteredUser = () => {
         style={{
           paddingTop: "30px",
         }}
-      >
-        <h1>Users:</h1>
+      > 
+        <h1>Registered Payments:</h1>
         <table class="table">
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Email</th>
-              <th scope="col">Phone</th>
+              <th scope="col">Card Name</th>
+              <th scope="col">Card Number</th>
+              <th scope="col">Expry Date</th>
+              <th scope="col">Zip</th>
+              <th scope="col">Country</th>
             </tr>
           </thead>
           <tbody>

@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { usePaymentStore } from "../hooks/usePaymentStore";
-import { useUiStore } from "../hooks/useUiStore";
-import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { usePaymentStore } from "../../hooks/usePaymentStore";
+import { useUiStore } from "../../hooks/useUiStore";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { Navigate, useNavigate } from "react-router-dom";
 
 export const PaymentForms = () => {
@@ -218,7 +218,7 @@ export const PaymentForms = () => {
 
   return (
     <div className="container" style={{ paddingBottom: "5vh" }}>
-      <form onSubmit={handleOnSubmit} style={{ paddingBottom: "10vh"}}>
+      <form onSubmit={handleOnSubmit} style={{ paddingBottom: "10vh" }}>
         <section className="gradient-custom">
           <div className="container">
             <div className="row justify-content-center align-items-center">
@@ -245,14 +245,36 @@ export const PaymentForms = () => {
                               display: "flex",
                               justifyContent: "space-between",
                               margin: "0  auto",
+                              padding: "20px",
                             }}
                           >
-                            <button onClick={handleDecreaseDevice}>-</button>
+                            <div>
+                              <button
+                                onClick={handleDecreaseDevice}
+                                style={{ padding: "15px" }}
+                              >
+                                -
+                              </button>
+                            </div>
                             <div>
                               <strong>{device}</strong>
                             </div>
-                            <button onClick={handleIncreaseDevice}>+</button>
-                            <button onClick={handleResetDevice}>Reset</button>
+                            <div>
+                              <button
+                                onClick={handleIncreaseDevice}
+                                style={{ padding: "15px" }}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div>
+                              <button
+                                onClick={handleResetDevice}
+                                style={{ padding: "15px" }}
+                              >
+                                Reset
+                              </button>
+                            </div>
                           </div>
                           <div
                             style={{

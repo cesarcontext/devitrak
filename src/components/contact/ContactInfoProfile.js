@@ -1,5 +1,5 @@
 import React from "react";
-import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
 export const ContactInfoProfile = () => {
   const { userParseStored} = useContactInfoStore();

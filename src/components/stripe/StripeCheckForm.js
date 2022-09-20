@@ -4,7 +4,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
 export const StripeCheckForm =() => {
     const {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDeviceCount } from '../hooks/useDeviceCountStore'
+import { useDeviceCount } from '../../hooks/useDeviceCountStore'
 
 export const ReturnDeviceAlert = () => {
 

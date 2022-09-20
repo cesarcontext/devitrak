@@ -1,5 +1,5 @@
 import React from "react";
-import { usePaymentStore } from "../hooks/usePaymentStore";
+import { usePaymentStore } from "../../hooks/usePaymentStore";
 
 export const PaymentInfoProfile = () => {
   const { paymentInfoParse } = usePaymentStore();
