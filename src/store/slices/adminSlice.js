@@ -4,13 +4,13 @@ const adminSlice = createSlice({
     name: 'admin',
     initialState: {
         status: 'checking',  //authenticated, not-authenticated
-        user: {},
+        user: [],
         errorMessage: undefined,
     },
         reducers: {
             onChecking: ( state ) => {
                 state.status = 'checking';
-                state.user = {};
+                state.user = [];
                 state.errorMessage = undefined;
             },
             onLogin: ( state, { payload } ) => {
@@ -21,7 +21,7 @@ const adminSlice = createSlice({
             },
             onLogout: (state, { payload }) => {
                 state.status = 'not-authenticated';
-                state.user = {};
+                state.user = []
                 state.errorMessage = payload;
             },
             clearErrorMessage: ( state ) => {
