@@ -1,6 +1,12 @@
 import React from "react";
-import { PaymentForms } from "../components/PaymentForms";
+import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { PaymentForms } from "../components/creditCard/PaymentForms";
 
 export const Checkout = () => {
-  return <PaymentForms />;
+  return (
+    <>
+      <PaymentForms />
+      <NavbarBottom />
+    </>
+  );
 };

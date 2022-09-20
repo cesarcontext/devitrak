@@ -1,16 +1,17 @@
-import React from "react";
+import { Outlet } from "react-router-dom";
 import { Navbar } from "../../components/admin/Navbar";
-import { RegisteredUser } from "../../components/admin/RegisteredUser";
 
 export const Admin = () => {
   return (
-    <>
+    <div style={{ display: "flex", marginLeft: "17%" }}>
       <aside>
         <Navbar />
       </aside>
+
+      <h3>This is the main admin page</h3>
       <div>
-        <RegisteredUser />
+        {Outlet}
       </div>
-    </>
+    </div>
   );
 };

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { useForm } from "../../hooks/useForm"
@@ -19,7 +18,6 @@ const registerFormFields = {
 
 export const LoginPage = () => {
   const { startLogin, errorMessage, startRegister } = useAdminStore();
-  const navigate = useNavigate()
 
   const {
     loginEmail,
@@ -38,7 +36,6 @@ export const LoginPage = () => {
     event.preventDefault();
 
     startLogin({ email: loginEmail, password: loginPassword });
-    navigate('/admin')
   };
 
   const onSubmitRegister = (event) => {
@@ -54,7 +51,6 @@ export const LoginPage = () => {
             email: registerEmail, 
             password: registerPassword })
     }
-    navigate('/admin')
   };
 
   useEffect(() => {
