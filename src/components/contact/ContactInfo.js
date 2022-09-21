@@ -4,10 +4,25 @@ import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
 import { PaymentForms } from "../creditCard/PaymentForms";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 
 export const ContactInfo = () => {
-  const { startSavingContactInfo, startCheckingUser, users, visible, visibleButton } =
-    useContactInfoStore();
+  const {
+    startSavingContactInfo,
+    startCheckingUser,
+    users,
+    visible,
+    visibleButton,
+  } = useContactInfoStore();
+
+  const {
+    device,
+    handleDecreaseDevice,
+    handleIncreaseDevice,
+    handleResetDevice,
+    amountToDeposit,
+  } = useDeviceCount();
 
   const initalFormValues = {
     groupName: "",
@@ -19,7 +34,7 @@ export const ContactInfo = () => {
 
   const [formValues, setFormValues] = useState(initalFormValues);
   const [status, setStatus] = useState(false);
-  const [proceed, setProceed] = useState(false);
+  // const [proceed, setProceed] = useState(false);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -109,7 +124,7 @@ export const ContactInfo = () => {
     }
 
     startSavingContactInfo(formValues);
-    setProceed(!proceed);
+    console.log("submitted")
   };
 
   return (
@@ -206,26 +221,6 @@ export const ContactInfo = () => {
                                 />
                               </div>
                             </div>
-                            {formValues.phoneNumber.length < 5 ? (
-                              <></>
-                            ) : (
-                              <div className={`d-${visibleButton}`}>
-                                <button
-                                  style={{
-                                    margin: "auto",
-                                    backgroundColor: "rgba(69, 104, 220, 1)",
-                                    color: "#ffff",
-                                    height: "5vh",
-                                    borderRadius: "10px",
-                                    outline: "transparency",
-                                    border: "rgba(69, 104, 220, 1)",
-                                  }}
-                                  type="submit"
-                                >
-                                  Looks right?
-                                </button>
-                              </div>
-                            )}
                           </form>
                         </>
                       )}
@@ -236,8 +231,128 @@ export const ContactInfo = () => {
             </div>
           </div>
         </section>
-        <div className={`d-${visible}`}>
-          <PaymentForms />
+        <section className="gradient-custom">
+          <div className="container">
+            <div className="row justify-content-center align-items-center">
+              <div className="col-12 col-lg-9 col-xl-7">
+                <div className="row">
+                  <div className="col-md-12 mt-4 mb-2">
+                    <div className="form-outline">
+                      <div
+                        className="card shadow-2-strong card-registration"
+                        style={{ bordeRadius: "15px" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            padding: "15px",
+                            justifyContent: "space-evenly",
+                          }}
+                        >
+                          <h5>HOW MANY RECEIVERS DO YOU NEED?</h5>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              margin: "0  auto",
+                              padding: "20px",
+                            }}
+                          >
+                            <div className="p-1">
+                              <button
+                                onClick={handleDecreaseDevice}
+                                style={{
+                                  padding: "15px",
+                                  borderRadius: "15px 0 0 15px",
+                                }}
+                              >
+                                -
+                              </button>
+                            </div>
+
+                            <div className="p-1">
+                              <button
+                                onClick={handleIncreaseDevice}
+                                style={{
+                                  padding: "15px",
+                                  borderRadius: "0 15px 15px 0",
+                                }}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div className="p-1">
+                              <button
+                                onClick={handleResetDevice}
+                                style={{
+                                  padding: "15px",
+                                  borderRadius: "15px",
+                                }}
+                              >
+                                Reset
+                              </button>
+                            </div>
+                            <div className="p-1">
+                              <strong>{device}</strong>
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-evenly",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              className="col-4"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                jsutifyContent: "space-around",
+                                padding: "35px",
+                              }}
+                            >
+                              <div>
+                                <h5 style={{ display: "flex" }}>TOTAL</h5>
+                              </div>
+                              <h3 style={{ display: "flex" }}>
+                                <strong>${amountToDeposit}</strong>
+                              </h3>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {device < 1 ? (
+                    <></>
+                  ) : (
+                    <div className={`d-${visibleButton}`}>
+                      <button
+                        style={{
+                          margin: "auto",
+                          backgroundColor: "rgba(69, 104, 220, 1)",
+                          color: "#ffff",
+                          height: "5vh",
+                          borderRadius: "10px",
+                          outline: "transparency",
+                          border: "rgba(69, 104, 220, 1)",
+                        }}
+                        onClick={ handleOnSubmit }
+                      >
+                        Looks right?
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <div className={`d-${visible}`}>{/*importe StripeCheckForm*/}
+          {/* <PaymentForms />  */}
+          <StripeCheckoutElement />
         </div>
       </div>
       <NavbarBottom />
