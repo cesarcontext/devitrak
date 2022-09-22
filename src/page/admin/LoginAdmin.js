@@ -43,7 +43,7 @@ export const LoginPage = () => {
 
     if ( registerPassword !== registerPassword2) {
 
-        Swal.fire('error','password must match', 'error')
+        Swal.fire('error','Passwords must match', 'error')
         return;
     } else {
         startRegister({ 
@@ -63,13 +63,13 @@ export const LoginPage = () => {
     <div className="container login-container">
       <div className="row">
         <div className="col-md-6 login-form-1">
-          <h3>Ingreso</h3>
+          <h3>Sign In</h3>
           <form onSubmit={onSubmitLogin}>
             <div className="form-group mb-2">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Correo"
+                placeholder="Email"
                 name="loginEmail"
                 value={loginEmail}
                 onChange={onloginInputChange}
@@ -79,7 +79,7 @@ export const LoginPage = () => {
               <input
                 type="password"
                 className="form-control"
-                placeholder="Contraseña"
+                placeholder="Password"
                 name="loginPassword"
                 value={loginPassword}
                 onChange={onloginInputChange}
@@ -92,13 +92,13 @@ export const LoginPage = () => {
         </div>
 
         <div className="col-md-6 login-form-2">
-          <h3>Registro</h3>
+          <h3>Register</h3>
           <form onSubmit={onSubmitRegister}>
             <div className="form-group mb-2">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Nombre"
+                placeholder="Name"
                 name="registerName"
                 value={registerName}
                 onChange={onRegisterInputChange}
@@ -108,7 +108,7 @@ export const LoginPage = () => {
               <input
                 type="email"
                 className="form-control"
-                placeholder="Correo"
+                placeholder="Email"
                 name="registerEmail"
                 value={registerEmail}
                 onChange={onRegisterInputChange}
@@ -118,7 +118,7 @@ export const LoginPage = () => {
               <input
                 type="password"
                 className="form-control"
-                placeholder="Contraseña"
+                placeholder="Password"
                 name="registerPassword"
                 value={registerPassword}
                 onChange={onRegisterInputChange}
@@ -129,7 +129,7 @@ export const LoginPage = () => {
               <input
                 type="password"
                 className="form-control"
-                placeholder="Repita la contraseña"
+                placeholder="Repite password"
                 name="registerPassword2"
                 value={registerPassword2}
                 onChange={onRegisterInputChange}
@@ -137,7 +137,7 @@ export const LoginPage = () => {
             </div>
 
             <div className="d-grid gap-2">
-              <input type="submit" className="btnSubmit" value="Crear cuenta" />
+              <input type="submit" className="btnSubmit" value="Register user" />
             </div>
           </form>
         </div>

@@ -13,8 +13,12 @@ export const useContactInfoStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { users } = useSelector((state) => state.contactInfo);
-  const [visible, setVisible] = useState("none")
-  const [visibleButton, setVisibleButton] = useState("content")
+  const [visible, setVisible] = useState("none");
+  const [visibleButton, setVisibleButton] = useState("content");
+  const [userCreatedDisabledInput, setUserCreatedDisabledInput] =
+    useState(false);
+  const [token, setToken] = useState("");
+  const [emailUserRegistered, setEmailUserRegistered] = useState("");
 
   const startSavingContactInfo = async ({
     name,
@@ -29,13 +33,15 @@ export const useContactInfoStore = () => {
         email,
         phoneNumber,
       });
-      console.log({ data });
       localStorage.setItem("user", JSON.stringify({ ...data }));
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
       localStorage.setItem("status", data.ok);
-      setVisible("content")
-      setVisibleButton("none")
+      setVisible("content");
+      setVisibleButton("none");
+      setUserCreatedDisabledInput(true);
+      setToken(data.token);
+      setEmailUserRegistered(data.user.email);
 
       dispatch(
         onAddNewContact({
@@ -48,6 +54,8 @@ export const useContactInfoStore = () => {
       );
     } catch (error) {
       console.log({ error });
+      setToken("");
+      setEmailUserRegistered("");
       Swal.fire({
         title: "Something went wrong",
         width: 600,
@@ -71,7 +79,7 @@ export const useContactInfoStore = () => {
     }
   };
 
-  const checkingId = localStorage.getItem("uid");  
+  const checkingId = localStorage.getItem("uid");
 
   const startShowingData = () => {
     try {
@@ -97,26 +105,23 @@ export const useContactInfoStore = () => {
         phoneNumber,
       });
 
-      console.log("data update contact", data);
-
       localStorage.setItem("user", JSON.stringify({ ...data }));
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
       localStorage.setItem("status", data.ok);
 
-    
       if (data) {
         dispatch(
-        onUpdateContact({
-          groupName: data.user.groupName,
-          name: data.user.name,
-          lastName: data.user.lastName,
-          email: data.user.email,
-          phone: data.user.phoneNumber,
-          id: data.user.id,
-          status: data.ok,
-        })
-      );
+          onUpdateContact({
+            groupName: data.user.groupName,
+            name: data.user.name,
+            lastName: data.user.lastName,
+            email: data.user.email,
+            phone: data.user.phoneNumber,
+            id: data.user.id,
+            status: data.ok,
+          })
+        );
       }
     } catch (error) {
       console.log(error);
@@ -140,7 +145,6 @@ export const useContactInfoStore = () => {
   };
 
   const startCheckingUser = async (userInfoEmailCheck) => {
-    console.log(userInfoEmailCheck)
     try {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,
@@ -153,7 +157,8 @@ export const useContactInfoStore = () => {
         );
         localStorage.setItem("uid", data.user.id);
         localStorage.setItem("token", data.token);
-
+        setToken(data.token);
+        setEmailUserRegistered(data.user.email);
         dispatch(
           onCheckContact({
             groupName: data.user.groupName,
@@ -180,6 +185,10 @@ export const useContactInfoStore = () => {
           })
         );
         localStorage.setItem("uid", JSON.stringify(""));
+        localStorage.setItem("token", "");
+        setToken("");
+        setEmailUserRegistered("")
+
         dispatch(
           onCheckContact({
             groupName: "",
@@ -191,7 +200,6 @@ export const useContactInfoStore = () => {
             status: "",
           })
         );
-        localStorage.setItem("token", JSON.stringify(""));
       }
     } catch (error) {
       console.log(error);
@@ -201,12 +209,7 @@ export const useContactInfoStore = () => {
   const checking = localStorage.getItem("user");
   const userParseStored = [JSON.parse(checking)];
   const uidParsed = localStorage.getItem("uid");
-  // const uidParsed = [JSON.parse(uidStored)];
-  const token = localStorage.getItem("token");
-  // const token = [JSON.parse(tokenStored)];
 
-  console.log(visibleButton)
-  console.log(visible)
   return {
     //* Properties
     users,
@@ -216,6 +219,9 @@ export const useContactInfoStore = () => {
     token,
     visibleButton,
     visible,
+    userCreatedDisabledInput,
+    emailUserRegistered,
+
 
     //* Methods
     // startVerificationContactInfoBeforeSaveIt,

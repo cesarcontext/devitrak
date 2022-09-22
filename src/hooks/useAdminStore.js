@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApiAdmin, devitrackApiPayment } from "../apis/devitrackApi";
 import {
@@ -8,11 +9,10 @@ import {
   onLogin,
   onLogout,
 } from "../store/slices/adminSlice";
-import { useContactInfoStore } from "./useContactInfoStore";
 
 export const useAdminStore = () => {
-  const { token } = useContactInfoStore();
   const { status, user, errorMessage } = useSelector((state) => state.admin);
+  const [tokenAdmin, setTokenAdmin] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,11 +24,15 @@ export const useAdminStore = () => {
         email,
         password,
       });
-      console.log({ data });
-
+      console.log("data token ", data.token);
+      setTokenAdmin(data.token);
       localStorage.setItem("token", data.token);
-      Swal.fire("", "Redirectioning to your Admin page", "success");
-      navigate("/admin");
+      Swal.fire({
+        text: "Redirectioning to your Admin page",
+        icon: "success",
+      }).then(() => {
+        window.location = "http://localhost:3000/admin";
+      });
       dispatch(onLogin({ name: data.name, uid: data.uid }));
     } catch (error) {
       dispatch(onLogout("Incorrect credentials"));
@@ -49,13 +53,24 @@ export const useAdminStore = () => {
         email,
         password,
       });
-
+      setTokenAdmin(data.token);
+      localStorage.setItem("token", data.token);
+      console.log({data})
       dispatch(onLogin({ name: data.name, uid: data.uid }));
-      Swal.fire("User created", "User has been created", "success");
-      navigate("/admin");
+      Swal.fire("User created", "Account has been created", "success").then(() => {
+        window.location = "http://localhost:3000/admin";
+      });
     } catch (error) {
-      dispatch(onLogout(error.response.data?.msg || "---"));
-      Swal.fire("Error", error.response.data.msg, "error");
+      console.log(error.response.data.errors);
+      dispatch(onLogout(error.response.data?.errors.check.msg || "---"));
+
+      if(error.response.data.errors.name){
+        Swal.fire("Error", "Name must be provided", "error");
+      }
+       else if(error.response.data.errors.email){
+        Swal.fire("Error", "Email address must be provided in valid format", "error");
+
+       }
 
       setTimeout(() => {
         dispatch(clearErrorMessage());
@@ -88,7 +103,7 @@ export const useAdminStore = () => {
 
   const startLoadingUsers = () => {
     try {
-      if (token) {
+      if (tokenAdmin) {
         const { data } = devitrackApiPayment.get("/");
         console.log("users loaded", data);
       }
@@ -96,11 +111,14 @@ export const useAdminStore = () => {
     } catch (error) {}
   };
 
+  console.log(tokenAdmin);
+
   return {
     //*Propiedades
     status,
     user,
     errorMessage,
+    tokenAdmin,
     // userRegitered,
 
     //*Metodos

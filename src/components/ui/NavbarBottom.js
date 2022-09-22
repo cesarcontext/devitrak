@@ -1,7 +1,6 @@
 import React from "react"; //, { useState, useCallback }
 import { Link } from "react-router-dom"; //, Navigate
 import { useStytchSession, useStytch } from "@stytch/stytch-react";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
@@ -10,14 +9,9 @@ import "./navbar-bottom.css";
 export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
-  const { token, userParseStored } = useContactInfoStore();
-  const navigate = useNavigate();
+  const { token } = useContactInfoStore();
 
   const user = session?.authentication_factors[0].email_factor.email_address;
-
-  // const userToken = userParseStored?.map((item) => item.email);
-
-  // console.log(userToken);
 
   const handleLogout = async () => {
     if (session) {
@@ -36,6 +30,7 @@ export const NavbarBottom = () => {
     });
     localStorage.setItem("token");
     localStorage.setItem("user");
+    localStorage.setItem("device");
   };
 
   return (
@@ -74,20 +69,11 @@ export const NavbarBottom = () => {
         >
           {" "}
           <div>{session && user}</div>
-          {/* <div>{session ? user : token !== "" ? userToken : ""}</div> */}
           <Link to="/">
             <div>
               {session && <button onClick={handleLogout}>Logout</button>}
+              {token && <button onClick={handleLogout}>Logout</button>}
             </div>
-            {/* <div>
-              {session ? (
-                <button onClick={handleLogout}>Logout</button>
-              ) : token === "" ? (
-                "empty"
-              ) : (
-                <button onClick={handleLogout}>Logout</button>
-              )}
-            </div> */}
           </Link>
         </div>
       </nav>

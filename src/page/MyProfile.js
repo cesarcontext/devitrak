@@ -16,11 +16,11 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { startUpdatingContactInfo, Id } = useContactInfoStore();
+  const { startUpdatingContactInfo, token } = useContactInfoStore();
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
-  const [buttonState, setButtonState] = useState(true);
+  const [buttonState, setButtonState] = useState(false);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -34,10 +34,10 @@ export const MyProfile = () => {
   };
 
   useEffect(() => {
-    if (Id !== "") {
-      return setButtonState(false);
+    if (token.length < 3 || token === null  ) {
+      return setButtonState(true);
     }
-  }, [Id]);
+  }, [token]);
 
   const validationGroupName = useMemo(() => {
     return formValues.groupName.length > 2 ? "" : "is-invalid";

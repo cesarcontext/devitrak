@@ -1,11 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { Routes, Route } from "react-router";
-import { useStytchSession } from "@stytch/stytch-react";
 import { Admin } from "./page/admin/Admin";
 import { Authenticate } from "./page/Authenticate";
 import { Checkout } from "./page/Checkout";
-import { ContactInfo } from "./components/contact/ContactInfo";
 import { EventScheduled } from "./page/EventScheduled";
 import { HowToReturnTheDevices } from "./page/moreInfo/HowToReturnTheDevices";
 import { HowToUseTheReceiver } from "./page/moreInfo/HowToUseTheReceiver";
@@ -20,19 +18,19 @@ import { RegisteredPaymentInfo } from "./components/admin/RegisteredPaymentInfo"
 import { RegisteredUser } from "./components/admin/RegisteredUser";
 import { RequestDevices } from "./page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuringTheEvent";
-import { useContactInfoStore } from "./hooks/useContactInfoStore";
+// import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
+import { Home } from "./page/Home";
 
 import "./App.css";
 
 function App() {
-  const session = useStytchSession();
-  const { token } = useContactInfoStore();
-  console.log(token);
+  const tokenAdmin = localStorage.getItem("token")
+
   return (
     <div className="App">
       <Navbar />
       <Routes>
-        <Route path="/" element={<ContactInfo />} />
+        <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/confirmation" element={<QRCodeConfirmation />} />
         <Route path="/request_devices" element={<RequestDevices />} />
@@ -55,19 +53,31 @@ function App() {
         />
         <Route path="/event_schedule" element={<EventScheduled />} />
         <Route path="/my_profile" element={<MyProfile />} />
+        {/* <Route path="/stripe" element={<StripeCheckoutElement />} /> */}
         <Route path="/authenticate" element={<Authenticate />} />
       </Routes>
 
       <Routes>
-        <Route path="/admin/login" element={<LoginPage />} />
-        <Route
-          path="/admin/*"
-          element={<Navigate to="/admin/login" replace />}
-        />
-        <Route path="/admin" element={<Admin />}></Route>
-        <Route path="/admin/users" element={<RegisteredUser />} />
-        <Route path="/admin/payments" element={<RegisteredPaymentInfo />} />
-        <Route path="/admin/receivers" element={<Receivers />} />
+        {tokenAdmin ? (
+          <>
+            <Route path="/admin" element={<Admin />}></Route>
+            <Route path="/admin/users" element={<RegisteredUser />} />
+            <Route path="/admin/payments" element={<RegisteredPaymentInfo />} />
+            <Route path="/admin/receivers" element={<Receivers />} />
+            <Route
+              path="/admin/*"
+              element={<Navigate to="/admin/" replace />}
+            />
+          </>
+        ) : (
+          <>
+            <Route path="/admin/login" element={<LoginPage />} />
+            <Route
+              path="/admin/*"
+              element={<Navigate to="/admin/login" replace />}
+            />
+          </>
+        )}
       </Routes>
     </div>
   );

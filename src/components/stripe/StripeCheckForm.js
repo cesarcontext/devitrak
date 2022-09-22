@@ -2,18 +2,10 @@ import React, { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
-  useElements,
+  useElements
 } from "@stripe/react-stripe-js";
-import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
-export const StripeCheckForm =() => {
-    const {
-        amountToDeposit,
-        device,
-        handleDecreaseDevice,
-        handleIncreaseDevice,
-        handleResetDevice,
-      } = useDeviceCount();
+export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -45,14 +37,14 @@ export const StripeCheckForm =() => {
           setMessage("Your payment was not successful, please try again.");
           break;
         default:
-          setMessage("");
+          setMessage("Something went wrong.");
           break;
       }
     });
   }, [stripe]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
@@ -85,78 +77,15 @@ export const StripeCheckForm =() => {
   };
 
   return (
-    <>
-            <section className="gradient-custom">
-          <div className="container">
-            <div className="row justify-content-center align-items-center">
-              <div className="col-12 col-lg-9 col-xl-7">
-                <div className="row">
-                  <div className="col-md-12 mt-4 mb-2">
-                    <div className="form-outline">
-                      <div
-                        className="card shadow-2-strong card-registration"
-                        style={{ bordeRadius: "15px" }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            padding: "15px",
-                            justifyContent: "space-evenly",
-                          }}
-                        >
-                          <h5 style={{ padding: "15px" }}>
-                            HOW MANY RECEIVERS DO YOU NEED?
-                          </h5>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              margin: "0  auto",
-                            }}
-                          >
-                            <button onClick={handleDecreaseDevice}>-</button>
-                            <div>
-                              <strong>{device}</strong>
-                            </div>
-                            <button onClick={handleIncreaseDevice}>+</button>
-                            <button onClick={handleResetDevice}>Reset</button>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-evenly",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div className="col-4"></div>
-                            <h5>DEPOSIT TOTAL:</h5>
-                            <h3>
-                              <strong>${amountToDeposit}</strong>
-                            </h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      <form id="payment-form" onSubmit={handleSubmit}>
-        <PaymentElement id="payment-element" />
-        <button disabled={isLoading || !stripe || !elements} id="submit">
-          <span id="button-text">
-            {isLoading ? (
-              <div className="spinner" id="spinner"></div>
-            ) : (
-              "Pay now"
-            )}
-          </span>
-        </button>
-        {/* Show any error or success messages */}
-        {message && <div id="payment-message">{message}</div>}
-      </form>
-    </>
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <PaymentElement id="payment-element" />
+      <button disabled={isLoading || !stripe || !elements} id="submit">
+        <span id="button-text">
+          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+        </span>
+      </button>
+      {/* Show any error or success messages */}
+      {message && <div id="payment-message">{message}</div>}
+    </form>
   );
 }
