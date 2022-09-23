@@ -3,9 +3,9 @@ import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
-import { PaymentForms } from "../creditCard/PaymentForms";
+// import { PaymentForms } from "../creditCard/PaymentForms";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
-// import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
+import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 
 export const ContactInfo = () => {
@@ -253,6 +253,7 @@ export const ContactInfo = () => {
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
+                width:"56%"
               }}
               onClick={handleOnSubmit}
             >
@@ -263,8 +264,8 @@ export const ContactInfo = () => {
 
         <div className={`d-${visible}`}>
           {/*importe StripeCheckForm*/}
-          <PaymentForms /> 
-          {/* <StripeCheckoutElement /> */}
+          {/* <PaymentForms />  */}
+          <StripeCheckoutElement />
         </div>
       </div>
       <NavbarBottom />

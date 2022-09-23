@@ -1,21 +1,24 @@
 import React from "react"; //, { useEffect }
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
-// import Swal from "sweetalert2";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { useContactInfoStore } from "../hooks/useContactInfoStore";
-// import { usePaymentStore } from "../hooks/usePaymentStore";
 
 export const QRCodeConfirmation = () => {
-  const { token } = useContactInfoStore();
-  console.log(token.slice(0, 15));
-  const QRCodeGenerated = (
+  const payment_intent = new URLSearchParams(window.location.search).get(
+    "payment_intent"
+  );
+
+  const clientSecret = new URLSearchParams(window.location.search).get(
+    "payment_intent_client_secret"
+  );
+
+const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
       bgColor="#ffff"
       level="Q"
       size={150}
-      value={token.slice(0, 20)}
+      value={clientSecret}
     />
   );
   return (
@@ -65,7 +68,7 @@ export const QRCodeConfirmation = () => {
         </div>
         <div className="reference-number" style={{ margin: "40px" }}>
           <h4>Your reference number is:</h4>
-          <span>{token.slice(10, 40)}</span>
+          <span>{payment_intent}</span>
         </div>
         <div
           className="links-help"

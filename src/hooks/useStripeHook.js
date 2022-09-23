@@ -4,11 +4,9 @@ import { useDeviceCount } from "./useDeviceCountStore";
 
 export const useStripeHook = () => {
   const [clientSecret, setClientSecret] = useState("");
-  const { device } = useDeviceCount();
 
-  const PaymentIntent = async () => {
+  const PaymentIntent = async ({amount}) => {
 
-    const amount = await device * 200 * 100
     try {
       const { data } = await devitrackApi.post("/stripe/create-payment-intent", {amount});
       console.log({ data })
@@ -23,6 +21,7 @@ export const useStripeHook = () => {
   return {
     //* Propiedades
     clientSecret,
+    
     //* Métodos
     PaymentIntent,
   };

@@ -1,4 +1,34 @@
-  <div className="container">
+<section className="gradient-custom">
+                          <div className="container py-5 h-100">
+                            <div className="row justify-content-center align-items-center">
+                              <div className="col-12 col-lg-9 col-xl-7">
+                                <div
+                                  className="card shadow-2-strong card-registration"
+                                  style={{ bordeRadius: "15px" }}
+                                >
+                                  <div className="card-body p-4 p-md-5">
+                                    <StripeCheckoutForm />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  {/* <div className="container">
     <div className="row justify-content-center align-items-center">
       <div className="col-12 col-lg-9 col-xl-7">
         <div
@@ -334,7 +364,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> */}
 
 /*
 

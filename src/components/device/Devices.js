@@ -13,7 +13,7 @@ export const Devices = ({ handleOnSubmit }) => {
   } = useDeviceCount();
 
   return (
-    <section className="gradient-custom" style={{ paddingBottom: "1vh"}}>
+    <section className="gradient-custom" style={{ paddingBottom: "1vh" }}>
       <div className="container">
         <div className="row justify-content-center align-items-center">
           <div className="col-12 col-lg-9 col-xl-7">
@@ -31,7 +31,15 @@ export const Devices = ({ handleOnSubmit }) => {
                         justifyContent: "space-evenly",
                       }}
                     >
-                      <h5>HOW MANY RECEIVERS DO YOU NEED?</h5>
+                      <h5
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        HOW MANY RECEIVERS DO YOU NEED?
+                      </h5>
                       <div
                         style={{
                           display: "flex",
@@ -40,7 +48,14 @@ export const Devices = ({ handleOnSubmit }) => {
                           padding: "20px",
                         }}
                       >
-                        <div className="p-1">
+                        <div
+                          className="p-1"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
                           <button
                             onClick={handleDecreaseDevice}
                             style={{
@@ -52,7 +67,14 @@ export const Devices = ({ handleOnSubmit }) => {
                           </button>
                         </div>
 
-                        <div className="p-1">
+                        <div
+                          className="p-1"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
                           <button
                             onClick={handleIncreaseDevice}
                             style={{
@@ -63,7 +85,14 @@ export const Devices = ({ handleOnSubmit }) => {
                             +
                           </button>
                         </div>
-                        <div className="p-1">
+                        <div
+                          className="p-1"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
                           <button
                             onClick={handleResetDevice}
                             style={{
@@ -74,8 +103,15 @@ export const Devices = ({ handleOnSubmit }) => {
                             Reset
                           </button>
                         </div>
-                        <div className="p-1">
-                          <strong>{device}</strong>
+                        <div
+                          className="p-1"
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <strong style={{ fontSize: "30px" }}>{device}</strong>
                         </div>
                       </div>
                       <div
@@ -95,9 +131,9 @@ export const Devices = ({ handleOnSubmit }) => {
                           }}
                         >
                           <div>
-                            <h5 style={{ display: "flex" }}>TOTAL</h5>
+                            <h5 style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>TOTAL</h5>
                           </div>
-                          <h3 style={{ display: "flex" }}>
+                          <h3 style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                             <strong>${amountToDeposit}</strong>
                           </h3>
                         </div>

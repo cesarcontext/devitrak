@@ -18,7 +18,7 @@ import { RegisteredPaymentInfo } from "./components/admin/RegisteredPaymentInfo"
 import { RegisteredUser } from "./components/admin/RegisteredUser";
 import { RequestDevices } from "./page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuringTheEvent";
-// import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
+import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
 import { Home } from "./page/Home";
 
 import "./App.css";
@@ -53,7 +53,7 @@ function App() {
         />
         <Route path="/event_schedule" element={<EventScheduled />} />
         <Route path="/my_profile" element={<MyProfile />} />
-        {/* <Route path="/stripe" element={<StripeCheckoutElement />} /> */}
+        <Route path="/stripe" element={<StripeCheckoutElement />} />
         <Route path="/authenticate" element={<Authenticate />} />
       </Routes>
 
