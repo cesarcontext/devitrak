@@ -63,12 +63,13 @@ export const NavbarBottom = () => {
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            // flexDirection: "column",
             justifyContent: "space-around",
+            alignItems: "center"
           }}
         >
           {" "}
-          <div>{session && user}</div>
+          <div style={{ padding: "20px"}}>{session && user}</div>
           <Link to="/">
             <div>
               {session && <button onClick={handleLogout}>Logout</button>}
