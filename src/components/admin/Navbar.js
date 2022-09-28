@@ -1,66 +1,75 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import { useAdminStore } from "../../hooks/useAdminStore";
 import "./navbar.css";
 
 export const Navbar = () => {
+  const navigate = useNavigate()
+  const adminName = localStorage.getItem("admin")
+  const logout = () => {
+    localStorage.removeItem("token")
+   navigate("http://localhost:300/admin/login")
+  };
   return (
     <nav className="navbar-admin">
       {" "}
       <NavLink to="/admin">
         <div>
-          <h4>User Name</h4>
+          <h4>Devitrack</h4>
         </div>
       </NavLink>
-      <ul className="nav flex-column" style={{ color: "rgb(255, 255, 255)" }}>
-        <NavLink to="/admin">
-          <li className="nav-item">
-            <a className="nav-link">Home</a>
-          </li>
+      <ul
+        className="nav"
+        style={{
+          color: "rgb(255, 255, 255)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <NavLink to="/admin/events">
+          <div className="nav-item">
+            <p className="nav-link">Events</p>
+          </div>
         </NavLink>
-        <NavLink to="/admin/users">
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Registered Users
-            </a>
-          </li>
+        <NavLink to="/admin/device-database">
+          <div className="nav-item">
+            <p className="nav-link" href="#">
+              Device Database
+            </p>
+          </div>
         </NavLink>
-        <NavLink to="/admin/payments">
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Payment transactions
-            </a>
-          </li>
+        <NavLink to="/admin/articles">
+          <div className="nav-item">
+            <p className="nav-link" href="#">
+              Articles
+            </p>
+          </div>
         </NavLink>
-        <NavLink to="/admin/receivers">
-          <li className="nav-item">
-            <a className="nav-link">Receivers</a>
-          </li>
-        </NavLink>
-        <NavLink to="/">
-          <li className="nav-item">
-            <a className="nav-link">Logout</a>
-          </li>
+        <NavLink to="/admin/settings">
+          <div className="nav-item">
+            <p className="nav-link">Settings</p>
+          </div>
         </NavLink>
       </ul>
-      <div style={{ height: "33%" }}></div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          padding: "5px",
+          width: "10%",
+        }}
+      >
+        <NavLink to="/admin/profile">
+          <div>
+            <h4>{adminName}</h4>
+          </div>
+        </NavLink>
+        <button style={{ width: "40%", borderRadius: "50%" }} onClick={logout}>
+        <i style={{ fontSize: "20px" }} className="bi bi-box-arrow-left" />
+        </button>
+      </div>
     </nav>
   );
 };
-
-/**
- * <ul className="nav flex-column">
-<Link>  
-<li className="nav-item">
-    <a className="nav-link active" aria-current="page" href="#">Active</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link" href="#">Link</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link" href="#">Link</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link disabled">Disabled</a>
-  </li>
-</ul>
- */

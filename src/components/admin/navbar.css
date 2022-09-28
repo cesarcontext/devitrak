@@ -1,21 +1,20 @@
-.navbar-admin{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    position: absolute;
-    left: 0px;
-    height: 100%;
-    width: 15%;
-    padding: 20px;
-    border: solid 1px rgb(255, 255, 255);
-    background-color: rgb(30, 115, 190)
+.navbar-admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  border: solid 1px rgb(255, 255, 255);
+  background-color: rgb(30, 115, 190);
 }
-.navbar-admin li {
-    height: 30%;
+.navbar-admin .nav-item .nav-link {
+  height: 10%;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
 }
 
-.navbar-admin a{
-    color: rgb(255, 255, 255);
-    text-decoration: none;
+a,
+.navbar-admin .nav-item .nav-link a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
 }
