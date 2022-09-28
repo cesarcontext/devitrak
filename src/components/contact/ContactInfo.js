@@ -3,10 +3,11 @@ import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
-// import { PaymentForms } from "../creditCard/PaymentForms";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
+import { devitrackApi } from "../../apis/devitrackApi";
+
 
 export const ContactInfo = () => {
   const {
@@ -19,6 +20,9 @@ export const ContactInfo = () => {
     userCreatedDisabledInput,
   } = useContactInfoStore();
   const { device } = useDeviceCount();
+  const [clientSecret, setClientSecret] = useState(null);
+  const [paymentIntentId, setPaymentIntentId] = useState(null);
+  const [data, setData] = useState(null);
 
   const initalFormValues = {
     groupName: "",
@@ -118,7 +122,17 @@ export const ContactInfo = () => {
       });
     }
 
-    startSavingContactInfo(formValues);
+    await startSavingContactInfo(formValues);
+    const { data } = await devitrackApi
+        .post("/stripe/create-payment-intent", {
+          device: device,
+        })
+        .then((data) => {
+          console.log("data effect", { data });
+          setData(data);
+          setClientSecret(data.data.clientSecret);
+          setPaymentIntentId(data.data.payment_intent_id);
+        });
   };
 
   return (
@@ -269,7 +283,7 @@ export const ContactInfo = () => {
         )}
 
         <div style={{ gap: "20px" }} className={`d-${visible}`}>
-          <StripeCheckoutElement />
+          <StripeCheckoutElement clientSecret={ clientSecret } />
         </div>
       </div>
       <NavbarBottom />
