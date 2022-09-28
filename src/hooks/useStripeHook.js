@@ -1,28 +1,27 @@
-import { useState } from "react";
-import { devitrackApi } from "../apis/devitrackApi";
-import { useDeviceCount } from "./useDeviceCountStore";
+import { devitrackApiStripe } from "../apis/devitrackApi";
 
 export const useStripeHook = () => {
-  const [clientSecret, setClientSecret] = useState("");
-
-  const PaymentIntent = async ({amount}) => {
-
+  const saveStripeTransaction = ({ payment_intent, clientSecret, device }) => {
     try {
-      const { data } = await devitrackApi.post("/stripe/create-payment-intent", {amount});
-      console.log({ data })
-      setClientSecret(data.client_secret)
+      const response = devitrackApiStripe
+        .post("/stripe-transaction", {
+          paymentIntent: payment_intent,
+          clientSecret,
+          device,
+        })
+        .then((response) => response.data)
+        .then((data) => console.log({ data }));
 
+      console.log({ response });
     } catch (error) {
       console.log(error);
     }
   };
-  
 
   return {
     //* Propiedades
-    clientSecret,
-    
+
     //* Métodos
-    PaymentIntent,
+    saveStripeTransaction,
   };
 };

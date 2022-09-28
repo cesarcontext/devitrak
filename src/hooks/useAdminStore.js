@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApiAdmin, devitrackApiPayment } from "../apis/devitrackApi";
 import {
@@ -13,9 +13,11 @@ import {
 export const useAdminStore = () => {
   const { status, user, errorMessage } = useSelector((state) => state.admin);
   const [tokenAdmin, setTokenAdmin] = useState("");
+  const [adminName, setAdminName] = useState("")
+  const [adminEmail, setAdminEmail] = useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   const startLogin = async ({ email, password }) => {
     dispatch(onChecking());
 
@@ -24,9 +26,12 @@ export const useAdminStore = () => {
         email,
         password,
       });
-      console.log("data token ", data.token);
       setTokenAdmin(data.token);
+      setAdminName(data.name)
+      setAdminEmail(data.email)
       localStorage.setItem("token", data.token);
+      localStorage.setItem("admin",data.name);
+      localStorage.setItem("adminEmail", data.email);
       Swal.fire({
         text: "Redirectioning to your Admin page",
         icon: "success",
@@ -47,30 +52,36 @@ export const useAdminStore = () => {
   const startRegister = async ({ name, email, password }) => {
     dispatch(onChecking());
 
+    const role = ['Editor']
     try {
       const { data } = await devitrackApiAdmin.post("/new_admin_user", {
         name,
         email,
         password,
+        role
       });
       setTokenAdmin(data.token);
       localStorage.setItem("token", data.token);
-      console.log({data})
+      localStorage.setItem("admin", JSON.stringify({name: data.name, email:data.email}));
       dispatch(onLogin({ name: data.name, uid: data.uid }));
-      Swal.fire("User created", "Account has been created", "success").then(() => {
-        window.location = "http://localhost:3000/admin";
-      });
+      Swal.fire("User created", "Account has been created", "success").then(
+        () => {
+          window.location = "http://localhost:3000/admin";
+        }
+      );
     } catch (error) {
       console.log(error.response.data.errors);
       dispatch(onLogout(error.response.data?.errors.check.msg || "---"));
 
-      if(error.response.data.errors.name){
+      if (error.response.data.errors.name) {
         Swal.fire("Error", "Name must be provided", "error");
+      } else if (error.response.data.errors.email) {
+        Swal.fire(
+          "Error",
+          "Email address must be provided in valid format",
+          "error"
+        );
       }
-       else if(error.response.data.errors.email){
-        Swal.fire("Error", "Email address must be provided in valid format", "error");
-
-       }
 
       setTimeout(() => {
         dispatch(clearErrorMessage());
@@ -96,7 +107,8 @@ export const useAdminStore = () => {
 
   const startLogout = () => {
     dispatch(onLogout());
-    localStorage.clear();
+    localStorage.setItem("token");
+    window.location = "http://localhost:3000/admin/login"
   };
 
   // const userRegitered = [];
@@ -105,13 +117,22 @@ export const useAdminStore = () => {
     try {
       if (tokenAdmin) {
         const { data } = devitrackApiPayment.get("/");
-        console.log("users loaded", data);
+        console.log("users loaded", data.user);
       }
-      // userRegitered.push(data);
     } catch (error) {}
   };
 
-  console.log(tokenAdmin);
+  const startRenderAllPaymentIntents = () => {
+    try {
+      if (tokenAdmin) {
+        const { data } = devitrackApiPayment.get("/payment_intents");
+        console.log("data rendered", data);
+      }
+    } catch (error) {}
+  };
+
+  console.log(adminName);
+  console.log(adminEmail);
 
   return {
     //*Propiedades
@@ -119,6 +140,8 @@ export const useAdminStore = () => {
     user,
     errorMessage,
     tokenAdmin,
+    adminName,
+    adminEmail,
     // userRegitered,
 
     //*Metodos
@@ -127,5 +150,6 @@ export const useAdminStore = () => {
     startLogin,
     startRegister,
     startLoadingUsers,
+    startRenderAllPaymentIntents,
   };
 };

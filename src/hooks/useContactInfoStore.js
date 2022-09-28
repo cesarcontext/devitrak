@@ -41,7 +41,7 @@ export const useContactInfoStore = () => {
       setVisibleButton("none");
       setUserCreatedDisabledInput(true);
       setToken(data.token);
-      setEmailUserRegistered(data.user.email);
+      setEmailUserRegistered(data.email);
 
       dispatch(
         onAddNewContact({
@@ -60,7 +60,7 @@ export const useContactInfoStore = () => {
         title: "Something went wrong",
         width: 600,
         padding: "3em",
-        text: error.response.data.msg,
+        text: error,
         icon: "error",
         color: "rgb(30, 115, 190)",
         background: "#fff",
@@ -208,14 +208,14 @@ export const useContactInfoStore = () => {
 
   const checking = localStorage.getItem("user");
   const userParseStored = [JSON.parse(checking)];
-  const uidParsed = localStorage.getItem("uid");
+  // const uidParsed = localStorage.getItem("uid");
 
   return {
     //* Properties
     users,
     userParseStored,
     checkingId,
-    uidParsed,
+    // uidParsed,
     token,
     visibleButton,
     visible,
