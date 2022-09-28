@@ -28,8 +28,8 @@ export const MagicLink = (magicLinkParam) => {
   };
 
   return (
-    <div>
-      <h4>{emailToPass} is registered, please sign in</h4>
+    <div style={{ paddingBottom: "25px"}}>
+      <h4>{emailToPass} is registered. <br /> Please sign in.</h4>
 
       <button onClick={handleLogin}>Login</button>
     </div>
