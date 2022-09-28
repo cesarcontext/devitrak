@@ -62,7 +62,16 @@ rgba(255, 255, 255, 1);
   text-align: center;
   height: 100vh;
 }
+a{
+  text-decoration: none;
+  color: #212529
+}
 
+a:hover{
+  color:#1E73BE;
+  transform: scale(1.1);
+  transition: all .2s;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

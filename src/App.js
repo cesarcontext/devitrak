@@ -11,24 +11,24 @@ import { LoginPage } from "./page/admin/LoginAdmin";
 import { MoreDevices } from "./page/requestDevices/MoreDevices";
 import { MoreInfo } from "./page/MoreInfo";
 import { MyProfile } from "./page/MyProfile";
-import { Navbar } from "./components/ui/Navbar";
 import { QRCodeConfirmation } from "./page/QRCodeConfirmation";
-import { Receivers } from "./components/admin/Receivers";
-import { RegisteredPaymentInfo } from "./components/admin/RegisteredPaymentInfo";
-import { RegisteredUser } from "./components/admin/RegisteredUser";
 import { RequestDevices } from "./page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuringTheEvent";
 import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
 import { Home } from "./page/Home";
+import { DeviceDatabase } from "./page/admin/DeviceDatabase";
+import { Articles } from "./page/admin/Articles";
+import { Settings } from "./page/admin/Settings";
 
 import "./App.css";
+import { Profile } from "./page/admin/Profile";
 
 function App() {
   const tokenAdmin = localStorage.getItem("token")
 
   return (
     <div className="App">
-      <Navbar />
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -61,9 +61,10 @@ function App() {
         {tokenAdmin ? (
           <>
             <Route path="/admin" element={<Admin />}></Route>
-            <Route path="/admin/users" element={<RegisteredUser />} />
-            <Route path="/admin/payments" element={<RegisteredPaymentInfo />} />
-            <Route path="/admin/receivers" element={<Receivers />} />
+            <Route path="/admin/device-database" element={<DeviceDatabase />} />
+            <Route path="/admin/articles" element={<Articles />} />
+            <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/admin/profile" element={<Profile />} />
             <Route
               path="/admin/*"
               element={<Navigate to="/admin/" replace />}
