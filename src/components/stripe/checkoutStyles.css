@@ -16,20 +16,33 @@
 
 
 #payment-message {
-  color: rgb(105, 115, 134);
-  font-size: 16px;
+  background-color: rgb(253, 101, 95);
+  color: rgb(253, 254, 255);
+  font-size: 20px;
   line-height: 20px;
-  padding-top: 12px;
+  padding: 12px;
   text-align: center;
+  margin: 1% auto;
+  width: 80%;
+  border-radius: 5px;
 }
 
 #payment-element {
   margin-bottom: 24px;
 }
 
+#payment-element .p-GridCell .p-GridCell--12 .p-GridCell--md6,
+.p-GridCell .p-GridCell--6 .p-GridCell--md3 {
+  width: 100%;
+}
+#payment-element .p-Field .p-FiedLabel {
+  display: none;
+}
+
+
 /* Buttons and links */
 button {
-  background: #5469d4;
+  background: rgb(30, 115, 190);
   font-family: Arial, sans-serif;
   color: #ffffff;
   border-radius: 4px;
@@ -83,7 +96,7 @@ button:disabled {
 .spinner:before {
   width: 10.4px;
   height: 20.4px;
-  background: #5469d4;
+  background: rgb(30, 115, 190);
   border-radius: 20.4px 0 0 20.4px;
   top: -0.2px;
   left: -0.2px;
@@ -96,7 +109,7 @@ button:disabled {
 .spinner:after {
   width: 10.4px;
   height: 10.2px;
-  background: #5469d4;
+  background: rgb(30, 115, 190);
   border-radius: 0 10.2px 10.2px 0;
   top: -0.1px;
   left: 10.2px;
@@ -104,13 +117,6 @@ button:disabled {
   transform-origin: 0px 10.2px;
   -webkit-animation: loading 2s infinite ease;
   animation: loading 2s infinite ease;
-}
-.p-GridCell .p-GridCell--12 .p-GridCell--md6,
-.p-GridCell .p-GridCell--6 .p-GridCell--md3 {
-  width: 100%;
-}
-.p-Grid {
-  display: none;
 }
 
 @keyframes loading {
