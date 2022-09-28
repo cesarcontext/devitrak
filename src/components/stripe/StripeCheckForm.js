@@ -4,21 +4,21 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useContactInfoStore } from "../../hooks/useContactInfoStore"
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import "./checkoutStyles.css";
 
 export const StripeCheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { userParseStored } = useContactInfoStore()
+  const { userParseStored } = useContactInfoStore();
 
-  const userName = userParseStored.map( item => {
-    return item.name
-  })
+  const userName = userParseStored.map((item) => {
+    return item.name;
+  });
 
-  const userEmail = userParseStored.map( item => {
-    return item.email
-  })
+  const userEmail = userParseStored.map((item) => {
+    return item.email;
+  });
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,22 +65,22 @@ export const StripeCheckoutForm = () => {
       fontSize: "16px",
       iconColor: "#fff",
       "::placeholder": {
-        color: "#87bbfd"
-      }
+        color: "#87bbfd",
+      },
     },
     invalid: {
       iconColor: "#FFC7EE",
-      color: "#FFC7EE"
+      color: "#FFC7EE",
     },
     complete: {
-      iconColor: "#cbf4c9"
-    }
+      iconColor: "#cbf4c9",
+    },
   };
 
   const paymentElementStyle = {
     billing_details: billingDetails,
     style: iFrameStyle,
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +92,7 @@ export const StripeCheckoutForm = () => {
     }
 
     setIsLoading(true);
-    
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -120,7 +120,10 @@ export const StripeCheckoutForm = () => {
       <div id="stripe-container" className="container">
         <div className="row justify-content-center align-items-center">
           <form id="payment-form" onSubmit={handleSubmit}>
-            <PaymentElement options={paymentElementStyle} id="payment-element" />
+            <PaymentElement
+              options={paymentElementStyle}
+              id="payment-element"
+            />
             <button disabled={isLoading || !stripe || !elements} id="submit">
               <span id="button-text">
                 {isLoading ? (
@@ -131,7 +134,7 @@ export const StripeCheckoutForm = () => {
               </span>
             </button>
             {/* Show any error or success messages */}
-            {message && <div id="payment-message">{alert({message})}</div>}
+            {message && <div id="payment-message">{alert({ message })}</div>}
           </form>
         </div>
       </div>

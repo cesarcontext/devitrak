@@ -19,7 +19,7 @@ export const StripeCheckoutElement = ({ clientSecret }) => {
   };
 
   return (
-    <div>
+    <div style={{ margin: "1% auto"}}>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <StripeCheckoutForm />
