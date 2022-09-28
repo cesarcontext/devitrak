@@ -33,3 +33,18 @@ devitrackApiAdmin.interceptors.request.use((config) => {
   return config
 });
 
+export const devitrackApiStripe = axios.create({
+  baseURL: "http://localhost:34001/api/stripe"
+})
+
+//TODO: config interceptors
+devitrackApiStripe.interceptors.request.use((config) => {
+  if (localStorage.getItem("token")) {
+    config.headers = {
+      "x-token": localStorage.getItem("token"),
+    };
+    console.log('config', config.headers )
+  }
+  return config
+});
+
