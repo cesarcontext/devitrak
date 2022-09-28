@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
 export const Devices = () => {
-  const [deviceNumber, setDeviceNumber] = useState(1)
   const {
     device,
     handleDecreaseDevice,
     handleIncreaseDevice,
     handleResetDevice,
-    amountToDeposit,
   } = useDeviceCount();
 
   return (
@@ -132,7 +130,7 @@ export const Devices = () => {
                       alignItems: "center",
                     }}
                   >
-                    <strong>${amountToDeposit} {/*deviceNumber * 200*/}</strong>
+                    <strong>${device * 200}</strong>
                   </h3>
                 </div>
               </div>
