@@ -6,7 +6,7 @@ import { NavbarBottom } from "../ui/NavbarBottom";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
-import { devitrackApi } from "../../apis/devitrackApi";
+import { useStripeHook } from "../../hooks/useStripeHook";
 
 
 export const ContactInfo = () => {
@@ -19,10 +19,8 @@ export const ContactInfo = () => {
     visibleButton,
     userCreatedDisabledInput,
   } = useContactInfoStore();
-  const { device } = useDeviceCount();
-  const [clientSecret, setClientSecret] = useState(null);
-  const [paymentIntentId, setPaymentIntentId] = useState(null);
-  const [data, setData] = useState(null);
+  const { device } = useDeviceCount()
+  const { startStripePaymentIntent, clientSecret } = useStripeHook()
 
   const initalFormValues = {
     groupName: "",
@@ -123,16 +121,9 @@ export const ContactInfo = () => {
     }
 
     await startSavingContactInfo(formValues);
-    const { data } = await devitrackApi
-        .post("/stripe/create-payment-intent", {
-          device: device,
-        })
-        .then((data) => {
-          console.log("data effect", { data });
-          setData(data);
-          setClientSecret(data.data.clientSecret);
-          setPaymentIntentId(data.data.payment_intent_id);
-        });
+    startStripePaymentIntent( device )
+    localStorage.setItem("device", device)
+
   };
 
   return (
@@ -257,7 +248,7 @@ export const ContactInfo = () => {
             </div>
           </div>
         </section>
-        {device < 1 ? (
+        {formValues.phoneNumber.length  <  5 ? (
           <></>
         ) : (
           <div
