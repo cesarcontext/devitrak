@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
 import Swal from "sweetalert2";
+import { Navbar } from "../../components/ui/Navbar";
 import { NavbarBottom } from "../../components/ui/NavbarBottom";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { usePaymentStore } from "../../hooks/usePaymentStore";
 import { useUiStore } from "../../hooks/useUiStore";
-import { ConfirmationModalEditSection } from "../../ui/ConfirmationModalEditSection";
+// import { ConfirmationModalEditSection } from "../../ui/ConfirmationModalEditSection";///
+
 
 const editInfoSubmitted = {
   cardName: "",
@@ -221,6 +223,7 @@ export const MoreDevices = () => {
 
   return (
     <>
+    <Navbar />
       <div
         style={{
           paddingBottom: "5vh",
@@ -534,7 +537,7 @@ export const MoreDevices = () => {
             </button>
           </form>
         </div>
-        <ConfirmationModalEditSection />
+        {/* <ConfirmationModalEditSection /> */}
       </div>
       <NavbarBottom />
     </>
