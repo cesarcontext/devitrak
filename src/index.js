@@ -16,13 +16,13 @@ const stytch = initStytch(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <StytchProvider stytch={stytch}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </StytchProvider>
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>
 );
 
