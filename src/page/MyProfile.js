@@ -6,6 +6,8 @@ import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { PaymentInfoProfile } from "../components/creditCard/PaymentInfoProfile";
 import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import { Navbar } from "../components/ui/Navbar";
+
 
 const initalFormValues = {
   groupName: "",
@@ -16,11 +18,16 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { startUpdatingContactInfo, token } = useContactInfoStore();
+  const { startUpdatingContactInfo, userParseStored } = useContactInfoStore();
+  console.log( userParseStored?.map( item => {
+    return item.token
+  }) )
+
+  const tokenVerification = localStorage.getItem("token")
 
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
-  const [buttonState, setButtonState] = useState(false);
+  const [buttonState, setButtonState] = useState(true);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -34,10 +41,10 @@ export const MyProfile = () => {
   };
 
   useEffect(() => {
-    if (token.length < 3 || token === null  ) {
-      return setButtonState(true);
+    if (tokenVerification) {
+      return setButtonState(false);
     }
-  }, [token]);
+  }, [tokenVerification]);
 
   const validationGroupName = useMemo(() => {
     return formValues.groupName.length > 2 ? "" : "is-invalid";
@@ -116,6 +123,7 @@ export const MyProfile = () => {
 
   return (
     <>
+    <Navbar />
       <div
         className="my_profile_info"
         style={{
@@ -361,6 +369,7 @@ export const MyProfile = () => {
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
+                width: "15%"
               }}
             >
               Contact Context Glocal

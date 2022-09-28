@@ -1,9 +1,12 @@
 import React from "react";
+import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
+
 
 export const EventScheduled = () => {
   return (
     <>
+    <Navbar />
       <div
         className="event-schedule-container"
         style={{

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useStytchSession } from "@stytch/stytch-react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { Navbar } from "../components/ui/Navbar";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
@@ -21,6 +22,7 @@ export const RequestDevices = () => {
 
   return (
     <>
+    <Navbar />
       <div
         style={{
           width: "50%",
@@ -31,8 +33,7 @@ export const RequestDevices = () => {
           flexDirection: "column",
           justifyContent: "space-around",
           alignItems: "center",
-        }}
-      >
+        }}>
         <div>
           <h4>Your current order</h4>
         </div>
@@ -102,6 +103,7 @@ export const RequestDevices = () => {
             </Link>
           </div>
         </div>
+        
         <div
           style={{
             display: "flex",

@@ -1,9 +1,14 @@
-import React from "react"; //, { useEffect }
+import React, { useEffect } from "react"; //, { useEffect }
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
+import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import { useStripeHook } from "../hooks/useStripeHook";
 
 export const QRCodeConfirmation = () => {
+  const { device } = useDeviceCount()
+
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
   );
@@ -11,8 +16,14 @@ export const QRCodeConfirmation = () => {
   const clientSecret = new URLSearchParams(window.location.search).get(
     "payment_intent_client_secret"
   );
+  const { saveStripeTransaction } = useStripeHook();
 
-const QRCodeGenerated = (
+  
+  useEffect(() => {
+    saveStripeTransaction({ payment_intent, clientSecret, device });
+  }, []);
+
+  const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
       bgColor="#ffff"
@@ -23,6 +34,7 @@ const QRCodeGenerated = (
   );
   return (
     <>
+      <Navbar />
       <div
         style={{
           width: "50%",

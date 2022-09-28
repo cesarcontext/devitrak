@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { Navbar } from "../components/ui/Navbar";
+import {NavbarBottom} from "../components/ui/NavbarBottom"
 
 export const MoreInfo = () => {
   return (
     <>
+    <Navbar />
       <div
         style={{
           width: "50%",
