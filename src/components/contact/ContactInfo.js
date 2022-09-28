@@ -16,7 +16,7 @@ export const ContactInfo = () => {
     token,
     visible,
     visibleButton,
-    userCreatedDisabledInput
+    userCreatedDisabledInput,
   } = useContactInfoStore();
   const { device } = useDeviceCount();
 
@@ -28,10 +28,8 @@ export const ContactInfo = () => {
     phoneNumber: "",
   };
 
-
   const [formValues, setFormValues] = useState(initalFormValues);
   const [status, setStatus] = useState(false);
-  // const [proceed, setProceed] = useState(false);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -58,7 +56,6 @@ export const ContactInfo = () => {
       }
     });
   }, [formValues.name]);
-
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -122,7 +119,6 @@ export const ContactInfo = () => {
     }
 
     startSavingContactInfo(formValues);
-    console.log("submitted");
   };
 
   return (
@@ -136,16 +132,22 @@ export const ContactInfo = () => {
                   className="card shadow-2-strong card-registration"
                   style={{ bordeRadius: "15px" }}
                 >
+                  {token.length < 1 ? (
+                    <Devices handleOnSubmit={handleOnSubmit} />
+                  ) : (
+                    ""
+                  )}
+
                   <div className="card-body p-4 p-md-5">
                     <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">
                       ENTER YOUR CONTACT INFORMATION
                     </h3>
                     <div className="row">
                       <form>
-                        <div className="col-md-10 m-4">
+                        <div className="col-md-11 m-4">
                           <div className="form-outline">
                             <input
-                            disabled = { userCreatedDisabledInput }
+                              disabled={userCreatedDisabledInput}
                               type="email"
                               id="emailAddress"
                               className={`form-control ${validationEmail} form-control-lg`}
@@ -157,10 +159,10 @@ export const ContactInfo = () => {
                             />
                           </div>
                         </div>
-                        <div className="col-md-10 m-4 mb-0">
+                        <div className="col-md-11 m-4 mb-0">
                           <div className="form-outline">
                             <input
-                            disabled = { userCreatedDisabledInput }
+                              disabled={userCreatedDisabledInput}
                               type="text"
                               id="firstName"
                               name="name"
@@ -173,15 +175,22 @@ export const ContactInfo = () => {
                           </div>
                         </div>
                       </form>
-                      {formValues.email.length > 1 && status === true || formValues.email !== null && status === true? (
-                        <MagicLink magicLinkParam={magicLinkParam} />
+                      {(formValues.email.length > 1 && status === true) ||
+                      (formValues.email !== null && status === true) ? (
+                        <div
+                          style={{
+                            padding: "40px",
+                          }}
+                        >
+                          <MagicLink magicLinkParam={magicLinkParam} />
+                        </div>
                       ) : (
                         <>
                           <form onSubmit={handleOnSubmit}>
-                            <div className="col-md-10 m-4">
+                            <div className="col-md-11 m-4">
                               <div className="form-outline">
                                 <input
-                                disabled = { userCreatedDisabledInput }
+                                  disabled={userCreatedDisabledInput}
                                   type="text"
                                   id="lastName"
                                   className={`form-control ${validationLastName} form-control-lg`}
@@ -193,10 +202,10 @@ export const ContactInfo = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-10 m-4">
+                            <div className="col-md-11 m-4">
                               <div className="form-outline">
                                 <input
-                                disabled = { userCreatedDisabledInput }
+                                  disabled={userCreatedDisabledInput}
                                   type="text"
                                   className={`form-control form-control-lg`} //${validationGroupName}
                                   id="groupName"
@@ -208,10 +217,10 @@ export const ContactInfo = () => {
                                 />
                               </div>
                             </div>
-                            <div className="col-md-10 m-4">
+                            <div className="col-md-11 m-4">
                               <div className="form-outline">
                                 <input
-                                disabled = { userCreatedDisabledInput }
+                                  disabled={userCreatedDisabledInput}
                                   type="tel"
                                   id="phoneNumber"
                                   className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
@@ -234,15 +243,12 @@ export const ContactInfo = () => {
             </div>
           </div>
         </section>
-
-        { token.length < 1 ? <Devices handleOnSubmit={handleOnSubmit} /> : "" }
-        
         {device < 1 ? (
           <></>
         ) : (
           <div
             className={`d-${visibleButton}`}
-            style={{ paddingBottom: "9vh" }}
+            style={{ paddingBottom: "9vh", paddingTop: "1vh" }}
           >
             <button
               style={{
@@ -253,7 +259,7 @@ export const ContactInfo = () => {
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
-                width:"56%"
+                width: "56%",
               }}
               onClick={handleOnSubmit}
             >
@@ -262,9 +268,7 @@ export const ContactInfo = () => {
           </div>
         )}
 
-        <div className={`d-${visible}`}>
-          {/*importe StripeCheckForm*/}
-          {/* <PaymentForms />  */}
+        <div style={{ gap: "20px" }} className={`d-${visible}`}>
           <StripeCheckoutElement />
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
 export const ContactInfoProfile = () => {
   const { userParseStored} = useContactInfoStore();
+  console.log(userParseStored)
   return (
     <div>
       {userParseStored?.map((item) => {
