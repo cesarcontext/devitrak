@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApiStripe, devitrackApi } from "../apis/devitrackApi";
@@ -10,7 +11,30 @@ export const useStripeHook = () => {
   const { device } = useDeviceCount();
   const [data, setData] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
-  const [visibleButton, setVisibleButton] = useState("content")
+  const [paymentIntentId, setPaymentIntentId] = useState(null);
+  const [visibleButton, setVisibleButton] = useState("content");
+  const [listAllPaymentIntent, setListAllPaymentIntent] = useState(null);
+
+  const stripeCustomer = async ({ name, lastName, email, phoneNumber }) => {
+    const fullName = name+" "+lastName
+    try {
+      const response = await devitrackApi
+        .post("/stripe/customer", {
+          name: fullName,
+          email,
+          phone: phoneNumber,
+        })
+        .then((data) => {
+          console.log("customer effect", { data });
+
+          // if (data) {
+          //   dispatch();
+          // }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const startStripePaymentIntent = async (request, response) => {
     try {
@@ -22,9 +46,13 @@ export const useStripeHook = () => {
           console.log("data effect", { data });
           setData(data);
           setClientSecret(data.data.clientSecret);
-          setVisibleButton("none")
+          setVisibleButton("none");
+          setPaymentIntentId(data.data.paymentIntent);
+
           if (data) {
             dispatch(onAddNewPaymentIntent(data));
+          } else {
+            {/**return state as inital state in redux to avoid duplicate info from last user */}
           }
         });
     } catch (error) {
@@ -44,35 +72,44 @@ export const useStripeHook = () => {
           clientSecret,
           device,
         })
-        .then((response) => response.data)
-        .then((data) => console.log({ data }));
-
-      console.log({ response });
+        .then((response) => response.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const listAllPaymentIntent = async () => {
-    try {
-      const { data } = await devitrackApi.get("/stripe/payment_intents")
-
-      console.log('data received', data )
-    } catch (error) {
-      console.log( error )
+  const listAllPaymentIntentFunction = () => {
+    const displayData = new URLSearchParams(window.location.search).get(
+      "device-database"
+    );
+    if (displayData) {
+      try {
+        const response = devitrackApi
+          .get("/stripe/payment-intents")
+          .then((response) => response.data)
+          .then((data) => data.paymentIntents)
+          .then((paymentIntents) =>
+            setListAllPaymentIntent(paymentIntents.data)
+          );
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-  console.log("payment intent state", paymentIntent);
 
   return {
     //* Propiedades
+    data,
+    paymentIntentId,
     paymentIntent,
     clientSecret,
     visibleButton,
+    listAllPaymentIntent,
 
     //* Métodos
+    stripeCustomer,
     startStripePaymentIntent,
     saveStripeTransaction,
-    listAllPaymentIntent,
+    listAllPaymentIntentFunction,
   };
 };
