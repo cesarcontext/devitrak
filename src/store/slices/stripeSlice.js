@@ -7,7 +7,7 @@ const stripeSlice = createSlice({
   },
   reducers: {
     onAddNewPaymentIntent: (state, { payload }) => {
-        state.paymentIntent.push(payload.data)
+        state.paymentIntent.push(payload)
     }
   },
 });
