@@ -215,7 +215,6 @@ export const useContactInfoStore = () => {
     users,
     userParseStored,
     checkingId,
-    // uidParsed,
     token,
     visibleButton,
     visible,
@@ -224,7 +223,6 @@ export const useContactInfoStore = () => {
 
 
     //* Methods
-    // startVerificationContactInfoBeforeSaveIt,
     startSavingContactInfo,
     startUpdatingContactInfo,
     startShowingData,
