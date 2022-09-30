@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
+import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 import "./checkoutStyles.css";
 
 export const StripeCheckoutForm = () => {
+  const dispatch = useDispatch()
   const stripe = useStripe();
   const elements = useElements();
-  const { userParseStored } = useContactInfoStore();
+  const { users } = useContactInfoStore();
 
-  const userName = userParseStored.map((item) => {
-    return item.name;
-  });
-
-  const userEmail = userParseStored.map((item) => {
-    return item.email;
-  });
-
+  console.log( users[0].email )
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,10 +50,10 @@ export const StripeCheckoutForm = () => {
     });
   }, [stripe]);
 
-  const billingDetails = {
-    name: userName[0],
-    email: userEmail[0],
-  };
+  // const billingDetails = {
+  //   name: userName[0],
+  //   email: userEmail[0],
+  // };
 
   const iFrameStyle = {
     base: {
@@ -78,7 +74,7 @@ export const StripeCheckoutForm = () => {
   };
 
   const paymentElementStyle = {
-    billing_details: billingDetails,
+    // billing_details: billingDetails,
     style: iFrameStyle,
   };
 
@@ -93,7 +89,8 @@ export const StripeCheckoutForm = () => {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+     {/*need to pass customer id generated when customer submit the info before to submit credit card info */}
+    const { error, response } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
@@ -101,6 +98,9 @@ export const StripeCheckoutForm = () => {
       },
     });
 
+    if ( response ){
+      dispatch(onAddNewPaymentIntent( response ))
+    }
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`. For some payment methods like iDEAL, your customer will
@@ -134,7 +134,7 @@ export const StripeCheckoutForm = () => {
               </span>
             </button>
             {/* Show any error or success messages */}
-            {message && <div id="payment-message">{alert({ message })}</div>}
+            {message && <div id="payment-message">{message}</div>}
           </form>
         </div>
       </div>
