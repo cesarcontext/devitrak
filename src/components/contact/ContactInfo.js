@@ -20,7 +20,7 @@ export const ContactInfo = () => {
     userCreatedDisabledInput,
   } = useContactInfoStore();
   const { device } = useDeviceCount()
-  const { startStripePaymentIntent, clientSecret } = useStripeHook()
+  const { startStripePaymentIntent, clientSecret, stripeCustomer } = useStripeHook()
 
   const initalFormValues = {
     groupName: "",
@@ -122,6 +122,7 @@ export const ContactInfo = () => {
 
     await startSavingContactInfo(formValues);
     startStripePaymentIntent( device )
+    stripeCustomer( formValues )
     localStorage.setItem("device", device)
 
   };
