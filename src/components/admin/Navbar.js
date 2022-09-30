@@ -39,6 +39,13 @@ export const Navbar = () => {
             </p>
           </div>
         </NavLink>
+        <NavLink to="/admin/attendees">
+          <div className="nav-item">
+            <p className="nav-link" href="#">
+              Users
+            </p>
+          </div>
+        </NavLink>
         <NavLink to="/admin/articles">
           <div className="nav-item">
             <p className="nav-link" href="#">
