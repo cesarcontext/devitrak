@@ -22,6 +22,7 @@ import { Settings } from "./page/admin/Settings";
 
 import "./App.css";
 import { Profile } from "./page/admin/Profile";
+import { Attendees } from "./page/admin/Attendees";
 
 function App() {
   const tokenAdmin = localStorage.getItem("token")
@@ -64,6 +65,7 @@ function App() {
             <Route path="/admin/device-database" element={<DeviceDatabase />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/admin/attendees" element={<Attendees />} />
             <Route path="/admin/profile" element={<Profile />} />
             <Route
               path="/admin/*"
