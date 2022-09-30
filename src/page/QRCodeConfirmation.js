@@ -1,15 +1,12 @@
 import React, { useEffect } from "react"; //, { useEffect }
 import QRCode from "react-qr-code";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
-// import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
 
 export const QRCodeConfirmation = () => {
 const device = localStorage.getItem("device")
-  console.log(device);
   const { saveStripeTransaction } = useStripeHook();
 
   const payment_intent = new URLSearchParams(window.location.search).get(

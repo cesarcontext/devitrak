@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Swal from "sweetalert2";
+import QRCode from "react-qr-code";
 import { Accordion } from "../components/ui/Accordion";
 import { ContactInfoProfile } from "../components/contact/ContactInfoProfile";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { PaymentInfoProfile } from "../components/creditCard/PaymentInfoProfile";
 import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { Navbar } from "../components/ui/Navbar";
-
+import { useStripeHook } from "../hooks/useStripeHook";
 
 const initalFormValues = {
   groupName: "",
@@ -18,17 +18,14 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { startUpdatingContactInfo, userParseStored } = useContactInfoStore();
-  console.log( userParseStored?.map( item => {
-    return item.token
-  }) )
-
-  const tokenVerification = localStorage.getItem("token")
-
+  const { paymentIntent } = useStripeHook();
+  const { startUpdatingContactInfo } = useContactInfoStore();
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
   const [buttonState, setButtonState] = useState(true);
+  const tokenVerification = localStorage.getItem("token");
 
+  console.log(paymentIntent.at(-1).data.clientSecret);
   const onInputCHange = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -123,7 +120,7 @@ export const MyProfile = () => {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div
         className="my_profile_info"
         style={{
@@ -352,14 +349,38 @@ export const MyProfile = () => {
               )}
 
               <hr style={{ width: "0%" }} />
-              <div>
-                <h5>Your payment Informacion</h5>
-              </div>
-              <PaymentInfoProfile />
+
+              {paymentIntent.at(-1).data.clientSecret !== null ? (
+                <>
+                  <div>
+                    <h5>Show QR Code to claim your devices</h5>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "10px"
+                    }}>
+                    <QRCode
+                      fgColor="#000"
+                      bgColor="#ffff"
+                      level="Q"
+                      size={150}
+                      value={paymentIntent.at(-1).data.clientSecret}
+                    />
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <ReturnDeviceAlert />
-          <div>
+          {/**
+           * 
+           * Waiting for confirmation of contact button will remain in the app
+           * <div>
             <button
               style={{
                 margin: "auto",
@@ -369,12 +390,14 @@ export const MyProfile = () => {
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
-                width: "15%"
+                width: "15%",
               }}
             >
               Contact Context Glocal
             </button>
-          </div>
+          </div
+           * 
+           */}
           <div
             style={{
               width: "55%",
