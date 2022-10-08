@@ -3,11 +3,12 @@ import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
 
 export const QRCodeConfirmation = () => {
-const device = localStorage.getItem("device")
   const { saveStripeTransaction } = useStripeHook();
+  const { device } = useDeviceCount()
 
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
