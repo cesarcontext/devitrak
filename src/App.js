@@ -8,7 +8,6 @@ import { EventScheduled } from "./page/EventScheduled";
 import { HowToReturnTheDevices } from "./page/moreInfo/HowToReturnTheDevices";
 import { HowToUseTheReceiver } from "./page/moreInfo/HowToUseTheReceiver";
 import { LoginPage } from "./page/admin/LoginAdmin";
-import { MoreDevices } from "./page/requestDevices/MoreDevices";
 import { MoreInfo } from "./page/MoreInfo";
 import { MyProfile } from "./page/MyProfile";
 import { QRCodeConfirmation } from "./page/QRCodeConfirmation";
@@ -19,13 +18,14 @@ import { Home } from "./page/Home";
 import { DeviceDatabase } from "./page/admin/DeviceDatabase";
 import { Articles } from "./page/admin/Articles";
 import { Settings } from "./page/admin/Settings";
-
-import "./App.css";
 import { Profile } from "./page/admin/Profile";
 import { Attendees } from "./page/admin/Attendees";
+import { ReceiversDetailsAssignation } from "./components/admin/Attendees.js/ReceiversDetailsAssignation";
+import { useSelector } from "react-redux";
+import "./App.css";
 
 function App() {
-  const tokenAdmin = localStorage.getItem("token")
+  const { status } = useSelector( state => state.admin)
 
   return (
     <div className="App">
@@ -35,7 +35,6 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/confirmation" element={<QRCodeConfirmation />} />
         <Route path="/request_devices" element={<RequestDevices />} />
-        <Route path="/more_devices" element={<MoreDevices />} />
         <Route path="/more_info" element={<MoreInfo />}></Route>
         <Route
           exact
@@ -59,13 +58,14 @@ function App() {
       </Routes>
 
       <Routes>
-        {tokenAdmin ? (
+        { status === 'authenticated' ? (
           <>
             <Route path="/admin" element={<Admin />}></Route>
             <Route path="/admin/device-database" element={<DeviceDatabase />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/settings" element={<Settings />} />
             <Route path="/admin/attendees" element={<Attendees />} />
+            <Route path="/admin/attendees/receiver_assignation" element={<ReceiversDetailsAssignation />} />
             <Route path="/admin/profile" element={<Profile />} />
             <Route
               path="/admin/*"
