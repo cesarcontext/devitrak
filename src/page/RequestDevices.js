@@ -4,22 +4,20 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useStytchSession } from "@stytch/stytch-react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { Navbar } from "../components/ui/Navbar";
+import { useDeviceCount } from "../hooks/useDeviceCountStore";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
-  const deviceSelected = localStorage.getItem("device");
-  const { userParseStored } = useContactInfoStore();
+  const { users } = useContactInfoStore();
+  const { device } = useDeviceCount()
   let navigation;
 
-  if (!session || userParseStored[0].id === "") {
+  if (!session || users.status === "") {
     navigation = "/";
   }
-  if (session || userParseStored[0].id !== "") {
+  if (session || users.status === true) {
     navigation = "/checkout";
   }
-
-  console.log({ navigation });
-
   return (
     <>
     <Navbar />
@@ -54,9 +52,9 @@ export const RequestDevices = () => {
             }}
           >
             <p>
-              {deviceSelected} {deviceSelected > 1 ? "Devices" : "Devices"}
+              {device} {device > 1 ? "Devices" : "Devices"}
             </p>
-            <p>${deviceSelected * 200} deposit</p>
+            <p>${device * 200} deposit</p>
           </div>
         </div>
         <div
