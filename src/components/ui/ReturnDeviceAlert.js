@@ -3,11 +3,11 @@ import { useDeviceCount } from '../../hooks/useDeviceCountStore'
 
 export const ReturnDeviceAlert = () => {
 
-    const {deviceSelected} = useDeviceCount()
+    const {device} = useDeviceCount()
   return (
     <div>
         <div style={{ width: "30%", margin: "auto" }}>
-          {deviceSelected > 0 ? (
+          {device > 0 ? (
             <div style={{ width: "100%", margin: "auto" }}>
               <div
                 style={{
@@ -31,8 +31,8 @@ export const ReturnDeviceAlert = () => {
                 </svg>
                 <div>
                   <h4>
-                    You need to return {deviceSelected}{" "}
-                    {deviceSelected > 1 ? "devices" : "device"}
+                    You need to return {device}{" "}
+                    {device > 1 ? "devices" : "device"}
                   </h4>
                   <span>
                     You have 3 days remaining. <br />
@@ -64,8 +64,8 @@ export const ReturnDeviceAlert = () => {
               </svg>
               <div>
                 <h4>
-                  You have {deviceSelected} pending{" "}
-                  {deviceSelected > 1 ? "devices" : "device"}
+                  You have {device} pending{" "}
+                  {device > 1 ? "devices" : "device"}
                 </h4>
                 <span>You have returned all your devices.</span>
               </div>
