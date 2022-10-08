@@ -25,11 +25,6 @@ export const useStripeHook = () => {
           phone: phoneNumber,
         })
         .then((data) => {
-          console.log("customer effect", { data });
-
-          // if (data) {
-          //   dispatch();
-          // }
         });
     } catch (error) {
       console.log(error);
@@ -43,7 +38,6 @@ export const useStripeHook = () => {
           device: device,
         })
         .then((data) => {
-          console.log("data effect", { data });
           setData(data);
           setClientSecret(data.data.clientSecret);
           setVisibleButton("none");
@@ -52,7 +46,7 @@ export const useStripeHook = () => {
           if (data) {
             dispatch(onAddNewPaymentIntent(data));
           } else {
-            {/**return state as inital state in redux to avoid duplicate info from last user */}
+            //**return state as inital state in redux to avoid duplicate info from last user */
           }
         });
     } catch (error) {
@@ -63,14 +57,14 @@ export const useStripeHook = () => {
   const saveStripeTransaction = async ({
     payment_intent,
     clientSecret,
-    device,
+    device
   }) => {
     try {
       const response = await devitrackApiStripe
         .post("/stripe-transaction", {
           paymentIntent: payment_intent,
           clientSecret,
-          device,
+          device
         })
         .then((response) => response.data);
     } catch (error) {
