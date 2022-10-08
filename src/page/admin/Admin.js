@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "../../components/admin/Navbar";
+import { Navbar } from "../../components/admin/ui/Navbar";
 
 export const Admin = () => {
   return (
