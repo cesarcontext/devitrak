@@ -1,9 +1,9 @@
 import React from 'react'
 
-export const Pagination = ({ usersRenderedPerPage, totalUsers, paginate }) => {
+export const Pagination = ({ childrenRenderedPerPage, totalChildren, paginate }) => {
     const pageNumbers = []
 
-    for ( let i = 1; i <= Math.ceil( totalUsers / usersRenderedPerPage); i++ ){
+    for ( let i = 1; i <= Math.ceil( totalChildren / childrenRenderedPerPage); i++ ){
         pageNumbers.push(i)
     }
 
