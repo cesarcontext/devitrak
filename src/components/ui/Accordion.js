@@ -27,14 +27,7 @@ export const Accordion = () => {
               data-bs-parent="#accordionExample"
             >
               <div className="accordion-body">
-                {device?.map((device, index) => {
-                  return (
-                    <div key={index}>
-                      {device + 1}
-                      <input className="input-field" disabled />
-                    </div>
-                  );
-                })}
+                {new Array( device).fill(<div style={{display: "flex", flexDirection: "column"}}><input className="input-field" disabled /></div>)}
               </div>
             </div>
           </div>
