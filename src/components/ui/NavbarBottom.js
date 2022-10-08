@@ -9,7 +9,9 @@ import "./navbar-bottom.css";
 export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
-  const { token } = useContactInfoStore();
+  const { status, users } = useContactInfoStore()
+
+  const newUser = users.at(-1).email
 
   const user = session?.authentication_factors[0].email_factor.email_address;
 
@@ -28,9 +30,6 @@ export const NavbarBottom = () => {
         popup: "animate__animated animate__fadeOutUp",
       },
     });
-    localStorage.setItem("token");
-    localStorage.setItem("user");
-    localStorage.setItem("device");
   };
 
   return (
@@ -70,10 +69,11 @@ export const NavbarBottom = () => {
         >
           {" "}
           <div style={{ padding: "20px"}}>{session && user}</div>
+          <div style={{ padding: "20px"}}>{newUser}</div>
           <Link to="/">
             <div>
               {session && <button onClick={handleLogout}>Logout</button>}
-              {token && <button onClick={handleLogout}>Logout</button>}
+              {newUser && <button onClick={handleLogout}>Logout</button>}
             </div>
           </Link>
         </div>
