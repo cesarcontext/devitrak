@@ -13,9 +13,6 @@ export const StripeCheckoutForm = () => {
   const dispatch = useDispatch()
   const stripe = useStripe();
   const elements = useElements();
-  const { users } = useContactInfoStore();
-
-  console.log( users[0].email )
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,12 +46,6 @@ export const StripeCheckoutForm = () => {
       }
     });
   }, [stripe]);
-
-  // const billingDetails = {
-  //   name: userName[0],
-  //   email: userEmail[0],
-  // };
-
   const iFrameStyle = {
     base: {
       color: "#fff",
