@@ -123,7 +123,6 @@ export const ContactInfo = () => {
     await startSavingContactInfo(formValues);
     startStripePaymentIntent( device )
     stripeCustomer( formValues )
-    localStorage.setItem("device", device)
 
   };
 
