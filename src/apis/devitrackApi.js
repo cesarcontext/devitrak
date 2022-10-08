@@ -14,7 +14,6 @@ devitrackApiPayment.interceptors.request.use((config) => {
     config.headers = {
       "x-token": localStorage.getItem("token"),
     };
-    console.log('config', config.headers )
   }
   return config
 });
@@ -28,7 +27,6 @@ devitrackApiAdmin.interceptors.request.use((config) => {
     config.headers = {
       "x-token": localStorage.getItem("token"),
     };
-    console.log('config', config.headers )
   }
   return config
 });
@@ -43,7 +41,6 @@ devitrackApiStripe.interceptors.request.use((config) => {
     config.headers = {
       "x-token": localStorage.getItem("token"),
     };
-    console.log('config', config.headers )
   }
   return config
 });
