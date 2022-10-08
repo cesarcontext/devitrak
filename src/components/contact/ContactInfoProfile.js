@@ -2,11 +2,10 @@ import React from "react";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
 export const ContactInfoProfile = () => {
-  const { userParseStored} = useContactInfoStore();
-  console.log(userParseStored)
+  const { users} = useContactInfoStore();
   return (
     <div>
-      {userParseStored?.map((item) => {
+      {users?.map((item) => {
         return (
           <div key={item.email}>
             <div
