@@ -2,22 +2,27 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { devitrackApiAdmin, devitrackApiPayment } from "../apis/devitrackApi";
+import {
+  devitrackApiAdmin,
+  devitrackApiPayment,
+  devitrackApi,
+} from "../apis/devitrackApi";
 import {
   clearErrorMessage,
   onChecking,
   onLogin,
   onLogout,
 } from "../store/slices/adminSlice";
+import { onCheckReceiverPaymentIntent } from "../store/slices/stripeSlice";
 
 export const useAdminStore = () => {
   const { status, user, errorMessage } = useSelector((state) => state.admin);
   const [tokenAdmin, setTokenAdmin] = useState("");
-  const [adminName, setAdminName] = useState("")
-  const [adminEmail, setAdminEmail] = useState("")
+  const [adminName, setAdminName] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const startLogin = async ({ email, password }) => {
     dispatch(onChecking());
 
@@ -27,18 +32,16 @@ export const useAdminStore = () => {
         password,
       });
       setTokenAdmin(data.token);
-      setAdminName(data.name)
-      setAdminEmail(data.email)
+      setAdminName(data.name);
+      setAdminEmail(data.email);
       localStorage.setItem("token", data.token);
-      localStorage.setItem("admin",data.name);
-      localStorage.setItem("adminEmail", data.email);
       Swal.fire({
         text: "Redirectioning to your Admin page",
         icon: "success",
       }).then(() => {
         window.location = "http://localhost:3000/admin";
       });
-      dispatch(onLogin({ name: data.name, uid: data.uid }));
+      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email }));
     } catch (error) {
       dispatch(onLogout("Incorrect credentials"));
       Swal.fire("Error", error.response.data.msg, "error");
@@ -52,18 +55,17 @@ export const useAdminStore = () => {
   const startRegister = async ({ name, email, password }) => {
     dispatch(onChecking());
 
-    const role = ['Editor']
+    const role = ["Editor"];
     try {
       const { data } = await devitrackApiAdmin.post("/new_admin_user", {
         name,
         email,
         password,
-        role
+        role,
       });
       setTokenAdmin(data.token);
       localStorage.setItem("token", data.token);
-      localStorage.setItem("admin", JSON.stringify({name: data.name, email:data.email}));
-      dispatch(onLogin({ name: data.name, uid: data.uid }));
+      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email }));
       Swal.fire("User created", "Account has been created", "success").then(
         () => {
           window.location = "http://localhost:3000/admin";
@@ -89,6 +91,19 @@ export const useAdminStore = () => {
     }
   };
 
+  const startEditAdminUser = async (email) => {
+    const { uid } = user;
+    try {
+      const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
+        email: email,
+      });
+      dispatch(onLogin({ name: data.name, email: data.email, uid: data.uid }));
+      Swal.fire("Email updated", "The new email was saved!", "success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const checkAdminToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -107,33 +122,31 @@ export const useAdminStore = () => {
 
   const startLogout = () => {
     dispatch(onLogout());
-    localStorage.setItem("token");
-    window.location = "http://localhost:3000/admin/login"
-  };
-
-  // const userRegitered = [];
-
-  const startLoadingUsers = () => {
-    try {
-      if (tokenAdmin) {
-        const { data } = devitrackApiPayment.get("/");
-        console.log("users loaded", data.user);
-      }
-    } catch (error) {}
+    navigate("/admin/login");
   };
 
   const startRenderAllPaymentIntents = () => {
     try {
       if (tokenAdmin) {
         const { data } = devitrackApiPayment.get("/payment_intents");
-        console.log("data rendered", data);
       }
     } catch (error) {}
   };
 
-  console.log(adminName);
-  console.log(adminEmail);
-
+  const checkReceiversAssignedToPaymentIntent = async (
+    paymentIntentToCheck
+  ) => {
+    try {
+      const response = await devitrackApi.post("/receiver/receiver-assigned", {
+        paymentIntent: paymentIntentToCheck,
+      });
+      const data = await response.data.receiver;
+    console.log(data)
+      dispatch(onCheckReceiverPaymentIntent(data))
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return {
     //*Propiedades
     status,
@@ -142,14 +155,14 @@ export const useAdminStore = () => {
     tokenAdmin,
     adminName,
     adminEmail,
-    // userRegitered,
 
     //*Metodos
     startLogout,
     checkAdminToken,
     startLogin,
     startRegister,
-    startLoadingUsers,
+    startEditAdminUser,
     startRenderAllPaymentIntents,
+    checkReceiversAssignedToPaymentIntent,
   };
 };
