@@ -8,8 +8,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
   const [users, setUsers] = useState([]);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersRenderedPerPage] = useState(3);
-  console.log("search", searchTerm);
+  const [usersRenderedPerPage] = useState(4);
 
   useEffect(() => {
     devitrackApi
@@ -25,8 +24,6 @@ export const AttendeesInfo = ({ searchTerm }) => {
     indexOfLastUsersRendered
   );
 
-  console.log('current users per page', currentUsersRendered )
-
   const paginate = (pageNumbers) => {
     setCurrentPage(pageNumbers);
   };
@@ -36,6 +33,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
         display: "flex",
         columnGap: "2%",
         margin: "2%",
+        height:"25%"
       }}
     >
       <div
@@ -59,11 +57,25 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {currentUsersRendered
-              ?.filter((item) =>
-                item.email.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((user, item) => {
+            {searchTerm.length < 2 ? currentUsersRendered
+              ?.map((user, item) => {
+                // currentUsersRendered;
+                return (
+                  <tbody key={user.id}>
+                    <tr>
+                      <th scope="row">{item + 1}</th>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>
+                        <button onClick={() => setSendObjectIdUser(user.id)}>
+                          Details <i className="bi bi-caret-right" />{" "}
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                );
+              }): users?.filter(( item )=> item.email.includes( searchTerm ))
+              ?.map((user, item) => {
                 // currentUsersRendered;
                 return (
                   <tbody key={user.id}>
@@ -83,8 +95,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
           </table>
           <div>
             <Pagination
-              usersRenderedPerPage={usersRenderedPerPage}
-              totalUsers={users.length}
+              childrenRenderedPerPage={usersRenderedPerPage}
+              totalChildren={users.length}
               paginate={paginate}
             />
           </div>
@@ -92,7 +104,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
       </div>
       <div
         style={{
-          width: "50%",
+          width: "70%",
           border: "solid 2px #212529",
           borderRadius: "15px",
           padding: "20px",
@@ -107,8 +119,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
         </div>
         <div
           style={{
-            width: "60%",
-            padding: "20px",
+            // width: "100%",
+            padding: "5px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "flex-start",
@@ -136,9 +148,9 @@ export const AttendeesInfo = ({ searchTerm }) => {
             }
           })}
         </div>
-        <div>
+        <div  style={{ width: "100%"}}>
           <div>Transactions</div>
-          <div>
+          <div style={{ width: "100%"}}>
             <StripeTransactionHistoryByUser
               sendObjectIdUser={sendObjectIdUser}
             />
