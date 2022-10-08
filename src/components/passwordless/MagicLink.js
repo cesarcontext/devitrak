@@ -5,13 +5,8 @@ export const MagicLink = (magicLinkParam) => {
   const client = useStytch();
 
   const emailUserToPassToMagicLink = Object.values(magicLinkParam )
-
   let emailToPass;
-  
   const emailString = emailUserToPassToMagicLink.map((item ) => emailToPass = item)
-
-  console.log("first", emailToPass )
-
   const handleLogin = async () => {
     await client.magicLinks.email.loginOrCreate(emailToPass);
 
@@ -26,7 +21,6 @@ export const MagicLink = (magicLinkParam) => {
       },
     });
   };
-
   return (
     <div style={{ paddingBottom: "25px"}}>
       <h4>{emailToPass} is registered. <br /> Please sign in.</h4>
