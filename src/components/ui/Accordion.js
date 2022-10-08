@@ -2,7 +2,7 @@ import React from "react";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
 export const Accordion = () => {
-  const { deviceRented } = useDeviceCount();
+  const { device } = useDeviceCount();
   return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
@@ -27,7 +27,7 @@ export const Accordion = () => {
               data-bs-parent="#accordionExample"
             >
               <div className="accordion-body">
-                {deviceRented?.map((device, index) => {
+                {device?.map((device, index) => {
                   return (
                     <div key={index}>
                       {device + 1}
@@ -69,27 +69,3 @@ export const Accordion = () => {
     </div>
   );
 };
-/**
- *     <div className="accordion-item">
-            <h2 className="accordion-header" id="headingTwo">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseTwo"
-                aria-expanded="false"
-                aria-controls="collapseTwo"
-              >
-                <h3>RETURNED DEVICES</h3>
-              </button>
-            </h2>
-            <div
-              id="collapseTwo"
-              className="accordion-collapse collapse"
-              aria-labelledby="headingTwo"
-              data-bs-parent="#accordionExample"
-            >
-              <div className="accordion-body"></div>
-            </div>
-          </div>
- */
