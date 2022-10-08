@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Swal from "sweetalert2";
-import QRCode from "react-qr-code";
 import { Accordion } from "../components/ui/Accordion";
 import { ContactInfoProfile } from "../components/contact/ContactInfoProfile";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
@@ -8,6 +7,7 @@ import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { Navbar } from "../components/ui/Navbar";
 import { useStripeHook } from "../hooks/useStripeHook";
+import QRCode from "react-qr-code";
 
 const initalFormValues = {
   groupName: "",
@@ -25,7 +25,6 @@ export const MyProfile = () => {
   const [buttonState, setButtonState] = useState(true);
   const tokenVerification = localStorage.getItem("token");
 
-  console.log(paymentIntent.at(-1).data.clientSecret);
   const onInputCHange = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -70,6 +69,36 @@ export const MyProfile = () => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
+  const checkPaymentIntentArray = (info) => {
+
+    const QRCodeValue = info.at(-1).data.clientSecret
+    if (info.length > 0) {
+      return (
+        <>
+          <div>
+            <h5>Show QR Code to claim your devices</h5>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "10px",
+            }}
+          >
+            <QRCode
+              fgColor="#000"
+              bgColor="#ffff"
+              level="Q"
+              size={150}
+              value={QRCodeValue}
+            />
+          </div>
+        </>
+      );
+    }
+    return;
+  };
   const handleEditContactInfo = async (event) => {
     event.preventDefault();
 
@@ -347,57 +376,11 @@ export const MyProfile = () => {
                   </>
                 </div>
               )}
-
               <hr style={{ width: "0%" }} />
-
-              {paymentIntent.at(-1).data.clientSecret !== null ? (
-                <>
-                  <div>
-                    <h5>Show QR Code to claim your devices</h5>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      padding: "10px"
-                    }}>
-                    <QRCode
-                      fgColor="#000"
-                      bgColor="#ffff"
-                      level="Q"
-                      size={150}
-                      value={paymentIntent.at(-1).data.clientSecret}
-                    />
-                  </div>
-                </>
-              ) : (
-                ""
-              )}
+              {checkPaymentIntentArray(paymentIntent)}
             </div>
           </div>
           <ReturnDeviceAlert />
-          {/**
-           * 
-           * Waiting for confirmation of contact button will remain in the app
-           * <div>
-            <button
-              style={{
-                margin: "auto",
-                backgroundColor: "rgba(69, 104, 220, 1)",
-                color: "#ffff",
-                height: "5vh",
-                borderRadius: "10px",
-                outline: "transparency",
-                border: "rgba(69, 104, 220, 1)",
-                width: "15%",
-              }}
-            >
-              Contact Context Glocal
-            </button>
-          </div
-           * 
-           */}
           <div
             style={{
               width: "55%",
