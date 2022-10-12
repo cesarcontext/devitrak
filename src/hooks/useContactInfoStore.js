@@ -33,7 +33,6 @@ export const useContactInfoStore = () => {
         email,
         phoneNumber,
       });
-      localStorage.setItem("user", JSON.stringify({ ...data }));
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
       localStorage.setItem("status", data.ok);
@@ -75,17 +74,21 @@ export const useContactInfoStore = () => {
 
       navigate("/");
 
-      // closeModal();
     }
   };
-
-  const checkingId = localStorage.getItem("uid");
-
   const startShowingData = () => {
     try {
-      const { data } = devitrackApi.get(`/auth/${checkingId}`);
-
-      localStorage.setItem("user", JSON.stringify({ ...data }));
+      const { data } = devitrackApi.get(`/auth/${users.uid}`);
+      dispatch(
+        onAddNewContact({
+          name: data.name,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phone,
+          id: data.uid,
+        })
+      );
+      
     } catch (error) {
       console.log(error);
     }
@@ -98,31 +101,25 @@ export const useContactInfoStore = () => {
     phoneNumber,
   }) => {
     try {
-      const { data } = await devitrackApi.put(`/auth/${checkingId}`, {
+      const userUID = localStorage.getItem('uid')
+      const { data } = await devitrackApi.put(`/auth/${userUID}`, {
         name,
         lastName,
         email,
         phoneNumber,
       });
-
-      localStorage.setItem("user", JSON.stringify({ ...data }));
+      dispatch(
+        onUpdateContact({
+          name: data.name,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phone,
+          id: data.uid,
+        })
+      );
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
       localStorage.setItem("status", data.ok);
-
-      if (data) {
-        dispatch(
-          onUpdateContact({
-            groupName: data.user.groupName,
-            name: data.user.name,
-            lastName: data.user.lastName,
-            email: data.user.email,
-            phone: data.user.phoneNumber,
-            id: data.user.id,
-            status: data.ok,
-          })
-        );
-      }
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -151,10 +148,6 @@ export const useContactInfoStore = () => {
       });
 
       if (data.ok === true) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ ...data.user, status: data.ok, id: data.user.id })
-        );
         localStorage.setItem("uid", data.user.id);
         localStorage.setItem("token", data.token);
         setToken(data.token);
@@ -171,19 +164,6 @@ export const useContactInfoStore = () => {
           })
         );
       } else {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            groupName: "",
-            name: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            id: "",
-            status: "",
-            id: "",
-          })
-        );
         localStorage.setItem("uid", JSON.stringify(""));
         localStorage.setItem("token", "");
         setToken("");
@@ -205,16 +185,9 @@ export const useContactInfoStore = () => {
       console.log(error);
     }
   };
-
-  const checking = localStorage.getItem("user");
-  const userParseStored = [JSON.parse(checking)];
-  // const uidParsed = localStorage.getItem("uid");
-
   return {
     //* Properties
     users,
-    userParseStored,
-    checkingId,
     token,
     visibleButton,
     visible,
