@@ -9,9 +9,9 @@ import "./navbar-bottom.css";
 export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
-  const { status, users } = useContactInfoStore()
+  const { status, users } = useContactInfoStore();
 
-  const newUser = users.at(-1).email
+  const newUser = users.at(-1).email;
 
   const user = session?.authentication_factors[0].email_factor.email_address;
 
@@ -64,16 +64,15 @@ export const NavbarBottom = () => {
             display: "flex",
             // flexDirection: "column",
             justifyContent: "space-around",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           {" "}
-          <div style={{ padding: "20px"}}>{session && user}</div>
-          <div style={{ padding: "20px"}}>{newUser}</div>
+          <div style={{ padding: "20px" }}>{(session && user) || newUser}</div>
           <Link to="/">
             <div>
-              {session && <button onClick={handleLogout}>Logout</button>}
-              {newUser && <button onClick={handleLogout}>Logout</button>}
+              {(session && <button onClick={handleLogout}>Logout</button>) ||
+                (newUser && <button onClick={handleLogout}>Logout</button>)}
             </div>
           </Link>
         </div>
