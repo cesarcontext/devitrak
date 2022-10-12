@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import Swal from "sweetalert2";
 import { devitrackApiAdmin, devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { Navbar } from "../ui/Navbar";
@@ -32,13 +33,50 @@ export const ReceiversDetailsAssignation = () => {
   };
 
   const handleDataSubmitted = async () => {
-    const { data } = await devitrackApiAdmin.post("/receiver-assignation", {
-      paymentIntent: paymentIntentDetailSelected.paymentIntent,
-      device: receiversAssigned,
-      user: paymentIntentDetailSelected.user,
-      adminUser: user.uid,
-    });
-    setFetchedData(data);
+    try {
+      const { data } = await devitrackApiAdmin.post("/receiver-assignation", {
+        paymentIntent: paymentIntentDetailSelected.paymentIntent,
+        device: receiversAssigned,
+        user: paymentIntentDetailSelected.user,
+        adminUser: user.uid,
+      });
+
+      setFetchedData(data);
+      Swal.fire({
+        title: "",
+        width: 600,
+        padding: "3em",
+        text: `Receivers were assigned to payment intent successfully`,
+        icon: "success",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
+      rgb(30, 115, 190)
+        url("../image/logo.jpg")
+        left top
+        no-repeat
+      `,
+      });
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Upss something went wrong!!",
+        width: 600,
+        padding: "3em",
+        text: `${error.response.data.msg}`,
+        icon: "error",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
+        rgb(30, 115, 190)
+          url("../image/logo.jpg")
+          left top
+          no-repeat
+        `,
+      });
+    }
   };
   return (
     <div>
@@ -134,17 +172,25 @@ export const ReceiversDetailsAssignation = () => {
       </div>
       {paymentIntentReceiversAssigned.length < 1 ? (
         <div style={{ width: "40%", display: "flex", margin: "0 auto" }}>
-          <input
-            style={{ width: "100%" }}
-            value={receiverSerialNumber}
-            name="receiverSerialNumber"
-            id="receiverSerialNumber"
-            type="text"
-            onChange={(event) => setReceiverSerialNumber(event.target.value)}
-          />
-          <button style={{ width: "50%" }} onClick={addReceiver}>
-            Add receiver
-          </button>
+          {receiversAssigned.length === paymentIntentDetailSelected.device ? (
+            <>
+              <input
+                style={{ width: "100%" }}
+                value={receiverSerialNumber}
+                name="receiverSerialNumber"
+                id="receiverSerialNumber"
+                type="text"
+                onChange={(event) =>
+                  setReceiverSerialNumber(event.target.value)
+                }
+              />
+              <button style={{ width: "50%" }} onClick={addReceiver}>
+                Add receiver
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       ) : null}
       <div>
@@ -163,56 +209,62 @@ export const ReceiversDetailsAssignation = () => {
                 <th scope="col">Status</th>
               </tr>
             </thead>
-            {paymentIntentReceiversAssigned.length < 1 ? receiversAssigned?.map((item, index) => {
-              return (
-                <tbody>
-                  <tr>
-                    <th scope="row">{index + 1}</th>
-                    <td>{item}</td>
-                    <td>
-                      <span>Receiver</span>
-                    </td>
-                    <td>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="flexSwitchCheckChecked"
-                        onChange={() => setActived(!actived)}
-                        check="checked"
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              );
-            }) : paymentIntentReceiversAssigned.at(-1).device.map((index, receiver) => {
-              return (
-                <tbody>
-                  <tr>
-                    <th scope="row">{receiver + 1}</th>
-                    <td>{index}</td>
-                    <td>
-                      <span>Receiver</span>
-                    </td>
-                    <td>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="flexSwitchCheckChecked"
-                        onChange={() => setActived(!actived)}
-                        check="checked"
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              );
-            })}
+            {paymentIntentReceiversAssigned.length < 1
+              ? receiversAssigned?.map((item, index) => {
+                  return (
+                    <tbody>
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{item}</td>
+                        <td>
+                          <span>Receiver</span>
+                        </td>
+                        <td>
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="flexSwitchCheckChecked"
+                            onChange={() => setActived(!actived)}
+                            check="checked"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })
+              : paymentIntentReceiversAssigned
+                  .at(-1)
+                  .device.map((index, receiver) => {
+                    return (
+                      <tbody>
+                        <tr>
+                          <th scope="row">{receiver + 1}</th>
+                          <td>{index}</td>
+                          <td>
+                            <span>Receiver</span>
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="flexSwitchCheckChecked"
+                              onChange={() => setActived(!actived)}
+                              check="checked"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
           </table>
         </div>
       </div>
       <div style={{ width: "20%", margin: "0 auto" }}>
-        {paymentIntentReceiversAssigned.length < 1 && <button onClick={handleDataSubmitted}>Save</button>}
+        {paymentIntentReceiversAssigned.length < 1 && (
+          <button onClick={handleDataSubmitted}>Save</button>
+        )}
       </div>
     </div>
   );

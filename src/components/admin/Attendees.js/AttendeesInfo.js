@@ -18,7 +18,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
   }, []);
 
   const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
-  const indexOfFirstUsersRendered = indexOfLastUsersRendered - usersRenderedPerPage;
+  const indexOfFirstUsersRendered =
+    indexOfLastUsersRendered - usersRenderedPerPage;
   const currentUsersRendered = users.slice(
     indexOfFirstUsersRendered,
     indexOfLastUsersRendered
@@ -33,7 +34,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
         display: "flex",
         columnGap: "2%",
         margin: "2%",
-        height:"25%"
+        height: "25%",
       }}
     >
       <div
@@ -57,41 +58,45 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {searchTerm.length < 2 ? currentUsersRendered
-              ?.map((user, item) => {
-                // currentUsersRendered;
-                return (
-                  <tbody key={user.id}>
-                    <tr>
-                      <th scope="row">{item + 1}</th>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <button onClick={() => setSendObjectIdUser(user.id)}>
-                          Details <i className="bi bi-caret-right" />{" "}
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                );
-              }): users?.filter(( item )=> item.email.includes( searchTerm ))
-              ?.map((user, item) => {
-                // currentUsersRendered;
-                return (
-                  <tbody key={user.id}>
-                    <tr>
-                      <th scope="row">{item + 1}</th>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <button onClick={() => setSendObjectIdUser(user.id)}>
-                          Details <i className="bi bi-caret-right" />{" "}
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                );
-              })}
+            {searchTerm.length < 2
+              ? currentUsersRendered?.map((user, item) => {
+                  // currentUsersRendered;
+                  return (
+                    <tbody key={user.id}>
+                      <tr>
+                        <th scope="row">{item + 1}</th>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <button onClick={() => setSendObjectIdUser(user.id)}>
+                            Details <i className="bi bi-caret-right" />{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })
+              : users
+                  ?.filter((item) => item.email.includes(searchTerm))
+                  ?.map((user, item) => {
+                    // currentUsersRendered;
+                    return (
+                      <tbody key={user.id}>
+                        <tr>
+                          <th scope="row">{item + 1}</th>
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <button
+                              onClick={() => setSendObjectIdUser(user.id)}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  })}
           </table>
           <div>
             <Pagination
@@ -117,40 +122,66 @@ export const AttendeesInfo = ({ searchTerm }) => {
         <div>
           <h2>Details</h2>
         </div>
-        <div
-          style={{
-            // width: "100%",
-            padding: "5px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            textAlign: "left",
-          }}
-        >
-          {users?.map((user) => {
-            if (user.id === sendObjectIdUser) {
-              return (
-                <div key={user.id}>
-                  <div>
-                    <strong>Fullname:</strong> {user.name} {user.lastName}
+        <div style={{
+              width: "100%",
+              padding: "25px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              textAlign: "left",
+            }}>
+          {" "}
+          <div
+            style={{
+              // width: "100%",
+              padding: "5px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              textAlign: "left",
+            }}
+          >
+            {users?.map((user) => {
+              if (user.id === sendObjectIdUser) {
+                return (
+                  <div key={user.id}>
+                    <div>
+                      <strong>Fullname:</strong> {user.name} {user.lastName}
+                    </div>
+                    <div>
+                      <strong>Email: </strong>
+                      {user.email}
+                    </div>
+                    <div>
+                      <strong>Phone: </strong>
+                      {user.phoneNumber}
+                    </div>
                   </div>
-                  <div>
-                    <strong>Email: </strong>
-                    {user.email}
-                  </div>
-                  <div>
-                    <strong>Phone: </strong>
-                    {user.phoneNumber}
-                  </div>
-                </div>
-              );
-            }
-          })}
+                );
+              }
+            })}
+          </div>
+          <div
+            style={{
+              padding: "5px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              textAlign: "left",
+              border: "solid 1px #212529",
+              borderRadius: "15px",
+              width: "50%",
+              height:"100%"
+            }}
+          >
+           <h6>Receivers History</h6>
+          </div>
         </div>
-        <div  style={{ width: "100%"}}>
+        <div style={{ width: "100%" }}>
           <div>Transactions</div>
-          <div style={{ width: "100%"}}>
+          <div style={{ width: "100%" }}>
             <StripeTransactionHistoryByUser
               sendObjectIdUser={sendObjectIdUser}
             />

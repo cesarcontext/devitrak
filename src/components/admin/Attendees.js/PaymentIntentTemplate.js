@@ -78,6 +78,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
             const device = index.amount_capturable / 20000;
             const amount_authorized = index.amount_capturable;
             const date = index.created;
+            let capturedAmount;
             if (index.id === paymentIntentSelected) {
               return (
                 <tbody key={index.id}>
@@ -117,38 +118,27 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                     <td style={{ backgroundColor: `${index.status}` }}>
                       ${amount_authorized / 100}
                     </td>
-                    <td>
-                    {device}
-                    </td>
+                    <td>{device}</td>
                     <td>
                       {device !== 0 ? (
                         <button
                           disabled={disableButton}
                           onClick={() => {
                             Swal.fire({
-                              title: "Are you sure?",
-                              text: "The amount will be captured!",
+                              title: "",
+                              text: "This amount will be captured!",
                               icon: "warning",
                               showCancelButton: true,
                               confirmButtonColor: "#3085d6",
                               cancelButtonColor: "#d33",
                               confirmButtonText: "Capture authorized amount",
                               backdrop: "rgba(0,0,123,0.4)",
-                              input: "text",
-                              inputAttributes: {
-                                autocapitalize: "off",
-                                placeholder:
-                                  `Max amount to capture: $${index.amount_capturable}`.slice(
-                                    0,
-                                    -2
-                                  ),
-                              },
                             }).then((result) => {
                               if (result.isConfirmed) {
                                 const id = index.id;
                                 devitrackApi.post(
                                   `/stripe/payment-intents/${index.id}/capture`,
-                                  { id: id, amount_capturable: result.value }
+                                  { id: id }
                                 );
                                 Swal.fire(
                                   "Captured!",
@@ -167,15 +157,15 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                           disabled
                           onClick={() => {
                             Swal.fire({
-                              title: "Are you sure?",
-                              text: "The amount will be captured!",
+                              title: "",
+                              text: "The amount submitted will be captured!",
                               icon: "warning",
                               showCancelButton: true,
                               confirmButtonColor: "#3085d6",
                               cancelButtonColor: "#d33",
                               confirmButtonText: "Capture authorized amount",
                               backdrop: "rgba(0,0,123,0.4)",
-                              input: "text",
+                              input: "number",
                               inputAttributes: {
                                 autocapitalize: "off",
                                 placeholder:
@@ -184,12 +174,13 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                     -2
                                   ),
                               },
+                            
                             }).then((result) => {
                               if (result.isConfirmed) {
                                 const id = index.id;
                                 devitrackApi.post(
                                   `/stripe/payment-intents/${index.id}/capture`,
-                                  { id: id, amount_capturable: result.value }
+                                  { id: id}
                                 );
                                 Swal.fire(
                                   "Captured!",
@@ -213,7 +204,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                             onClick={() => {
                               Swal.fire({
                                 title: "Are you sure?",
-                                text: "Transacrtion will be cancelled!",
                                 icon: "warning",
                                 showCancelButton: true,
                                 confirmButtonColor: "#3085d6",
