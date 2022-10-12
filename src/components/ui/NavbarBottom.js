@@ -9,7 +9,7 @@ import "./navbar-bottom.css";
 export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
-  const { status, users } = useContactInfoStore();
+  const { users } = useContactInfoStore();
 
   const newUser = users.at(-1).email;
 
