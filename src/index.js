@@ -12,7 +12,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 
 const stytch = initStytch(
-  "public-token-test-dc912c5e-a5d5-41db-b832-22535b2428c6"
+  "public-token-test-6b62a560-fb54-42e5-85ca-cab49d61b0bd"
 );
 
 const persistor = persistStore(store);
