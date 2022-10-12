@@ -30,12 +30,9 @@ const contactInfoSlice = createSlice({
       state.errorMessage = undefined
     },
     onUpdateContact: (state, { payload }) => {
-      state.users = state.users.map((user) => {
-        if (user.id === payload.id) {
-          return payload;
-        }
-        return users;
-      });
+      state.users.push(payload);
+      state.users.shift();
+      state.errorMessage = undefined
     },
   },
 });
