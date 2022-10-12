@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/admin/ui/Navbar";
 import { useAdminStore } from "../../hooks/useAdminStore";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import "./profile.css";
 
 export const Profile = () => {
-  const { user, startEditAdminUser } = useAdminStore();
+  const { user } = useAdminStore();
+  const { startUpdatingContactInfo } = useContactInfoStore()
   const [buttonEditProfile, setButtonEditProfile] = useState(false);
   const [email, setEmail] = useState("");
   const [file, setFile] = useState();
 
-  function handleChange(e) {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
-  }
 
   const handleEditInfoSubmitted = async (event) => {
     event.preventDefault();
-    await startEditAdminUser(email);
-    await setButtonEditProfile(false);
+    await startUpdatingContactInfo(email);
+    setButtonEditProfile(!buttonEditProfile)
   };
 
   return (
@@ -48,7 +46,7 @@ export const Profile = () => {
                 }}
               >
                 {" "}
-                <input type="file" onChange={handleChange} />
+                {/* <input type="file" onChange={handleChange} /> */}
                 <strong>
                   CHANGE PICTURE <i className="bi bi-pencil" />{" "}
                 </strong>
@@ -60,29 +58,31 @@ export const Profile = () => {
               <>
                 <div className="personal-info-detail">
                   <strong>YOUR INFORMATION</strong>
-                  <span>Name</span>
+                  <h6>Name</h6>
                   <span>{user.name}</span>
-                  <span>Role</span>
+                  <br/>
+                  <h6>Role</h6>
                   <span>Administrator</span>
                 </div>
                 <div className="personal-info-detail">
                   <strong>CONTACT DETAILS</strong>
-                  <span>Email</span>
+                  <h6>Email</h6>
                   <span>{user.email}</span>
                 </div>
               </>
             ) : (
               <>
                 <div className="personal-info-detail">
-                  <strong>YOUR INFORMATION</strong>
-                  <span>Name</span>
+                <strong>YOUR INFORMATION</strong>
+                  <h6>Name</h6>
                   <span>{user.name}</span>
-                  <span>Role</span>
+                  <br />
+                  <h6>Role</h6>
                   <span>Administrator</span>
                 </div>
                 <div className="personal-info-detail">
                   <strong>CONTACT DETAILS</strong>
-                  <span>Email</span>
+                  <h6>Email</h6>
                   <span>
                     <input
                       style={{
