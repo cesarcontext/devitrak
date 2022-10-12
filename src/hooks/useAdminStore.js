@@ -6,6 +6,7 @@ import {
   devitrackApiAdmin,
   devitrackApiPayment,
   devitrackApi,
+  devitrackApiArticle
 } from "../apis/devitrackApi";
 import {
   clearErrorMessage,
@@ -147,6 +148,44 @@ export const useAdminStore = () => {
       console.log(error);
     }
   };
+
+  const articleSetup = async ({
+    img,
+    title,
+    body
+  }) => {
+ try {
+  const response = await devitrackApiArticle.post("/article-creation", {img, title, body})
+  console.log('article data', response )
+ } catch (error) {
+  console.log( error)
+  Swal.fire({
+    title: "Upss something went wrong!!",
+    width: 600,
+    padding: "3em",
+    text: `${error.response.data.msg}`,
+    icon: "error",
+    color: "#rgb(30, 115, 190)",
+    background: "#fff",
+    confirmButtonColor: "rgb(30, 115, 190)",
+    backdrop: `
+    rgb(30, 115, 190)
+      url("../image/logo.jpg")
+      left top
+      no-repeat
+    `,
+  });
+ }
+  }
+
+  const displayArticles = async () => {
+    try {
+      const response = await devitrackApiArticle.get("/articles")
+      .then( response => console.log(response.data))
+    } catch (error) {
+      console.log( error )
+    }
+  }
   return {
     //*Propiedades
     status,
@@ -164,5 +203,7 @@ export const useAdminStore = () => {
     startEditAdminUser,
     startRenderAllPaymentIntents,
     checkReceiversAssignedToPaymentIntent,
+    articleSetup,
+    
   };
 };
