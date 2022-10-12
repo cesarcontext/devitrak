@@ -45,3 +45,17 @@ devitrackApiStripe.interceptors.request.use((config) => {
   return config
 });
 
+export const devitrackApiArticle = axios.create({
+  baseURL: "http://localhost:34001/api/article"
+})
+
+//TODO: config interceptors
+devitrackApiArticle.interceptors.request.use((config) => {
+  if (localStorage.getItem("token")) {
+    config.headers = {
+      "x-token": localStorage.getItem("token"),
+    };
+  }
+  return config
+});
+
