@@ -26,6 +26,7 @@ import "./App.css";
 
 function App() {
   const { status } = useSelector( state => state.admin)
+  const adminToken = localStorage.getItem("admin-token")
 
   return (
     <div className="App">
@@ -58,7 +59,7 @@ function App() {
       </Routes>
 
       <Routes>
-        { status === 'authenticated' ? (
+        { status === 'authenticated' && adminToken ? (
           <>
             <Route path="/admin" element={<Admin />}></Route>
             <Route path="/admin/device-database" element={<DeviceDatabase />} />
