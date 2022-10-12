@@ -35,7 +35,7 @@ export const useAdminStore = () => {
       setTokenAdmin(data.token);
       setAdminName(data.name);
       setAdminEmail(data.email);
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("admin-token", data.token);
       Swal.fire({
         text: "Redirectioning to your Admin page",
         icon: "success",
@@ -65,7 +65,7 @@ export const useAdminStore = () => {
         role,
       });
       setTokenAdmin(data.token);
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("admin-token", data.token);
       dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email }));
       Swal.fire("User created", "Account has been created", "success").then(
         () => {
@@ -112,7 +112,7 @@ export const useAdminStore = () => {
 
     try {
       const { data } = await devitrackApiAdmin.get("/renew");
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("admin-token", data.token);
       localStorage.setItem("token-init-date", new Date().getItem());
       dispatch(onLogin({ name: data.name, uid: data.uid }));
     } catch (error) {
