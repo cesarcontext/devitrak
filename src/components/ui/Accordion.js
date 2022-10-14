@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
@@ -10,14 +10,28 @@ export const Accordion = () => {
     (state) => state.stripe
   );
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
+  const [loading, setLoading] = useState(false)
 
   const paymentToCheck = paymentIntent.at(-1).data.payment_intent_id;
 
-  console.log("paymentToCheck", paymentToCheck);
+
+    const check = async () => {
+      await checkReceiversAssignedToPaymentIntent(paymentToCheck);
+    }
 
   useEffect(() => {
-    checkReceiversAssignedToPaymentIntent(paymentToCheck);
+    check()
   }, []);
+
+  useEffect(() => {
+    if( paymentIntentReceiversAssigned){
+      setLoading( true )
+    }
+
+    return setLoading( false )
+  }, [])
+  
+  console.log( loading )
   return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
@@ -42,7 +56,8 @@ export const Accordion = () => {
               data-bs-parent="#accordionExample"
             >
               <div className="accordion-body">
-                {paymentIntentReceiversAssigned.length < 1 ? (
+                {loading !== true ? (
+                  paymentIntentReceiversAssigned.length < 1 ? (
                   <h6>No receivers assigned yet</h6>
                 ) : (
                   paymentIntentReceiversAssigned
@@ -57,8 +72,9 @@ export const Accordion = () => {
                         </tbody>
                       );
                     })
-                )}
-                {/* {new Array( device).fill(<div style={{display: "flex", flexDirection: "column"}}><input className="input-field" disabled /></div>)} */}
+                )
+                )
+                : <h6>No receiver assigned. <br />Please go to Desk Help to pick up your receivers</h6>}
               </div>
             </div>
           </div>
@@ -72,30 +88,6 @@ export const Accordion = () => {
           border: "solid 1px #fff",
         }}
       >
-        {/* <div className="accordion" id="accordionExample">
-          <div className="accordion-item">
-            <h2 className="accordion-header" id="headingTwo">
-              <button
-                className="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseTwo"
-                aria-expanded="false"
-                aria-controls="collapseTwo"
-              >
-                <h3>RETURNED DEVICES</h3>
-              </button>
-            </h2>
-            <div
-              id="collapseTwo"
-              className="accordion-collapse collapse"
-              aria-labelledby="headingTwo"
-              data-bs-parent="#accordionExample"
-            >
-              <div className="accordion-body"></div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );
