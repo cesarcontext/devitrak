@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApiArticle } from "../../../apis/devitrackApi";
+import { useAdminStore } from "../../../hooks/useAdminStore";
 
-export const ArticleCardSaved = () => {
+export const ArticleCardSaved = ({ searchTerm }) => {
+  const { user } = useAdminStore();
   const [dataReceived, setDataReceived] = useState(null);
+  const adminUserRole = user.role.at(-1);
 
   useEffect(() => {
     try {
-      const response  = devitrackApiArticle.get("/articles")
-      .then( response => setDataReceived(response.data.articles))
+      const response = devitrackApiArticle
+        .get("/articles")
+        .then((response) => setDataReceived(response.data.articles));
       if (response) {
         console.log("data received", dataReceived);
       }
-   
     } catch (error) {
       console.log(error);
     }
@@ -26,29 +29,65 @@ export const ArticleCardSaved = () => {
         gridAutoRows: " minmax(2fr, auto)",
       }}
     >
-      {dataReceived?.map((article, index) => {
-        const active = article.active        
-        return (
-          <div
-            key={index}
-            className="card"
-            style={{ width: "18rem", margin: "0 auto" }}
-          >
-            <img
-              src={`${article.img}`}
-              alt={article.img}
-              className="card-img-top"
-            />
-            <div className="card-body">
-              <h5 className="card-title">{article.title}</h5>
-              <p className="card-text">{article.body}</p>
-              <a href="#" className="btn btn-primary">
-                <span>{active !== false ? <span style={{ color: "#fff"}}>PUBLISHED</span> : <span style={{ color: "#000"}}>PUBLISH</span>}</span>
-              </a>
+      {dataReceived
+        ?.filter((card) =>
+          card.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map((article, index) => {
+          const active = article.active;
+          return (
+            <div
+              key={index}
+              className="card"
+              style={{
+                width: "98%",
+                height: "100%",
+                margin: "2% auto",
+                paddingTop: "25px",
+                paddingLeft: "25px",
+                paddingRight: "25px",
+              }}
+            >
+              <img
+                src={`${article.img}`}
+                alt={article.img}
+                className="card-img-top"
+              />
+              <div className="card-body">
+                <h5 className="card-title">{article.title}</h5>
+                <p className="card-text">{article.body}</p>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <hr />
+                  <button style={{ width: "35%" }}>
+                    <span>
+                      {active !== false ? (
+                        <span style={{ color: "#fff" }}>PUBLISHED</span>
+                      ) : (
+                        <span style={{ color: "#000" }}>UNPUBLISH</span>
+                      )}
+                    </span>
+                  </button>
+                  {adminUserRole === "Approver" || adminUserRole === "Administrator" ? (
+                    <>
+                      <button style={{ width: "30%" }}>
+                        <span>Edit</span>
+                      </button>
+                      <button style={{ width: "30%" }}>
+                        <span>Delete</span>
+                      </button>
+                    </>
+                  ) : null}
+                </div>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 };
