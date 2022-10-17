@@ -1,6 +1,6 @@
 import React from "react";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
-
+import "../../style/component/device/Device.css"
 export const Devices = () => {
   const {
     device,
@@ -18,6 +18,7 @@ export const Devices = () => {
             style={{ border: "transparent" }}
           >
             <div
+            className="device-selection"
               style={{
                 display: "flex",
                 padding: "15px",
@@ -34,6 +35,7 @@ export const Devices = () => {
                 HOW MANY RECEIVERS DO YOU NEED?
               </h5>
               <div
+              className="button-selection"
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -108,6 +110,7 @@ export const Devices = () => {
                 </div>
               </div>
               <div
+              className="show-amount-section"
                 style={{
                   display: "flex",
                   justifyContent: "space-evenly",
