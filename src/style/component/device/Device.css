@@ -1,0 +1,58 @@
+.device-selection {
+  width: 100%;
+  margin: 0 auto;
+  padding: 15px;
+}
+.device-selection h5 {
+  width: 40%;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.button-selection {
+  width: 20%;
+  margin: 0 auto;
+}
+
+.show-amount-section{
+    width:50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0%;
+    margin-left: 10%;
+}
+
+.show-amount-section strong{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    .device-selection {
+        width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .device-selection h5 {
+        width: 40%;
+        margin: 0 auto;
+        padding: 15px;
+      }
+      
+      .button-selection {
+        width: 20%;
+        margin: 0 auto;
+      }
+      
+      .show-amount-section{
+          width:50%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          margin-left: 10%;
+      }
+}

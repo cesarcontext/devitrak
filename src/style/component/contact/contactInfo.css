@@ -1,0 +1,9 @@
+.container-contact-info {
+  margin: 25vh auto;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  .container-contact-info {
+    margin-bottom: 15vh;
+  }
+}

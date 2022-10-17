@@ -1,0 +1,28 @@
+.container-checkout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.border-section-wrapper {
+  width: 35%;
+  margin: 0 auto;
+  position: absolute;
+  top: 15%;
+  border: solid 1px #212529;
+  border-radius: 15px;
+}
+
+.button-wrapper {
+  position: absolute;
+  top: 35%;
+}
+.checkout-amount-stripe-clientSecret{
+    position: absolute;
+    top:65%
+}
+.stripe-wrapper-checkout {
+  position: absolute;
+  top: 10%;
+}
