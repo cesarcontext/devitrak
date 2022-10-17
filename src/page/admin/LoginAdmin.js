@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { useForm } from "../../hooks/useForm"
-import "./login.css";
+import "../../style/pages/admin/login.css";
 
 const loginFormFields = {
   loginEmail: "",
