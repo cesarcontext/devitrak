@@ -4,7 +4,7 @@ import { useStytchSession, useStytch } from "@stytch/stytch-react";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
-import "./navbar-bottom.css";
+import "../../style/component/ui/NavbarBottom.css";
 
 export const NavbarBottom = () => {
   const session = useStytchSession();
