@@ -120,7 +120,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-around",
-          alignItems: "center",
+          // alignItems: "center",
         }}
       >
         <div
@@ -129,7 +129,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             padding: "25px",
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            // alignItems: "center",
             textAlign: "left",
           }}
         >
@@ -141,7 +141,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "flex-start",
-              alignItems: "center",
+              // alignItems: "center",
               textAlign: "left",
             }}
           >
