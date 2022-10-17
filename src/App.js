@@ -20,8 +20,9 @@ import { Articles } from "./page/admin/Articles";
 import { Settings } from "./page/admin/Settings";
 import { Profile } from "./page/admin/Profile";
 import { Attendees } from "./page/admin/Attendees";
-import { ReceiversDetailsAssignation } from "./components/admin/Attendees.js/ReceiversDetailsAssignation";
+import { ReceiversDetailsAssignation } from "./components/admin/Attendees/ReceiversDetailsAssignation";
 import { useSelector } from "react-redux";
+import { ArticleContentCreation } from "./components/admin/Articles/ArticleContentCreation";
 import "./App.css";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
             <Route path="/admin/settings" element={<Settings />} />
             <Route path="/admin/attendees" element={<Attendees />} />
             <Route path="/admin/attendees/receiver_assignation" element={<ReceiversDetailsAssignation />} />
+            <Route path="/admin/create-article" element={<ArticleContentCreation />} />
             <Route path="/admin/profile" element={<Profile />} />
             <Route
               path="/admin/*"
