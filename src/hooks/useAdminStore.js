@@ -42,7 +42,7 @@ export const useAdminStore = () => {
       }).then(() => {
         window.location = "http://localhost:3000/admin";
       });
-      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email }));
+      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email, role: data.role }));
     } catch (error) {
       dispatch(onLogout("Incorrect credentials"));
       Swal.fire("Error", error.response.data.msg, "error");
@@ -66,7 +66,7 @@ export const useAdminStore = () => {
       });
       setTokenAdmin(data.token);
       localStorage.setItem("admin-token", data.token);
-      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email }));
+      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email, role: data.role }));
       Swal.fire("User created", "Account has been created", "success").then(
         () => {
           window.location = "http://localhost:3000/admin";
@@ -98,7 +98,7 @@ export const useAdminStore = () => {
       const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
         email: email,
       });
-      dispatch(onLogin({ name: data.name, email: data.email, uid: data.uid }));
+      dispatch(onLogin({ name: data.name, email: data.email, uid: data.uid, role: data.role }));
       Swal.fire("Email updated", "The new email was saved!", "success");
     } catch (error) {
       console.log(error);
