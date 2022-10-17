@@ -18,7 +18,7 @@ export const Settings = () => {
               name="value"
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
-              placeholder="Search by email!"
+              placeholder="Search"
             />
           </div>
         </div>
@@ -27,24 +27,29 @@ export const Settings = () => {
         </div>
       </div>
       <div>
-        <div>
-          <div>
-            <p>
-              <strong>Admininstrator</strong> has permissions to edit all
-              aspects of the application.
-            </p>
+        <div className="container-staff-roles">
+          <div className="container-staff-roles-title">
+            <h4>Staff Roles Detilas</h4>
           </div>
-          <div>
-            <p>
-              <strong>Approver</strong> has permissions to lorem ipsum dolor
-              lorem ipsum dolor.
-            </p>
-          </div>
-          <div>
-            <p>
-              <strong>Editor</strong> has permissions to lorem ipsum dolor lorem
-              ipsum dolor.
-            </p>
+          <div className="staff-roles">
+            <div className="staff-roles-description">
+              <p>
+                <strong>Admininstrator</strong> has permissions to edit all
+                aspects of the application.
+              </p>
+            </div>
+            <div className="staff-roles-description">
+              <p>
+                <strong>Approver</strong> has permissions to lorem ipsum dolor
+                lorem ipsum dolor.
+              </p>
+            </div>
+            <div className="staff-roles-description">
+              <p>
+                <strong>Editor</strong> has permissions to lorem ipsum dolor
+                lorem ipsum dolor.
+              </p>
+            </div>
           </div>
         </div>
       </div>
