@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import { Navbar } from "../../components/admin/ui/Navbar";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
-import "./profile.css";
+import "../../style/pages/admin/profile.css";
 
 export const Profile = () => {
   const { user } = useAdminStore();
-  const { startUpdatingContactInfo } = useContactInfoStore()
+  const { startUpdatingContactInfo } = useContactInfoStore();
   const [buttonEditProfile, setButtonEditProfile] = useState(false);
   const [email, setEmail] = useState("");
-  const [file, setFile] = useState();
-
 
   const handleEditInfoSubmitted = async (event) => {
     event.preventDefault();
     await startUpdatingContactInfo(email);
-    setButtonEditProfile(!buttonEditProfile)
+    setButtonEditProfile(!buttonEditProfile);
   };
 
   return (
@@ -31,10 +29,10 @@ export const Profile = () => {
               style={{
                 borderRadius: "50%",
                 objectPosition: "center",
-                objectFit: "fill"
+                objectFit: "fill",
               }}
-              src={file}
-              alt={file}
+              src="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
+              alt="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
             />
             <div>
               <button
@@ -60,7 +58,7 @@ export const Profile = () => {
                   <strong>YOUR INFORMATION</strong>
                   <h6>Name</h6>
                   <span>{user.name}</span>
-                  <br/>
+                  <br />
                   <h6>Role</h6>
                   <span>Administrator</span>
                 </div>
@@ -73,12 +71,12 @@ export const Profile = () => {
             ) : (
               <>
                 <div className="personal-info-detail">
-                <strong>YOUR INFORMATION</strong>
+                  <strong>YOUR INFORMATION</strong>
                   <h6>Name</h6>
                   <span>{user.name}</span>
                   <br />
                   <h6>Role</h6>
-                  <span>Administrator</span>
+                  <span>{user.role.at(-1).map( item => item)}</span>
                 </div>
                 <div className="personal-info-detail">
                   <strong>CONTACT DETAILS</strong>
