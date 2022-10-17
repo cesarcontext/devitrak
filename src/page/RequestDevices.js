@@ -126,7 +126,7 @@ export const RequestDevices = () => {
               marginBottom: "3%",
             }}
           >
-            <Link to="/how_to_use_the_receiver">
+            <Link to="/more_info/how_to_use_the_receiver">
               <span>HOW TO USE THE RECEIVERS</span>
             </Link>
           </div>
@@ -135,7 +135,7 @@ export const RequestDevices = () => {
               marginBottom: "3%",
             }}
           >
-            <Link to="/request_support_during_event">
+            <Link to="/more_info/request_support_during_event">
               <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
             </Link>
           </div>
@@ -144,7 +144,7 @@ export const RequestDevices = () => {
               marginBottom: "3%",
             }}
           >
-            <Link to="/how_to_return_the_devices">
+            <Link to="/more_info/how_to_return_the_devices">
               <span>HOW TO RETURN THE DEVICES</span>
             </Link>
           </div>
