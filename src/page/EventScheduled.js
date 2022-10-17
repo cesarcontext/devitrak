@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { devitrackApiArticle } from "../apis/devitrackApi";
+import React from "react";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 
 export const EventScheduled = () => {
-  const [dataReceived, setDataReceived] = useState(null);
-  const [articleActived, setArticleActived] = useState([]);
-  useEffect(() => {
-    try {
-      const response = devitrackApiArticle
-        .get("/articles")
-        .then((response) => response.data)
-        .then((data) => setDataReceived(data.articles));
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
   return (
     <>
       <Navbar />
@@ -36,19 +23,14 @@ export const EventScheduled = () => {
         <div></div>
 
         <div>
-          {dataReceived?.map((item) => {
-            if (item.active === true) {
-              console.log(item);
-            return (
-              <>
-                <div>
-                  <div>
-                    <img src={item.img} alt="event-scheduled" />
-                  </div>
-                </div>
-              </>
-            );}
-          })}
+          <div>
+            <div>
+              <img
+                src={require("../image/event-scheduled-img.jpg")}
+                alt="event-scheduled"
+              />
+            </div>
+          </div>
         </div>
         <div>
           <div>
