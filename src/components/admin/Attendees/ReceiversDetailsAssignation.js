@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import { Navbar } from "../ui/Navbar";
 
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
-  const { user } = useSelector((state) => state.admin);
+  const dispatch = useDispatch();
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
-  const [receiverSerialNumber, setReceiverSerialNumber] = useState("");
   const [receiversAssigned, setReceiversAssigned] = useState([]);
-  const [actived, setActived] = useState(true);
-  const [setFetchedData] = useState();
+  const [fetchedData, setFetchedData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
+  const [receiverStatusAssigned, setReceiverStatusAssigned] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const receiverObject = {
+    serialNumber: receiverNumberAssgined,
+    status: receiverStatusAssigned,
+  };
 
   const paymentToCheck = paymentIntentDetailSelected.paymentIntent;
 
@@ -24,34 +31,35 @@ export const ReceiversDetailsAssignation = () => {
   }, [paymentIntentDetailSelected.paymentIntent]);
 
   useEffect(() => {
-    if (paymentIntentReceiversAssigned !== undefined) {
+    if (
+      paymentIntentReceiversAssigned !== undefined ||
+      paymentIntentReceiversAssigned.data?.receiver?.length > 1
+    ) {
       setLoading(false);
     }
-    return;
-    setLoading(true);
   }, [paymentIntentDetailSelected.paymentIntent]);
 
   let replacementList;
 
   const addReceiver = async () => {
-    replacementList = [...receiversAssigned, receiverSerialNumber];
+    replacementList = [...receiversAssigned, receiverObject];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
       await setReceiversAssigned(replacementList);
-      await setReceiverSerialNumber("");
+      await setReceiverNumberAssgined("");
     }
   };
   const handleDataSubmitted = async () => {
     try {
-      const { data } = await devitrackApiAdmin.post("/receiver-assignation", {
+      const response = await devitrackApiAdmin.post("/receiver-assignation", {
         paymentIntent: paymentIntentDetailSelected.paymentIntent,
         device: receiversAssigned,
         user: paymentIntentDetailSelected.user,
-        adminUser: user.uid,
         active: true,
       });
-      console.log( data )
-
-      setFetchedData(data);
+      if (response) {
+        setFetchedData(response.data);
+        dispatch(onCheckReceiverPaymentIntent(fetchedData));
+      }
       Swal.fire({
         title: "",
         width: 600,
@@ -88,6 +96,18 @@ export const ReceiversDetailsAssignation = () => {
       });
     }
   };
+
+  let result = receiversAssigned;
+
+  const handleRemoveReceiver = ({ receiver }) => {};
+
+  const removeReceiverSerialNumberBeforeFetchdata = (serialNumber) => {
+    result = receiversAssigned.filter(
+      (item) => item.serialNumber !== serialNumber
+    );
+    return result;
+  };
+  console.log("result", result)
   return (
     <div>
       <div>
@@ -182,19 +202,18 @@ export const ReceiversDetailsAssignation = () => {
       </div>
       {loading !== true ? (
         <>
-          {paymentIntentReceiversAssigned.length < 1 ? (
+          {paymentIntentReceiversAssigned.device?.length < 1 ? (
             <div style={{ width: "40%", display: "flex", margin: "0 auto" }}>
-              {receiversAssigned.length !==
-              paymentIntentDetailSelected.device ? (
+              {result.length !== paymentIntentDetailSelected.device ? (
                 <>
                   <input
                     style={{ width: "100%" }}
-                    value={receiverSerialNumber}
-                    name="receiverSerialNumber"
-                    id="receiverSerialNumber"
+                    value={receiverNumberAssgined}
+                    name="receiverNumberAssgined"
+                    id="receiverNumberAssgined"
                     type="text"
                     onChange={(event) =>
-                      setReceiverSerialNumber(event.target.value)
+                      setReceiverNumberAssgined(event.target.value)
                     }
                   />
                   <button style={{ width: "50%" }} onClick={addReceiver}>
@@ -205,7 +224,16 @@ export const ReceiversDetailsAssignation = () => {
                 ""
               )}
             </div>
-          ) : null}
+          ) : (
+            <div>
+              <input
+                name="searcTerm"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search receiver"
+              />
+            </div>
+          )}
           <div>
             <div
               style={{
@@ -223,49 +251,63 @@ export const ReceiversDetailsAssignation = () => {
                   </tr>
                 </thead>
                 {paymentIntentReceiversAssigned.length < 1
-                  ? receiversAssigned?.map((item, index) => {
+                  ? result?.map((item, index) => {
                       return (
-                        <tbody>
-                          <tr key={index+item}>
+                        <tbody key={index + item}>
+                          <tr>
                             <th scope="row">{index + 1}</th>
-                            <td>{item}</td>
+                            <td>{item.serialNumber}</td>
                             <td>
                               <span>Receiver</span>
                             </td>
                             <td>
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                id="flexSwitchCheckChecked"
-                                onChange={() => setActived(!actived)}
-                                check="checked"
-                              />
+                              <span>
+                                {item.status === true ? "ACTIVED" : "INACTIVED"}
+                              </span>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  removeReceiverSerialNumberBeforeFetchdata(
+                                    item.serialNumber
+                                  )
+                                }
+                              >
+                                Remove Receiver
+                              </button>
                             </td>
                           </tr>
                         </tbody>
                       );
                     })
                   : paymentIntentReceiversAssigned
-                      .at(-1)
-                      .device.map((index, receiver) => {
+                      ?.at(-1)
+                      .device?.filter((item) =>
+                        item.serialNumber.includes(searchTerm)
+                      )
+                      .map((index, receiver) => {
                         return (
-                          <tbody>
+                          <tbody key={receiver + 1}>
                             <tr>
                               <th scope="row">{receiver + 1}</th>
-                              <td>{index}</td>
+                              <td>{index.serialNumber}</td>
                               <td>
                                 <span>Receiver</span>
                               </td>
+                              <td>{receiver.status !== true ? "ACTIVED" : "INACTIVED"}</td>
                               <td>
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  role="switch"
-                                  id="flexSwitchCheckChecked"
-                                  onChange={() => setActived(!actived)}
-                                  check="checked"
-                                />
+                                <button onClick={() => console.log(receiver)}>
+                                  Replace
+                                </button>
+                              </td>
+                              <td>
+                                <button
+                                  onClick={() =>
+                                    console.log("item removed", receiver)
+                                  }
+                                >
+                                  Return
+                                </button>
                               </td>
                             </tr>
                           </tbody>
