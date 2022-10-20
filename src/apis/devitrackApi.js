@@ -23,9 +23,9 @@ export const devitrackApiAdmin = axios.create({
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
-  if (localStorage.getItem("token")) {
+  if (localStorage.getItem("admin-token")) {
     config.headers = {
-      "x-token": localStorage.getItem("token"),
+      "x-token": localStorage.getItem("admin-token"),
     };
   }
   return config
