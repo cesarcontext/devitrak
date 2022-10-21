@@ -7,9 +7,9 @@ import "../../../style/pages/admin/attendees.css";
 
 export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
   const [dataListed, setDataListed] = useState(null);
-  const [disableButton, setDisableButton] = useState(false);
   const [selection, setSelection] = useState("");
   const { paymentIntentSelected } = useSelector((state) => state.stripe);
+  const [amountToCapture, setAmountToCapture] = useState("");
 
   useEffect(() => {
     devitrackApi
@@ -74,11 +74,10 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
               <th scope="col">Date</th>
             </tr>
           </thead>
-          {dataListed?.map((index, item) => {
+          {dataListed?.map((index) => {
             const device = index.amount_capturable / 20000;
             const amount_authorized = index.amount_capturable;
             const date = index.created;
-            let capturedAmount;
             if (index.id === paymentIntentSelected) {
               return (
                 <tbody key={index.id}>
@@ -122,31 +121,54 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                     <td>
                       {device !== 0 ? (
                         <button
-                          disabled={disableButton}
                           onClick={() => {
                             Swal.fire({
                               title: "",
                               text: "This amount will be captured!",
                               icon: "warning",
+                              input: "text",
+                              inputAttributes: {
+                                autocapitalize: "off",
+                                placeholder:
+                                  `Max amount to capture: $ ${amount_authorized}`.slice(
+                                    0,
+                                    -2
+                                  ),
+                              },
                               showCancelButton: true,
                               confirmButtonColor: "#3085d6",
                               cancelButtonColor: "#d33",
                               confirmButtonText: "Capture authorized amount",
                               backdrop: "rgba(0,0,123,0.4)",
-                            }).then((result) => {
-                              if (result.isConfirmed) {
-                                const id = index.id;
-                                devitrackApi.post(
-                                  `/stripe/payment-intents/${index.id}/capture`,
-                                  { id: id }
-                                );
+                              preConfirm: (amount) => {
+                                console.log(
+                                    "amount to capture",
+                                    amount
+                                  );
+                                  const id = index.id;
+                                   devitrackApi.post(
+                                    `/stripe/payment-intents/${id}/capture`,
+                                    {id, amount_to_capture: amount }
+                                  );
+                              },
+                            })
+                              .then((result) => {
+                                if (result.isConfirmed) { 
+                                  Swal.fire(
+                                    "Captured!",
+                                    "The authorized amount has been captured",
+                                    "success"
+                                  );
+                                }
+                              })
+                              .catch((error) => {
+                                console.log(error);
                                 Swal.fire(
-                                  "Captured!",
-                                  "The authorized amount has been captured",
-                                  "success"
+                                  "error",
+                                  "Capture transaction failed",
+                                  "error"
                                 );
-                              }
-                            });
+                              });
                           }}
                         >
                           {" "}
@@ -174,13 +196,12 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                     -2
                                   ),
                               },
-                            
                             }).then((result) => {
                               if (result.isConfirmed) {
                                 const id = index.id;
                                 devitrackApi.post(
                                   `/stripe/payment-intents/${index.id}/capture`,
-                                  { id: id}
+                                  { id: id }
                                 );
                                 Swal.fire(
                                   "Captured!",
