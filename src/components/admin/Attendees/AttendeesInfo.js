@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { ReceiversPreview } from "../DeviceDatabaseSection/ReceiversPreview";
 import { Pagination } from "../ui/Pagination";
 import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 
@@ -161,24 +160,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 );
               }
             })}
-          </div>
-          {/* <div
-            style={{
-              padding: "5px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              textAlign: "left",
-              border: "solid 1px #212529",
-              borderRadius: "15px",
-              width: "50%",
-              height:"100%"
-            }}
-          >
-           <h6>Receivers History</h6>
-           <ReceiversPreview />
-          </div> */}
+          </div>        
         </div>
         <div style={{ width: "100%" }}>
           <div>Transactions</div>
@@ -188,7 +170,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
             />
           </div>
         </div>
-      </div>
+    </div>
     </div>
   );
 };
