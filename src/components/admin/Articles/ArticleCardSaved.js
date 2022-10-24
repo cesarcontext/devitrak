@@ -5,7 +5,7 @@ import { useAdminStore } from "../../../hooks/useAdminStore";
 export const ArticleCardSaved = ({ searchTerm }) => {
   const { user } = useAdminStore();
   const [dataReceived, setDataReceived] = useState(null);
-  const adminUserRole = user.role.at(-1);
+  const adminUserRole = user.role;
 
   useEffect(() => {
     try {
@@ -49,7 +49,7 @@ export const ArticleCardSaved = ({ searchTerm }) => {
               }}
             >
               <img
-                src={`${article.img}`}
+                src={article.img.slice(5)}
                 alt={article.img}
                 className="card-img-top"
               />
