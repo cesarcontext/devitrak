@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
-import { devitrackApiAdmin } from "../../../apis/devitrackApi";
-import { useAdminStore } from "../../../hooks/useAdminStore";
-import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
+import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { Navbar } from "../ui/Navbar";
+import { NavLink } from "react-router-dom";
+import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
+import { useAdminStore } from "../../../hooks/useAdminStore";
 
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -96,18 +96,20 @@ export const ReceiversDetailsAssignation = () => {
       });
     }
   };
+  const replaceReceiverAssignedFetchedUpdate = async() => {
+    
+  }
 
-  let result = receiversAssigned;
-
-  const handleRemoveReceiver = ({ receiver }) => {};
-
-  const removeReceiverSerialNumberBeforeFetchdata = (serialNumber) => {
-    result = receiversAssigned.filter(
-      (item) => item.serialNumber !== serialNumber
-    );
-    return result;
+  const removeReceiverBeforeSavedData = async (index) => {
+    const result = receiversAssigned.splice(index, 1);
+    if (result.length === 1) {
+      return setReceiverNumberAssgined([]);
+    }
+    setReceiversAssigned(result);
   };
-  console.log("result", result)
+
+  console.log(receiversAssigned);
+
   return (
     <div>
       <div>
@@ -202,9 +204,10 @@ export const ReceiversDetailsAssignation = () => {
       </div>
       {loading !== true ? (
         <>
-          {paymentIntentReceiversAssigned.device?.length < 1 ? (
+          {paymentIntentReceiversAssigned?.length < 1 ? (
             <div style={{ width: "40%", display: "flex", margin: "0 auto" }}>
-              {result.length !== paymentIntentDetailSelected.device ? (
+              {receiversAssigned.length !==
+              paymentIntentDetailSelected.device ? (
                 <>
                   <input
                     style={{ width: "100%" }}
@@ -250,37 +253,8 @@ export const ReceiversDetailsAssignation = () => {
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
-                {paymentIntentReceiversAssigned.length < 1
-                  ? result?.map((item, index) => {
-                      return (
-                        <tbody key={index + item}>
-                          <tr>
-                            <th scope="row">{index + 1}</th>
-                            <td>{item.serialNumber}</td>
-                            <td>
-                              <span>Receiver</span>
-                            </td>
-                            <td>
-                              <span>
-                                {item.status === true ? "ACTIVED" : "INACTIVED"}
-                              </span>
-                            </td>
-                            <td>
-                              <button
-                                onClick={() =>
-                                  removeReceiverSerialNumberBeforeFetchdata(
-                                    item.serialNumber
-                                  )
-                                }
-                              >
-                                Remove Receiver
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      );
-                    })
-                  : paymentIntentReceiversAssigned
+                {paymentIntentReceiversAssigned?.length > 0
+                  ? paymentIntentReceiversAssigned
                       ?.at(-1)
                       .device?.filter((item) =>
                         item.serialNumber.includes(searchTerm)
@@ -294,30 +268,60 @@ export const ReceiversDetailsAssignation = () => {
                               <td>
                                 <span>Receiver</span>
                               </td>
-                              <td>{receiver.status !== true ? "ACTIVED" : "INACTIVED"}</td>
                               <td>
-                                <button onClick={() => console.log(receiver)}>
+                                {receiver.status !== true
+                                  ? "ACTIVATED"
+                                  : "INACTIVATED"}
+                              </td>
+                              <td>
+                                <button onClick={() => replaceReceiverAssignedFetchedUpdate(index)}>
                                   Replace
                                 </button>
                               </td>
                               <td>
-                                <button
-                                  onClick={() =>
-                                    console.log("item removed", receiver)
-                                  }
-                                >
-                                  Return
-                                </button>
+                                <button>Return</button>
                               </td>
                             </tr>
                           </tbody>
                         );
-                      })}
+                      })
+                  : receiversAssigned?.map((item, index) => {
+                      return (
+                        <tbody key={index + item}>
+                          <tr>
+                            <th scope="row">{index + 1}</th>
+                            <td>{item.serialNumber}</td>
+                            <td>
+                              <span>Receiver</span>
+                            </td>
+                            <td>
+                              <span>
+                                {item.status === true
+                                  ? "ACTIVATED"
+                                  : "INACTIVATED"}
+                              </span>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  removeReceiverBeforeSavedData(index)
+                                }
+                              >
+                                Remove Receiver
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
               </table>
             </div>
           </div>
           <div style={{ width: "20%", margin: "0 auto" }}>
-            {paymentIntentReceiversAssigned.length < 1 && (
+            {paymentIntentReceiversAssigned?.length < 1 && (
+              <button onClick={handleDataSubmitted}>Save</button>
+            ) || 
+            receiversAssigned?.length === paymentIntentDetailSelected.device && (
               <button onClick={handleDataSubmitted}>Save</button>
             )}
           </div>
