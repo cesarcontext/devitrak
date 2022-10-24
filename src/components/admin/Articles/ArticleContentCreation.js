@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { Navbar } from "../ui/Navbar";
@@ -10,7 +10,7 @@ export const ArticleContentCreation = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const addImgURL = (event) => {
     setImg(URL.createObjectURL(event.target.files[0]));
@@ -18,49 +18,47 @@ export const ArticleContentCreation = () => {
   const handleArticleSubmitted = async (event) => {
     event.preventDefault();
     try {
-       articleSetup({
-      img,
-      title,
-      body,
-    });
-    Swal.fire({
-      title: "",
-      width: 600,
-      padding: "3em",
-      text: `Article created`,
-      icon: "success",
-      color: "#rgb(30, 115, 190)",
-      background: "#fff",
-      confirmButtonColor: "rgb(30, 115, 190)",
-      backdrop: `
+      articleSetup({
+        img,
+        title,
+        body,
+      });
+      Swal.fire({
+        title: "",
+        width: 600,
+        padding: "3em",
+        text: `Article created`,
+        icon: "success",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
       rgb(30, 115, 190)
         url("../image/logo.jpg")
         left top
         no-repeat
       `,
-    });
-navigate("/admin/articles")
+      });
+      navigate("/admin/articles");
     } catch (error) {
       Swal.fire({
-      title: "Upss something went wrong!!",
-      width: 600,
-      padding: "3em",
-      text: `${error.response.data.msg}`,
-      icon: "error",
-      color: "#rgb(30, 115, 190)",
-      background: "#fff",
-      confirmButtonColor: "rgb(30, 115, 190)",
-      backdrop: `
+        title: "Upss something went wrong!!",
+        width: 600,
+        padding: "3em",
+        text: `${error.response.data.msg}`,
+        icon: "error",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
       rgb(30, 115, 190)
         url("../image/logo.jpg")
         left top
         no-repeat
       `,
-    });
+      });
     }
-   
-    
-};
+  };
   return (
     <div>
       <Navbar />
@@ -99,6 +97,9 @@ navigate("/admin/articles")
         />
         <div>
           <button type="submit">Save</button>
+          <NavLink to="/admin/articles">
+            <button style={{backgroundColor: "red"}}>Cancel</button>
+          </NavLink>
         </div>
       </form>
     </div>
