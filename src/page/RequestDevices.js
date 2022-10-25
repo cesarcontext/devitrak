@@ -5,11 +5,12 @@ import { useStytchSession } from "@stytch/stytch-react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { Navbar } from "../components/ui/Navbar";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
+import "../style/pages/RequestDevices.css";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
   const { users } = useContactInfoStore();
-  const { device } = useDeviceCount()
+  const { device } = useDeviceCount();
   let navigation;
 
   if (!session || users.status === "") {
@@ -20,30 +21,15 @@ export const RequestDevices = () => {
   }
   return (
     <>
-    <Navbar />
-      <div
-        style={{
-          width: "50%",
-          height: "60vh",
-          margin: "1% auto",
-          marginTop: "10%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}>
+      <Navbar />
+      <div className="container-request-device-section">
         <div>
           <h4>Your current order</h4>
         </div>
         <div
-          style={{
-            width: "40%",
-            margin: " 3% auto",
-            border: "solid 1px #212529",
-            borderRadius: "15px",
-          }}
-        >
+         className="container-request-current-order">
           <div
+          className="container-request-current-order-display"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -101,7 +87,7 @@ export const RequestDevices = () => {
             </Link>
           </div>
         </div>
-        
+
         <div
           style={{
             display: "flex",
