@@ -5,10 +5,11 @@ import {
   onAddPaymentIntentDetailSelected,
   onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
+import { Pagination } from "../ui/Pagination";
 
 export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  const [sendPaymentIntentId, setSendPaymentIntentId] = useState();
+  const [setSendPaymentIntentId] = useState();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
           </thead>
           {stripeTransactions?.map((transaction) => {
             const amount = transaction.device * 200;
-            if( transaction.user._id !== null){
+            if (transaction.user._id !== null) {
               if (transaction.user._id === sendObjectIdUser) {
                 return (
                   <tbody key={transaction.id}>
@@ -68,18 +69,13 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
                     </tr>
                   </tbody>
                 );
-              } 
+              }
+            } else {
+              <h5>No data displayed</h5>;
             }
-            else{ 
-              <h5>No data displayed</h5>
-            }
-                          
           })}
         </table>
       </div>
-      {/* <div style={{ display: "content" }}>
-        <PaymentIntentTemplate sendPaymentIntentId={sendPaymentIntentId} />
-      </div> */}
     </div>
   );
 };
