@@ -7,6 +7,7 @@ import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
+import "../../style/component/contact/contactInfo.css"
 
 
 export const ContactInfo = () => {
@@ -128,7 +129,7 @@ export const ContactInfo = () => {
 
   return (
     <>
-      <div className="container mt-4">
+      <div className="container-contact-info mt-4">
         <section className="gradient-custom">
           <div className="container">
             <div className="row justify-content-center align-items-center">
