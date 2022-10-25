@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAdminStore } from "../../hooks/useAdminStore";
-import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
 
 export const Accordion = () => {
@@ -10,29 +9,28 @@ export const Accordion = () => {
     (state) => state.stripe
   );
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
-  const [loading, setLoading] = useState(false)
-
-  const paymentToCheck = paymentIntent.at(-1).data.payment_intent_id;
-
-
-    const check = async () => {
-      await checkReceiversAssignedToPaymentIntent(paymentToCheck);
-    }
+  const [loading, setLoading] = useState(false);
+  const [paymentToCheck, setPaymentToCheck] = useState(null);
 
   useEffect(() => {
-    check()
-  }, []);
+    if (paymentIntent.length > 0) {
+      return setPaymentToCheck(paymentIntent.at(-1).data.payment_intent_id);
+    }
+  }, [paymentIntent]);
+
+  const check = async () => {
+    await checkReceiversAssignedToPaymentIntent(paymentToCheck);
+  };
+  useEffect(() => {
+    check();
+  }, [paymentToCheck]);
 
   useEffect(() => {
-    if( paymentIntentReceiversAssigned){
-      setLoading( true )
+    if( paymentIntentReceiversAssigned.length === 0 ){
+      setLoading(true)
     }
-
-    return setLoading( false )
-  }, [])
-  
-  console.log( loading )
-  return (
+  }, [paymentIntentReceiversAssigned])
+    return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
         <div className="accordion" id="accordionExample">
@@ -56,25 +54,41 @@ export const Accordion = () => {
               data-bs-parent="#accordionExample"
             >
               <div className="accordion-body">
-                {loading !== true ? (
-                  paymentIntentReceiversAssigned.length < 1 ? (
-                  <h6>No receivers assigned yet</h6>
-                ) : (
-                  paymentIntentReceiversAssigned
-                    .at(-1)
-                    .device.map((index, receiver) => {
+                {loading !== true ? 
+                 (
+                  <h6>
+                    No receiver assigned. <br />
+                    Please go to Desk Help to pick up your receivers
+                  </h6>
+                ): (
+                  paymentIntentReceiversAssigned.length > 0 ? paymentIntentReceiversAssigned?.at(-1).device?.map(
+                    (index, receiver) => {
                       return (
-                        <tbody style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
-                          <tr style={{width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                        <tbody
+                        key={index+receiver}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <tr
+                            style={{
+                              width: "100%",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
                             <th scope="row">{receiver + 1}</th>
-                            <td>{index}</td>
+                            <td>{index.serialNumber}</td>
                           </tr>
                         </tbody>
                       );
-                    })
-                )
-                )
-                : <h6>No receiver assigned. <br />Please go to Desk Help to pick up your receivers</h6>}
+                    }
+                  ) : "Waiting for data to be displayed"
+                )}
               </div>
             </div>
           </div>
@@ -87,8 +101,7 @@ export const Accordion = () => {
           margin: "auto",
           border: "solid 1px #fff",
         }}
-      >
-      </div>
+      ></div>
     </div>
   );
 };
