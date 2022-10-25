@@ -280,7 +280,7 @@ export const ReceiversDetailsAssignation = () => {
                                 <span>Receiver</span>
                               </td>
                               <td>
-                                {receiver.status !== true
+                                {index.status !== false
                                   ? "ACTIVATED"
                                   : "INACTIVATED"}
                               </td>
