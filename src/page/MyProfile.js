@@ -70,9 +70,8 @@ export const MyProfile = () => {
   }, [formValues.phoneNumber]);
 
   const checkPaymentIntentArray = (info) => {
-
-    const QRCodeValue = info.at(-1).data.clientSecret
     if (info.length > 0) {
+      const QRCodeValue = info?.at(-1).data?.clientSecret;
       return (
         <>
           <div>
@@ -97,7 +96,13 @@ export const MyProfile = () => {
         </>
       );
     }
-    return;
+    return (<QRCode
+      fgColor="#000"
+      bgColor="#ffff"
+      level="Q"
+      size={150}
+      value="no value received"
+    />);
   };
   const handleEditContactInfo = async (event) => {
     event.preventDefault();
