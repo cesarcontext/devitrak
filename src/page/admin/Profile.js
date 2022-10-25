@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/admin/ui/Navbar";
 import { useAdminStore } from "../../hooks/useAdminStore";
-import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import "../../style/pages/admin/profile.css";
 
 export const Profile = () => {
   const { user } = useAdminStore();
-  const { startUpdatingContactInfo } = useContactInfoStore();
+  const {startEditAdminUser} = useAdminStore()
   const [buttonEditProfile, setButtonEditProfile] = useState(false);
   const [email, setEmail] = useState("");
+  const [fullname, setFullname] = useState("")
 
   const handleEditInfoSubmitted = async (event) => {
     event.preventDefault();
-    await startUpdatingContactInfo(email);
+    await startEditAdminUser({email, fullname});
     setButtonEditProfile(!buttonEditProfile);
   };
 
@@ -60,7 +60,7 @@ export const Profile = () => {
                   <span>{user.name}</span>
                   <br />
                   <h6>Role</h6>
-                  <span>Administrator</span>
+                  <span>{user.role}</span>
                 </div>
                 <div className="personal-info-detail">
                   <strong>CONTACT DETAILS</strong>
@@ -73,10 +73,22 @@ export const Profile = () => {
                 <div className="personal-info-detail">
                   <strong>YOUR INFORMATION</strong>
                   <h6>Name</h6>
-                  <span>{user.name}</span>
+                  <span>
+                    <input
+                      style={{
+                        width: "100%",
+                      }}
+                      placeholder="Fullname"
+                      id="fullname"
+                      onChange={(event) => setFullname(event.target.value)}
+                      type="text"
+                      name="fullname"
+                      value={fullname}
+                    />
+                  </span>
                   <br />
                   <h6>Role</h6>
-                  <span>{user.role.at(-1).map( item => item)}</span>
+                  <span>{user.role}</span>
                 </div>
                 <div className="personal-info-detail">
                   <strong>CONTACT DETAILS</strong>
