@@ -96,9 +96,20 @@ export const ReceiversDetailsAssignation = () => {
       });
     }
   };
-  const replaceReceiverAssignedFetchedUpdate = async() => {
-    
-  }
+  const handleReturnDevice = async (index, receiver) => {
+    const id = paymentIntentReceiversAssigned.at(-1).id
+    const response = await devitrackApi.put(
+      `/receiver/receiver-update/${id}`
+    , {
+      id: id,
+      device:{
+        serialNumber: index.serialNumber,
+        status: false
+      }
+    });
+  };
+
+  const replaceReceiverAssignedFetchedUpdate = async () => {};
 
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
@@ -274,12 +285,18 @@ export const ReceiversDetailsAssignation = () => {
                                   : "INACTIVATED"}
                               </td>
                               <td>
-                                <button onClick={() => replaceReceiverAssignedFetchedUpdate(index)}>
+                                <button
+                                  onClick={() =>
+                                    replaceReceiverAssignedFetchedUpdate(index)
+                                  }
+                                >
                                   Replace
                                 </button>
                               </td>
                               <td>
-                                <button>Return</button>
+                                <button onClick={() => handleReturnDevice(index, receiver)}>
+                                  Return
+                                </button>
                               </td>
                             </tr>
                           </tbody>
@@ -318,12 +335,13 @@ export const ReceiversDetailsAssignation = () => {
             </div>
           </div>
           <div style={{ width: "20%", margin: "0 auto" }}>
-            {paymentIntentReceiversAssigned?.length < 1 && (
+            {(paymentIntentReceiversAssigned?.length < 1 && (
               <button onClick={handleDataSubmitted}>Save</button>
-            ) || 
-            receiversAssigned?.length === paymentIntentDetailSelected.device && (
-              <button onClick={handleDataSubmitted}>Save</button>
-            )}
+            )) ||
+              (receiversAssigned?.length ===
+                paymentIntentDetailSelected.device && (
+                <button onClick={handleDataSubmitted}>Save</button>
+              ))}
           </div>
         </>
       ) : (
