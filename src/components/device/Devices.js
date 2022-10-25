@@ -25,15 +25,16 @@ export const Devices = () => {
                 justifyContent: "space-evenly",
               }}
             >
-              <h5
+              <h6
                 style={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  textOrientation: "left"
                 }}
               >
                 HOW MANY RECEIVERS DO YOU NEED?
-              </h5>
+              </h6>
               <div
               className="button-selection"
                 style={{
@@ -106,7 +107,7 @@ export const Devices = () => {
                     alignItems: "center",
                   }}
                 >
-                  <strong style={{ fontSize: "30px", width:"100%" }}>{device} {/*<input value={deviceNumber} name="device" onChange={(event)=> setDeviceNumber(event.target.value)} type="number" max={49999} /> */}</strong>
+                  <h3 style={{ fontSize: "30px", width:"100%" }}>{device} </h3>
                 </div>
               </div>
               <div
@@ -118,7 +119,7 @@ export const Devices = () => {
                 }}
               >
                 <div
-                  className="col-4"
+                  className="col-2"
                   style={{
                     display: "flex",
                     flexDirection: "column",
