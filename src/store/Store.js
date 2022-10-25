@@ -3,24 +3,38 @@ import adminSlice from "./slices/adminSlice";
 import contactInfoSlice from "./slices/contactInfoSlice";
 import deviceSlice from "./slices/deviceSlice";
 import stripeSlice from "./slices/stripeSlice";
-import storage from "redux-persist/es/storage"
-import {persistReducer, PURGE} from "redux-persist"
+import storage from "redux-persist/es/storage";
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 
 const persistConfig = {
   key: "root",
   version: 1,
-  storage
-}
+  storage,
+};
 
 const reducers = combineReducers({
-    device: deviceSlice,
-    contactInfo: contactInfoSlice,
-    admin: adminSlice,
-    stripe: stripeSlice,
-})
+  device: deviceSlice,
+  contactInfo: contactInfoSlice,
+  admin: adminSlice,
+  stripe: stripeSlice,
+});
 
-const persistedReducers = persistReducer(persistConfig, reducers)
+const persistedReducers = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
   reducer: persistedReducers,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
