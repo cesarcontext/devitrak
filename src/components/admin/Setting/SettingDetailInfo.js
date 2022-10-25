@@ -1,24 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { devitrackApi } from "../../../apis/devitrackApi";
+import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { Pagination } from "../ui/Pagination";
-import "../../../style/pages/admin/setting.css";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import Swal from "sweetalert2";
+import { ModalAdminNewUser } from "../ui/Modal";
+
+import "../../../style/pages/admin/setting.css";
 
 export const SettingDetailInfo = ({ searchTerm }) => {
-  const { user } = useAdminStore()
+  const { user } = useAdminStore();
+  const { editAdminPermission } = useAdminStore();
   const [adminUser, setAdminUser] = useState([]);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersRenderedPerPage] = useState(4);
+  const [permissionStatus, setPermissionStatus] = useState(false);
+  const [permissionUpdated, setPermissionUpdated] = useState("");
+  const [reloadListAfterChange, setReloadListAfterChange] = useState(false);
+  const [modalState, setModalState] = useState(false)
 
-  const adminUserRole = user.role.at(-1)
-  console.log("first", adminUserRole )
+  const adminUserRole = user.role;
+
   useEffect(() => {
     devitrackApi
       .get("/staff/admin-users")
       .then((response) => response.data)
       .then((data) => setAdminUser(data.adminUsers));
-  }, []);
+  }, [reloadListAfterChange, adminUser]);
+  
 
   const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
   const indexOfFirstUsersRendered =
@@ -32,6 +41,15 @@ export const SettingDetailInfo = ({ searchTerm }) => {
     setCurrentPage(pageNumbers);
   };
 
+  const handleEditAdminPermission = async () => {
+    setPermissionStatus(!permissionStatus);
+  };
+
+  const updatePermission = async (permissionUpdated) => {
+    await editAdminPermission({ role: permissionUpdated, sendObjectIdUser });
+    await setPermissionStatus(!permissionStatus);
+    await setReloadListAfterChange(!reloadListAfterChange);
+  };
   return (
     <div
       style={{
@@ -83,8 +101,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                   ?.filter((item) =>
                     item.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
-                  ?.map((user, item) => {
-                    console.log(user);
+                  ?.map((user) => {
                     return (
                       <tbody key={user._id}>
                         <tr>
@@ -93,7 +110,8 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           <td>{user.email}</td>
                           <td>
                             <button
-                              onClick={() => setSendObjectIdUser(user._id)}>
+                              onClick={() => setSendObjectIdUser(user._id)}
+                            >
                               Details <i className="bi bi-caret-right" />{" "}
                             </button>
                           </td>
@@ -102,13 +120,17 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                     );
                   })}
           </table>
-          <div>
+          <div className="container-section-pagination-button">
             <Pagination
               childrenRenderedPerPage={usersRenderedPerPage}
               totalChildren={adminUser.length}
               paginate={paginate}
             />
+            <div>
+            {user.role === "Administrator" ? <button onClick={() => setModalState(true)}>Create new user</button> : null}
           </div>
+          </div>
+          
         </div>
       </div>
       <div
@@ -156,9 +178,62 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           {user.name} {user.lastName}
                         </h3>
                       </div>
-                      <div>
+                      <div className="container-admin-role">
                         <h6>{user.role}</h6>
-                        {adminUserRole === "Approver" ? <i className="bi bi-pencil" />: null }
+                        <div>
+                          <div className="edit-button">
+                            {adminUserRole === "Approver" ||
+                            adminUserRole === "Administrator" ? (
+                              <button onClick={handleEditAdminPermission}>
+                                Edit <i className="bi bi-pencil" />
+                              </button>
+                            ) : null}
+                          </div>
+                          <div>
+                            {permissionStatus === true ? (
+                              <>
+                                <select
+                                  onChange={(event) =>
+                                    setPermissionUpdated(event.target.value)
+                                  }
+                                >
+                                  <option defaultValue>
+                                    Please select permission
+                                  </option>
+                                  <option value="Administrator">
+                                    Administrator
+                                  </option>
+                                  <option value="Approver">Approver</option>
+                                  <option value="Editor">Editor</option>
+                                </select>
+                              </>
+                            ) : null}
+                          </div>
+                          <div>
+                            {permissionStatus === true ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  padding: "15px",
+                                  justifyCotent: "space-between",
+                                  algnItems: "center",
+                                  gap: "5px",
+                                }}
+                              >
+                                <button
+                                  onClick={() =>
+                                    updatePermission(permissionUpdated)
+                                  }
+                                >
+                                  Save
+                                </button>
+                                <button onClick={handleEditAdminPermission}>
+                                  Cancel
+                                </button>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="container-admin-user-details-card">
@@ -180,7 +255,46 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             })}
           </div>
         </div>
-      </div>
+        {sendObjectIdUser !== undefined && user.role === "Administrator" ? (
+          <div>
+            <button
+              onClick={() => {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "This data will be deleted permantly",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Delete data",
+                  backdrop: "rgba(0,0,123,0.4)",
+                })
+                  .then((result) => {
+                    if (result.isConfirmed) {
+                      devitrackApiAdmin.delete(`/${sendObjectIdUser}`);
+                      Swal.fire(
+                        "User data deleted",
+                        "This user was deleted",
+                        "success"
+                      );
+                    }
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    Swal.fire(
+                      "Something went wrong",
+                      "Please, try again later",
+                      "error"
+                    );
+                  });
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        ) : null}
+      </div>    
+      <ModalAdminNewUser modalState={ modalState } setModalState={ setModalState }/>
     </div>
   );
 };
