@@ -6,7 +6,7 @@ import {
   devitrackApiAdmin,
   devitrackApiPayment,
   devitrackApi,
-  devitrackApiArticle
+  devitrackApiArticle,
 } from "../apis/devitrackApi";
 import {
   clearErrorMessage,
@@ -42,7 +42,14 @@ export const useAdminStore = () => {
       }).then(() => {
         window.location = "http://localhost:3000/admin";
       });
-      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email, role: data.role }));
+      dispatch(
+        onLogin({
+          name: data.name,
+          uid: data.uid,
+          email: data.email,
+          role: data.role,
+        })
+      );
     } catch (error) {
       dispatch(onLogout("Incorrect credentials"));
       Swal.fire("Error", error.response.data.msg, "error");
@@ -56,7 +63,7 @@ export const useAdminStore = () => {
   const startRegister = async ({ name, email, password }) => {
     dispatch(onChecking());
 
-    const role = ["Editor"];
+    const role = "Editor";
     try {
       const { data } = await devitrackApiAdmin.post("/new_admin_user", {
         name,
@@ -66,7 +73,14 @@ export const useAdminStore = () => {
       });
       setTokenAdmin(data.token);
       localStorage.setItem("admin-token", data.token);
-      dispatch(onLogin({ name: data.name, uid: data.uid, email: data.email, role: data.role }));
+      dispatch(
+        onLogin({
+          name: data.name,
+          uid: data.uid,
+          email: data.email,
+          role: data.role,
+        })
+      );
       Swal.fire("User created", "Account has been created", "success").then(
         () => {
           window.location = "http://localhost:3000/admin";
@@ -75,7 +89,6 @@ export const useAdminStore = () => {
     } catch (error) {
       console.log(error.response.data.errors);
       dispatch(onLogout(error.response.data?.errors.check.msg || "---"));
-
       if (error.response.data.errors.name) {
         Swal.fire("Error", "Name must be provided", "error");
       } else if (error.response.data.errors.email) {
@@ -92,13 +105,22 @@ export const useAdminStore = () => {
     }
   };
 
-  const startEditAdminUser = async (email) => {
+  const startEditAdminUser = async ({ email, fullname }) => {
     const { uid } = user;
+    console.log("uid", uid);
     try {
       const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
         email: email,
+        name: fullname,
       });
-      dispatch(onLogin({ name: data.name, email: data.email, uid: data.uid, role: data.role }));
+      dispatch(
+        onLogin({
+          name: data.name,
+          email: data.email,
+          uid: data.uid,
+          role: data.role,
+        })
+      );
       Swal.fire("Email updated", "The new email was saved!", "success");
     } catch (error) {
       console.log(error);
@@ -137,55 +159,60 @@ export const useAdminStore = () => {
   const checkReceiversAssignedToPaymentIntent = async (
     paymentIntentToCheck
   ) => {
+    console.log(paymentIntentToCheck);
     try {
       const response = await devitrackApi.post("/receiver/receiver-assigned", {
         paymentIntent: paymentIntentToCheck,
       });
-      const data = await response.data.receiver;
-    console.log(data)
-      dispatch(onCheckReceiverPaymentIntent(data))
+      const data = await response?.data.receiver;
+      console.log(response);
+      dispatch(onCheckReceiverPaymentIntent(data));
     } catch (error) {
       console.log(error);
     }
   };
 
-  const articleSetup = async ({
-    img,
-    title,
-    body
-  }) => {
- try {
-  const response = await devitrackApiArticle.post("/article-creation", {img, title, body})
-  console.log('article data', response )
- } catch (error) {
-  console.log( error)
-  Swal.fire({
-    title: "Upss something went wrong!!",
-    width: 600,
-    padding: "3em",
-    text: `${error.response.data.msg}`,
-    icon: "error",
-    color: "#rgb(30, 115, 190)",
-    background: "#fff",
-    confirmButtonColor: "rgb(30, 115, 190)",
-    backdrop: `
+  const editAdminPermission = async ({ role, sendObjectIdUser }) => {
+    const uid = sendObjectIdUser;
+    try {
+      const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
+        role,
+      });
+      Swal.fire("", "Permission updated successfully", "success");
+    } catch (error) {
+      console.log(error);
+      alert("Error. Please try again later");
+    }
+  };
+
+  const articleSetup = async ({ img, title, body }) => {
+    try {
+      const response = await devitrackApiArticle.post("/article-creation", {
+        img,
+        title,
+        body,
+      });
+      console.log("article data", response);
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Upss something went wrong!!",
+        width: 600,
+        padding: "3em",
+        text: `${error.response.data.msg}`,
+        icon: "error",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
     rgb(30, 115, 190)
       url("../image/logo.jpg")
       left top
       no-repeat
     `,
-  });
- }
-  }
-
-  const displayArticles = async () => {
-    try {
-      const response = await devitrackApiArticle.get("/articles")
-      .then( response => console.log(response.data))
-    } catch (error) {
-      console.log( error )
+      });
     }
-  }
+  };
   return {
     //*Propiedades
     status,
@@ -201,9 +228,9 @@ export const useAdminStore = () => {
     startLogin,
     startRegister,
     startEditAdminUser,
+    editAdminPermission,
     startRenderAllPaymentIntents,
     checkReceiversAssignedToPaymentIntent,
     articleSetup,
-    
   };
 };
