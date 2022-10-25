@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const stripeSlice = createSlice({
   name: "stripe",
   initialState: {
+    customer: undefined,
     paymentIntent: [],
     paymentIntentSelected: undefined,
     paymentIntentDetailSelected: [],
@@ -20,6 +21,9 @@ const stripeSlice = createSlice({
     },
     onCheckReceiverPaymentIntent: (state, { payload}) => {
       state.paymentIntentReceiversAssigned = payload
+    },
+    onAddCustomer: (state, { payload})=> {
+      state.customer = payload
     }
   },
 });
@@ -27,4 +31,4 @@ const stripeSlice = createSlice({
 export default stripeSlice.reducer;
 
 // Action creators are generated for each case reducer function
-export const { onAddNewPaymentIntent, onAddPaymentIntentSelected, onAddPaymentIntentDetailSelected, onCheckReceiverPaymentIntent } = stripeSlice.actions;
+export const { onAddNewPaymentIntent, onAddPaymentIntentSelected, onAddPaymentIntentDetailSelected, onCheckReceiverPaymentIntent, onAddCustomer } = stripeSlice.actions;
