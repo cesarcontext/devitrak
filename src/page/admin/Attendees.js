@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { AttendeesInfo } from "../../components/admin/Attendees.js/AttendeesInfo";
-import { PaymentIntentTemplate } from "../../components/admin/Attendees.js/PaymentIntentTemplate";
-// import { ReceiversDetailsAssignation } from "../../components/admin/Attendees.js/ReceiversDetailsAssignation";
+import { AttendeesInfo } from "../../components/admin/Attendees/AttendeesInfo";
+import { PaymentIntentTemplate } from "../../components/admin/Attendees/PaymentIntentTemplate";
 import { Navbar } from "../../components/admin/ui/Navbar";
 
 export const Attendees = () => {
@@ -30,9 +29,6 @@ export const Attendees = () => {
             {" "}
             <AttendeesInfo searchTerm={ searchTerm } />
           </div>
-          {/* <div>
-            <ReceiversDetailsAssignation />
-          </div> */}
           <div style={{ display: "flex", width: "100%", margin: "2% auto" }}>
             {" "}
             <PaymentIntentTemplate searchTerm={searchTerm } />
