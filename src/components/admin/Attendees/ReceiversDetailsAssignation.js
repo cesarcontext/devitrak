@@ -51,13 +51,6 @@ export const ReceiversDetailsAssignation = () => {
       await setReceiverNumberAssgined("");
     }
   };
-  paymentIntentReceiversAssigned?.at(-1).device?.map((receiver) => {
-    return setReplacementList([...receiversAssigned, receiver]);
-  });
-  const testingReturnFunction = () => {
-  };
-
-  console.log( replacementList )
 
   const handleDataSubmitted = async () => {
     try {
@@ -114,6 +107,18 @@ export const ReceiversDetailsAssignation = () => {
       device: {
         serialNumber: index.serialNumber,
         status: false,
+      },
+    });
+    setLoading(true);
+  };
+
+  const handleAssignDevice = async (receiver) => {
+    const id = paymentIntentReceiversAssigned.at(-1).id;
+    const response = await devitrackApi.put(`/receiver/receiver-update/${id}`, {
+      id: id,
+      device: {
+        serialNumber: receiver.serialNumber,
+        status: true,
       },
     });
     setLoading(true);
@@ -274,10 +279,12 @@ export const ReceiversDetailsAssignation = () => {
                 {paymentIntentReceiversAssigned?.length > 0
                   ? paymentIntentReceiversAssigned
                       ?.at(-1)
-                      .device?.filter((item) =>
+                      .device?.map((receiver, index) => { 
+                        {/**
+                      .filter((item) =>
                         item.serialNumber.includes(searchTerm)
                       )
-                      .map((receiver, index) => {
+                       */}
                         return (
                           <tbody key={index + 1}>
                             <tr>
@@ -303,14 +310,22 @@ export const ReceiversDetailsAssignation = () => {
                                 </button>
                               </td>
                               <td>
-                                <button
+                                {receiver.status !== false ? (<button
                                   onClick={() =>
                                     // handleReturnDevice(index, receiver)
-                                    handleReturnDevice(index)
+                                    handleReturnDevice(receiver)
                                   }
                                 >
                                   Return
-                                </button>
+                                </button>) : (<button
+                                  onClick={() =>
+                                    // handleReturnDevice(receiver, receiver)
+                                    handleAssignDevice(receiver)
+                                  }
+                                >
+                                  ASSIGN
+                                </button>)}
+                                
                               </td>
                             </tr>
                           </tbody>
