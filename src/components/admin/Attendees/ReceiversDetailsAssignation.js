@@ -18,26 +18,24 @@ export const ReceiversDetailsAssignation = () => {
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
   const [receiverStatusAssigned, setReceiverStatusAssigned] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [replacementList, setReplacementList] = useState([]);
+  const [receiverListCopied, setReceiverListCopied] = useState([]);
 
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: receiverStatusAssigned,
   };
 
-  const paymentToCheck = paymentIntentDetailSelected.paymentIntent;
-
-  useEffect(() => {
-    checkReceiversAssignedToPaymentIntent(paymentToCheck);
-  }, [paymentIntentDetailSelected.paymentIntent, loading]);
+  const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
 
   useEffect(() => {
     const controller = new AbortController();
+    checkReceiversAssignedToPaymentIntent(paymentIntentToCheck);
     if (
       paymentIntentReceiversAssigned !== undefined ||
       paymentIntentReceiversAssigned.data?.receiver?.length > 1
     ) {
       setLoading(false);
+      setReceiverListCopied([...paymentIntentReceiversAssigned.at(-1).device]);
     }
     return () => {
       controller.abort();
@@ -45,7 +43,7 @@ export const ReceiversDetailsAssignation = () => {
   }, [paymentIntentDetailSelected.paymentIntent, loading]);
 
   const addReceiver = async () => {
-    replacementList = [...receiversAssigned, receiverObject];
+    const replacementList = [...receiversAssigned, receiverObject];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
       await setReceiversAssigned(replacementList);
       await setReceiverNumberAssgined("");
@@ -100,31 +98,58 @@ export const ReceiversDetailsAssignation = () => {
       });
     }
   };
-  const handleReturnDevice = async (index, receiver) => {
-    const id = paymentIntentReceiversAssigned.at(-1).id;
-    const response = await devitrackApi.put(`/receiver/receiver-update/${id}`, {
-      id: id,
-      device: {
-        serialNumber: index.serialNumber,
-        status: false,
-      },
-    });
-    setLoading(true);
+  const handleReturnDevice = async (receiver) => {
+    setReceiverStatusAssigned(false);
+    const objectToReturn = {
+      serialNumber: receiver.serialNumber,
+      status: receiverStatusAssigned,
+    };
+    const replacementList = [...receiversAssigned, objectToReturn];
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      setLoading(true);
+      alert("Receiver returned");
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 116 ~ handleReturnDevice ~ error",
+        error
+      );
+      alert("Something went wrong, pelase try it later");
+    }
   };
-
   const handleAssignDevice = async (receiver) => {
-    const id = paymentIntentReceiversAssigned.at(-1).id;
-    const response = await devitrackApi.put(`/receiver/receiver-update/${id}`, {
-      id: id,
-      device: {
-        serialNumber: receiver.serialNumber,
-        status: true,
-      },
-    });
-    setLoading(true);
+    setReceiverStatusAssigned(true);
+    const objectToReturn = {
+      serialNumber: receiver.serialNumber,
+      status: receiverStatusAssigned,
+    };
+    const replacementList = [...receiversAssigned, objectToReturn];
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      setLoading(true);
+      alert("Receiver assigned");
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 129 ~ handleAssignDevice ~ error",
+        error
+      );
+      alert("Something went wrong, please try later");
+    }
   };
-
-  const replaceReceiverAssignedFetchedUpdate = async () => {};
 
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
@@ -279,12 +304,14 @@ export const ReceiversDetailsAssignation = () => {
                 {paymentIntentReceiversAssigned?.length > 0
                   ? paymentIntentReceiversAssigned
                       ?.at(-1)
-                      .device?.map((receiver, index) => { 
-                        {/**
+                      .device?.map((receiver, index) => {
+                        {
+                          /**
                       .filter((item) =>
                         item.serialNumber.includes(searchTerm)
                       )
-                       */}
+                       */
+                        }
                         return (
                           <tbody key={index + 1}>
                             <tr>
@@ -300,32 +327,29 @@ export const ReceiversDetailsAssignation = () => {
                               </td>
                               <td>
                                 <button
-                                  onClick={() =>
-                                    replaceReceiverAssignedFetchedUpdate(
-                                      receiver
-                                    )
-                                  }
+                                // onClick={() =>
+                                //   replaceReceiverAssignedFetchedUpdate(
+                                //     receiver
+                                //   )
+                                // }
                                 >
                                   Replace
                                 </button>
                               </td>
                               <td>
-                                {receiver.status !== false ? (<button
-                                  onClick={() =>
-                                    // handleReturnDevice(index, receiver)
-                                    handleReturnDevice(receiver)
-                                  }
-                                >
-                                  Return
-                                </button>) : (<button
-                                  onClick={() =>
-                                    // handleReturnDevice(receiver, receiver)
-                                    handleAssignDevice(receiver)
-                                  }
-                                >
-                                  ASSIGN
-                                </button>)}
-                                
+                                {receiver.status !== false ? (
+                                  <button
+                                    onClick={() => handleReturnDevice(receiver)}
+                                  >
+                                    Return
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleAssignDevice(receiver)}
+                                  >
+                                    Assign
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           </tbody>
