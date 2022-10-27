@@ -26,11 +26,11 @@ export const Accordion = () => {
   }, [paymentToCheck]);
 
   useEffect(() => {
-    if( paymentIntentReceiversAssigned.length === 0 ){
-      setLoading(true)
+    if (paymentIntentReceiversAssigned.length === 0) {
+      setLoading(true);
     }
-  }, [paymentIntentReceiversAssigned])
-    return (
+  }, [paymentIntentReceiversAssigned]);
+  return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
         <div className="accordion" id="accordionExample">
@@ -54,40 +54,45 @@ export const Accordion = () => {
               data-bs-parent="#accordionExample"
             >
               <div className="accordion-body">
-                {loading !== true ? 
-                 (
+                {loading !== true ? (
                   <h6>
                     No receiver assigned. <br />
                     Please go to Desk Help to pick up your receivers
                   </h6>
-                ): (
-                  paymentIntentReceiversAssigned.length > 0 ? paymentIntentReceiversAssigned?.at(-1).device?.map(
-                    (index, receiver) => {
-                      return (
-                        <tbody
-                        key={index+receiver}
-                          style={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <tr
+                ) : paymentIntentReceiversAssigned.length > 0 ? (
+                  paymentIntentReceiversAssigned
+                    ?.at(-1)
+                    .device?.map((index, receiver) => {
+                      if (index.status === true) {
+                        return (
+                          <tbody
+                            key={index + receiver}
                             style={{
                               width: "100%",
                               display: "flex",
-                              justifyContent: "space-between",
+                              justifyContent: "center",
                               alignItems: "center",
                             }}
                           >
-                            <th scope="row">{receiver + 1}</th>
-                            <td>{index.serialNumber}</td>
-                          </tr>
-                        </tbody>
-                      );
-                    }
-                  ) : "Waiting for data to be displayed"
+                            <tr
+                              style={{
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <th scope="row">{receiver + 1}</th>
+                              <td>{index.serialNumber}</td>
+                            </tr>
+                          </tbody>
+                        );
+                      }
+                    })
+                ) : (
+                  <div>
+                    <strong>"Receivers returned"</strong>
+                  </div>
                 )}
               </div>
             </div>
