@@ -5,20 +5,28 @@ import {
   onAddPaymentIntentDetailSelected,
   onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
-import { Pagination } from "../ui/Pagination";
 
 export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  const [setSendPaymentIntentId] = useState();
+  const [paymentIntentId, setSendPaymentIntentId] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paymentIntentRenderedPerPage] = useState(4);
+  const [paymentIntentPerUserId, setPaymentIntentPerUserId] = useState([]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const controller = new AbortController();
     devitrackApi
       .get("/admin/users")
       .then((response) => response.data)
       .then((data) => setStripeTransactions(data.stripeTransactions));
+    return () => {
+      controller.abort();
+    };
   }, [sendObjectIdUser]);
 
+  console.log(paymentIntentPerUserId);
   return (
     <div
       style={{
@@ -76,6 +84,13 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
           })}
         </table>
       </div>
+      {/* <div>
+        <Pagination
+          childrenRenderedPerPage={paymentIntentRenderedPerPage}
+          totalChildren={users.length}
+          paginate={paginate}
+        />
+      </div> */}
     </div>
   );
 };
