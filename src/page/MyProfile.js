@@ -8,6 +8,7 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { Navbar } from "../components/ui/Navbar";
 import { useStripeHook } from "../hooks/useStripeHook";
 import QRCode from "react-qr-code";
+import { AccordioneturnStatus } from "../components/ui/AccordionReturnStatus";
 
 const initalFormValues = {
   groupName: "",
@@ -395,9 +396,12 @@ export const MyProfile = () => {
           >
             <div>
               <h3>Your devices</h3>
+              <br/>
               <span>All the devices with checkmarks are now returned</span>
             </div>
             <Accordion />
+            <br/>
+            <AccordioneturnStatus />
           </div>
         </div>
       </div>
