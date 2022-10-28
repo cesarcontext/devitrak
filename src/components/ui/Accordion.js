@@ -55,10 +55,7 @@ export const Accordion = () => {
             >
               <div className="accordion-body">
                 {loading !== true ? (
-                  <h6>
-                    No receiver assigned. <br />
-                    Please go to Desk Help to pick up your receivers
-                  </h6>
+                  <strong>"No data to display"</strong>
                 ) : paymentIntentReceiversAssigned.length > 0 ? (
                   paymentIntentReceiversAssigned
                     ?.at(-1)
@@ -82,7 +79,7 @@ export const Accordion = () => {
                                 alignItems: "center",
                               }}
                             >
-                              <th scope="row">{receiver + 1}</th>
+                              <th scope="row"><i className="bi bi-square-fill" /></th>
                               <td>{index.serialNumber}</td>
                             </tr>
                           </tbody>
@@ -91,7 +88,11 @@ export const Accordion = () => {
                     })
                 ) : (
                   <div>
-                    <strong>"Receivers returned"</strong>
+                    <h6>
+                    No receiver assigned. <br />
+                    Please go to Help Desk to pick up your receivers
+                  </h6>
+                    
                   </div>
                 )}
               </div>
