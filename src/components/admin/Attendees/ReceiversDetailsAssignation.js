@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { Navbar } from "../ui/Navbar";
-import { NavLink } from "react-router-dom";
 import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { NavLink } from "react-router-dom";
 
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -18,7 +18,6 @@ export const ReceiversDetailsAssignation = () => {
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
   const [receiverStatusAssigned, setReceiverStatusAssigned] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [receiverListCopied, setReceiverListCopied] = useState([]);
 
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
@@ -35,12 +34,11 @@ export const ReceiversDetailsAssignation = () => {
       paymentIntentReceiversAssigned.data?.receiver?.length > 1
     ) {
       setLoading(false);
-      setReceiverListCopied([...paymentIntentReceiversAssigned.at(-1).device]);
     }
     return () => {
       controller.abort();
     };
-  }, [paymentIntentDetailSelected.paymentIntent, loading]);
+  }, [paymentIntentDetailSelected.paymentIntent, loading, fetchedData]);
 
   const addReceiver = async () => {
     const replacementList = [...receiversAssigned, receiverObject];
@@ -49,6 +47,43 @@ export const ReceiversDetailsAssignation = () => {
       await setReceiverNumberAssgined("");
     }
   };
+
+  let receiversAssignedListCopy;
+  const copyListOfReceiversSaved = async(receiver, index) => {
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    }); 
+    receiversAssignedListCopy.map( data => {
+      if(data.serialNumber === receiver.serialNumber){
+        return {
+          ...data,
+         status: false
+        }
+      }
+      console.log( receiversAssignedListCopy)
+    })
+    await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+      }
+      console.log(receiversAssignedListCopy)
+    })
+  };
+  paymentIntentReceiversAssigned?.map((item) => {
+    console.log("list copied", (receiversAssignedListCopy = item.device));
+  });
 
   const handleDataSubmitted = async () => {
     try {
@@ -61,6 +96,7 @@ export const ReceiversDetailsAssignation = () => {
       if (response) {
         setFetchedData(response.data);
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
+        setLoading(!loading);
       }
       Swal.fire({
         title: "",
@@ -98,13 +134,14 @@ export const ReceiversDetailsAssignation = () => {
       });
     }
   };
-  const handleReturnDevice = async (receiver) => {
-    setReceiverStatusAssigned(false);
+  const handleReturnDevice = async (receiver, index) => {
+    const element_deleted = 1
     const objectToReturn = {
       serialNumber: receiver.serialNumber,
-      status: receiverStatusAssigned,
+      status:false,
     };
-    const replacementList = [...receiversAssigned, objectToReturn];
+    const replacementList = [...receiversAssignedListCopy, objectToReturn];
+    replacementList.splice(index, element_deleted)
     try {
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
@@ -124,13 +161,14 @@ export const ReceiversDetailsAssignation = () => {
       alert("Something went wrong, pelase try it later");
     }
   };
-  const handleAssignDevice = async (receiver) => {
-    setReceiverStatusAssigned(true);
+  const handleAssignDevice = async (receiver, index) => {
+    const element_deleted = 1
     const objectToReturn = {
       serialNumber: receiver.serialNumber,
-      status: receiverStatusAssigned,
+      status:true,
     };
-    const replacementList = [...receiversAssigned, objectToReturn];
+    const replacementList = [...receiversAssignedListCopy, objectToReturn];
+    replacementList.splice(index, element_deleted)
     try {
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
@@ -151,6 +189,33 @@ export const ReceiversDetailsAssignation = () => {
     }
   };
 
+  const returnAllReceiversAtOnce = async() => {
+    let replacementList = []
+    receiversAssignedListCopy.map( item => {
+      replacementList.push({
+       ...item,
+       status: false})
+    })
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      setLoading(true);
+      alert("Receivers returned");
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 116 ~ handleReturnDevice ~ error",
+        error
+      );
+      alert("Something went wrong, pelase try it later");
+    }
+
+  }
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
     if (result.length === 1) {
@@ -326,26 +391,20 @@ export const ReceiversDetailsAssignation = () => {
                                   : "INACTIVATED"}
                               </td>
                               <td>
-                                <button
-                                // onClick={() =>
-                                //   replaceReceiverAssignedFetchedUpdate(
-                                //     receiver
-                                //   )
-                                // }
-                                >
+                                <button>
                                   Replace
                                 </button>
                               </td>
                               <td>
                                 {receiver.status !== false ? (
                                   <button
-                                    onClick={() => handleReturnDevice(receiver)}
+                                    onClick={() => handleReturnDevice(receiver, index)} 
                                   >
                                     Return
                                   </button>
                                 ) : (
                                   <button
-                                    onClick={() => handleAssignDevice(receiver)}
+                                    onClick={() => handleAssignDevice(receiver,index)}
                                   >
                                     Assign
                                   </button>
@@ -388,10 +447,7 @@ export const ReceiversDetailsAssignation = () => {
             </div>
           </div>
           <div style={{ width: "20%", margin: "0 auto" }}>
-            {(paymentIntentReceiversAssigned?.length < 1 && (
-              <button onClick={handleDataSubmitted}>Save</button>
-            )) ||
-              (receiversAssigned?.length ===
+            {(receiversAssigned?.length ===
                 paymentIntentDetailSelected.device && (
                 <button onClick={handleDataSubmitted}>Save</button>
               ))}
@@ -400,6 +456,10 @@ export const ReceiversDetailsAssignation = () => {
       ) : (
         <h6>Loading...</h6>
       )}
+      {paymentIntentReceiversAssigned?.length > 0
+                  ? paymentIntentReceiversAssigned
+                  ?.at(-1)
+                  .device?.length > 1 ? <button style={{width: "25%", margin:"2% auto", padding:"15px"}} onClick={returnAllReceiversAtOnce}>Return all</button>: null : null}
     </div>
   );
 };
