@@ -33,7 +33,7 @@ export const AccordioneturnStatus = () => {
     return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
-        <div className="accordion" id="accordionExample">
+        <div className="accordion">
           <div className="accordion-item">
             <h2 className="accordion-header" id="headingOne">
               <button
@@ -81,7 +81,7 @@ export const AccordioneturnStatus = () => {
                                       alignItems: "center",
                                     }}
                                   >
-                                    <th scope="row">{receiver + 1}</th>
+                                    <th scope="row"><i className="bi bi-check-circle" /></th>
                                     <td>{index.serialNumber}</td>
                                   </tr>
                                 </tbody>
