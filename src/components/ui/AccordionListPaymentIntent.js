@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
+import { Accordion } from "./Accordion";
 
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
   const [stripeTransactions, setStripeTransactions] = useState();
-  console.log(
-    "🚀 ~ file: AccordionListPaymentIntent.js ~ line 7 ~ AccordionListPaymentIntent ~ users",
-    users.at(-1).id
-  );
   useEffect(() => {
     const controller = new AbortController();
     devitrackApi
@@ -22,104 +19,117 @@ export const AccordionListPaymentIntent = () => {
   }, [users.id]);
 
   const checkPaymentIntentArray = (info) => {
-    if (info.length > 0) {
-      const QRCodeValue = info?.at(-1).data?.clientSecret;
+    if (info.paymentIntent === undefined) {
       return (
         <>
-          <div>
-            <h5>Show QR Code to claim your devices</h5>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "10px",
-            }}
-          >
-            <QRCode
-              fgColor="#000"
-              bgColor="#ffff"
-              level="Q"
-              size={150}
-              value={QRCodeValue}
-            />
-          </div>
+          <QRCode
+            fgColor="#000"
+            bgColor="#ffff"
+            level="Q"
+            size={150}
+            value="no value returned"
+          />
         </>
       );
     }
     return (
-      <QRCode
-        fgColor="#000"
-        bgColor="#ffff"
-        level="Q"
-        size={150}
-        value="no value returned"
-      />
+      <>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px",
+          }}
+        >
+          <QRCode
+            fgColor="#000"
+            bgColor="#ffff"
+            level="Q"
+            size={100}
+            value={`${info.paymentIntent}`}
+            style={{
+              margin: "0 auto"
+            }}
+          />
+        </div>
+      </>
     );
   };
   return (
-    <ul className="list-group">
-      <div class="accordion">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingOne">
+    <>
+      <div style={{
+        paddingBottom: "15vh"
+      }} className="accordion" id="accordionPanelsStayOpenExample">
+        <div className="accordion-item">
+          <h2 className="accordion-header" id="panelsStayOpen-headingOne">
             <button
-              class="accordion-button"
+              className="accordion-button"
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#collapseOne"
+              data-bs-target="#panelsStayOpen-collapseOne"
               aria-expanded="true"
-              aria-controls="collapseOne"
+              aria-controls="panelsStayOpen-collapseOne"
             >
-              Orders:
+              Your orders:
             </button>
           </h2>
           <div
-            id="collapseOne"
-            class="accordion-collapse collapse show"
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
+            id="panelsStayOpen-collapseOne"
+            className="accordion-collapse collapse show"
+            aria-labelledby="panelsStayOpen-headingOne"
           >
-            <div class="accordion-body">
-              <li className="list-group-item">
-                {stripeTransactions?.map((item) => {
-                  if (item.user._id === users.at(-1).id) {
-                    console.log(
-                      "🚀 ~ file: AccordionListPaymentIntent.js ~ line 39 ~ {stripeTransactions?.map ~ users.id",
-                      users.at(-1).id
-                    );
-                    return (
-                      <div
-                        style={{
-                          display: "flex",
-                          justofyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div>
-                          Device reserved: <strong>{item.device}</strong>
+            <div className="accordion-body">
+              {" "}
+              {stripeTransactions?.map((item) => {
+                if (item.user.email === users.at(-1).email) {
+                  return (
+                    <div
+                      className="accordion accordion-flush"
+                      id="accordionFlushExample"
+                      key={item.id}
+                    >
+                      <div className="accordion-item">
+                        <h2 className="accordion-header" id="flush-headingOne">
+                          <button
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              width: "100%",
+                            }}
+                            className="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapseOne"
+                            aria-expanded="false"
+                            aria-controls="flush-collapseOne"
+                          >
+                            <h4>
+                              Device reserved: <strong>{item.device}</strong>
+                            </h4>
+                            {checkPaymentIntentArray(item)}
+                          </button>
+                        </h2>
+                        <div
+                          id="flush-collapseOne"
+                          className="accordion-collapse collapse"
+                          aria-labelledby="flush-headingOne"
+                          data-bs-parent="#accordionFlushExample"
+                        >
+                          <div className="accordion-body">
+                            <Accordion item={item} />
+                          </div>
                         </div>
-                        <div style={{ padding: "20px" }}>
-                          <QRCode
-                            fgColor="#000"
-                            bgColor="#ffff"
-                            level="H"
-                            size={150}
-                            value={`${item.paymentIntent}`}
-                          />
-                        </div>
-                        <button style={{ width: "15%", margin: "0 auto" }}>
-                          Check
-                        </button>
                       </div>
-                    );
-                  }
-                })}
-              </li>
+                    </div>
+                  );
+                }
+              })}
             </div>
           </div>
         </div>
       </div>
-    </ul>
+    </>
   );
 };
