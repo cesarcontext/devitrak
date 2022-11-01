@@ -109,6 +109,7 @@ export const AccordionListPaymentIntent = () => {
                               Device reserved: <strong>{item.device}</strong>
                             </h4>
                             {checkPaymentIntentArray(item)}
+                            <h6>Last 4: <strong>{`${item.paymentIntent}`.slice(item.paymentIntent.length/2, -1)}</strong></h6>
                           </button>
                         </h2>
                         <div
