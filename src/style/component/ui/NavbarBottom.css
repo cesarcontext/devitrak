@@ -1,23 +1,16 @@
-.navbar-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-content: flex-end;
-  position: relative;
-  left: 0%;
-  bottom: 0%;
-}
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
+
 .navbar-fixed {
-  width: 100%;
-  height: 10vh;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: #1e73be;
-  color: #ffff;
+  background-color: rgba(22,22,81,1);
+  gap: 40px;
+  left: 0;
+  padding: 12px 36px;
   position: fixed;
-  left: 0%;
-  bottom: 0%;
+  bottom: 0;
+  width: fit-content;
+  z-index: 1;  
 }
 .icon-span {
   padding: 15px;
@@ -27,27 +20,28 @@
 }
 
 @media only screen and (min-width: 320px) and (max-width: 480px) {
-  .navbar-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-content: flex-end;
-  }
   .navbar-fixed {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background-color: #1e73be;
-    color: #ffff;
+    background-color: rgba(22,22,81,1);
+    gap: 2px;
+    left: 0;
+    padding: 12px 36px;
     position: fixed;
-    left: 0%;
-    bottom: 0%;
+    bottom: 0;
+    width: fit-content;
+    z-index: 1;  
   }
-  .icon-span {
+  .icon-span{
     padding: 15px;
     display: flex;
     flex-direction: column;
     color: #ffff;
+  }
+  .icon-span i{
+    font-size: 30px;
+  }
+  .icon-span span{
+    font-size: 10px;
   }
 }
