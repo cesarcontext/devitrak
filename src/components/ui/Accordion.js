@@ -1,113 +1,201 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useAdminStore } from "../../hooks/useAdminStore";
-import { useStripeHook } from "../../hooks/useStripeHook";
+import { devitrackApi } from "../../apis/devitrackApi";
 
-export const Accordion = () => {
-  const { paymentIntent } = useStripeHook();
-  const { paymentIntentReceiversAssigned } = useSelector(
-    (state) => state.stripe
-  );
-  const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
+export const Accordion = (item) => {
+  console.log("🚀 ~ file: Accordion.js ~ line 5 ~ Accordion ~ item", item);
   const [loading, setLoading] = useState(false);
   const [paymentToCheck, setPaymentToCheck] = useState(null);
+  const [receiversAssignedPerTransaction, setReceiversAssignedPerTransaction] =
+    useState(null);
 
   useEffect(() => {
-    if (paymentIntent.length > 0) {
-      return setPaymentToCheck(paymentIntent.at(-1).data.payment_intent_id);
+    if (item.item.paymentIntent) {
+      setPaymentToCheck(item.item.paymentIntent);
     }
-  }, [paymentIntent]);
+  }, [item.item.paymentIntent]);
+  console.log(paymentToCheck);
 
-  const check = async () => {
-    await checkReceiversAssignedToPaymentIntent(paymentToCheck);
+  const retreiveData = async () => {
+    try {
+      const response = await devitrackApi.post("/receiver/receiver-assigned", {
+        paymentIntent: paymentToCheck,
+      });
+      const data = await response?.data.receiver;
+      if (data) {
+        setReceiversAssignedPerTransaction(data);
+        setLoading(true);
+        console.log(
+          "🚀 ~ file: Accordion.js ~ line 25 ~ retreiveData ~ data",
+          data
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
-    check();
+    const controller = new AbortController();
+    retreiveData();
+    setLoading(true);
+    return controller.abort();
   }, [paymentToCheck]);
 
-  useEffect(() => {
-    if (paymentIntentReceiversAssigned.length === 0) {
-      setLoading(true);
-    }
-  }, [paymentIntentReceiversAssigned]);
   return (
     <div>
       <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
-        <div className="accordion" id="accordionExample">
-          <div className="accordion-item">
-            <h2 className="accordion-header" id="headingOne">
-              <button
-                className="accordion-button"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseOne"
-                aria-expanded="true"
-                aria-controls="collapseOne"
-              >
-                <h3>PENDING DEVICES</h3>
-              </button>
-            </h2>
-            <div
-              id="collapseOne"
-              className="accordion-collapse collapse show"
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
-            >
-              <div className="accordion-body">
-                {loading !== true ? (
-                  <strong>"No data to display"</strong>
-                ) : paymentIntentReceiversAssigned.length > 0 ? (
-                  paymentIntentReceiversAssigned
-                    ?.at(-1)
-                    .device?.map((index, receiver) => {
-                      if (index.status === true) {
-                        return (
-                          <tbody
-                            key={index + receiver}
+        <div>
+          {loading !== true ? (
+            <h6>
+              No receiver assigned yet.
+              <br />
+              Please go to Help Desk to pick up receiver
+            </h6>
+          ) : (
+            receiversAssignedPerTransaction?.map((receiver) => {
+              return (
+                <table className="table">
+                  <thead
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <tr
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <th scope="col">Status</th>
+                      <th scope="col">Serial number</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    key={receiver.id}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                    {receiver.device.map((item, index) => {
+                      return (
+                        <>
+                          <tr
                             style={{
                               width: "100%",
                               display: "flex",
-                              justifyContent: "center",
+                              justifyContent: "space-between",
                               alignItems: "center",
                             }}
                           >
-                            <tr
-                              style={{
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                              }}
-                            >
-                              <th scope="row"><i className="bi bi-square-fill" /></th>
-                              <td>{index.serialNumber}</td>
-                            </tr>
-                          </tbody>
-                        );
-                      }
-                    })
-                ) : (
-                  <div>
-                    <h6>
-                    No receiver assigned. <br />
-                    Please go to Help Desk to pick up your receivers
-                  </h6>
-                    
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+                            <th key={index * 898} scope="row">
+                              {item.status !== true ? (
+                                <i className="bi bi-check-circle" />
+                              ) : (
+                                <i className="bi bi-square-fill" />
+                              )}
+                            </th>
+                            <td>{item.serialNumber}</td>
+                          </tr>{" "}
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              );
+            })
+          )}
         </div>
       </div>
-      <div
-        style={{
-          width: "50%",
-          marginTop: "3%",
-          margin: "auto",
-          border: "solid 1px #fff",
-        }}
-      ></div>
     </div>
   );
 };
+
+/**
+ * (
+            /**
+             * receiversAssignedPerTransaction?.map((receiver, index) => {
+            console.log("🚀 ~ file: Accordion.js ~ line 52 ~ ):receiversAssignedPerTransaction?.map ~ receiver", receiver)
+            
+          }) 
+             */
+// return (
+//   <tbody
+//     key={index}
+//     style={{
+//       width: "100%",
+//       display: "flex",
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//     <tr
+//       style={{
+//         width: "100%",
+//         display: "flex",
+//         justifyContent: "space-between",
+//         alignItems: "center",
+//       }}
+//     >
+//       <th scope="row">
+//         {receiver.status === true ? (
+//           <i className="bi bi-square-fill" />
+//         ) : (
+//           <i className="bi bi-check-circle" />
+//         )}
+//       </th>
+//       <td>{receiver.serialNumber}</td>
+//     </tr>
+//   </tbody>
+// );
+//  :
+
+/**
+             * if(item.device.length < 1){
+              return (
+                <div>
+                  <h6>
+                    No receiver assigned. <br />
+                    Please go to Help Desk to pick up your receivers
+                  </h6>
+                </div>)
+            }
+            item.device.map((receiver, index) => {
+              return (
+                <tbody
+                       key={index}
+                       style={{
+                         width: "100%",
+                         display: "flex",
+                         justifyContent: "center",
+                         alignItems: "center",
+                       }}
+                     >
+                       <tr
+                         style={{
+                           width: "100%",
+                           display: "flex",
+                           justifyContent: "space-between",
+                           alignItems: "center",
+                         }}
+                       >
+                         <th scope="row">
+                           {receiver.status === true ? (
+                             <i className="bi bi-square-fill" />
+                           ) : (
+                             <i className="bi bi-check-circle" />
+                           )}
+                         </th>
+                         <td>{receiver.serialNumber}</td>
+                       </tr>
+                     </tbody>
+              )
+            })
+             */
