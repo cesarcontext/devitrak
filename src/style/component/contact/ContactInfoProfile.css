@@ -1,0 +1,22 @@
+.container-user-info-detail-fetched{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.user-info-detail-fullname{
+    display: flex;
+    justify-content: space-around;
+}
+
+@media only screen and (min-width: 320px) and (max-width:480px){
+    .container-user-info-detail-fetched{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    .user-info-detail-fullname{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+}
