@@ -1,0 +1,16 @@
+.container-alert-info{
+    width: 30%;
+    margin: auto;
+}
+
+@media only screen and ( min-width:320px) and ( max-width:480px){
+    .container-alert-info{
+        width: 100%;
+        margin: auto;
+    }
+    .alert-message-loading-true{
+        width: 100%;
+        margin: auto;
+    }
+    
+}
