@@ -1,0 +1,12 @@
+.email-sent-message-magic-link{
+    padding-bottom: 25px;
+}
+
+@media screen and (min-width:320px) and (max-width:480px){
+    /* .email-sent-message-magic-link{
+        padding-bottom: 25px;
+    } */
+    .email-sent-message-magic-link h4{
+        font-size: 15px;
+    }
+}
