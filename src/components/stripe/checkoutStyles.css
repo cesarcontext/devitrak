@@ -129,10 +129,55 @@ button:disabled {
     transform: rotate(360deg);
   }
 }
-
-@media only screen and (max-width: 600px) {
   form {
-    width: 80vw;
+    width: 90%;
     min-width: initial;
   }
-}
+
+  @media only screen and (min-width:320px) and (max-width:480px){
+    .container-stripe{
+      width: 87%;
+      margin: 1% auto;
+    }
+    form {
+      width: 20%;
+      min-width: initial;
+      margin: 0 auto;
+    }
+    #payment-form{
+      width:100%;
+      min-width: 300px;
+      align-self: center;
+      box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+        0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+      border-radius: 7px;
+      padding: 10px;
+      /* margin-bottom: 12vh; */
+    }
+    #payment-message {
+      background-color: rgb(253, 101, 95);
+      color: rgb(253, 254, 255);
+      font-size: 20px;
+      line-height: 20px;
+      padding: 12px;
+      text-align: center;
+      margin: 1% auto;
+      width: 80%;
+      border-radius: 5px;
+    }
+    
+    #payment-element {
+      margin-bottom: 24px;
+    }
+    
+    #payment-element .p-GridCell .p-GridCell--12 .p-GridCell--md6,
+    .p-GridCell .p-GridCell--6 .p-GridCell--md3 {
+      width: 10%;
+    }
+    #payment-element .p-Field .p-FiedLabel {
+      display: none;
+    }
+    
+
+  }
+
