@@ -5,21 +5,19 @@ import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 
 import "../../style/component/ui/NavbarBottom.css";
+import { useDispatch } from "react-redux";
+import { onAddNewContact } from "../../store/slices/contactInfoSlice";
 
 export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
   const { users } = useContactInfoStore();
-
   const newUser = users.at(-1).email;
-
-  const user = session?.authentication_factors[0].email_factor.email_address;
-
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     if (session) {
       await client.session.revoke();
     }
-
     Swal.fire({
       title: `Your session is finished`,
       confirmButtonColor: "rgb(30, 115, 190)",
@@ -30,8 +28,17 @@ export const NavbarBottom = () => {
         popup: "animate__animated animate__fadeOutUp",
       },
     });
+    dispatch(
+      onAddNewContact({
+        id: "",
+        groupName: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        status: "",
+      })
+    );
   };
-
   return (
     <div className="navbar-container">
       <nav className="navbar-fixed">
@@ -68,11 +75,18 @@ export const NavbarBottom = () => {
           }}
         >
           {" "}
-          <div style={{ padding: "20px" }}>{(session && user) || newUser}</div>
           <Link to="/">
-            <div>
-              {(session && <button onClick={handleLogout}>Logout</button>) ||
-                (newUser && <button onClick={handleLogout}>Logout</button>)}
+            <div className="btn-logout-section">
+              {(session && (
+                <button className="btn-logout" onClick={handleLogout}>
+                  <i className="bi bi-toggle-off lx"></i>
+                </button>
+              )) ||
+                (newUser && (
+                  <button className="btn-logout" onClick={handleLogout}>
+                    <i className="bi bi-toggle-off lx"></i>
+                  </button>
+                ))}
             </div>
           </Link>
         </div>

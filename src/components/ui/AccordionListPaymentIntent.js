@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
-
+import "../../style/component/ui/AccordionListPaymentIntent.css"
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
   const [stripeTransactions, setStripeTransactions] = useState();
@@ -58,9 +58,7 @@ export const AccordionListPaymentIntent = () => {
   };
   return (
     <>
-      <div style={{
-        paddingBottom: "15vh"
-      }} className="accordion" id="accordionPanelsStayOpenExample">
+      <div className="accordion accordion-List-payment" id="accordionPanelsStayOpenExample">
         <div className="accordion-item">
           <h2 className="accordion-header" id="panelsStayOpen-headingOne">
             <button
@@ -82,7 +80,7 @@ export const AccordionListPaymentIntent = () => {
             <div className="accordion-body">
               {" "}
               {stripeTransactions?.map((item) => {
-                if (item.user.email === users.at(-1).email) {
+                if (item?.user?.email === users.at(-1).email) {
                   return (
                     <div
                       className="accordion accordion-flush"
@@ -92,12 +90,7 @@ export const AccordionListPaymentIntent = () => {
                       <div className="accordion-item">
                         <h2 className="accordion-header" id="flush-headingOne">
                           <button
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              width: "100%",
-                            }}
+                           
                             className="accordion-button collapsed"
                             type="button"
                             data-bs-toggle="collapse"
@@ -109,7 +102,7 @@ export const AccordionListPaymentIntent = () => {
                               Device reserved: <strong>{item.device}</strong>
                             </h4>
                             {checkPaymentIntentArray(item)}
-                            <h6>Last 4: <strong>{`${item.paymentIntent}`.slice(item.paymentIntent.length/2, -1)}</strong></h6>
+                            <h6>Last 4: <strong>{`${item.paymentIntent}`.slice(-5, -1)}</strong></h6>
                           </button>
                         </h2>
                         <div

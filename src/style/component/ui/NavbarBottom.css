@@ -19,7 +19,7 @@
   color: #ffff;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 480px) {
+@media only screen and (min-width: 320px) and (max-width: 480px){
   .navbar-fixed {
     display: flex;
     align-items: center;
@@ -43,5 +43,13 @@
   }
   .icon-span span{
     font-size: 10px;
+  }
+  .btn-logout{
+    color: #ffff;
+    background-color: rgba(255, 0, 0, 0.678);
+    border-radius: 50%;
+  }
+  .btn-logout i{
+    font-size: 20px;
   }
 }

@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { devitrackApi } from "../apis/devitrackApi";
 import { increment, decrement, reset } from "../store/slices/deviceSlice";
 
 export const useDeviceCount = () => {
@@ -25,6 +25,17 @@ export const useDeviceCount = () => {
     dispatch(reset());
   };
 
+  const savedReceiversPool = async (deviceInfo) => {
+    try {
+      const response = await devitrackApi.post("/receiver/receivers-pool", {
+        deviceInfo
+      })
+    } catch (error) {
+      console.log("🚀 ~ file: useDeviceCountStore.js ~ line 30 ~ savedReceiversPool ~ error", error)
+      
+    }
+  };
+
   return {
     //* Propiedades
     device,
@@ -33,5 +44,6 @@ export const useDeviceCount = () => {
     handleIncreaseDevice,
     handleDecreaseDevice,
     handleResetDevice,
+    savedReceiversPool,
   };
 };

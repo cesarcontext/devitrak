@@ -1,5 +1,6 @@
 import React from "react";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
+import "../../style/component/contact/ContactInfoProfile.css"
 
 export const ContactInfoProfile = () => {
   const { users} = useContactInfoStore();
@@ -7,12 +8,10 @@ export const ContactInfoProfile = () => {
     <div>
       {users?.map((item) => {
         return (
-          <div key={item.email}>
+          <div className="container-user-info-detail-fetched" key={item.email}>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-              }}
+            className="user-info-detail-fullname"
+              
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +28,7 @@ export const ContactInfoProfile = () => {
                 <span> {item.lastName}</span>
               </div>
             </div>
-            <div>
+            <div className="user-info-detail-fullname">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -42,7 +41,7 @@ export const ContactInfoProfile = () => {
               </svg>
               <span> {item.email}</span>
             </div>
-            <div>
+            <div className="user-info-detail-fullname">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"

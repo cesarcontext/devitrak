@@ -32,13 +32,12 @@ export const useStripeHook = () => {
     }
   };
 
-  const startStripePaymentIntent = async (request, response) => {
-    console.log( customer.id )
+  const startStripePaymentIntent = async (device) => {
+    console.log("🚀 ~ file: useStripeHook.js ~ line 36 ~ startStripePaymentIntent ~ device", device)
     try {
-      const response = await devitrackApi
+      await devitrackApi
         .post("/stripe/create-payment-intent", {
           device: device,
-          customer: customer.id
         })
         .then((data) => {
           setData(data);
@@ -63,7 +62,7 @@ export const useStripeHook = () => {
     device
   }) => {
     try {
-      const response = await devitrackApiStripe
+      await devitrackApiStripe
         .post("/stripe-transaction", {
           paymentIntent: payment_intent,
           clientSecret,

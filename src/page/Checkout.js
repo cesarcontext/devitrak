@@ -10,9 +10,6 @@ import "../style/pages/Checkout.css";
 export const Checkout = () => {
   const {
     device,
-    // handleDecreaseDevice,
-    // handleIncreaseDevice,
-    // handleResetDevice,
   } = useDeviceCount();
   const { startStripePaymentIntent, clientSecret, visibleButton } =
     useStripeHook();
@@ -22,16 +19,6 @@ export const Checkout = () => {
     startStripePaymentIntent(device);
     localStorage.setItem("device", device);
   };
-  const style = {
-    display: "flex",
-    padding: "15px",
-    justifyContent: "space-evenly",
-    width: "75%",
-    margin: "0 auto",
-    border: "solid 1px #212529",
-    borderRadius: "15px",
-  };
-
   return (
     <>
       <Navbar />

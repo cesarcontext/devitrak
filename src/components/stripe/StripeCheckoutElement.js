@@ -12,6 +12,15 @@ const stripePromise = loadStripe(
 export const StripeCheckoutElement = ({ clientSecret }) => {
   const appearance = {
     theme: "flat",
+    variables: {
+      colorPrimary: '#0570de',
+      colorBackground: '#ffffff',
+      colorText: 'transparent', //*#30313d
+      colorDanger: '#df1b41',
+      fontFamily: 'Ideal Sans, system-ui, sans-serif',
+      spacingUnit: '2px',
+      borderRadius: '4px',
+    }
   };
   const options = {
     clientSecret,

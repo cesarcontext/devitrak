@@ -1,10 +1,46 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
+:root {
+  --black: rgba(0, 0, 0, 1);
+  --main-colorsfresh-blue-of-bel-air: rgba(21, 170, 245, 1);
+  --bunting: rgba(22, 22, 81, 0.502);
+  --main-colorsfly-by-night: rgba(22, 22, 81, 1);
+  --haddocks-sweater: rgba(30, 115, 190, 1);
+  --eucalyptus: rgba(33, 150, 83, 1);
+  --main-colorscarbon: rgba(51, 51, 51, 1);
+  --main-colorsbluetiful: rgba(69, 104, 220, 1);
+  --main-colorsfading-horizon: rgba(72, 33, 118, 1);
+  --cover-of-night: rgba(73, 76, 79, 1);
+  --main-colorsexcalibur: rgba(102, 102, 102, 1);
+  --main-colorsaluminium: rgba(129, 138, 145, 1);
+  --lavender: rgba(187, 107, 217, 1);
+  --main-colorslobster: rgba(192, 43, 10, 1);
+  --main-colorszen: rgba(210, 214, 220, 1);
+  --alto: rgba(217, 217, 217, 1);
+  --glacial-ice: rgba(232, 232, 232, 1);
+  --concrete: rgba(242, 242, 242, 1);
+  --wild-sand: rgba(244, 244, 244, 1);
+  --cultured-pearl: rgba(245, 245, 245, 1);
+  --white: rgba(255, 255, 255, 0);
+  --main-colorswhite: rgba(255, 255, 255, 1);
+
+  --font-size-xs: 8px;
+  --font-size-s: 10px;
+  --font-size-s: 14px;
+  --font-size-m2: 16px;
+  --font-size-l2: 20px;
+  --font-size-xs2: 12px;
+  --font-size-xl2: 24px;
+  --font-size-xxl2: 32px;
+
+  --font-family-inter: "Inter";
+  --font-family-open_sans: "Open Sans";
+}
 
 body {
+  background-color: var(--wild-sand);
   margin: 0;
-  height: calc( 100vh - 16vh );
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -12,36 +48,31 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-input{
+input {
   width: 35%;
   height: 3vh;
   border-radius: 5px;
   margin: 2px auto;
   padding-left: 15px;
-  
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
-@media only screen and ( max-width: 650px) {
-
-  input{
+@media only screen and (max-width: 650px) {
+  input {
     width: 80%;
     height: 3vh;
     border-radius: 5px;
     margin: 2px auto;
     padding-left: 15px;
   }
-
-
-  
 }
-

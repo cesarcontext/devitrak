@@ -1,0 +1,79 @@
+.container-my-profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 480px){
+  .container-my-profile-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5%;
+  }
+  .container-box-user-info-detail {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    border: solid 1px #212529;
+    border-radius: 15px;
+  }
+  .box-user-detail-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #box-user-detail-edit-button {
+    display: flex;
+    justify-content: flex-start;
+    border-radius: 15px 0;
+    border-right: transparent;
+    border-top: transparent;
+    border: solid 1px #212529;
+  }
+  #box-user-detail-cancel-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px 0;
+    border-left: transparent;
+    border-top: transparent;
+    border: solid 1px #212529;
+  }
+  #box-user-detail-save-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 15px;
+    border-right: transparent;
+    border-top: transparent;
+    border: solid 1px #212529;
+  }
+  .box-user-edit-info{
+    width: 95%;
+  }
+  .box-user-edit-info input{
+    width: 90%;
+  }
+  .container-box-user-info-detail-qrcode{
+    width: 70%;
+    height: 70%;
+    margin-bottom: 4%;
+  }
+  .container-device-alert{
+    width: 95%;
+  }
+  .container-device-accordion-List{
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 5%;
+    display: flex;
+    flex-direction: column;
+  }
+}

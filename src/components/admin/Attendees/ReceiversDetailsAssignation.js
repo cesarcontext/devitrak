@@ -6,6 +6,7 @@ import { Navbar } from "../ui/Navbar";
 import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { NavLink } from "react-router-dom";
+import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
 
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -16,12 +17,13 @@ export const ReceiversDetailsAssignation = () => {
   const [fetchedData, setFetchedData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
-  const [receiverStatusAssigned, setReceiverStatusAssigned] = useState(true);
+  const [replaceStatus, setReplaceStatus] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
+  const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
-    status: receiverStatusAssigned,
+    status: true,
   };
 
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
@@ -49,41 +51,14 @@ export const ReceiversDetailsAssignation = () => {
   };
 
   let receiversAssignedListCopy;
-  const copyListOfReceiversSaved = async(receiver, index) => {
-    paymentIntentReceiversAssigned?.map((item) => {
-      return (receiversAssignedListCopy = item.device);
-    }); 
-    receiversAssignedListCopy.map( data => {
-      if(data.serialNumber === receiver.serialNumber){
-        return {
-          ...data,
-         status: false
-        }
-      }
-      console.log( receiversAssignedListCopy)
-    })
-    await Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire(
-          'Deleted!',
-          'Your file has been deleted.',
-          'success'
-        )
-      }
-      console.log(receiversAssignedListCopy)
-    })
+
+  const removeReceiverBeforeSavedData = async (index) => {
+    const result = receiversAssigned.splice(index, 1);
+    if (result.length === 1) {
+      return setReceiverNumberAssgined([]);
+    }
+    setReceiversAssigned(result);
   };
-  paymentIntentReceiversAssigned?.map((item) => {
-    console.log("list copied", (receiversAssignedListCopy = item.device));
-  });
 
   const handleDataSubmitted = async () => {
     try {
@@ -97,6 +72,13 @@ export const ReceiversDetailsAssignation = () => {
         setFetchedData(response.data);
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
+        receiversAssigned?.map((item) => {
+          devitrackApi.post("/receiver/receivers-pool", {
+            device: item.serialNumber,
+            status: "Operational",
+            activity: "In-use",
+          });
+        });
       }
       Swal.fire({
         title: "",
@@ -108,11 +90,11 @@ export const ReceiversDetailsAssignation = () => {
         background: "#fff",
         confirmButtonColor: "rgb(30, 115, 190)",
         backdrop: `
-      rgb(30, 115, 190)
-        url("../image/logo.jpg")
-        left top
-        no-repeat
-      `,
+      	rgb(30, 115, 190)
+        	url("../image/logo.jpg")
+        	left top
+        	no-repeat
+      	`,
       });
     } catch (error) {
       console.log(error);
@@ -126,22 +108,25 @@ export const ReceiversDetailsAssignation = () => {
         background: "#fff",
         confirmButtonColor: "rgb(30, 115, 190)",
         backdrop: `
-        rgb(30, 115, 190)
-          url("../image/logo.jpg")
-          left top
-          no-repeat
-        `,
+        	rgb(30, 115, 190)
+          	url("../image/logo.jpg")
+          	left top
+          	no-repeat
+        	`,
       });
     }
   };
   const handleReturnDevice = async (receiver, index) => {
-    const element_deleted = 1
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
     const objectToReturn = {
       serialNumber: receiver.serialNumber,
-      status:false,
+      status: false,
     };
-    const replacementList = [...receiversAssignedListCopy, objectToReturn];
-    replacementList.splice(index, element_deleted)
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
     try {
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
@@ -151,24 +136,31 @@ export const ReceiversDetailsAssignation = () => {
           device: replacementList,
         }
       );
-      setLoading(true);
-      alert("Receiver returned");
+      if (response) {
+        // //*located receiverPoolId to pass it
+        // devitrackApi.put(`/receiver/receivers-pool-update/${receiverPoolId}`, {
+        //   device: objectToReturn.serialNumber,
+        //   status: "Operational",
+        //   activity: "Stored",
+        // });
+        setLoading(true);
+            alert("Receiver returned");
+}
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 116 ~ handleReturnDevice ~ error",
-        error
-      );
       alert("Something went wrong, pelase try it later");
     }
   };
   const handleAssignDevice = async (receiver, index) => {
-    const element_deleted = 1
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
     const objectToReturn = {
       serialNumber: receiver.serialNumber,
-      status:true,
+      status: true,
     };
-    const replacementList = [...receiversAssignedListCopy, objectToReturn];
-    replacementList.splice(index, element_deleted)
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
     try {
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
@@ -178,24 +170,32 @@ export const ReceiversDetailsAssignation = () => {
           device: replacementList,
         }
       );
-      setLoading(true);
-      alert("Receiver assigned");
+      if (response) {
+        // //*located receiverPoolId to pass it
+        // devitrackApi.put(`/receiver/receivers-pool-update/${receiverPoolId}`, {
+        //   device: objectToReturn.serialNumber,
+        //   status: "Operational",
+        //   activity: "In-use",
+        // });
+        setLoading(true);
+            alert("Receiver assigned");
+}
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 129 ~ handleAssignDevice ~ error",
-        error
-      );
       alert("Something went wrong, please try later");
     }
   };
 
-  const returnAllReceiversAtOnce = async() => {
-    let replacementList = []
-    receiversAssignedListCopy.map( item => {
+  const returnAllReceiversAtOnce = async () => {
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    let replacementList = [];
+    receiversAssignedListCopy.map((item) => {
       replacementList.push({
-       ...item,
-       status: false})
-    })
+        ...item,
+        status: false,
+      });
+    });
     try {
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
@@ -205,23 +205,41 @@ export const ReceiversDetailsAssignation = () => {
           device: replacementList,
         }
       );
-      setLoading(true);
-      alert("Receivers returned");
+      if (response) {
+        // replacementList?.map((item) => {
+        //   //*located receiverPoolId to pass it
+        //   devitrackApi.put(
+        //     `/receiver/receivers-pool-update/${receiverPoolId}`,
+        //     {
+        //       device: item.serialNumber,
+        //       status: "Operational",
+        //       activity: "Stored",
+        //     }
+        //   );
+        // });
+        setLoading(true);
+        alert("Receivers returned");
+      }
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 116 ~ handleReturnDevice ~ error",
-        error
-      );
       alert("Something went wrong, pelase try it later");
     }
+  };
 
-  }
-  const removeReceiverBeforeSavedData = async (index) => {
-    const result = receiversAssigned.splice(index, 1);
-    if (result.length === 1) {
-      return setReceiverNumberAssgined([]);
+  const replaceFunctionTrigger = (receiver, index) => {
+    try {
+      setReceiverObjectToReplace({
+        serialNumber: receiver.serialNumber,
+        status: receiver.status,
+      });
+      setReplaceReceiverIndex(index);
+      setReplaceStatus(true);
+      console.log(replaceStatus);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 201 ~ replaceFunctionTrigger ~ error",
+        error
+      );
     }
-    setReceiversAssigned(result);
   };
   return (
     <div>
@@ -370,13 +388,6 @@ export const ReceiversDetailsAssignation = () => {
                   ? paymentIntentReceiversAssigned
                       ?.at(-1)
                       .device?.map((receiver, index) => {
-                        {
-                          /**
-                      .filter((item) =>
-                        item.serialNumber.includes(searchTerm)
-                      )
-                       */
-                        }
                         return (
                           <tbody key={index + 1}>
                             <tr>
@@ -391,20 +402,28 @@ export const ReceiversDetailsAssignation = () => {
                                   : "INACTIVATED"}
                               </td>
                               <td>
-                                <button>
+                                <button
+                                  onClick={() =>
+                                    replaceFunctionTrigger(receiver, index)
+                                  }
+                                >
                                   Replace
                                 </button>
                               </td>
                               <td>
                                 {receiver.status !== false ? (
                                   <button
-                                    onClick={() => handleReturnDevice(receiver, index)} 
+                                    onClick={() =>
+                                      handleReturnDevice(receiver, index)
+                                    }
                                   >
                                     Return
                                   </button>
                                 ) : (
                                   <button
-                                    onClick={() => handleAssignDevice(receiver,index)}
+                                    onClick={() =>
+                                      handleAssignDevice(receiver, index)
+                                    }
                                   >
                                     Assign
                                   </button>
@@ -447,19 +466,43 @@ export const ReceiversDetailsAssignation = () => {
             </div>
           </div>
           <div style={{ width: "20%", margin: "0 auto" }}>
-            {(receiversAssigned?.length ===
-                paymentIntentDetailSelected.device && (
-                <button onClick={handleDataSubmitted}>Save</button>
-              ))}
+            {receiversAssigned?.length ===
+              paymentIntentDetailSelected.device && (
+              <button onClick={handleDataSubmitted}>Save</button>
+            )}
           </div>
         </>
       ) : (
         <h6>Loading...</h6>
       )}
-      {paymentIntentReceiversAssigned?.length > 0
-                  ? paymentIntentReceiversAssigned
-                  ?.at(-1)
-                  .device?.length > 1 ? <button style={{width: "25%", margin:"2% auto", padding:"15px"}} onClick={returnAllReceiversAtOnce}>Return all</button>: null : null}
+      {paymentIntentReceiversAssigned?.length > 0 ? (
+        paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+          <button
+            style={{ width: "25%", margin: "2% auto", padding: "15px" }}
+            onClick={returnAllReceiversAtOnce}
+          >
+            Return all
+          </button>
+        ) : null
+      ) : null}
+      {receiverObjectToReplace !== null && (
+        <ModalReplaceReceiver
+          setLoading={setLoading}
+          receiverObjectToReplace={receiverObjectToReplace}
+          replaceReceiverIndex={replaceReceiverIndex}
+          paymentIntentReceiversAssigned={paymentIntentReceiversAssigned}
+          replaceStatus={replaceStatus}
+          setReplaceStatus={setReplaceStatus}
+        />
+      )}
     </div>
   );
 };
+/**
+ * replaceStatus,
+  setReplaceStatus,
+  paymentIntentReceiversAssigned,
+  receiverObjectToReplace,
+  replaceReceiverIndex,
+  setLoading,
+ */

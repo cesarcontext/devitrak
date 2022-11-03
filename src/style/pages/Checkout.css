@@ -26,3 +26,36 @@
   position: absolute;
   top: 10%;
 }
+
+@media only screen and (min-width:320px) and (max-width:480px){
+  .container-checkout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .border-section-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    position: absolute;
+    top: 15%;
+    border: solid 1px #212529;
+    border-radius: 15px;
+  }
+  
+  .button-wrapper {
+    position: absolute;
+    top: 38%;
+  }
+  .checkout-amount-stripe-clientSecret{
+      position: absolute;
+      top:75%
+  }
+  .stripe-wrapper-checkout {
+    position: absolute;
+    top: 10%;
+    width: 95%;
+  }
+  
+}

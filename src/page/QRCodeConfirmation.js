@@ -1,14 +1,15 @@
-import React, { useEffect } from "react"; //, { useEffect }
+import React, { useEffect } from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
+import "../style/pages/QRCodeConfirmation.css";
 
 export const QRCodeConfirmation = () => {
   const { saveStripeTransaction } = useStripeHook();
-  const { device } = useDeviceCount()
+  const { device } = useDeviceCount();
 
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
@@ -34,13 +35,7 @@ export const QRCodeConfirmation = () => {
   return (
     <>
       <Navbar />
-      <div
-        style={{
-          width: "50%",
-          margin: "50px auto 150px",
-          height: "calc(100% - 18vh)",
-        }}
-      >
+      <div className="container-qr-code-confirmation">
         <div className="top-icon">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -55,69 +50,47 @@ export const QRCodeConfirmation = () => {
           </svg>
         </div>
         <div className="message-confirmation">
-          <div>
-            <p>
-              <span>
-                Your devices are now ready! <br />
-                Please proceed to Headset Distribuition Desk located at
-                International registration.
-              </span>
-            </p>
-          </div>
-          <br />
-          <div>
-            <p>
-              Please have your device open with the QR Code. This will be
-              scanned and a receiver with reference number will be issued. For
-              your reference the assigned receiver number will appear on the
-              application.
-            </p>
-          </div>
+          <p>
+            <span>
+            Your devices are now ready!
+            </span>
+          </p>
+          <p>
+            <span>
+              Please proceed to Headset Distribuition Desk located at
+              International registration.
+            </span>
+          </p>
+          <p>
+            Please have your device open with the QR Code. This will be scanned
+            and a receiver with reference number will be issued. For your
+            reference the assigned receiver number will appear on the
+            application.
+          </p>
         </div>
-        <div className="qr-code-div" style={{ margin: "40px" }}>
+        <div className="qr-code-div">
           <div className="qr-code">{QRCodeGenerated}</div>
         </div>
-        <div className="reference-number" style={{ margin: "40px" }}>
+        <div className="reference-number">
           <h4>Your reference number is:</h4>
           <span>{payment_intent}</span>
         </div>
-        <div
-          className="links-help"
-          style={{
-            margin: "40px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <div>
+        <div className="links-help-qr-code-confirmation-section">
+          <div className="help-link-route">
             <span>OTHER RESOURCES</span>
           </div>
-          <Link to="/how_to_use_the_receiver">
-            <div
-              style={{
-                margin: "10px",
-              }}
-            >
+          <Link to="/more_info/how_to_use_the_receiver">
+            <div className="help-link-route">
               <span>HOW TO USE THE RECEIVERS</span>
             </div>
           </Link>
-          <Link to="/request_support_during_event">
-            <div
-              style={{
-                margin: "10px",
-              }}
-            >
+          <Link to="/more_info/request_support_during_event">
+            <div className="help-link-route">
               <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
             </div>
           </Link>
-          <Link to="/how_to_return_the_devices">
-            <div
-              style={{
-                margin: "10px",
-              }}
-            >
+          <Link to="/more_info/how_to_return_the_devices">
+            <div className="help-link-route">
               <span>HOW TO RETURN DEVICES</span>
             </div>
           </Link>

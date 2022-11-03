@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../apis/devitrackApi";
+import "../../style/component/ui/Accordion.css";
 
 export const Accordion = (item) => {
-  console.log("🚀 ~ file: Accordion.js ~ line 5 ~ Accordion ~ item", item);
   const [loading, setLoading] = useState(false);
   const [paymentToCheck, setPaymentToCheck] = useState(null);
   const [receiversAssignedPerTransaction, setReceiversAssignedPerTransaction] =
@@ -13,8 +13,6 @@ export const Accordion = (item) => {
       setPaymentToCheck(item.item.paymentIntent);
     }
   }, [item.item.paymentIntent]);
-  console.log(paymentToCheck);
-
   const retreiveData = async () => {
     try {
       const response = await devitrackApi.post("/receiver/receiver-assigned", {
@@ -24,10 +22,6 @@ export const Accordion = (item) => {
       if (data) {
         setReceiversAssignedPerTransaction(data);
         setLoading(true);
-        console.log(
-          "🚀 ~ file: Accordion.js ~ line 25 ~ retreiveData ~ data",
-          data
-        );
       }
     } catch (error) {
       console.log(error);
@@ -42,59 +36,41 @@ export const Accordion = (item) => {
 
   return (
     <div>
-      <div style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}>
+      <div
+        className="container-accordion-info-asinged"
+        style={{ width: "50%", margin: "auto", border: "solid 1px #fff" }}
+      >
         <div>
           {loading !== true ? (
-            <h6>
-              No receiver assigned yet.
-              <br />
-              Please go to Help Desk to pick up receiver
-            </h6>
+            <h6>No data yet.</h6>
           ) : (
             receiversAssignedPerTransaction?.map((receiver) => {
+              console.log("receivers", receiver);
+              if (!receiver) {
+                return (
+                  <h6>
+                    No receiver assigned yet.
+                    <br />
+                    Please go to Help Desk to pick up receiver
+                  </h6>
+                );
+              }
               return (
-                <table className="table">
-                  <thead
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <tr
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <th scope="col">Status</th>
-                      <th scope="col">Serial number</th>
+                <table className="accordion-table">
+                  <thead className="table-thead">
+                    <tr className="table-tr">
+                      <th className="table-tr-category-title" scope="col">
+                        Status /{" "}
+                      </th>
+                      <th className="table-tr-category-title" scope="col">
+                        Serial #
+                      </th>
                     </tr>
                   </thead>
-                  <tbody
-                    key={receiver.id}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}>
+                  <tbody key={receiver.id}>
                     {receiver.device.map((item, index) => {
                       return (
-                        <>
-                          <tr
-                            style={{
-                              width: "100%",
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
+                          <tr>
                             <th key={index * 898} scope="row">
                               {item.status !== true ? (
                                 <i className="bi bi-check-circle" />
@@ -103,8 +79,7 @@ export const Accordion = (item) => {
                               )}
                             </th>
                             <td>{item.serialNumber}</td>
-                          </tr>{" "}
-                        </>
+                          </tr>
                       );
                     })}
                   </tbody>

@@ -1,5 +1,6 @@
 import { useStytch } from "@stytch/stytch-react";
 import Swal from "sweetalert2";
+import "../../style/component/passwrodless/MagicLink.css"
 
 export const MagicLink = (magicLinkParam) => {
   const client = useStytch();
@@ -22,8 +23,8 @@ export const MagicLink = (magicLinkParam) => {
     });
   };
   return (
-    <div style={{ paddingBottom: "25px"}}>
-      <h4>{emailToPass} is registered. <br /> Please sign in.</h4>
+    <div className="email-sent-message-magic-link">
+      <h4><strong>{emailToPass}</strong> is registered. Please log in.</h4>
 
       <button onClick={handleLogin}>Login</button>
     </div>

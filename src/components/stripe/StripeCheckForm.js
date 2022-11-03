@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   PaymentElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 import "./checkoutStyles.css";
 
 export const StripeCheckoutForm = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const stripe = useStripe();
   const elements = useElements();
+  const { customer } = useSelector((state) => state.stripe);
+  console.log(
+    "🚀 ~ file: StripeCheckForm.js ~ line 16 ~ StripeCheckoutForm ~ customer",
+    customer
+  );
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,17 +84,24 @@ export const StripeCheckoutForm = () => {
 
     setIsLoading(true);
 
-     {/*need to pass customer id generated when customer submit the info before to submit credit card info */}
+    {
+      /*need to pass customer id generated when customer submit the info before to submit credit card info */
+    }
     const { error, response } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
         return_url: "http://localhost:3000/confirmation",
       },
+      receipt_email: customer.email,
+      billing_details: {
+        name: customer.fullname,
+        email: customer.email,
+        phone: customer.phone,
+      },
     });
-
-    if ( response ){
-      dispatch(onAddNewPaymentIntent( response ))
+    if (response) {
+      dispatch(onAddNewPaymentIntent(response));
     }
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
@@ -107,28 +118,23 @@ export const StripeCheckoutForm = () => {
   };
 
   return (
-    <section className="gradient-custom">
-      <div id="stripe-container" className="container">
-        <div className="row justify-content-center align-items-center">
-          <form id="payment-form" onSubmit={handleSubmit}>
-            <PaymentElement
-              options={paymentElementStyle}
-              id="payment-element"
-            />
-            <button disabled={isLoading || !stripe || !elements} id="submit">
-              <span id="button-text">
-                {isLoading ? (
-                  <div className="spinner" id="spinner"></div>
-                ) : (
-                  "Pay now"
-                )}
-              </span>
-            </button>
-            {/* Show any error or success messages */}
-            {message && <div id="payment-message">{message}</div>}
-          </form>
-        </div>
+    <div id="stripe-container" className="container-stripe">
+      <div className="row justify-content-center align-items-center">
+        <form id="payment-form" onSubmit={handleSubmit}>
+          <PaymentElement options={paymentElementStyle} id="payment-element" />
+          <button disabled={isLoading || !stripe || !elements} id="submit">
+            <span id="button-text">
+              {isLoading ? (
+                <div className="spinner" id="spinner"></div>
+              ) : (
+                "Pay now"
+              )}
+            </span>
+          </button>
+          {/* Show any error or success messages */}
+          {message && <div id="payment-message">{message}</div>}
+        </form>
       </div>
-    </section>
+    </div>
   );
 };

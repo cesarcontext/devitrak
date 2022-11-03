@@ -7,27 +7,9 @@ import { Navbar } from "../../components/ui/Navbar";
 export const RequestSupportDuringTheEvent = () => {
   return (
     <>
-    <Navbar />
-      <div
-        style={{
-          width: "50%",
-          height: "115vh",
-          margin: "auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-around",
-          alignItems: "center",
-          textAlign: "start",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            marginTop: "3%",
-          }}
-        >
+      <Navbar />
+      <div className="container-more-info-how-to-use">
+        <div className="container-more-info-how-to-use-title">
           <Link to="/more_info">
             <p>
               <span>
@@ -37,33 +19,21 @@ export const RequestSupportDuringTheEvent = () => {
             </p>
           </Link>
         </div>
-        <div>
-          <div>
+        <div className="container-more-info-how-to-use-video">
+          <div className="video-how-to-use">
             <ReactPlayer
               url="https://www.youtube.com/watch?v=9kvR_5KCEh4"
               controls={true}
               muted
               light={true}
+              width="100%"
+              height="100%"
             />
           </div>
         </div>
-        <div
-          style={{
-            width: "75%",
-            // height: "35vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-          }}
-        >
-          <div
-            style={{
-              margin: "20px 0",
-            }}
-          >
-            <h5 className="card-title">
-              How to request support during the event
-            </h5>
+        <div className="container-info-cards">
+          <div className="container-info-cards-body">
+            <h5 className="card-title">How to request support</h5>
             <div className="card-body">
               <p className="card-text">
                 Some quick example text to build on the card title and make up
@@ -72,11 +42,7 @@ export const RequestSupportDuringTheEvent = () => {
               </p>
             </div>
           </div>
-          <div
-            style={{
-              margin: "20px 0",
-            }}
-          >
+          <div className="container-info-cards-body">
             <div className="card-body">
               <h5 className="card-title">Card title</h5>
               <p className="card-text">
@@ -86,11 +52,7 @@ export const RequestSupportDuringTheEvent = () => {
               </p>
             </div>
           </div>
-          <div
-            style={{
-              margin: "20px 0",
-            }}
-          >
+          <div className="container-info-cards-body">
             <div className="card-body">
               <h5 className="card-title">Card title</h5>
               <p className="card-text">
@@ -101,51 +63,24 @@ export const RequestSupportDuringTheEvent = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              AlignItems: "center",
-              margin: "5%",
-              width: "100%",
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{
-                margin: "5px 0",
-              }}
-            >
+        <div className="container-help-links">
+          <div className="container-help-link-body">
+            <div className="help-links-title">
               <span>OTHER QUESTIONS</span>
             </div>
-            <div
-              style={{
-                margin: "5px 0",
-              }}
-            >
+            <div className="help-links-body">
               <Link to="/more_info/how_to_use_the_receiver">
-                <span>HOW TO USE THE RECEIVERS</span>
+                <span>HOW TO USE THE RECEIVER</span>
               </Link>
             </div>
-            <div
-              style={{
-                margin: "10px 0",
-              }}
-            >
+            <div className="help-links-body">
               <Link to="/more_info/how_to_return_the_devices">
                 <span>HOW TO RETURN THE DEVICES</span>
               </Link>
             </div>
           </div>
         </div>
-        <div
-          style={{
-            color: "transparent",
-            height: "16vh",
-          }}
-        ></div>
+        <div className="div-bottom-space"></div>
       </div>
       <NavbarBottom />
     </>

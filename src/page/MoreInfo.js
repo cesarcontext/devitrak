@@ -1,35 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
-import {NavbarBottom} from "../components/ui/NavbarBottom"
-
+import { NavbarBottom } from "../components/ui/NavbarBottom";
+import "../style/pages/moreInfo/MoreInfo.css";
 export const MoreInfo = () => {
   return (
     <>
-    <Navbar />
-      <div
-        style={{
-          width: "50%",
-          margin: "50px auto 150px",
-          height: "calc(100% - 18vh)",
-        }}
-      >
-        <div>
+      <Navbar />
+      <div className="container-more-info">
+        <div className="more-info-title">
           <h5>More Information</h5>
-          <br />
           <span>
             In this page you will find more information and frequently asked
             questions.
           </span>
         </div>
         <div
-          style={{
-            border: "solid 1px blue",
-            borderRadius: "15px",
-            margin: "5%",
-            padding: "15px",
-          }}
-        >
+          className="container-link-info"
+          >
           <Link to="how_to_use_the_receiver">
             <div>
               <div
@@ -58,13 +46,7 @@ export const MoreInfo = () => {
           </Link>
         </div>
         <div
-          style={{
-            border: "solid 1px blue",
-            borderRadius: "15px",
-            margin: "5%",
-            padding: "15px",
-          }}
-        >
+          className="container-link-info">
           <Link to="how_to_return_the_devices">
             <div>
               <div
@@ -93,13 +75,7 @@ export const MoreInfo = () => {
           </Link>
         </div>
         <div
-          style={{
-            border: "solid 1px blue",
-            borderRadius: "15px",
-            margin: "5%",
-            padding: "15px",
-          }}
-        >
+          className="container-link-info">
           <Link to="request_support_during_event">
             <div>
               <div
@@ -128,13 +104,7 @@ export const MoreInfo = () => {
           </Link>
         </div>
         <div
-          style={{
-            border: "solid 1px blue",
-            borderRadius: "15px",
-            margin: "5%",
-            padding: "15px",
-          }}
-        >
+          className="container-link-info">
           <Link to="/">
             <div>
               <div
@@ -163,13 +133,7 @@ export const MoreInfo = () => {
           </Link>
         </div>
         <div
-          style={{
-            border: "solid 1px blue",
-            borderRadius: "15px",
-            margin: "5%",
-            padding: "15px",
-          }}
-        >
+          className="container-link-info">
           <Link to="/">
             <div>
               <div

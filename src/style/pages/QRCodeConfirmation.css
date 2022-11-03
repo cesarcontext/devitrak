@@ -1,0 +1,42 @@
+.container-qr-code-confirmation{
+  width: 50%;
+  margin: 50px auto 150px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 480px){
+  .container-qr-code-confirmation{
+    width: 90%;
+    margin: 15% auto;
+  }
+  .message-confirmation {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto;
+  }
+  .message-confirmation p {
+    margin: 5% auto;
+    text-align: justify;
+  }
+  .qr-code-div {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5% auto;
+  }
+  .links-help-qr-code-confirmation-section{
+    width: 95%;
+    padding-bottom: 9vh;
+    margin: 15% auto;
+  }
+  .help-link-route{
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .help-link-route span:hover{
+    color: blue;
+  }
+}

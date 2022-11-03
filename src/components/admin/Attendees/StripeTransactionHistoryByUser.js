@@ -46,8 +46,8 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
           </thead>
           {stripeTransactions?.map((transaction) => {
             const amount = transaction.device * 200;
-            if (transaction.user._id !== null) {
-              if (transaction.user._id === sendObjectIdUser) {
+            if (transaction?.user?._id !== null) {
+              if (transaction?.user?._id === sendObjectIdUser) {
                 return (
                   <tbody key={transaction.id}>
                     <tr>

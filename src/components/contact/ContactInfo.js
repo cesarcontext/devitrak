@@ -121,9 +121,9 @@ export const ContactInfo = () => {
       });
     }
 
+    await stripeCustomer( formValues );
+    await startStripePaymentIntent( device );
     await startSavingContactInfo(formValues);
-    startStripePaymentIntent( device )
-    stripeCustomer( formValues )
 
   };
 
@@ -254,9 +254,10 @@ export const ContactInfo = () => {
         ) : (
           <div
             className={`d-${visibleButton}`}
-            style={{ paddingBottom: "9vh", paddingTop: "1vh" }}
+            style={{ paddingTop: "1vh" }}
           >
             <button
+            className="btn-confirm-user-data"
               style={{
                 margin: "auto",
                 backgroundColor: "rgba(69, 104, 220, 1)",
@@ -274,7 +275,7 @@ export const ContactInfo = () => {
           </div>
         )}
 
-        <div style={{ gap: "20px" }} className={`d-${visible}`}>
+        <div style={{ gap: "20px" }} className={`d-${visible} stripe-container-contact-info-section`}>
           <StripeCheckoutElement clientSecret={ clientSecret } />
         </div>
       </div>

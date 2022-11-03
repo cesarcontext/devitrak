@@ -163,24 +163,25 @@ export const useContactInfoStore = () => {
             status: data.ok,
           })
         );
-      } else {
-        localStorage.setItem("uid", JSON.stringify(""));
-        localStorage.setItem("token", "");
-        setToken("");
-        setEmailUserRegistered("")
-
-        dispatch(
-          onCheckContact({
-            groupName: "",
-            name: "",
-            lastName: "",
-            email: "",
-            phoneNumber: "",
-            id: "",
-            status: "",
-          })
-        );
       }
+      //  else {
+      //   localStorage.setItem("uid", JSON.stringify(""));
+      //   localStorage.setItem("token", "");
+      //   setToken("");
+      //   setEmailUserRegistered("")
+
+      //   dispatch(
+      //     onCheckContact({
+      //       groupName: "",
+      //       name: "",
+      //       lastName: "",
+      //       email: "",
+      //       phoneNumber: "",
+      //       id: "",
+      //       status: "",
+      //     })
+      //   );
+      // }
     } catch (error) {
       console.log(error);
     }

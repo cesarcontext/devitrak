@@ -41,7 +41,7 @@ a {
 }
 
 @media only screen and (max-width: 650px) {
-  .navbar-container{
+  .navbar-container {
     width: 50%;
   }
   .navbar-fixed {
@@ -55,7 +55,7 @@ a {
     transition: all 0.2s;
     text-decoration: none;
   }
-  a{
+  a {
     width: 15%;
     margin: auto;
   }
@@ -63,5 +63,7 @@ a {
   .navbar-fixed span {
     font-size: 5px;
   }
-  
+  .btn-logout {
+    color: red;
+  }
 }

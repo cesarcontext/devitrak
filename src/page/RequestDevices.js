@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useStytchSession } from "@stytch/stytch-react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { Navbar } from "../components/ui/Navbar";
@@ -9,16 +8,13 @@ import "../style/pages/RequestDevices.css";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
-  const { users } = useContactInfoStore();
+  const status = localStorage.getItem("status");
+  console.log(
+    "🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ status",
+    status
+  );
   const { device } = useDeviceCount();
-  let navigation;
 
-  if (!session || users.status === "") {
-    navigation = "/";
-  }
-  if (session || users.status === true) {
-    navigation = "/checkout";
-  }
   return (
     <>
       <Navbar />
@@ -26,10 +22,9 @@ export const RequestDevices = () => {
         <div>
           <h4>Your current order</h4>
         </div>
-        <div
-         className="container-request-current-order">
+        <div className="container-request-current-order">
           <div
-          className="container-request-current-order-display"
+            className="container-request-current-order-display"
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -43,11 +38,7 @@ export const RequestDevices = () => {
             <p>${device * 200} deposit</p>
           </div>
         </div>
-        <div
-          style={{
-            marginTon: "2%",
-          }}
-        >
+        <div className="view-more-details-acount">
           <Link to="/my_profile">
             <span>
               VIEW MORE DETAILS IN YOUR ACCOUNT{" "}
@@ -56,47 +47,22 @@ export const RequestDevices = () => {
           </Link>
         </div>
         <div>
-          <div
-            className="request-more-devices-button"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              AlignItems: "center",
-              margin: "5%",
-              width: "100%",
-            }}
-          >
+          <div className="request-more-devices-button">
             <span>Would you like to request more?</span>
 
-            <Link to={`${navigation}`}>
-              <button
-                style={{
-                  margin: "15px auto",
-                  backgroundColor: "rgba(69, 104, 220, 1)",
-                  color: "#ffff",
-                  height: "5vh",
-                  borderRadius: "10px",
-                  outline: "transparency",
-                  border: "rgba(69, 104, 220, 1)",
-                  width: "100%",
-                }}
-              >
-                REQUEST MORE DEVICES
-              </button>
-            </Link>
+            {status === true || session ? (
+              <Link to="/checkout">
+                <button>REQUEST MORE DEVICES</button>
+              </Link>
+            ) : (
+              <Link to="/">
+                <button>REQUEST MORE DEVICES</button>
+              </Link>
+            )}
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            AlignItems: "center",
-            margin: "5%",
-          }}
-        >
+        <div className="request-device-help-links-body">
           <div
             style={{
               marginTop: "1%",
