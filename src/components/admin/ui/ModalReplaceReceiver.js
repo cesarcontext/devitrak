@@ -20,6 +20,7 @@ const customStyles = {
 let replaceReceiverFormFields = {
   serialNumber: "",
   reason: "",
+  otherComment:""
 };
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
@@ -27,14 +28,18 @@ export const ModalReplaceReceiver = ({
   replaceStatus,
   setReplaceStatus,
   paymentIntentReceiversAssigned,
+  paymentIntentDetailSelected,
   receiverObjectToReplace,
   replaceReceiverIndex,
   setLoading,
+  receiverIdSavedInPool,
+  listOfDeviceInPool
 }) => {
   const { errorMessage } = useAdminStore();
   const {
     serialNumber,
     reason,
+    otherComment,
     onInputCHange: onReplaceInputChange,
   } = useForm(replaceReceiverFormFields);
 
@@ -45,14 +50,49 @@ export const ModalReplaceReceiver = ({
     setReplaceStatus(false);
   }
 
+  console.log("result", replaceReceiverFormFields)
   useEffect(() => {
     if (errorMessage !== undefined) {
       Swal.fire("Incorrect credentials", errorMessage, "error");
     }
   }, [errorMessage]);
 
+  const saveNewReceiverInPool = async () => {};
+
   const replaceDevice = async (event) => {
     event.preventDefault();
+    let receiverInPoolId;
+    await listOfDeviceInPool?.map((item) => {
+      if (item.device === receiverObjectToReplace.serialNumbe) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    await devitrackApi.put(
+      `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
+      {
+        device: receiverObjectToReplace.serialNumber,
+        status: reason,
+        activity: "Stored",
+        comment: otherComment,
+      }
+    );
+    try {
+      await devitrackApi.put(
+        `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
+        {
+          device: receiverObjectToReplace.serialNumber,
+          status: reason,
+          activity: "Stored",
+          comment: otherComment,
+        }
+      );
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ModalReplaceReceiver.js ~ line 59 ~ changeStatusReceiverReplaced ~ error",
+        error
+      );
+    }
+
     let receiversAssignedListCopy;
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
@@ -78,6 +118,14 @@ export const ModalReplaceReceiver = ({
         }
       );
       if (response) {
+        devitrackApi.post("/receiver/receivers-pool",
+          {
+            device: replaceReceiverFormFields.serialNumber,
+            status: "Operational",
+            activity: "In-use",
+            comment: "No comment",
+            user:paymentIntentDetailSelected.user.email
+          })
         setLoading(false);
         setReplaceStatus(false);
       }
@@ -125,34 +173,49 @@ export const ModalReplaceReceiver = ({
                 value={reason}
                 onChange={onReplaceInputChange}
               >
-                <option>Reason of return</option>
-                <option>
-                  <p>Operational</p>
+                <option defaultValue>
                 </option>
-                <option>
-                  <p>Missing</p>
+                <option value="Missing">
+                  Missing
                 </option>
-                <option>
-                  <p>Network</p>
+                <option value="Network">
+                  Network
                 </option>
-                <option>
-                  <p>Hardware</p>
+                <option value="Hardware">
+                  Hardware
                 </option>
-                <option>
-                  <p>Damage</p>
+                <option value="Damage">
+                  Damage
                 </option>
-                <option>
-                  <p></p>
+                <option value="Other">
+                  Other
                 </option>
               </select>
-              {/* <textarea
-                type="text"
-                className="form-control"
-                placeholder="Reason"
-              /> */}
+              {reason === "Other" ? (
+                <div>
+                  <textarea
+                    type="text"
+                    className="form-control"
+                    placeholder="Add comment"
+                    value={otherComment}
+                    onChange={onReplaceInputChange}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
             </div>
-            <button onClick={() => setReplaceStatus(false)}>Cancel</button>
-            <button type="submit">Save</button>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <button onClick={() => setReplaceStatus(false)}>Cancel</button>
+              <button type="submit">Save</button>
+            </div>
           </form>
         </div>
       </Modal>
