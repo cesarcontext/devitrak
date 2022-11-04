@@ -28,7 +28,7 @@ export const ReturnDeviceAlert = () => {
   }, [paymentToCheck]);
 
   useEffect(() => {
-    if (paymentIntentReceiversAssigned.length === 0) {
+    if (paymentIntentReceiversAssigned !== []) {
       setLoading(true);
     }
   }, [paymentIntentReceiversAssigned]);
