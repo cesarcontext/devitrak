@@ -21,6 +21,12 @@ export const ReceiversDetailsAssignation = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
+  const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
+  const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
+  console.log(
+    "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 25 ~ ReceiversDetailsAssignation ~ listOfDeviceInPool",
+    listOfDeviceInPool
+  );
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -41,6 +47,16 @@ export const ReceiversDetailsAssignation = () => {
       controller.abort();
     };
   }, [paymentIntentDetailSelected.paymentIntent, loading, fetchedData]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    devitrackApi
+      .get("/receiver/receiver-pool-list")
+      .then((data) => setListOfDeviceInPool(data.data.receiversInventory));
+    return () => {
+      controller.abort();
+    };
+  }, [paymentIntentDetailSelected.paymentIntent, loading]);
 
   const addReceiver = async () => {
     const replacementList = [...receiversAssigned, receiverObject];
@@ -77,6 +93,8 @@ export const ReceiversDetailsAssignation = () => {
             device: item.serialNumber,
             status: "Operational",
             activity: "In-use",
+            comment: "No comment",
+            user: paymentIntentDetailSelected.user.email,
           });
         });
       }
@@ -117,6 +135,13 @@ export const ReceiversDetailsAssignation = () => {
     }
   };
   const handleReturnDevice = async (receiver, index) => {
+    let receiverInPoolId;
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    console.log("receiver in pool", receiverInPoolId);
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
     });
@@ -137,20 +162,29 @@ export const ReceiversDetailsAssignation = () => {
         }
       );
       if (response) {
-        // //*located receiverPoolId to pass it
-        // devitrackApi.put(`/receiver/receivers-pool-update/${receiverPoolId}`, {
-        //   device: objectToReturn.serialNumber,
-        //   status: "Operational",
-        //   activity: "Stored",
-        // });
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "Stored",
+            comment: "No comment",
+          }
+        );
         setLoading(true);
-            alert("Receiver returned");
-}
+        alert("Receiver returned");
+      }
     } catch (error) {
       alert("Something went wrong, pelase try it later");
     }
   };
   const handleAssignDevice = async (receiver, index) => {
+    let receiverInPoolId;
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        return (receiverInPoolId = item.id);
+      }
+    });
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
     });
@@ -171,15 +205,18 @@ export const ReceiversDetailsAssignation = () => {
         }
       );
       if (response) {
-        // //*located receiverPoolId to pass it
-        // devitrackApi.put(`/receiver/receivers-pool-update/${receiverPoolId}`, {
-        //   device: objectToReturn.serialNumber,
-        //   status: "Operational",
-        //   activity: "In-use",
-        // });
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "In-use",
+            comment: "No comment",
+          }
+        );
         setLoading(true);
-            alert("Receiver assigned");
-}
+        alert("Receiver assigned");
+      }
     } catch (error) {
       alert("Something went wrong, please try later");
     }
@@ -206,17 +243,6 @@ export const ReceiversDetailsAssignation = () => {
         }
       );
       if (response) {
-        // replacementList?.map((item) => {
-        //   //*located receiverPoolId to pass it
-        //   devitrackApi.put(
-        //     `/receiver/receivers-pool-update/${receiverPoolId}`,
-        //     {
-        //       device: item.serialNumber,
-        //       status: "Operational",
-        //       activity: "Stored",
-        //     }
-        //   );
-        // });
         setLoading(true);
         alert("Receivers returned");
       }
@@ -226,6 +252,11 @@ export const ReceiversDetailsAssignation = () => {
   };
 
   const replaceFunctionTrigger = (receiver, index) => {
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        setReceiverIdSavedInPool(item.id);
+      }
+    });
     try {
       setReceiverObjectToReplace({
         serialNumber: receiver.serialNumber,
@@ -233,7 +264,6 @@ export const ReceiversDetailsAssignation = () => {
       });
       setReplaceReceiverIndex(index);
       setReplaceStatus(true);
-      console.log(replaceStatus);
     } catch (error) {
       console.log(
         "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 201 ~ replaceFunctionTrigger ~ error",
@@ -487,6 +517,9 @@ export const ReceiversDetailsAssignation = () => {
       ) : null}
       {receiverObjectToReplace !== null && (
         <ModalReplaceReceiver
+        paymentIntentDetailSelected={paymentIntentDetailSelected}
+          receiverIdSavedInPool={receiverIdSavedInPool}
+          listOfDeviceInPool={listOfDeviceInPool}
           setLoading={setLoading}
           receiverObjectToReplace={receiverObjectToReplace}
           replaceReceiverIndex={replaceReceiverIndex}
@@ -498,11 +531,3 @@ export const ReceiversDetailsAssignation = () => {
     </div>
   );
 };
-/**
- * replaceStatus,
-  setReplaceStatus,
-  paymentIntentReceiversAssigned,
-  receiverObjectToReplace,
-  replaceReceiverIndex,
-  setLoading,
- */
