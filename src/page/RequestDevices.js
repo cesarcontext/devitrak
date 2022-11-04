@@ -5,16 +5,19 @@ import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { Navbar } from "../components/ui/Navbar";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import "../style/pages/RequestDevices.css";
+import { useSelector } from "react-redux";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
-  const status = localStorage.getItem("status");
-  console.log(
-    "🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ status",
-    status
-  );
+  const { users } = useSelector(state => state.contactInfo)
+  console.log("🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ users", users.at(-1).id)
+  // const status = localStorage.getItem("status");
+  // console.log(
+  //   "🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ status",
+  //   status
+  // );
   const { device } = useDeviceCount();
-
+const userId =users.at(-1).id
   return (
     <>
       <Navbar />
@@ -50,7 +53,7 @@ export const RequestDevices = () => {
           <div className="request-more-devices-button">
             <span>Would you like to request more?</span>
 
-            {status === true || session ? (
+            {userId !== "" || session ? (
               <Link to="/checkout">
                 <button>REQUEST MORE DEVICES</button>
               </Link>
