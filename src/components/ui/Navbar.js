@@ -10,7 +10,7 @@ export const Navbar = () => {
   const client = useStytch();
   const navigate = useNavigate();
 
-  const { users } = useContactInfoStore()
+  const { users } = useContactInfoStore();
 
   const user = session?.authentication_factors[0].email_factor.email_address;
 
@@ -20,7 +20,7 @@ export const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     await client.session.revoke();
-    localStorage.clear()
+    localStorage.clear();
     Swal.fire({
       title: `Your session is finished`,
       confirmButtonColor: "rgb(30, 115, 190)",
@@ -54,11 +54,35 @@ export const Navbar = () => {
           <div
             style={{
               width: "30%",
+              height:"30%"
             }}
           >
-            <h3>DeviTrack</h3>
+            <svg
+              width="100"
+              height="90"
+              viewBox="0 0 29 13"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20.9298 4.539C20.8764 4.3763 20.8173 4.21439 20.7509 4.05484C20.5024 3.45986 20.1681 2.91046 19.7537 2.41372L17.17 4.92255C17.9066 6.07715 17.7592 7.61687 16.728 8.6182C15.6968 9.61953 14.1111 9.76258 12.922 9.04734L10.3382 11.5562C10.849 11.9586 11.4148 12.2832 12.0284 12.5245C12.8305 12.8404 13.678 13.0008 14.5465 13.0008C15.4151 13.0008 16.2626 12.8404 17.0647 12.5245C17.896 12.1967 18.6415 11.7165 19.2802 11.0972L25.6586 4.90369C22.3172 8.14819 20.9298 4.539 20.9298 4.539Z"
+                fill="white"
+              />
+              <path
+                d="M29 1.6584C27.5908 0.290024 25.3057 0.290024 23.8964 1.6584L20.9298 4.539C20.9298 4.539 22.3172 8.14819 25.6586 4.90369L29 1.6584Z"
+                fill="white"
+              />
+              <path
+                d="M8.07017 8.461C8.12359 8.6237 8.18268 8.78561 8.24906 8.94516C8.49756 9.54015 8.83186 10.0895 9.2463 10.5863L11.83 8.07745C11.0934 6.92285 11.2408 5.38313 12.272 4.3818C13.3032 3.38047 14.8889 3.23742 16.078 3.95266L18.6618 1.44383C18.151 1.04141 17.5852 0.716808 16.9716 0.475514C16.1687 0.160339 15.322 0 14.4535 0C13.5849 0 12.7374 0.160339 11.9353 0.4763C11.104 0.804051 10.3585 1.28428 9.71982 1.90363L3.34139 8.0971C6.68278 4.8526 8.07017 8.461 8.07017 8.461Z"
+                fill="white"
+              />
+              <path
+                d="M0 11.3416C1.40924 12.71 3.69431 12.71 5.10355 11.3416L8.07017 8.461C8.07017 8.461 6.68278 4.8526 3.34139 8.0971L0 11.3416Z"
+                fill="white"
+              />
+            </svg>
           </div>
-          <div
+          {/* <div
             style={{
               width: "30%",
             }}
@@ -75,7 +99,7 @@ export const Navbar = () => {
                 className="bi bi-list"
               ></i>
             </div>
-          </div>
+          </div> */}
           <div
             style={{
               width: "30%",
@@ -99,7 +123,7 @@ export const Navbar = () => {
           </div>
         </nav>
       ) : (
-        <nav
+<nav
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -111,59 +135,56 @@ export const Navbar = () => {
           <div
             style={{
               width: "30%",
+              height:"30%"
             }}
           >
-            <img
-              style={{
-                padding: "5px",
-                width: "80px",
-                height: "80px",
-              }}
-              src={require("../../image/logo.jpg")}
-              alt="logo"
-            />
+            <svg
+              width="100"
+              height="90"
+              viewBox="0 0 29 13"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20.9298 4.539C20.8764 4.3763 20.8173 4.21439 20.7509 4.05484C20.5024 3.45986 20.1681 2.91046 19.7537 2.41372L17.17 4.92255C17.9066 6.07715 17.7592 7.61687 16.728 8.6182C15.6968 9.61953 14.1111 9.76258 12.922 9.04734L10.3382 11.5562C10.849 11.9586 11.4148 12.2832 12.0284 12.5245C12.8305 12.8404 13.678 13.0008 14.5465 13.0008C15.4151 13.0008 16.2626 12.8404 17.0647 12.5245C17.896 12.1967 18.6415 11.7165 19.2802 11.0972L25.6586 4.90369C22.3172 8.14819 20.9298 4.539 20.9298 4.539Z"
+                fill="white"
+              />
+              <path
+                d="M29 1.6584C27.5908 0.290024 25.3057 0.290024 23.8964 1.6584L20.9298 4.539C20.9298 4.539 22.3172 8.14819 25.6586 4.90369L29 1.6584Z"
+                fill="white"
+              />
+              <path
+                d="M8.07017 8.461C8.12359 8.6237 8.18268 8.78561 8.24906 8.94516C8.49756 9.54015 8.83186 10.0895 9.2463 10.5863L11.83 8.07745C11.0934 6.92285 11.2408 5.38313 12.272 4.3818C13.3032 3.38047 14.8889 3.23742 16.078 3.95266L18.6618 1.44383C18.151 1.04141 17.5852 0.716808 16.9716 0.475514C16.1687 0.160339 15.322 0 14.4535 0C13.5849 0 12.7374 0.160339 11.9353 0.4763C11.104 0.804051 10.3585 1.28428 9.71982 1.90363L3.34139 8.0971C6.68278 4.8526 8.07017 8.461 8.07017 8.461Z"
+                fill="white"
+              />
+              <path
+                d="M0 11.3416C1.40924 12.71 3.69431 12.71 5.10355 11.3416L8.07017 8.461C8.07017 8.461 6.68278 4.8526 3.34139 8.0971L0 11.3416Z"
+                fill="white"
+              />
+            </svg>
           </div>
-          <div
+          {/* <div
             style={{
               width: "30%",
             }}
           >
-            <div
-              style={{
-                marginTop: "50px",
-              }}
-            >
-              <div
-                style={{
-                  border: "solid 1px #fff",
-                  borderRadius: "10px",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
-              >
-                <i
-                  style={{
-                    fontSize: "20px",
-                    marginRight: "-50px",
-                  }}
-                  className="bi bi-translate"
-                ></i>
-                <h4>Change Language</h4>
-              </div>
+            <div>
               <i
                 style={{
                   fontSize: "35px",
+                  // position: "absolute",
+                  backgroundColor: "rgba(30, 115, 190, 1)",
+                  borderRadius: "50%",
+                  padding: "15px",
                 }}
                 className="bi bi-list"
               ></i>
             </div>
-          </div>
+          </div> */}
           <div
             style={{
               width: "30%",
               display: "flex",
-              justifyContent: "space-around",
             }}
           >
             <div>
@@ -181,8 +202,7 @@ export const Navbar = () => {
               </div>
             </div> */}
           </div>
-        </nav>
-      )}
+        </nav>      )}
     </div>
   );
 };
