@@ -24,51 +24,75 @@ import { ReceiversDetailsAssignation } from "./components/admin/Attendees/Receiv
 import { useSelector } from "react-redux";
 import { ArticleContentCreation } from "./components/admin/Articles/ArticleContentCreation";
 import "./App.css";
+import { DeclineTerms } from "./page/DeclineTerms";
 
 function App() {
-  const { status } = useSelector( state => state.admin)
-  const adminToken = localStorage.getItem("admin-token")
+  const { status } = useSelector((state) => state.admin);
+  const { response } = useSelector((state) => state.privacyPolicyUserResponse);
+  const adminToken = localStorage.getItem("admin-token");
 
   return (
     <div className="App">
-      
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/confirmation" element={<QRCodeConfirmation />} />
-        <Route path="/request_devices" element={<RequestDevices />} />
-        <Route path="/more_info" element={<MoreInfo />}></Route>
-        <Route
-          exact
-          path="/more_info/how_to_return_the_devices"
-          element={<HowToReturnTheDevices />}
-        />
-        <Route
-          exact
-          path="/more_info/how_to_use_the_receiver"
-          element={<HowToUseTheReceiver />}
-        />
-        <Route
-          exact
-          path="/more_info/request_support_during_event"
-          element={<RequestSupportDuringTheEvent />}
-        />
-        <Route path="/event_schedule" element={<EventScheduled />} />
-        <Route path="/my_profile" element={<MyProfile />} />
-        <Route path="/stripe" element={<StripeCheckoutElement />} />
-        <Route path="/authenticate" element={<Authenticate />} />
+        {response !== false ? (
+          <>
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/confirmation" element={<QRCodeConfirmation />} />
+            <Route path="/request_devices" element={<RequestDevices />} />
+            <Route path="/more_info" element={<MoreInfo />}></Route>
+            <Route
+              exact
+              path="/more_info/how_to_return_the_devices"
+              element={<HowToReturnTheDevices />}
+            />
+            <Route
+              exact
+              path="/more_info/how_to_use_the_receiver"
+              element={<HowToUseTheReceiver />}
+            />
+            <Route
+              exact
+              path="/more_info/request_support_during_event"
+              element={<RequestSupportDuringTheEvent />}
+            />
+            <Route path="/event_schedule" element={<EventScheduled />} />
+            <Route path="/my_profile" element={<MyProfile />} />
+            <Route path="/stripe" element={<StripeCheckoutElement />} />
+            <Route path="/authenticate" element={<Authenticate />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Home />} />
+            <Route path="/declineTerms" element={<DeclineTerms />} />
+            <Route path="/checkout" element={<Navigate to="/declineTerms" />} />
+            <Route path="/confirmation" element={<Navigate to="/declineTerms" />} />
+            <Route path="/request_devices" element={<Navigate to="/declineTerms" />} />
+            <Route path="/more_info" element={<Navigate to="/declineTerms" />} />
+            <Route path="/more_info/how_to_return_the_devices" element={<Navigate to="/declineTerms" />} />
+            <Route path="/more_info/how_to_use_the_receiver" element={<Navigate to="/declineTerms" />} />
+            <Route path="/more_info/request_support_during_event" element={<Navigate to="/declineTerms" />} />
+            <Route path="/event_schedule" element={<Navigate to="/declineTerms" />} />
+            <Route path="/my_profile" element={<Navigate to="/declineTerms" />} />
+          </>
+        )}
       </Routes>
 
       <Routes>
-        { status === 'authenticated' && adminToken ? (
+        {status === "authenticated" && adminToken ? (
           <>
             <Route path="/admin" element={<Admin />}></Route>
             <Route path="/admin/device-database" element={<DeviceDatabase />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/settings" element={<Settings />} />
             <Route path="/admin/attendees" element={<Attendees />} />
-            <Route path="/admin/attendees/receiver_assignation" element={<ReceiversDetailsAssignation />} />
-            <Route path="/admin/create-article" element={<ArticleContentCreation />} />
+            <Route
+              path="/admin/attendees/receiver_assignation"
+              element={<ReceiversDetailsAssignation />}
+            />
+            <Route
+              path="/admin/create-article"
+              element={<ArticleContentCreation />}
+            />
             <Route path="/admin/profile" element={<Profile />} />
             <Route
               path="/admin/*"
