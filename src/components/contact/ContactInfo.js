@@ -7,8 +7,8 @@ import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
-import "../../style/component/contact/contactInfo.css"
-
+import "../../style/component/contact/contactInfo.css";
+import { useSelector } from "react-redux";
 
 export const ContactInfo = () => {
   const {
@@ -20,8 +20,14 @@ export const ContactInfo = () => {
     visibleButton,
     userCreatedDisabledInput,
   } = useContactInfoStore();
-  const { device } = useDeviceCount()
-  const { startStripePaymentIntent, clientSecret, stripeCustomer } = useStripeHook()
+  const { response } = useSelector((state) => state.privacyPolicyUserResponse);
+  console.log(
+    "🚀 ~ file: ContactInfo.js ~ line 24 ~ ContactInfo ~ privacyPolicyUserResponseSlice",
+    response
+  );
+  const { device } = useDeviceCount();
+  const { startStripePaymentIntent, clientSecret, stripeCustomer } =
+    useStripeHook();
 
   const initalFormValues = {
     groupName: "",
@@ -29,7 +35,12 @@ export const ContactInfo = () => {
     lastName: "",
     email: "",
     phoneNumber: "",
+    privacyPolicy: response,
   };
+  console.log(
+    "🚀 ~ file: ContactInfo.js ~ line 36 ~ ContactInfo ~ initalFormValues",
+    initalFormValues
+  );
 
   const [formValues, setFormValues] = useState(initalFormValues);
   const [status, setStatus] = useState(false);
@@ -121,10 +132,17 @@ export const ContactInfo = () => {
       });
     }
 
-    await stripeCustomer( formValues );
-    await startStripePaymentIntent( device );
-    await startSavingContactInfo(formValues);
-
+    if (device === 0) {
+      return Swal.fire({
+        title: "",
+        text: "Please select the number of receiver you need before to continue",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    await startSavingContactInfo({...formValues, privacyPolicy: true});
+    await startStripePaymentIntent(device);
+    await stripeCustomer(formValues);
   };
 
   return (
@@ -249,15 +267,12 @@ export const ContactInfo = () => {
             </div>
           </div>
         </section>
-        {formValues.phoneNumber.length  <  5 ? (
+        {formValues.phoneNumber.length < 5 ? (
           <></>
         ) : (
-          <div
-            className={`d-${visibleButton}`}
-            style={{ paddingTop: "1vh" }}
-          >
+          <div className={`d-${visibleButton}`} style={{ paddingTop: "1vh" }}>
             <button
-            className="btn-confirm-user-data"
+              className="btn-confirm-user-data"
               style={{
                 margin: "auto",
                 backgroundColor: "rgba(69, 104, 220, 1)",
@@ -275,8 +290,11 @@ export const ContactInfo = () => {
           </div>
         )}
 
-        <div style={{ gap: "20px" }} className={`d-${visible} stripe-container-contact-info-section`}>
-          <StripeCheckoutElement clientSecret={ clientSecret } />
+        <div
+          style={{ gap: "20px" }}
+          className={`d-${visible} stripe-container-contact-info-section`}
+        >
+          <StripeCheckoutElement clientSecret={clientSecret} />
         </div>
       </div>
       <NavbarBottom />
