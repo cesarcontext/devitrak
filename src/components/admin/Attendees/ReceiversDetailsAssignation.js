@@ -23,10 +23,7 @@ export const ReceiversDetailsAssignation = () => {
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
-  console.log(
-    "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 25 ~ ReceiversDetailsAssignation ~ listOfDeviceInPool",
-    listOfDeviceInPool
-  );
+  const [saveButtonDisplay, setSaveButtonDisplay] = useState(false)
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -65,9 +62,7 @@ export const ReceiversDetailsAssignation = () => {
       await setReceiverNumberAssgined("");
     }
   };
-
   let receiversAssignedListCopy;
-
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
     if (result.length === 1) {
@@ -75,7 +70,6 @@ export const ReceiversDetailsAssignation = () => {
     }
     setReceiversAssigned(result);
   };
-
   const handleDataSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
@@ -114,6 +108,7 @@ export const ReceiversDetailsAssignation = () => {
         	no-repeat
       	`,
       });
+      setSaveButtonDisplay(true)
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -498,7 +493,7 @@ export const ReceiversDetailsAssignation = () => {
           <div style={{ width: "20%", margin: "0 auto" }}>
             {receiversAssigned?.length ===
               paymentIntentDetailSelected.device && (
-              <button onClick={handleDataSubmitted}>Save</button>
+              <button disabled={saveButtonDisplay} onClick={handleDataSubmitted}>Save</button>
             )}
           </div>
         </>
