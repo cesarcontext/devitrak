@@ -25,6 +25,7 @@ export const useContactInfoStore = () => {
     lastName,
     email,
     phoneNumber,
+    privacyPolicy
   }) => {
     try {
       const { data } = await devitrackApi.post("/auth/new", {
@@ -32,6 +33,7 @@ export const useContactInfoStore = () => {
         lastName,
         email,
         phoneNumber,
+        privacyPolicy
       });
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
@@ -52,7 +54,7 @@ export const useContactInfoStore = () => {
         })
       );
     } catch (error) {
-      console.log({ error });
+      console.log(error.repsonse);
       setToken("");
       setEmailUserRegistered("");
       Swal.fire({
