@@ -26,7 +26,6 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
     };
   }, [sendObjectIdUser]);
 
-  console.log(paymentIntentPerUserId);
   return (
     <div
       style={{
@@ -58,15 +57,15 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
                       <td>
                         <button
                           onClick={async () => {
-                            await setSendPaymentIntentId(
+                            setSendPaymentIntentId(
                               transaction.paymentIntent
                             );
-                            await dispatch(
+                            dispatch(
                               onAddPaymentIntentSelected(
                                 transaction.paymentIntent
                               )
                             );
-                            await dispatch(
+                            dispatch(
                               onAddPaymentIntentDetailSelected(transaction)
                             );
                           }}
