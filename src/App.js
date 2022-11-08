@@ -34,6 +34,7 @@ function App() {
   return (
     <div className="App">
       <Routes>
+        <Route path="/" element={<Home />} />
         {response !== false ? (
           <>
             <Route path="/checkout" element={<Checkout />} />
@@ -62,17 +63,40 @@ function App() {
           </>
         ) : (
           <>
-            <Route path="/" element={<Home />} />
             <Route path="/declineTerms" element={<DeclineTerms />} />
             <Route path="/checkout" element={<Navigate to="/declineTerms" />} />
-            <Route path="/confirmation" element={<Navigate to="/declineTerms" />} />
-            <Route path="/request_devices" element={<Navigate to="/declineTerms" />} />
-            <Route path="/more_info" element={<Navigate to="/declineTerms" />} />
-            <Route path="/more_info/how_to_return_the_devices" element={<Navigate to="/declineTerms" />} />
-            <Route path="/more_info/how_to_use_the_receiver" element={<Navigate to="/declineTerms" />} />
-            <Route path="/more_info/request_support_during_event" element={<Navigate to="/declineTerms" />} />
-            <Route path="/event_schedule" element={<Navigate to="/declineTerms" />} />
-            <Route path="/my_profile" element={<Navigate to="/declineTerms" />} />
+            <Route
+              path="/confirmation"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/request_devices"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/more_info"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/more_info/how_to_return_the_devices"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/more_info/how_to_use_the_receiver"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/more_info/request_support_during_event"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/event_schedule"
+              element={<Navigate to="/declineTerms" />}
+            />
+            <Route
+              path="/my_profile"
+              element={<Navigate to="/declineTerms" />}
+            />
           </>
         )}
       </Routes>
