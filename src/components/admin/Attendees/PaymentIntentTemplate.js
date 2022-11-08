@@ -249,7 +249,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                           >
                             Cancel
                           </button>{" "}
-                          {/**handleCancelAmountSubmit*/}
                         </>
                       ) : (
                         <>
@@ -284,7 +283,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                           >
                             Cancel
                           </button>{" "}
-                          {/**handleCancelAmountSubmit*/}
                         </>
                       )}
                     </td>
