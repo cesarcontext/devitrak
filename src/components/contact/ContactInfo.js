@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
-import { useContactInfoStore } from "../../hooks/useContactInfoStore";
+import { useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { NavbarBottom } from "../ui/NavbarBottom";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import "../../style/component/contact/contactInfo.css";
-import { useSelector } from "react-redux";
 
 export const ContactInfo = () => {
   const {
@@ -21,10 +21,6 @@ export const ContactInfo = () => {
     userCreatedDisabledInput,
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
-  console.log(
-    "🚀 ~ file: ContactInfo.js ~ line 24 ~ ContactInfo ~ privacyPolicyUserResponseSlice",
-    response
-  );
   const { device } = useDeviceCount();
   const { startStripePaymentIntent, clientSecret, stripeCustomer } =
     useStripeHook();
@@ -37,11 +33,6 @@ export const ContactInfo = () => {
     phoneNumber: "",
     privacyPolicy: response,
   };
-  console.log(
-    "🚀 ~ file: ContactInfo.js ~ line 36 ~ ContactInfo ~ initalFormValues",
-    initalFormValues
-  );
-
   const [formValues, setFormValues] = useState(initalFormValues);
   const [status, setStatus] = useState(false);
 
