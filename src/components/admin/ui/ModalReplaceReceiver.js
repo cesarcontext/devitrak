@@ -20,7 +20,7 @@ const customStyles = {
 let replaceReceiverFormFields = {
   serialNumber: "",
   reason: "",
-  otherComment:""
+  otherComment: "",
 };
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
@@ -33,7 +33,7 @@ export const ModalReplaceReceiver = ({
   replaceReceiverIndex,
   setLoading,
   receiverIdSavedInPool,
-  listOfDeviceInPool
+  listOfDeviceInPool,
 }) => {
   const { errorMessage } = useAdminStore();
   const {
@@ -50,32 +50,20 @@ export const ModalReplaceReceiver = ({
     setReplaceStatus(false);
   }
 
-  console.log("result", replaceReceiverFormFields)
   useEffect(() => {
     if (errorMessage !== undefined) {
       Swal.fire("Incorrect credentials", errorMessage, "error");
     }
   }, [errorMessage]);
 
-  const saveNewReceiverInPool = async () => {};
-
-  const replaceDevice = async (event) => {
-    event.preventDefault();
+  console.log('checking',replaceReceiverFormFields)
+  const returnExistentReceiverInPool = async () => {
     let receiverInPoolId;
     await listOfDeviceInPool?.map((item) => {
       if (item.device === receiverObjectToReplace.serialNumbe) {
         return (receiverInPoolId = item.id);
       }
     });
-    await devitrackApi.put(
-      `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
-      {
-        device: receiverObjectToReplace.serialNumber,
-        status: reason,
-        activity: "Stored",
-        comment: otherComment,
-      }
-    );
     try {
       await devitrackApi.put(
         `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
@@ -91,24 +79,27 @@ export const ModalReplaceReceiver = ({
         "🚀 ~ file: ModalReplaceReceiver.js ~ line 59 ~ changeStatusReceiverReplaced ~ error",
         error
       );
+      alert(error);
     }
+  };
 
-    let receiversAssignedListCopy;
-    paymentIntentReceiversAssigned?.map((item) => {
-      return (receiversAssignedListCopy = item.device);
-    });
-    const element_deleted = 1;
-    replaceReceiverFormFields = {
-      serialNumber: serialNumber,
-      status: true,
-    };
-    const replacementList = [...receiversAssignedListCopy];
-    replacementList.splice(
-      replaceReceiverIndex,
-      element_deleted,
-      replaceReceiverFormFields
-    );
+  const returnExistentReceiverInTransaction = async () => {
     try {
+      let receiversAssignedListCopy;
+      paymentIntentReceiversAssigned?.map((item) => {
+        return (receiversAssignedListCopy = item.device);
+      });
+      const element_deleted = 1;
+      replaceReceiverFormFields = {
+        serialNumber: serialNumber,
+        status: true,
+      };
+      const replacementList = [...receiversAssignedListCopy];
+      replacementList.splice(
+        replaceReceiverIndex,
+        element_deleted,
+        replaceReceiverFormFields
+      );
       const id = paymentIntentReceiversAssigned.at(-1).id;
       const response = await devitrackApi.put(
         `/receiver/receiver-update/${id}`,
@@ -118,14 +109,13 @@ export const ModalReplaceReceiver = ({
         }
       );
       if (response) {
-        devitrackApi.post("/receiver/receivers-pool",
-          {
-            device: replaceReceiverFormFields.serialNumber,
-            status: "Operational",
-            activity: "In-use",
-            comment: "No comment",
-            user:paymentIntentDetailSelected.user.email
-          })
+        devitrackApi.post("/receiver/receivers-pool", {
+          device: replaceReceiverFormFields.serialNumber,
+          status: "Operational",
+          activity: "In-use",
+          comment: "No comment",
+          user: paymentIntentDetailSelected.user.email,
+        });
         setLoading(false);
         setReplaceStatus(false);
       }
@@ -137,6 +127,11 @@ export const ModalReplaceReceiver = ({
       );
       alert("Something went wrong, please try later");
     }
+  };
+  const replaceDevice = async (event) => {
+    event.preventDefault();
+    await returnExistentReceiverInPool();
+    await returnExistentReceiverInTransaction();
   };
 
   return (
@@ -173,23 +168,12 @@ export const ModalReplaceReceiver = ({
                 value={reason}
                 onChange={onReplaceInputChange}
               >
-                <option defaultValue>
-                </option>
-                <option value="Missing">
-                  Missing
-                </option>
-                <option value="Network">
-                  Network
-                </option>
-                <option value="Hardware">
-                  Hardware
-                </option>
-                <option value="Damage">
-                  Damage
-                </option>
-                <option value="Other">
-                  Other
-                </option>
+                <option defaultValue></option>
+                <option value="Missing">Missing</option>
+                <option value="Network">Network</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Damage">Damage</option>
+                <option value="Other">Other</option>
               </select>
               {reason === "Other" ? (
                 <div>
@@ -197,6 +181,7 @@ export const ModalReplaceReceiver = ({
                     type="text"
                     className="form-control"
                     placeholder="Add comment"
+                    name="otherComment"
                     value={otherComment}
                     onChange={onReplaceInputChange}
                   />
