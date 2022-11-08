@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { Navbar } from "../ui/Navbar";
-import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
+import {
+  onAddPaymentIntentDetailSelected,
+  onCheckReceiverPaymentIntent,
+  onAddPaymentIntentSelected
+} from "../../../store/slices/stripeSlice";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { NavLink } from "react-router-dom";
 import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
@@ -12,7 +16,7 @@ export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
   const dispatch = useDispatch();
-  const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
+  const { checkReceiversAssignedToPaymentIntent, user } = useAdminStore();
   const [receiversAssigned, setReceiversAssigned] = useState([]);
   const [fetchedData, setFetchedData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,7 +27,7 @@ export const ReceiversDetailsAssignation = () => {
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
-  const [saveButtonDisplay, setSaveButtonDisplay] = useState(false)
+  const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -43,7 +47,12 @@ export const ReceiversDetailsAssignation = () => {
     return () => {
       controller.abort();
     };
-  }, [paymentIntentDetailSelected.paymentIntent, loading, fetchedData]);
+  }, [
+    paymentIntentDetailSelected.paymentIntent,
+    loading,
+    fetchedData,
+    replaceStatus,
+  ]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -62,6 +71,13 @@ export const ReceiversDetailsAssignation = () => {
       await setReceiverNumberAssgined("");
     }
   };
+
+  const addReceiverToNoRegularUser = async () => {
+    const replacementList = [...receiversAssigned, receiverObject];
+    await setReceiversAssigned(replacementList);
+    await setReceiverNumberAssgined("");
+  };
+
   let receiversAssignedListCopy;
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
@@ -69,6 +85,65 @@ export const ReceiversDetailsAssignation = () => {
       return setReceiverNumberAssgined([]);
     }
     setReceiversAssigned(result);
+  };
+  const handleDataNoRegularUserSubmitted = async () => {
+    try {
+      const response = await devitrackApiAdmin.post("/receiver-assignation", {
+        paymentIntent: new Date() + paymentIntentDetailSelected.user.id  + user.uid,
+        device: receiversAssigned,
+        user: paymentIntentDetailSelected.user.id,
+        active: true,
+      });
+      if (response) {
+        setFetchedData(response.data);
+        // dispatch(onCheckReceiverPaymentIntent(fetchedData));
+        setLoading(!loading);
+        receiversAssigned?.map((item) => {
+          devitrackApi.post("/receiver/receivers-pool", {
+            device: item.serialNumber,
+            status: "Operational",
+            activity: "In-use",
+            comment: "No comment",
+            user: paymentIntentDetailSelected.user.email,
+          });
+        });
+      }
+      Swal.fire({
+        title: "",
+        width: 600,
+        padding: "3em",
+        text: `Receivers were assigned to payment intent successfully`,
+        icon: "success",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
+      	rgb(30, 115, 190)
+        	url("../image/logo.jpg")
+        	left top
+        	no-repeat
+      	`,
+      });
+      setSaveButtonDisplay(true);
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        title: "Upss something went wrong!!",
+        width: 600,
+        padding: "3em",
+        text: `${error.response}`,
+        icon: "error",
+        color: "#rgb(30, 115, 190)",
+        background: "#fff",
+        confirmButtonColor: "rgb(30, 115, 190)",
+        backdrop: `
+        	rgb(30, 115, 190)
+          	url("../image/logo.jpg")
+          	left top
+          	no-repeat
+        	`,
+      });
+    }
   };
   const handleDataSubmitted = async () => {
     try {
@@ -108,7 +183,7 @@ export const ReceiversDetailsAssignation = () => {
         	no-repeat
       	`,
       });
-      setSaveButtonDisplay(true)
+      setSaveButtonDisplay(true);
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -266,6 +341,12 @@ export const ReceiversDetailsAssignation = () => {
       );
     }
   };
+
+  const cleanUpPaymentIntentDetailSelect = async () => {
+    dispatch(onAddPaymentIntentDetailSelected({}));
+    dispatch(onAddPaymentIntentSelected(""))
+  };
+
   return (
     <div>
       <div>
@@ -273,7 +354,7 @@ export const ReceiversDetailsAssignation = () => {
       </div>
       <div style={{ width: "5%" }}>
         <NavLink to="/admin/attendees">
-          <button>Back</button>
+          <button onClick={cleanUpPaymentIntentDetailSelect}>Back</button>
         </NavLink>
       </div>
       <div
@@ -358,148 +439,314 @@ export const ReceiversDetailsAssignation = () => {
           </div>
         </div>
       </div>
-      {loading !== true ? (
-        <>
-          {paymentIntentReceiversAssigned?.length < 1 ? (
-            <div style={{ width: "40%", display: "flex", margin: "0 auto" }}>
-              {receiversAssigned.length !==
-              paymentIntentDetailSelected.device ? (
-                <>
-                  <input
-                    style={{ width: "100%" }}
-                    value={receiverNumberAssgined}
-                    name="receiverNumberAssgined"
-                    id="receiverNumberAssgined"
-                    type="text"
-                    onChange={(event) =>
-                      setReceiverNumberAssgined(event.target.value)
-                    }
-                  />
-                  <button style={{ width: "50%" }} onClick={addReceiver}>
-                    Add receiver
-                  </button>
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          ) : (
-            <div>
-              <input
-                name="searcTerm"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search receiver"
-              />
-            </div>
-          )}
+      <div>
+        {paymentIntentDetailSelected.user?.category !== "No-regular" ? (
           <div>
-            <div
-              style={{
-                width: "80%",
-                margin: "0 auto",
-              }}
-            >
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Serial Number</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Status</th>
-                  </tr>
-                </thead>
-                {paymentIntentReceiversAssigned?.length > 0
-                  ? paymentIntentReceiversAssigned
-                      ?.at(-1)
-                      .device?.map((receiver, index) => {
-                        return (
-                          <tbody key={index + 1}>
-                            <tr>
-                              <th scope="row">{index + 1}</th>
-                              <td>{receiver.serialNumber}</td>
-                              <td>
-                                <span>Receiver</span>
-                              </td>
-                              <td>
-                                {receiver.status !== false
-                                  ? "ACTIVATED"
-                                  : "INACTIVATED"}
-                              </td>
-                              <td>
-                                <button
-                                  onClick={() =>
-                                    replaceFunctionTrigger(receiver, index)
-                                  }
-                                >
-                                  Replace
-                                </button>
-                              </td>
-                              <td>
-                                {receiver.status !== false ? (
-                                  <button
-                                    onClick={() =>
-                                      handleReturnDevice(receiver, index)
-                                    }
-                                  >
-                                    Return
-                                  </button>
-                                ) : (
-                                  <button
-                                    onClick={() =>
-                                      handleAssignDevice(receiver, index)
-                                    }
-                                  >
-                                    Assign
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
-                          </tbody>
-                        );
-                      })
-                  : receiversAssigned?.map((item, index) => {
-                      return (
-                        <tbody key={index + item}>
-                          <tr>
-                            <th scope="row">{index + 1}</th>
-                            <td>{item.serialNumber}</td>
-                            <td>
-                              <span>Receiver</span>
-                            </td>
-                            <td>
-                              <span>
-                                {item.status === true
-                                  ? "ACTIVATED"
-                                  : "INACTIVATED"}
-                              </span>
-                            </td>
-                            <td>
-                              <button
-                                onClick={() =>
-                                  removeReceiverBeforeSavedData(index)
-                                }
-                              >
-                                Remove Receiver
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      );
-                    })}
-              </table>
-            </div>
-          </div>
-          <div style={{ width: "20%", margin: "0 auto" }}>
-            {receiversAssigned?.length ===
-              paymentIntentDetailSelected.device && (
-              <button disabled={saveButtonDisplay} onClick={handleDataSubmitted}>Save</button>
+            {loading !== true ? (
+              <>
+                {paymentIntentReceiversAssigned?.length < 1 ? (
+                  <div
+                    style={{ width: "40%", display: "flex", margin: "0 auto" }}
+                  >
+                    {receiversAssigned.length !==
+                    paymentIntentDetailSelected.device ? (
+                      <>
+                        <input
+                          style={{ width: "100%" }}
+                          value={receiverNumberAssgined}
+                          name="receiverNumberAssgined"
+                          id="receiverNumberAssgined"
+                          type="text"
+                          onChange={(event) =>
+                            setReceiverNumberAssgined(event.target.value)
+                          }
+                        />
+                        <button style={{ width: "50%" }} onClick={addReceiver}>
+                          Add receiver
+                        </button>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <input
+                      name="searcTerm"
+                      value={searchTerm}
+                      onChange={(event) => setSearchTerm(event.target.value)}
+                      placeholder="Search receiver"
+                    />
+                  </div>
+                )}
+                <div>
+                  <div
+                    style={{
+                      width: "80%",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Serial Number</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      {paymentIntentReceiversAssigned?.length > 0
+                        ? paymentIntentReceiversAssigned
+                            ?.at(-1)
+                            .device?.map((receiver, index) => {
+                              return (
+                                <tbody key={index + 1}>
+                                  <tr>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{receiver.serialNumber}</td>
+                                    <td>
+                                      <span>Receiver</span>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false
+                                        ? "ACTIVATED"
+                                        : "INACTIVATED"}
+                                    </td>
+                                    <td>
+                                      <button
+                                        onClick={() =>
+                                          replaceFunctionTrigger(
+                                            receiver,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Replace
+                                      </button>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false ? (
+                                        <button
+                                          onClick={() =>
+                                            handleReturnDevice(receiver, index)
+                                          }
+                                        >
+                                          Return
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() =>
+                                            handleAssignDevice(receiver, index)
+                                          }
+                                        >
+                                          Assign
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              );
+                            })
+                        : receiversAssigned?.map((item, index) => {
+                            return (
+                              <tbody key={index + item}>
+                                <tr>
+                                  <th scope="row">{index + 1}</th>
+                                  <td>{item.serialNumber}</td>
+                                  <td>
+                                    <span>Receiver</span>
+                                  </td>
+                                  <td>
+                                    <span>
+                                      {item.status === true
+                                        ? "ACTIVATED"
+                                        : "INACTIVATED"}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      onClick={() =>
+                                        removeReceiverBeforeSavedData(index)
+                                      }
+                                    >
+                                      Remove Receiver
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            );
+                          })}
+                    </table>
+                  </div>
+                </div>
+                <div style={{ width: "20%", margin: "0 auto" }}>
+                  {receiversAssigned?.length ===
+                    paymentIntentDetailSelected.device && (
+                    <button
+                      disabled={saveButtonDisplay}
+                      onClick={handleDataSubmitted}
+                    >
+                      Save
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <h6>Loading...</h6>
             )}
           </div>
-        </>
-      ) : (
-        <h6>Loading...</h6>
-      )}
+        ) : (
+          //!Redefine function to display saved data from user categor No-regular
+          <div>
+            {loading !== true ? (
+              <>
+                {paymentIntentReceiversAssigned?.length < 1 ? (
+                  <div
+                    style={{ width: "40%", display: "flex", margin: "0 auto" }}
+                  >
+                    <input
+                      style={{ width: "100%" }}
+                      value={receiverNumberAssgined}
+                      name="receiverNumberAssgined"
+                      id="receiverNumberAssgined"
+                      type="text"
+                      onChange={(event) =>
+                        setReceiverNumberAssgined(event.target.value)
+                      }
+                    />
+                    <button
+                      style={{ width: "50%" }}
+                      onClick={addReceiverToNoRegularUser}
+                    >
+                      Add receiver
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <input
+                      name="searcTerm"
+                      value={searchTerm}
+                      onChange={(event) => setSearchTerm(event.target.value)}
+                      placeholder="Search receiver"
+                    />
+                  </div>
+                )}
+                <div>
+                  <div
+                    style={{
+                      width: "80%",
+                      margin: "0 auto",
+                    }}
+                  >
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Serial Number</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      {paymentIntentReceiversAssigned?.length > 0
+                        ? paymentIntentReceiversAssigned
+                            ?.at(-1)
+                            .device?.map((receiver, index) => {
+                              return (
+                                <tbody key={index + 1}>
+                                  <tr>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{receiver.serialNumber}</td>
+                                    <td>
+                                      <span>Receiver</span>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false
+                                        ? "ACTIVATED"
+                                        : "INACTIVATED"}
+                                    </td>
+                                    <td>
+                                      <button
+                                        onClick={() =>
+                                          replaceFunctionTrigger(
+                                            receiver,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Replace
+                                      </button>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false ? (
+                                        <button
+                                          onClick={() =>
+                                            handleReturnDevice(receiver, index)
+                                          }
+                                        >
+                                          Return
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() =>
+                                            handleAssignDevice(receiver, index)
+                                          }
+                                        >
+                                          Assign
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              );
+                            })
+                        : receiversAssigned?.map((item, index) => {
+                            return (
+                              <tbody key={index + item}>
+                                <tr>
+                                  <th scope="row">{index + 1}</th>
+                                  <td>{item.serialNumber}</td>
+                                  <td>
+                                    <span>Receiver</span>
+                                  </td>
+                                  <td>
+                                    <span>
+                                      {item.status === true
+                                        ? "ACTIVATED"
+                                        : "INACTIVATED"}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      onClick={() =>
+                                        removeReceiverBeforeSavedData(index)
+                                      }
+                                    >
+                                      Remove Receiver
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            );
+                          })}
+                    </table>
+                  </div>
+                </div>
+                <div style={{ width: "20%", margin: "0 auto" }}>
+                  <button
+                    disabled={saveButtonDisplay}
+                    onClick={handleDataNoRegularUserSubmitted}
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            ) : (
+              <h6>Loading...</h6>
+            )}
+          </div>
+        )}
+      </div>
+
       {paymentIntentReceiversAssigned?.length > 0 ? (
         paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
           <button
@@ -512,7 +759,7 @@ export const ReceiversDetailsAssignation = () => {
       ) : null}
       {receiverObjectToReplace !== null && (
         <ModalReplaceReceiver
-        paymentIntentDetailSelected={paymentIntentDetailSelected}
+          paymentIntentDetailSelected={paymentIntentDetailSelected}
           receiverIdSavedInPool={receiverIdSavedInPool}
           listOfDeviceInPool={listOfDeviceInPool}
           setLoading={setLoading}
