@@ -1,12 +1,13 @@
 import React from "react"; //, { useState, useCallback }
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom"; //, Navigate
 import { useStytchSession, useStytch } from "@stytch/stytch-react";
 import Swal from "sweetalert2";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
-
-import "../../style/component/ui/NavbarBottom.css";
-import { useDispatch } from "react-redux";
 import { onAddNewContact } from "../../store/slices/contactInfoSlice";
+import { reset } from '../../store/slices/deviceSlice'
+import { onUserPrivacyPolicyResponse } from '../../store/slices/privacyPolicyUserResponseSlice'
+import "../../style/component/ui/NavbarBottom.css";
 
 export const NavbarBottom = () => {
   const session = useStytchSession();
@@ -38,6 +39,8 @@ export const NavbarBottom = () => {
         status: "",
       })
     );
+    dispatch(onUserPrivacyPolicyResponse(false))
+    dispatch( reset())
   };
   return (
     <div className="navbar-container">
