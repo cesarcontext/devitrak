@@ -83,13 +83,13 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             {searchTerm.length < 2
               ? currentUsersRendered?.map((user) => {
                   return (
-                    <tbody key={user._id}>
+                    <tbody key={user.id}>
                       <tr>
                         <td>{user.name}</td>
                         <td>{user.role}</td>
                         <td>{user.email}</td>
                         <td>
-                          <button onClick={() => setSendObjectIdUser(user._id)}>
+                          <button onClick={() => setSendObjectIdUser(user.id)}>
                             Details <i className="bi bi-caret-right" />{" "}
                           </button>
                         </td>
@@ -103,14 +103,14 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                   )
                   ?.map((user) => {
                     return (
-                      <tbody key={user._id}>
+                      <tbody key={user.id}>
                         <tr>
                           <td>{user.name}</td>
                           <td>{user.role}</td>
                           <td>{user.email}</td>
                           <td>
                             <button
-                              onClick={() => setSendObjectIdUser(user._id)}
+                              onClick={() => setSendObjectIdUser(user.id)}
                             >
                               Details <i className="bi bi-caret-right" />{" "}
                             </button>
@@ -168,9 +168,9 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             }}
           >
             {adminUser?.map((user) => {
-              if (user._id === sendObjectIdUser) {
+              if (user.id === sendObjectIdUser) {
                 return (
-                  <div key={user._id} className="container-admin-user-details">
+                  <div key={user.id} className="container-admin-user-details">
                     <div className="container-admin-user-details-card">
                       <div>
                         {" "}
