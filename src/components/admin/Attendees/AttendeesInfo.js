@@ -6,14 +6,19 @@ import { ModalCreateUser } from "../ui/ModalCreateUser";
 import { Pagination } from "../ui/Pagination";
 import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 import { onAddPaymentIntentDetailSelected } from "../../../store/slices/stripeSlice";
+import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
 
 export const AttendeesInfo = ({ searchTerm }) => {
   const [users, setUsers] = useState([]);
+  const [userDetail, setUserDetail] = useState(null);
+  const [
+    createTransactionForNoRegularUser,
+    setCreateTransactionForNoRegularUser,
+  ] = useState(false);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [usersRenderedPerPage] = useState(4);
-  const dispatch = useDispatch()
 
   useEffect(() => {
     devitrackApi
@@ -65,7 +70,6 @@ export const AttendeesInfo = ({ searchTerm }) => {
             </thead>
             {searchTerm.length < 2
               ? currentUsersRendered?.map((user, item) => {
-                  // currentUsersRendered;
                   return (
                     <tbody key={user.id}>
                       <tr>
@@ -73,7 +77,12 @@ export const AttendeesInfo = ({ searchTerm }) => {
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
-                          <button onClick={() => setSendObjectIdUser(user.id)}>
+                          <button
+                            onClick={() => {
+                              setSendObjectIdUser(user.id);
+                              setUserDetail(user.category);
+                            }}
+                          >
                             Details <i className="bi bi-caret-right" />{" "}
                           </button>
                         </td>
@@ -93,7 +102,10 @@ export const AttendeesInfo = ({ searchTerm }) => {
                           <td>{user.email}</td>
                           <td>
                             <button
-                              onClick={() => setSendObjectIdUser(user.id)}
+                              onClick={() => {
+                                setSendObjectIdUser(user.id);
+                                setUserDetail(user.category);
+                              }}
                             >
                               Details <i className="bi bi-caret-right" />{" "}
                             </button>
@@ -154,82 +166,70 @@ export const AttendeesInfo = ({ searchTerm }) => {
           {" "}
           <div
             style={{
-              // width: "100%",
-              padding: "5px",
+              width: "100%",
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
               alignItems: "center",
-              textAlign: "left",
             }}
           >
-            {users?.map((user) => {
-              if (user.id === sendObjectIdUser) {
-                return (
-                  <div key={user.id}>
-                    <div>
-                      <strong>Fullname:</strong> {user.name} {user.lastName}
+            <div>
+              {users?.map((user) => {
+                if (user.id === sendObjectIdUser) {
+                  return (
+                    <div key={user.id}>
+                      <div>
+                        <strong>Fullname:</strong> {user.name} {user.lastName}
+                      </div>
+                      <div>
+                        <strong>Email: </strong>
+                        {user.email}
+                      </div>
+                      <div>
+                        <strong>Phone: </strong>
+                        {user.phoneNumber}
+                      </div>
+                      <div>
+                        <strong>Category: </strong>
+                        {user.category}
+                      </div>
                     </div>
-                    <div>
-                      <strong>Email: </strong>
-                      {user.email}
-                    </div>
-                    <div>
-                      <strong>Phone: </strong>
-                      {user.phoneNumber}
-                    </div>
-                  </div>
-                );
-              }
-            })}
+                  );
+                }
+              })}
+            </div>
+            <div>
+              {users?.map((user) => {
+                if (user.id === sendObjectIdUser) {
+                  if (user.category === "No-regular") {
+                    return (
+                      <button
+                        onClick={() => {
+                          setCreateTransactionForNoRegularUser(true);
+                        }}
+                      >
+                        Create Transaction
+                      </button>
+                    );
+                  }
+                }
+              })}
+            </div>
           </div>
         </div>
         <div style={{ width: "100%" }}>
           <div>Transactions</div>
           {users?.map((user) => {
             if (user.id === sendObjectIdUser) {
-              if (user.category === "Regular") {
-                return (
-                  <div key={user.id}>
-                    <StripeTransactionHistoryByUser
-                      sendObjectIdUser={sendObjectIdUser}
-                    />
-                  </div>
-                );
-              }
-              if (user.category === "No-regular") {
-                return (
-                  <div key={user.id}>
-                    <div
-                      style={{
-                        width: "50%",
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        margin: "0 auto"
-                      }}
-                    >
-                      <div>
-                        <h6>User Category</h6>
-                        {user.category}
-                      </div>
-                      <div>
-                        <h6>Device</h6>
-                        <NavLink to="/admin/attendees/receiver_assignation">
-                          <button style={{ width: "90%", padding: "5px" }}
-                          onClick={() => 
-                            dispatch(
-                            onAddPaymentIntentDetailSelected({user})
-                          )}>
-                            Assign Device
-                          </button>
-                        </NavLink>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+              return (
+                <div key={user.id}>
+                  <StripeTransactionHistoryByUser
+                    sendObjectIdUser={sendObjectIdUser}
+                    userDetail={userDetail}
+                  />
+                </div>
+              );
             }
           })}
         </div>
@@ -237,6 +237,13 @@ export const AttendeesInfo = ({ searchTerm }) => {
       <ModalCreateUser
         createUserButton={createUserButton}
         setCreateUserButton={setCreateUserButton}
+      />
+      <ModalCreateTransactionForNoRegularUser
+        createTransactionForNoRegularUser={createTransactionForNoRegularUser}
+        setCreateTransactionForNoRegularUser={
+          setCreateTransactionForNoRegularUser
+        }
+        sendObjectIdUser={sendObjectIdUser}
       />
     </div>
   );
