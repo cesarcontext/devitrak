@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import {
   onAddPaymentIntentDetailSelected,
   onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
 
-export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
+export const StripeTransactionHistoryByUser = ({
+  sendObjectIdUser,
+  userDetail,
+}) => {
   const [stripeTransactions, setStripeTransactions] = useState();
+  console.log(
+    "🚀 ~ file: StripeTransactionHistoryByUser.js ~ line 11 ~ StripeTransactionHistoryByUser ~ stripeTransactions",
+    stripeTransactions
+  );
   const [paymentIntentId, setSendPaymentIntentId] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentIntentRenderedPerPage] = useState(4);
@@ -53,25 +61,49 @@ export const StripeTransactionHistoryByUser = ({ sendObjectIdUser }) => {
                       <th scope="row">{transaction.created}</th>
                       <td>{transaction.paymentIntent}</td>
                       <td>{transaction.device}</td>
-                      <td>${amount}</td>
+                      {userDetail !== "No-regular" ? (
+                        <td>${amount}</td>
+                      ) : (
+                        <td style={{textDecoration: "line-through"}}>${amount}</td>
+                      )}
                       <td>
-                        <button
-                          onClick={async () => {
-                            setSendPaymentIntentId(
-                              transaction.paymentIntent
-                            );
-                            dispatch(
-                              onAddPaymentIntentSelected(
-                                transaction.paymentIntent
-                              )
-                            );
-                            dispatch(
-                              onAddPaymentIntentDetailSelected(transaction)
-                            );
-                          }}
-                        >
-                          Details <i className="bi bi-caret-right" />{" "}
-                        </button>
+                        {userDetail !== "No-regular" ? (
+                          <button
+                            onClick={async () => {
+                              setSendPaymentIntentId(transaction.paymentIntent);
+                              dispatch(
+                                onAddPaymentIntentSelected(
+                                  transaction.paymentIntent
+                                )
+                              );
+                              dispatch(
+                                onAddPaymentIntentDetailSelected(transaction)
+                              );
+                            }}
+                          >
+                            Details <i className="bi bi-caret-right" />{" "}
+                          </button>
+                        ) : (
+                          <NavLink to="/admin/attendees/receiver_assignation">
+                            <button
+                              onClick={async () => {
+                                setSendPaymentIntentId(
+                                  transaction.paymentIntent
+                                );
+                                dispatch(
+                                  onAddPaymentIntentSelected(
+                                    transaction.paymentIntent
+                                  )
+                                );
+                                dispatch(
+                                  onAddPaymentIntentDetailSelected(transaction)
+                                );
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          </NavLink>
+                        )}
                       </td>
                     </tr>
                   </tbody>
