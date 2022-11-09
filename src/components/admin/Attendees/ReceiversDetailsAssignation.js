@@ -6,7 +6,7 @@ import { Navbar } from "../ui/Navbar";
 import {
   onAddPaymentIntentDetailSelected,
   onCheckReceiverPaymentIntent,
-  onAddPaymentIntentSelected
+  onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { NavLink } from "react-router-dom";
@@ -16,7 +16,7 @@ export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
   const dispatch = useDispatch();
-  const { checkReceiversAssignedToPaymentIntent, user } = useAdminStore();
+  const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
   const [receiversAssigned, setReceiversAssigned] = useState([]);
   const [fetchedData, setFetchedData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +28,10 @@ export const ReceiversDetailsAssignation = () => {
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
+  const [
+    updateListAfterAddNewReceiverForNoRegularUser,
+    setUpdateListAfterAddNewReceiverForNoRegularUser,
+  ] = useState(false);
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -52,6 +56,7 @@ export const ReceiversDetailsAssignation = () => {
     loading,
     fetchedData,
     replaceStatus,
+    updateListAfterAddNewReceiverForNoRegularUser
   ]);
 
   useEffect(() => {
@@ -62,7 +67,13 @@ export const ReceiversDetailsAssignation = () => {
     return () => {
       controller.abort();
     };
-  }, [paymentIntentDetailSelected.paymentIntent, loading]);
+  }, [
+    paymentIntentDetailSelected.paymentIntent,
+    loading,
+    fetchedData,
+    replaceStatus,
+    updateListAfterAddNewReceiverForNoRegularUser
+  ]);
 
   const addReceiver = async () => {
     const replacementList = [...receiversAssigned, receiverObject];
@@ -86,17 +97,17 @@ export const ReceiversDetailsAssignation = () => {
     }
     setReceiversAssigned(result);
   };
+
   const handleDataNoRegularUserSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
-        paymentIntent: new Date() + paymentIntentDetailSelected.user.id  + user.uid,
+        paymentIntent: paymentIntentDetailSelected.paymentIntent,
         device: receiversAssigned,
-        user: paymentIntentDetailSelected.user.id,
+        user: paymentIntentDetailSelected.user,
         active: true,
       });
       if (response) {
         setFetchedData(response.data);
-        // dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
         receiversAssigned?.map((item) => {
           devitrackApi.post("/receiver/receivers-pool", {
@@ -211,7 +222,6 @@ export const ReceiversDetailsAssignation = () => {
         return (receiverInPoolId = item.id);
       }
     });
-    console.log("receiver in pool", receiverInPoolId);
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
     });
@@ -342,9 +352,47 @@ export const ReceiversDetailsAssignation = () => {
     }
   };
 
+  const addMoreReceiverToNoRegularUser = async () => {
+    try {
+      let paymentIntentReceiversAssignedCopy = [];
+      paymentIntentReceiversAssigned?.at(-1).device?.map((receiver) => {
+        return paymentIntentReceiversAssignedCopy.push(receiver);
+      });
+
+      const listToAddToExistAssignedReceiversSaved = [
+        ...paymentIntentReceiversAssignedCopy,
+        receiverObject,
+      ];
+      const response = devitrackApi.put(
+        `/receiver/receiver-update/${paymentIntentReceiversAssigned.at(-1).id}`,
+        {
+          id: paymentIntentReceiversAssigned.at(-1).id,
+          device: listToAddToExistAssignedReceiversSaved,
+        }
+      );
+      if (response) {
+        devitrackApi.post("/receiver/receivers-pool", {
+          device:receiverObject.serialNumber,
+          status: "Operational",
+          activity: "In-use",
+          comment: "No comment",
+          user: paymentIntentDetailSelected.user.email,
+        });
+        setLoading(true);
+        setUpdateListAfterAddNewReceiverForNoRegularUser(!updateListAfterAddNewReceiverForNoRegularUser)
+        alert("Receiver assigned");
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 352 ~ addMoreReceiverToNoRegularUser ~ error",
+        error
+      );
+    }
+  };
+
   const cleanUpPaymentIntentDetailSelect = async () => {
     dispatch(onAddPaymentIntentDetailSelected({}));
-    dispatch(onAddPaymentIntentSelected(""))
+    dispatch(onAddPaymentIntentSelected(""));
   };
 
   return (
@@ -622,13 +670,25 @@ export const ReceiversDetailsAssignation = () => {
                     </button>
                   </div>
                 ) : (
-                  <div>
+                  <div
+                    style={{ width: "40%", display: "flex", margin: "0 auto" }}
+                  >
                     <input
-                      name="searcTerm"
-                      value={searchTerm}
-                      onChange={(event) => setSearchTerm(event.target.value)}
-                      placeholder="Search receiver"
+                      style={{ width: "100%" }}
+                      value={receiverNumberAssgined}
+                      name="receiverNumberAssgined"
+                      id="receiverNumberAssgined"
+                      type="text"
+                      onChange={(event) =>
+                        setReceiverNumberAssgined(event.target.value)
+                      }
                     />
+                    <button
+                      style={{ width: "50%" }}
+                      onClick={addMoreReceiverToNoRegularUser}
+                    >
+                      Add more receiver
+                    </button>
                   </div>
                 )}
                 <div>
@@ -731,6 +791,8 @@ export const ReceiversDetailsAssignation = () => {
                     </table>
                   </div>
                 </div>
+                {/*
+                 */}
                 <div style={{ width: "20%", margin: "0 auto" }}>
                   <button
                     disabled={saveButtonDisplay}
