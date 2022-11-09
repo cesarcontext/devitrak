@@ -125,11 +125,6 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         category: "No-regular",
         privacyPolicy,
       });
-      await saveStripeTransaction({
-        payment_intent: new Date().getHours(),
-        clientSecret: new Date().getHours() + user.uid,
-        device: deviceNoRegularUser,
-      });
       alert("New user created succesfully");
       if (data) closeModal();
     } catch (error) {
@@ -200,26 +195,6 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
               />
             </div>
             <div className="form-group mb-2"></div>
-            {/* <div className="d-grid gap-2">
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <h5>Device #: </h5>
-                <input
-                  type="number"
-                  name="deviceNoRegularUser"
-                  value={deviceNoRegularUser}
-                  onChange={(event) =>
-                    setDeviceNoRegularUser(event.target.value)
-                  }
-                />
-              </div>
-            </div> */}
             <div
               style={{
                 display: "flex",
