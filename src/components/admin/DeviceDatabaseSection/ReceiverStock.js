@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 import { devitrackApi } from "../../../apis/devitrackApi";
+import { UserTable } from "../../../helper/UserTable";
 import { Pagination } from "../ui/Pagination";
 
 export const ReceiverStock = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
+  console.log(
+    "🚀 ~ file: ReceiverStock.js ~ line 9 ~ ReceiverStock ~ listOfReceiver",
+    listOfReceiver
+  );
   const [loading, setLoading] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
   const [receiverId, setReceiverId] = useState(null);
+  const [receiverDetail, setReceiverDetail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [receiverRenderedPerPage] = useState(4);
   const indexOfLastReceiverRendered = currentPage * receiverRenderedPerPage;
@@ -24,10 +32,6 @@ export const ReceiverStock = () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
     if (response) {
       setListOfReceiver(response.data.receiversInventory);
-      console.log(
-        "🚀 ~ file: ReceiverStock.js ~ line 10 ~ callApi ~ listOfReceiver",
-        listOfReceiver
-      );
       setLoading(true);
     }
   };
@@ -35,10 +39,36 @@ export const ReceiverStock = () => {
   useEffect(() => {
     const controller = new AbortController();
     callApi();
+    getReceiverData();
     return () => {
       controller.abort();
     };
   }, [listOfReceiver.length, loading]);
+
+  const getReceiverData = async () => {
+    setLoadingDownload(true);
+    try {
+      const response = await devitrackApi.get("/receiver/receiver-pool-list");
+      if (response) {
+        setListOfReceiver(response.data.receiversInventory);
+        setLoadingDownload(false);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      setLoading(false);
+    }
+  };
+
+  const headers = [
+    { label: "#", key: "index" },
+    { label: "Device", key: "device" },
+    { label: "status", key: "status" },
+    { label: "Activity", key: "activity" },
+    { label: "Comment", key: "comment" },
+    { label: "User", key: "user" },
+  ];
+
+  const fileName = "receiver-inventory";
 
   return (
     <div
@@ -73,10 +103,6 @@ export const ReceiverStock = () => {
             </thead>
             {loading !== false
               ? currentReceiversRendered?.map((receiver, index) => {
-                  console.log(
-                    "🚀 ~ file: ReceiverStock.js ~ line 56 ~ ?listOfReceiver?.map ~ receiver",
-                    receiver
-                  );
                   return (
                     <tbody>
                       <tr key={receiver.id}>
@@ -84,7 +110,12 @@ export const ReceiverStock = () => {
                         <td>{receiver.device}</td>
                         <td>{receiver.activity}</td>
                         <td>
-                          <button onClick={() => setReceiverId(receiver.id)}>
+                          <button
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
                             Detail
                           </button>
                         </td>
@@ -94,15 +125,45 @@ export const ReceiverStock = () => {
                 })
               : ""}
           </table>
-          <div>
-          <Pagination
-            childrenRenderedPerPage={receiverRenderedPerPage}
-            totalChildren={listOfReceiver.length}
-            paginate={paginate}
-          />
-        </div>
+          <div
+            style={{
+              width: "100%",
+              padding: "25px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              textAlign: "left",
+            }}
+          >
+            <div>
+              <Pagination
+                childrenRenderedPerPage={receiverRenderedPerPage}
+                totalChildren={listOfReceiver.length}
+                paginate={paginate}
+              />
+            </div>
+            <div>
+              <button
+                variant="contained"
+                color="primary"
+                className="export-btn"
+                onClick={() => setLoadingDownload(false)}
+              >
+                <CSVLink
+                  headers={headers}
+                  data={listOfReceiver}
+                  filename={fileName}
+                  style={{ textDecoration: "none", color: "#fff" }}
+                 
+                >
+                  {loadingDownload ? "Loading csv..." : "Export Data"}
+                </CSVLink>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
       <div
         style={{
           width: "35%",
@@ -144,7 +205,8 @@ export const ReceiverStock = () => {
                 return (
                   <div key={receiver.id}>
                     <div>
-                      <strong>Serial #: </strong> {receiver.device}
+                      <strong>Device: </strong>
+                      {receiver.device}
                     </div>
                     <div>
                       <strong>Activity: </strong>
@@ -158,16 +220,40 @@ export const ReceiverStock = () => {
                       <strong>Comment: </strong>
                       {receiver.comment}
                     </div>
-                    <div>
-                      <strong>User: </strong>
-                      {receiver.user}
-                    </div>
                   </div>
                 );
               }
             })}
           </div>
         </div>
+        <div>
+          <div>
+            <label>Receiver Users History</label>
+          </div>
+          <div>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">User's email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listOfReceiver?.map((receiver, index) => {
+                  if (receiver.device === receiverDetail) {
+                    return (
+                      <tr>
+                        <td>{receiver.user}</td>
+                      </tr>
+                    );
+                  }
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div className="d-none">
+      <UserTable headers={headers} listOfReceiver={listOfReceiver} />
       </div>
     </div>
   );
