@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { ModalCreateUser } from "../ui/ModalCreateUser";
 import { Pagination } from "../ui/Pagination";
 import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
-import { onAddPaymentIntentDetailSelected } from "../../../store/slices/stripeSlice";
 import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
+import { useAdminStore } from "../../../hooks/useAdminStore";
 
 export const AttendeesInfo = ({ searchTerm }) => {
+  const { user } = useAdminStore();
   const [users, setUsers] = useState([]);
   const [userDetail, setUserDetail] = useState(null);
   const [
@@ -130,11 +129,13 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 paginate={paginate}
               />
             </div>
-            <div>
-              <button onClick={() => setCreateUserButton(true)}>
-                Create user
-              </button>
-            </div>
+            {user.role === "Administrator" ? (
+              <div>
+                <button onClick={() => setCreateUserButton(true)}>
+                  Create user
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
@@ -200,7 +201,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
               })}
             </div>
             <div>
-              {users?.map((user) => {
+              {user.role === "Administrator" ? users?.map((user) => {
                 if (user.id === sendObjectIdUser) {
                   if (user.category === "No-regular") {
                     return (
@@ -214,7 +215,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                     );
                   }
                 }
-              })}
+              }): null}
             </div>
           </div>
         </div>
