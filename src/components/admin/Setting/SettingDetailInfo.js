@@ -17,7 +17,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
   const [permissionStatus, setPermissionStatus] = useState(false);
   const [permissionUpdated, setPermissionUpdated] = useState("");
   const [reloadListAfterChange, setReloadListAfterChange] = useState(false);
-  const [modalState, setModalState] = useState(false)
+  const [modalState, setModalState] = useState(false);
 
   const adminUserRole = user.role;
 
@@ -27,7 +27,6 @@ export const SettingDetailInfo = ({ searchTerm }) => {
       .then((response) => response.data)
       .then((data) => setAdminUser(data.adminUsers));
   }, [reloadListAfterChange, adminUser]);
-  
 
   const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
   const indexOfFirstUsersRendered =
@@ -120,17 +119,30 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                     );
                   })}
           </table>
-          <div className="container-section-pagination-button">
+          <div
+            className="container-section-pagination-button"
+            style={{
+              width: "100%",
+              padding: "25px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              textAlign: "left",
+            }}
+          >
             <Pagination
               childrenRenderedPerPage={usersRenderedPerPage}
               totalChildren={adminUser.length}
               paginate={paginate}
             />
             <div>
-            {user.role === "Administrator" ? <button onClick={() => setModalState(true)}>Create new user</button> : null}
+              {user.role === "Administrator" ? (
+                <button onClick={() => setModalState(true)}>
+                  Create new user
+                </button>
+              ) : null}
+            </div>
           </div>
-          </div>
-          
         </div>
       </div>
       <div
@@ -293,8 +305,11 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             </button>
           </div>
         ) : null}
-      </div>    
-      <ModalAdminNewUser modalState={ modalState } setModalState={ setModalState }/>
+      </div>
+      <ModalAdminNewUser
+        modalState={modalState}
+        setModalState={setModalState}
+      />
     </div>
   );
 };
