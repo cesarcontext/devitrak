@@ -24,7 +24,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
       .get("/auth/users")
       .then((response) => response.data)
       .then((data) => setUsers(data.users));
-  }, [createUserButton]);
+  }, [createUserButton,createTransactionForNoRegularUser]);
 
   const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
   const indexOfFirstUsersRendered =
@@ -203,7 +203,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
             <div>
               {user.role === "Administrator" ? users?.map((user) => {
                 if (user.id === sendObjectIdUser) {
-                  if (user.category === "No-regular") {
+                  // if (user.category === "No-regular") {
                     return (
                       <button
                         onClick={() => {
@@ -213,7 +213,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                         Create Transaction
                       </button>
                     );
-                  }
+                  // }
                 }
               }): null}
             </div>
@@ -228,6 +228,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
                   <StripeTransactionHistoryByUser
                     sendObjectIdUser={sendObjectIdUser}
                     userDetail={userDetail}
+                    createTransactionForNoRegularUser={createTransactionForNoRegularUser}
+                    
                   />
                 </div>
               );
