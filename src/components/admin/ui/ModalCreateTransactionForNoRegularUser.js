@@ -46,7 +46,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
         "/stripe/stripe-transaction-no-regular-user",
         {
           paymentIntent:Math.floor(Math.random() * max)+sendObjectIdUser+receiversSelection,
-          clientSecret: receiversSelection+sendObjectIdUser,
+          clientSecret: receiversSelection+sendObjectIdUser+Math.floor(Math.random() * max),
           device: receiversSelection,
           user:sendObjectIdUser 
         }
