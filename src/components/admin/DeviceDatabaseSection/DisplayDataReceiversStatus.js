@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { PieChart, Pie, Cell, LabelList, Label } from "recharts";
+import { PieChart, Pie, Cell, LabelList } from "recharts";
 import { devitrackApi } from "../../../apis/devitrackApi";
 
 const colors = ["#214469", "#4000FF", "#7B2836", "#000000", "#080144"];
 
 export const DisplayDataReceiversStatus = () => {
-  const { paymentIntentDetailSelected } =
-  useSelector((state) => state.stripe);
+  const { paymentIntentDetailSelected } = useSelector((state) => state.stripe);
 
   const [dataCalled, setDataCalled] = useState(null);
   const sortedData = {};
@@ -94,32 +93,36 @@ export const DisplayDataReceiversStatus = () => {
     }
   }
   return (
-
     <div
-    style={{
-      width: "32%",
-      display: "flex",
-      flexWrap: "wrap",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <label>Receivers Stock</label>
-    <PieChart width={630} height={350}>
-      <Pie
-        data={aux}
-        cx="50%"
-        cy="50%"
-        outerRadius={130}
-        label
-        animationEasing="ease-in-out"
-      >
-        <LabelList dataKey="name" position="insideTop" angle="0" />
-        {aux.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={colors[index]} />
-        ))}
-      </Pie>
-    </PieChart>
-  </div>
-);
+      style={{
+        width: "32%",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <label>Receivers Status</label>
+      <PieChart width={630} height={350}>
+        <Pie
+          data={aux}
+          cx="50%"
+          cy="50%"
+          outerRadius={130}
+          label
+          animationEasing="ease-in-out"
+        >
+          <LabelList
+            dataKey="name"
+            position="insideTop"
+            angle="0"
+            stroke="#ffff"
+          />
+          {aux.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={colors[index]} />
+          ))}
+        </Pie>
+      </PieChart>
+    </div>
+  );
 };
