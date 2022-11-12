@@ -60,7 +60,6 @@ export const ReceiverStock = () => {
   };
 
   const headers = [
-    { label: "#", key: "index" },
     { label: "Device", key: "device" },
     { label: "status", key: "status" },
     { label: "Activity", key: "activity" },
