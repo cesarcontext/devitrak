@@ -159,13 +159,11 @@ export const useAdminStore = () => {
   const checkReceiversAssignedToPaymentIntent = async (
     paymentIntentToCheck
   ) => {
-    console.log(paymentIntentToCheck);
     try {
       const response = await devitrackApi.post("/receiver/receiver-assigned", {
         paymentIntent: paymentIntentToCheck,
       });
       const data = await response?.data.receiver;
-      console.log(response);
       dispatch(onCheckReceiverPaymentIntent(data));
     } catch (error) {
       console.log(error);
