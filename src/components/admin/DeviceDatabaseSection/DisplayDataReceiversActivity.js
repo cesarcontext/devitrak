@@ -75,7 +75,7 @@ export const DisplayDataReceiversActivity = () => {
           alignItems: "center",
         }}
       >
-        <label>Receivers Stock</label>
+        <label>Receivers Activity</label>
         <PieChart width={630} height={350}>
           <Pie
             data={aux}
@@ -85,7 +85,7 @@ export const DisplayDataReceiversActivity = () => {
             label
             animationEasing="ease-in-out"
           >
-            <LabelList dataKey="name" position="insideTop" angle="0" />
+            <LabelList dataKey="name" position="insideTop" angle="0" stroke="#ffff"/>
             {aux.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index]} />
             ))}
