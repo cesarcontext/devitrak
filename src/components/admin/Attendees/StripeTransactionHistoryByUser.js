@@ -10,12 +10,9 @@ import {
 export const StripeTransactionHistoryByUser = ({
   sendObjectIdUser,
   userDetail,
+  createTransactionForNoRegularUser
 }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  console.log(
-    "🚀 ~ file: StripeTransactionHistoryByUser.js ~ line 11 ~ StripeTransactionHistoryByUser ~ stripeTransactions",
-    stripeTransactions
-  );
   const [paymentIntentId, setSendPaymentIntentId] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentIntentRenderedPerPage] = useState(4);
@@ -32,7 +29,7 @@ export const StripeTransactionHistoryByUser = ({
     return () => {
       controller.abort();
     };
-  }, [sendObjectIdUser]);
+  }, [sendObjectIdUser,createTransactionForNoRegularUser]);
 
   return (
     <div
