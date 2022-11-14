@@ -3,13 +3,10 @@ import { CSVLink } from "react-csv";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { UserTable } from "../../../helper/UserTable";
 import { Pagination } from "../ui/Pagination";
+import { DeviceUsersHistory } from "./DeviceUsersHistory";
 
 export const ReceiverStock = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
-  console.log(
-    "🚀 ~ file: ReceiverStock.js ~ line 9 ~ ReceiverStock ~ listOfReceiver",
-    listOfReceiver
-  );
   const [loading, setLoading] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [receiverId, setReceiverId] = useState(null);
@@ -35,7 +32,6 @@ export const ReceiverStock = () => {
       setLoading(true);
     }
   };
-
   useEffect(() => {
     const controller = new AbortController();
     callApi();
@@ -103,8 +99,8 @@ export const ReceiverStock = () => {
             {loading !== false
               ? currentReceiversRendered?.map((receiver, index) => {
                   return (
-                    <tbody>
-                      <tr key={receiver.id}>
+                    <tbody key={receiver.id}>
+                      <tr>
                         <th scope="row">{index + 1}</th>
                         <td>{receiver.device}</td>
                         <td>{receiver.activity}</td>
@@ -153,7 +149,6 @@ export const ReceiverStock = () => {
                   data={listOfReceiver}
                   filename={fileName}
                   style={{ textDecoration: "none", color: "#fff" }}
-                 
                 >
                   {loadingDownload ? "Loading csv..." : "Export Data"}
                 </CSVLink>
@@ -225,34 +220,14 @@ export const ReceiverStock = () => {
             })}
           </div>
         </div>
-        <div>
-          <div>
-            <label>Receiver Users History</label>
-          </div>
-          <div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">User's email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {listOfReceiver?.map((receiver, index) => {
-                  if (receiver.device === receiverDetail) {
-                    return (
-                      <tr>
-                        <td>{receiver.user}</td>
-                      </tr>
-                    );
-                  }
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <DeviceUsersHistory
+          receiverId={receiverId}
+          receiverDetail={receiverDetail}
+          listOfReceiver={listOfReceiver}
+        />
       </div>
       <div className="d-none">
-      <UserTable headers={headers} listOfReceiver={listOfReceiver} />
+        <UserTable headers={headers} listOfReceiver={listOfReceiver} />
       </div>
     </div>
   );
