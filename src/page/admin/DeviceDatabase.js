@@ -20,6 +20,7 @@ export const DeviceDatabase = () => {
         alignItems:"center",
         margin:"auto"
       }}>
+        <hr />
         <DisplayDataReceiversActivity />
         <DisplayDataReceiversStatus />
       </div>
