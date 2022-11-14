@@ -10,7 +10,7 @@ import {
 export const StripeTransactionHistoryByUser = ({
   sendObjectIdUser,
   userDetail,
-  createTransactionForNoRegularUser
+  createTransactionForNoRegularUser,
 }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
   const [paymentIntentId, setSendPaymentIntentId] = useState();
@@ -29,7 +29,7 @@ export const StripeTransactionHistoryByUser = ({
     return () => {
       controller.abort();
     };
-  }, [sendObjectIdUser,createTransactionForNoRegularUser]);
+  }, [sendObjectIdUser, createTransactionForNoRegularUser]);
 
   return (
     <div
@@ -61,27 +61,12 @@ export const StripeTransactionHistoryByUser = ({
                       {userDetail !== "No-regular" ? (
                         <td>${amount}</td>
                       ) : (
-                        <td style={{textDecoration: "line-through"}}>${amount}</td>
+                        <td style={{ textDecoration: "line-through" }}>
+                          ${amount}
+                        </td>
                       )}
                       <td>
-                        {userDetail !== "No-regular" ? (
-                          <button
-                            onClick={async () => {
-                              setSendPaymentIntentId(transaction.paymentIntent);
-                              dispatch(
-                                onAddPaymentIntentSelected(
-                                  transaction.paymentIntent
-                                )
-                              );
-                              dispatch(
-                                onAddPaymentIntentDetailSelected(transaction)
-                              );
-                            }}
-                          >
-                            Details <i className="bi bi-caret-right" />{" "}
-                          </button>
-                        ) : (
-                          <NavLink to="/admin/attendees/receiver_assignation">
+                        {transaction.paymentIntent[0] === "p" ? (
                             <button
                               onClick={async () => {
                                 setSendPaymentIntentId(
@@ -99,8 +84,29 @@ export const StripeTransactionHistoryByUser = ({
                             >
                               Details <i className="bi bi-caret-right" />{" "}
                             </button>
-                          </NavLink>
-                        )}
+                          ) : (
+                            <NavLink to="/admin/attendees/receiver_assignation">
+                              <button
+                                onClick={async () => {
+                                  setSendPaymentIntentId(
+                                    transaction.paymentIntent
+                                  );
+                                  dispatch(
+                                    onAddPaymentIntentSelected(
+                                      transaction.paymentIntent
+                                    )
+                                  );
+                                  dispatch(
+                                    onAddPaymentIntentDetailSelected(
+                                      transaction
+                                    )
+                                  );
+                                }}
+                              >
+                                Details <i className="bi bi-caret-right" />{" "}
+                              </button>
+                            </NavLink>
+                          )}
                       </td>
                     </tr>
                   </tbody>
@@ -122,3 +128,69 @@ export const StripeTransactionHistoryByUser = ({
     </div>
   );
 };
+
+/**
+ * {userDetail !== "No-regular" ? (
+                          transaction.paymentIntent[0] === "p" ? (
+                            <button
+                              onClick={async () => {
+                                setSendPaymentIntentId(
+                                  transaction.paymentIntent
+                                );
+                                dispatch(
+                                  onAddPaymentIntentSelected(
+                                    transaction.paymentIntent
+                                  )
+                                );
+                                dispatch(
+                                  onAddPaymentIntentDetailSelected(transaction)
+                                );
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          ) : (
+                            <NavLink to="/admin/attendees/receiver_assignation">
+                              <button
+                                onClick={async () => {
+                                  setSendPaymentIntentId(
+                                    transaction.paymentIntent
+                                  );
+                                  dispatch(
+                                    onAddPaymentIntentSelected(
+                                      transaction.paymentIntent
+                                    )
+                                  );
+                                  dispatch(
+                                    onAddPaymentIntentDetailSelected(
+                                      transaction
+                                    )
+                                  );
+                                }}
+                              >
+                                Details <i className="bi bi-caret-right" />{" "}
+                              </button>
+                            </NavLink>
+                          )
+                        ) : (
+                          <NavLink to="/admin/attendees/receiver_assignation">
+                            <button
+                              onClick={async () => {
+                                setSendPaymentIntentId(
+                                  transaction.paymentIntent
+                                );
+                                dispatch(
+                                  onAddPaymentIntentSelected(
+                                    transaction.paymentIntent
+                                  )
+                                );
+                                dispatch(
+                                  onAddPaymentIntentDetailSelected(transaction)
+                                );
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          </NavLink>
+                        )}
+ */
