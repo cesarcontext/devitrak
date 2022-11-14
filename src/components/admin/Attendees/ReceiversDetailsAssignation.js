@@ -28,7 +28,7 @@ export const ReceiversDetailsAssignation = () => {
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
-  const [emptyArrayVerification, setEmptyArrayVerification] = useState(true);
+  // const [emptyArrayVerification, setEmptyArrayVerification] = useState(true);
   const [
     updateListAfterAddNewReceiverForNoRegularUser,
     setUpdateListAfterAddNewReceiverForNoRegularUser,
@@ -62,9 +62,9 @@ export const ReceiversDetailsAssignation = () => {
     devitrackApi
       .get("/receiver/receiver-pool-list")
       .then((data) => setListOfDeviceInPool(data.data.receiversInventory));
-    if (listOfDeviceInPool.length > 1) {
-      setEmptyArrayVerification(false);
-    }
+    // if (listOfDeviceInPool.length > 1) {
+    //   setEmptyArrayVerification(false);
+    // }
     return () => {
       controller.abort();
     };
@@ -98,24 +98,18 @@ export const ReceiversDetailsAssignation = () => {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
         paymentIntent: paymentIntentDetailSelected.paymentIntent,
         device: receiversAssigned,
-        user: paymentIntentDetailSelected.user,
+        user: paymentIntentDetailSelected.user.email,
         active: true,
       });
       if (listOfDeviceInPool.length > 1) {
         listOfDeviceInPool.map((item) => {
           for (let i = 0; i < receiversAssigned.length; i++) {
             if (item.device !== receiversAssigned[i].serialNumber) {
-              console.log(
-                "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 128 ~ listOfDeviceInPool.map ~ receiversAssigned",
-                receiversAssigned[i]
-              );
-
               devitrackApi.post("/receiver/receivers-pool", {
                 device: receiversAssigned[i].serialNumber,
                 status: "Operational",
                 activity: "In-use",
                 comment: "No comment",
-                user: paymentIntentDetailSelected.user.email,
               });
             } else {
               devitrackApi.put(`/receiver/receivers-pool-update/${item.id}`, {
@@ -123,7 +117,6 @@ export const ReceiversDetailsAssignation = () => {
                 status: "Operational",
                 activity: "In-use",
                 comment: "No comment",
-                user: paymentIntentDetailSelected.user.email,
               });
             }
           }
@@ -136,15 +129,10 @@ export const ReceiversDetailsAssignation = () => {
             status: "Operational",
             activity: "In-use",
             comment: "No comment",
-            user: paymentIntentDetailSelected.user.email,
           });
         });
       }
       if (response) {
-        console.log(
-          "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 137 ~ handleDataSubmitted ~ response",
-          response
-        );
         setFetchedData(response.data);
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
