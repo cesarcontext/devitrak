@@ -203,7 +203,6 @@ export const AttendeesInfo = ({ searchTerm }) => {
             <div>
               {user.role === "Administrator" ? users?.map((user) => {
                 if (user.id === sendObjectIdUser) {
-                  // if (user.category === "No-regular") {
                     return (
                       <button
                         onClick={() => {
@@ -213,7 +212,6 @@ export const AttendeesInfo = ({ searchTerm }) => {
                         Create Transaction
                       </button>
                     );
-                  // }
                 }
               }): null}
             </div>
