@@ -29,7 +29,7 @@ export const Settings = () => {
       <div>
         <div className="container-staff-roles">
           <div className="container-staff-roles-title">
-            <h4>Staff Roles Detilas</h4>
+            <h4>Staff Roles Details</h4>
           </div>
           <div className="staff-roles">
             <div className="staff-roles-description">
