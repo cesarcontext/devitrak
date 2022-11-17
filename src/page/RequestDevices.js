@@ -10,14 +10,7 @@ import { useSelector } from "react-redux";
 export const RequestDevices = () => {
   const session = useStytchSession();
   const { users } = useSelector(state => state.contactInfo)
-  console.log("🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ users", users.at(-1).id)
-  // const status = localStorage.getItem("status");
-  // console.log(
-  //   "🚀 ~ file: RequestDevices.js ~ line 13 ~ RequestDevices ~ status",
-  //   status
-  // );
   const { device } = useDeviceCount();
-const userId =users.at(-1).id
   return (
     <>
       <Navbar />
@@ -53,7 +46,7 @@ const userId =users.at(-1).id
           <div className="request-more-devices-button">
             <span>Would you like to request more?</span>
 
-            {userId !== "" || session ? (
+            {users.id !== "" || session ? (
               <Link to="/checkout">
                 <button>REQUEST MORE DEVICES</button>
               </Link>
