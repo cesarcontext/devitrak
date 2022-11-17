@@ -311,9 +311,11 @@ export const MyProfile = () => {
             {checkPaymentIntentArray(paymentIntent)}
           </div>
         </div>
+        {/* 
+        //*section commented while the function to render receivers with status true only 
         <div className="container-device-alert">
           <ReturnDeviceAlert />
-        </div>
+        </div> */}
         <div className="container-device-accordion-List">
           <div>
             <h3>Your devices</h3>
