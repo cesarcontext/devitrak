@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const users = [
+const users = 
   {
     id: "",
     groupName: "",
@@ -8,7 +8,7 @@ const users = [
     email: "",
     phoneNumber: "",
     status: "",
-  }];
+  };
 
   const errorMessage = undefined
 
@@ -20,18 +20,15 @@ const contactInfoSlice = createSlice({
   },
   reducers: {
     onCheckContact: (state, { payload }) => {
-      state.users.push(payload);
-      state.users.shift();
+      state.users = payload;
       state.errorMessage = undefined
     },
     onAddNewContact: (state, { payload }) => {
-      state.users.push(payload);
-      state.users.shift();
+      state.users = payload;
       state.errorMessage = undefined
     },
     onUpdateContact: (state, { payload }) => {
-      state.users.push(payload);
-      state.users.shift();
+      state.users = payload;
       state.errorMessage = undefined
     },
   },
