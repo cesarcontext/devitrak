@@ -13,7 +13,7 @@ export const NavbarBottom = () => {
   const session = useStytchSession();
   const client = useStytch();
   const { users } = useContactInfoStore();
-  const newUser = users.at(-1).email;
+  const newUser = users.email;
   const dispatch = useDispatch();
   const handleLogout = async () => {
     if (session) {
