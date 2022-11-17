@@ -50,6 +50,8 @@ export const StripeCheckoutForm = () => {
       }
     });
   }, [stripe]);
+  const myUrl = window.location.origin
+  console.log("🚀 ~ file: StripeCheckForm.js ~ line 54 ~ StripeCheckoutForm ~ myUrl", myUrl)
   const iFrameStyle = {
     base: {
       color: "#fff",
@@ -91,7 +93,7 @@ export const StripeCheckoutForm = () => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/confirmation",
+        return_url: myUrl+"/confirmation",
       },
       receipt_email: customer.email,
       billing_details: {
