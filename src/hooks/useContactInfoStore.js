@@ -25,7 +25,7 @@ export const useContactInfoStore = () => {
     lastName,
     email,
     phoneNumber,
-    privacyPolicy
+    privacyPolicy,
   }) => {
     try {
       const { data } = await devitrackApi.post("/auth/new", {
@@ -33,7 +33,7 @@ export const useContactInfoStore = () => {
         lastName,
         email,
         phoneNumber,
-        privacyPolicy
+        privacyPolicy,
       });
       localStorage.setItem("uid", data.uid);
       localStorage.setItem("token", data.token);
@@ -90,7 +90,8 @@ export const useContactInfoStore = () => {
           id: data.uid,
         })
       );
-      
+      localStorage.setItem("uid", data.uid)
+      localStorage.setItem("token", data.token)
     } catch (error) {
       console.log(error);
     }
@@ -166,24 +167,24 @@ export const useContactInfoStore = () => {
           })
         );
       }
-      //  else {
-      //   localStorage.setItem("uid", JSON.stringify(""));
-      //   localStorage.setItem("token", "");
-      //   setToken("");
-      //   setEmailUserRegistered("")
-
-      //   dispatch(
-      //     onCheckContact({
-      //       groupName: "",
-      //       name: "",
-      //       lastName: "",
-      //       email: "",
-      //       phoneNumber: "",
-      //       id: "",
-      //       status: "",
-      //     })
-      //   );
-      // }
+       else {
+        localStorage.setItem("uid", JSON.stringify(""));
+        localStorage.setItem("token", "");
+        setToken("");
+        setEmailUserRegistered("")
+        dispatch(
+          onCheckContact({
+            groupName: "",
+            name: "",
+            lastName: "",
+            email: "",
+            phoneNumber: "",
+            id: "",
+            status: "",
+            permissionNotification: ""
+          })
+        );
+      }
     } catch (error) {
       console.log(error);
     }
