@@ -49,25 +49,6 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
     }
   }, [errorMessage]);
 
-  // const validationName = useMemo(() => {
-  //   return adminUserRegistration.fullName.length > 0 ? "" : "is-invalid";
-  // }, [adminUserRegistration.fullName]);
-
-  // const validationPassword = useMemo(() => {
-  //   return adminUserRegistration.password.length > 0 ? "" : "is-invalid";
-  // }, [adminUserRegistration.password]);
-
-  // const validationEmail = useMemo(() => {
-  //   return adminUserRegistration.email.length > 3 &&
-  //     adminUserRegistration.email
-  //       .toLowerCase()
-  //       .match(
-  //         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  //       )
-  //     ? ""
-  //     : "is-invalid";
-  // }, [adminUserRegistration.email]);
-
   const onSubmitRegister = async (event) => {
     event.preventDefault();
     console.log(
