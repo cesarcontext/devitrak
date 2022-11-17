@@ -24,15 +24,7 @@ const customStyles = {
 export const UserConsentPrivacyPolicyModal = () => {
   const { errorMessage } = useAdminStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
-  console.log(
-    "🚀 ~ file: UserConsentPrivacyPolicyModal.js ~ line 27 ~ UserConsentPrivacyPolicyModal ~ response",
-    response
-  );
   const [modalState, setModalState] = useState(true);
-  console.log(
-    "🚀 ~ file: UserConsentPrivacyPolicyModal.js ~ line 28 ~ UserConsentPrivacyPolicyModal ~ modalState",
-    modalState
-  );
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
