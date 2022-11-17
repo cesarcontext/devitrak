@@ -9,6 +9,7 @@ import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import "../../style/component/contact/contactInfo.css";
+import { devitrackApi } from "../../apis/devitrackApi";
 
 export const ContactInfo = () => {
   const {
@@ -22,6 +23,7 @@ export const ContactInfo = () => {
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { device } = useDeviceCount();
+  const [permissionNotification, setPermissionNotification] = useState();
   const { startStripePaymentIntent, clientSecret, stripeCustomer } =
     useStripeHook();
 
@@ -34,7 +36,6 @@ export const ContactInfo = () => {
     privacyPolicy: response,
   };
   const [formValues, setFormValues] = useState(initalFormValues);
-  const [status, setStatus] = useState(false);
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -43,24 +44,23 @@ export const ContactInfo = () => {
     });
   };
 
-  useEffect(() => {
-    localStorage.clear();
-    formValues.name = "";
-  }, [formValues.email]);
+  const askPermission = async () => {
+    Notification.requestPermission().then(permission => alert(permission))
+     if( Notification.permission === "granted"){
+      const response = await devitrackApi.post("/web-pus/subscription", {
+        body: process.env.REACT_APP_PUBLIC_VAPID_KEY
+      })
+      console.log("🚀 ~ file: ContactInfo.js ~ line 53 ~ askPermission ~ s", response)
+     }
+  };
 
   useEffect(() => {
     startCheckingUser(formValues.email);
   }, [formValues.email]);
 
   useEffect(() => {
-    users.map((item) => {
-      if (item.status === "") {
-        return setStatus(false);
-      } else {
-        return setStatus(item.status);
-      }
-    });
-  }, [formValues.name]);
+    askPermission();
+  }, []);
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -131,7 +131,11 @@ export const ContactInfo = () => {
         confirmButtonColor: "rgb(30, 115, 190)",
       });
     }
-    await startSavingContactInfo({...formValues, privacyPolicy: true});
+    await startSavingContactInfo({
+      ...formValues,
+      privacyPolicy: true,
+      permissionNotification: permissionNotification,
+    });
     await startStripePaymentIntent(device);
     await stripeCustomer(formValues);
   };
@@ -190,8 +194,7 @@ export const ContactInfo = () => {
                           </div>
                         </div>
                       </form>
-                      {(formValues.email.length > 1 && status === true) ||
-                      (formValues.email !== null && status === true) ? (
+                      {users.status === true ? (
                         <div
                           style={{
                             padding: "40px",
