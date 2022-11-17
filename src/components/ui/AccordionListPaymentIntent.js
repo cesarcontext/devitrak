@@ -80,7 +80,7 @@ export const AccordionListPaymentIntent = () => {
             <div className="accordion-body">
               {" "}
               {stripeTransactions?.map((item) => {
-                if (item?.user?.email === users.at(-1).email) {
+                if (item?.user?.email === users.email) {
                   return (
                     <div
                       className="accordion accordion-flush"
