@@ -75,6 +75,7 @@ export const ReceiversDetailsAssignation = () => {
     replaceStatus,
     updateListAfterAddNewReceiverForNoRegularUser,
   ]);
+  console.log("setListOfDevice", listOfDeviceInPool);
 
   const addReceiver = async () => {
     const replacementList = [...receiversAssigned, receiverObject];
@@ -92,6 +93,20 @@ export const ReceiversDetailsAssignation = () => {
     }
     setReceiversAssigned(result);
   };
+  const objDeviceContainer = new Map();
+
+  const checkDeviceInPool = async () => {
+    for (let i = 0; i < listOfDeviceInPool.length; i++) {
+      if (!objDeviceContainer[listOfDeviceInPool[i].device]) {
+        objDeviceContainer.set(
+          listOfDeviceInPool[i].device,
+          listOfDeviceInPool[i].id
+        );
+      } else objDeviceContainer[listOfDeviceInPool[i].device]++;
+    }
+    return objDeviceContainer;
+  };
+  console.log("hashmap", checkDeviceInPool());
 
   const handleDataSubmitted = async () => {
     try {
@@ -101,38 +116,29 @@ export const ReceiversDetailsAssignation = () => {
         user: paymentIntentDetailSelected.user.email,
         active: true,
       });
-      if (listOfDeviceInPool.length > 1) {
-        listOfDeviceInPool.map((item) => {
-          for (let i = 0; i < receiversAssigned.length; i++) {
-            if (item.device !== receiversAssigned[i].serialNumber) {
-              devitrackApi.post("/receiver/receivers-pool", {
-                device: receiversAssigned[i].serialNumber,
+      if (response) {
+        receiversAssigned?.map((receiver) => {
+          if (objDeviceContainer.has(receiver.serialNumber)) {
+            const idToUpdateStatus = objDeviceContainer.get(
+              receiver.serialNumber
+            );
+            devitrackApi.put(
+              `/receiver/receivers-pool-update/${idToUpdateStatus}`,
+              {
                 status: "Operational",
                 activity: "In-use",
                 comment: "No comment",
-              });
-            } else {
-              devitrackApi.put(`/receiver/receivers-pool-update/${item.id}`, {
-                device: receiversAssigned[i].serialNumber,
-                status: "Operational",
-                activity: "In-use",
-                comment: "No comment",
-              });
-            }
+              }
+            );
+          } else {
+            devitrackApi.post("/receiver/receivers-pool", {
+              device: receiver.serialNumber,
+              status: "Operational",
+              activity: "In-use",
+              comment: "No comment",
+            });
           }
         });
-      } 
-      if(listOfDeviceInPool.length < 1) {
-        receiversAssigned.map(async (receiver) => {
-          await devitrackApi.post("/receiver/receivers-pool", {
-            device: receiver.serialNumber,
-            status: "Operational",
-            activity: "In-use",
-            comment: "No comment",
-          });
-        });
-      }
-      if (response) {
         setFetchedData(response.data);
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
