@@ -9,7 +9,6 @@ import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import "../../style/component/contact/contactInfo.css";
-import { devitrackApi } from "../../apis/devitrackApi";
 
 export const ContactInfo = () => {
   const {
@@ -23,7 +22,6 @@ export const ContactInfo = () => {
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { device } = useDeviceCount();
-  const [permissionNotification, setPermissionNotification] = useState();
   const { startStripePaymentIntent, clientSecret, stripeCustomer } =
     useStripeHook();
 
@@ -43,24 +41,9 @@ export const ContactInfo = () => {
       [target.name]: target.value,
     });
   };
-
-  const askPermission = async () => {
-    Notification.requestPermission().then(permission => alert(permission))
-     if( Notification.permission === "granted"){
-      const response = await devitrackApi.post("/web-pus/subscription", {
-        body: process.env.REACT_APP_PUBLIC_VAPID_KEY
-      })
-      console.log("🚀 ~ file: ContactInfo.js ~ line 53 ~ askPermission ~ s", response)
-     }
-  };
-
   useEffect(() => {
     startCheckingUser(formValues.email);
   }, [formValues.email]);
-
-  useEffect(() => {
-    askPermission();
-  }, []);
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -134,7 +117,6 @@ export const ContactInfo = () => {
     await startSavingContactInfo({
       ...formValues,
       privacyPolicy: true,
-      permissionNotification: permissionNotification,
     });
     await startStripePaymentIntent(device);
     await stripeCustomer(formValues);
