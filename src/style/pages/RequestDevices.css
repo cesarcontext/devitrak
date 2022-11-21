@@ -34,14 +34,12 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 15%;
-  padding-top: 30px;
   width: 100%;
 }
 .request-more-devices-button button {
-  margin: 15px auto;
+  margin: 0 auto;
   background-color: rgba(69, 104, 220, 1);
   color: #ffff;
-  height: 5vh;
   border-radius: 10px;
   outline: transparency;
   border: rgba(69, 104, 220, 1);
@@ -68,10 +66,13 @@
     align-items: center;
   }
   .container-request-current-order {
-    width: 100%;
+    width: 80%;
+    height: fit-content;
     margin: 8% auto;
+    margin-bottom: 1%;
     border: solid 1px #212529;
     border-radius: 15px;
+    background-color: #ffff;
   }
   .container-request-current-order-display {
     display: flex;
@@ -80,11 +81,17 @@
     padding: 15px;
   }
   .view-more-details-acount {
+    font-size: 13px;
     letter-spacing: 0;
     line-height: normal;
     min-height: 16px;
     min-width: 247px;
     text-align: center;
+  }
+
+  .view-more-details-acount span{
+    margin: 0 auto;
+    color: #0000ff;
   }
   .request-more-devices-button {
     display: flex;
@@ -92,20 +99,22 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 15%;
-    padding-top: 30px;
     width: 100%;
   }
   .request-more-devices-button button {
-    margin: 15px auto;
+    margin:0 auto;
     background-color: rgba(69, 104, 220, 1);
     color: #ffff;
-    height: 5vh;
     border-radius: 10px;
     outline: transparency;
     border: rgba(69, 104, 220, 1);
     width: 100%;
-    transform: none;
   }
+  .request-more-devices-button p {
+    font-size: 10px;
+    margin: 0 auto;
+  }
+
   .request-device-help-links-body {
     display: flex;
     flex-direction: column;
@@ -113,6 +122,12 @@
     align-items: center;
     margin-top: 20%;
     margin-bottom: 0%;
+    width: 90%;
+  }
+  .link-help-router span{
+    color: #0000ff;
+    font-weight: 400;
+    margin-bottom: 50%;
   }
 }
 
@@ -126,6 +141,7 @@
     justify-content: space-around;
     align-items: center;
   }
+
   .container-request-current-order {
     width: 100%;
     margin: 3% auto;
@@ -136,6 +152,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+  }
+  .request-device-help-links-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20%;
+    margin-bottom: 0%;
+    width: 90%;
+  }
+  .link-help-router span{
+    color: #0000ff;
+    font-weight: 400;
+    margin-bottom: 50%;
   }
 }

@@ -1,12 +1,24 @@
 .email-sent-message-magic-link{
-    padding-bottom: 25px;
+    display: flex;
+}
+.email-sent-message-magic-link i {
+    text-decoration: underline;
+    font-size: 12px;
+    color: blue;
+  }
+.email-sent-message-magic-link p {
+text-decoration: underline;
+font-size: 10px;
+color: blue;
 }
 
-@media screen and (min-width:320px) and (max-width:480px){
-    /* .email-sent-message-magic-link{
-        padding-bottom: 25px;
-    } */
-    .email-sent-message-magic-link h4{
-        font-size: 15px;
+@media screen and (min-width: 320px) and (max-width: 480px) {
+    .email-sent-message-magic-link{
+        display: flex;
     }
+  .email-sent-message-magic-link p {
+    text-decoration: underline;
+    font-size: 10px;
+    color: blue;
+  }
 }

@@ -7,6 +7,7 @@
   .container-qr-code-confirmation{
     width: 90%;
     margin: 15% auto;
+    margin-bottom: 10vh;
   }
   .message-confirmation {
     display: flex;
@@ -16,16 +17,24 @@
     width: 90%;
     margin: 0 auto;
   }
+  #first-paragraph{
+    width: 70%;
+    font-weight: 600;
+  }
   .message-confirmation p {
     margin: 5% auto;
     text-align: justify;
   }
   .qr-code-div {
-    width: 90%;
+    width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 5% auto;
+    background-color: #ffff;
+  }
+  .qr-code{
+    padding: 5%;
   }
   .links-help-qr-code-confirmation-section{
     width: 95%;
@@ -35,8 +44,6 @@
   .help-link-route{
     text-decoration: underline;
     cursor: pointer;
-  }
-  .help-link-route span:hover{
     color: blue;
   }
 }

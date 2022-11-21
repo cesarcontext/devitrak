@@ -2,10 +2,39 @@
   margin: 0 auto;
   margin-bottom: 16vh;
 }
+.paragraph {
+  text-align: start;
+  font-size: 13px;
+  font-weight: 600;
+  margin-left: 1%;
+}
 
-@media only screen and (min-width: 320px) and (max-width: 480px){
+@media only screen and (min-width: 320px) and (max-width: 480px) {
   .container-contact-info {
     margin: 0 auto;
     margin-bottom: 16vh;
+  }
+  .row {
+    width:95%;
+    margin: 0 auto;
+    margin-top: 10%;
+  }
+  .container-input {
+    width: 100%;
+    margin: 5px auto;
+    border-radius: 0%;
+  }
+  input {
+    border-radius: 0px;
+  }
+  input::placeholder {
+    font-size: 15px;
+    color: #8a2be2;
+  }
+  .paragraph {
+    text-align: start;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 1%;
   }
 }

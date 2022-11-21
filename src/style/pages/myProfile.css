@@ -21,39 +21,31 @@
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
-    border: solid 1px #212529;
+    border: dashed 1px #212529;
     border-radius: 15px;
   }
   .box-user-detail-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding-top: 5%;
   }
   #box-user-detail-edit-button {
     display: flex;
     justify-content: flex-start;
-    border-radius: 15px 0;
-    border-right: transparent;
-    border-top: transparent;
-    border: solid 1px #212529;
+    align-items: center;
+    margin-left: 15%;
   }
   #box-user-detail-cancel-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 15px 0;
-    border-left: transparent;
-    border-top: transparent;
-    border: solid 1px #212529;
   }
   #box-user-detail-save-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0 15px;
-    border-right: transparent;
-    border-top: transparent;
-    border: solid 1px #212529;
   }
   .box-user-edit-info{
     width: 95%;
