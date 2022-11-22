@@ -1,22 +1,25 @@
-.container-user-info-detail-fetched{
+.container-user-info-detail-fetched {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.user-info-detail-fullname {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  .container-user-info-detail-fetched {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-}
-.user-info-detail-fullname{
+  }
+  .user-info-detail-fullname {
     display: flex;
-    justify-content: space-around;
-}
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
 
-@media only screen and (min-width: 320px) and (max-width:480px){
-    .container-user-info-detail-fetched{
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
-    .user-info-detail-fullname{
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
 }

@@ -16,12 +16,12 @@
   }
   .row {
     width:95%;
-    margin: 0 auto;
+    margin: 4% auto;
     margin-top: 10%;
   }
   .container-input {
     width: 100%;
-    margin: 5px auto;
+    margin: 5% auto;
     border-radius: 0%;
   }
   input {
@@ -29,7 +29,7 @@
   }
   input::placeholder {
     font-size: 15px;
-    color: #8a2be2;
+    color: var(--main-colorsfading-horizon);
   }
   .paragraph {
     text-align: start;

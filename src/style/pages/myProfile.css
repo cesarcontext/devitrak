@@ -3,9 +3,16 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--wild-sand);
+}
+.container-user-info-detail-fetched {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 480px){
+@media only screen and (min-width: 320px) and (max-width: 480px) {
   .container-my-profile-info {
     width: 100%;
     display: flex;
@@ -24,6 +31,14 @@
     border: dashed 1px #212529;
     border-radius: 15px;
   }
+  .container-user-info-detail-fetched {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+  }
+
   .box-user-detail-buttons {
     display: flex;
     justify-content: space-between;
@@ -47,21 +62,21 @@
     justify-content: center;
     align-items: center;
   }
-  .box-user-edit-info{
+  .box-user-edit-info {
     width: 95%;
   }
-  .box-user-edit-info input{
+  .box-user-edit-info input {
     width: 90%;
   }
-  .container-box-user-info-detail-qrcode{
+  .container-box-user-info-detail-qrcode {
     width: 70%;
     height: 70%;
     margin-bottom: 4%;
   }
-  .container-device-alert{
+  .container-device-alert {
     width: 95%;
   }
-  .container-device-accordion-List{
+  .container-device-accordion-List {
     width: 95%;
     margin: 0 auto;
     margin-bottom: 5%;

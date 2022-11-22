@@ -55,6 +55,13 @@
   .help-links-body{
     margin: 3% auto;
   }
+  .help-links-body span{
+    color: var(--main-colorsbluetiful);
+    font-weight: 600;
+    margin: 5% 0%;
+    margin-bottom: 50%;
+  }
+
   .help-links-body:last-child(){
     margin-bottom: 0;
     padding-bottom: 30px;
@@ -121,6 +128,12 @@
   .help-links-body{
     margin: 3% auto;
   }
+    .help-links-body span{
+    color: var(--main-colorsbluetiful);
+    font-weight: 600;
+    margin: 5% 0%;
+  }
+
   .help-links-body:last-child(){
     margin-bottom: 0;
     padding-bottom: 30px;

@@ -12,6 +12,7 @@
         border-radius: 15px 15px 0 15px;
         display: flex;
         flex-direction: column;
+        box-shadow: -1px 1px 3px;
     }
     .alert-message-loading-true{
         width: 100%;

@@ -36,15 +36,11 @@
   margin-top: 15%;
   width: 100%;
 }
-.request-more-devices-button button {
-  margin: 0 auto;
-  background-color: rgba(69, 104, 220, 1);
-  color: #ffff;
-  border-radius: 10px;
-  outline: transparency;
-  border: rgba(69, 104, 220, 1);
+#btn-rquest-more-device{
   width: 100%;
-  transform: none;
+  height: 5vh;
+  margin: 0 auto;
+  background-color: var(--main-colorsbluetiful);
 }
 .request-device-help-links-body {
   display: flex;
@@ -55,7 +51,7 @@
   margin-bottom: 0%;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 480px){
+@media only screen and (min-width: 320px) and (max-width: 480px) {
   .container-request-device-section {
     width: 90%;
     margin: 0 auto;
@@ -89,7 +85,7 @@
     text-align: center;
   }
 
-  .view-more-details-acount span{
+  .view-more-details-acount span {
     margin: 0 auto;
     color: #0000ff;
   }
@@ -101,18 +97,22 @@
     margin-top: 15%;
     width: 100%;
   }
-  .request-more-devices-button button {
-    margin:0 auto;
-    background-color: rgba(69, 104, 220, 1);
-    color: #ffff;
-    border-radius: 10px;
-    outline: transparency;
-    border: rgba(69, 104, 220, 1);
+  #btn-rquest-more-device{
     width: 100%;
+    height: 5vh;
+    margin: 0 auto;
+    background-color: var(--main-colorsbluetiful);
+  }
+  .request-more-devices-button span {
+    font-size: 16px;
+    margin: 0 auto;
+    margin-bottom: 5%;
   }
   .request-more-devices-button p {
-    font-size: 10px;
+    font-size: 12px;
     margin: 0 auto;
+    padding-left: 60px;
+    padding-right: 60px;
   }
 
   .request-device-help-links-body {
@@ -124,9 +124,13 @@
     margin-bottom: 0%;
     width: 90%;
   }
-  .link-help-router span{
-    color: #0000ff;
-    font-weight: 400;
+  .link-help-router{
+    margin: 2% auto;
+  }
+
+  .link-help-router span {
+    color: var(--main-colorsbluetiful);
+    font-weight: 600;
     margin-bottom: 50%;
   }
 }
@@ -148,6 +152,14 @@
     border: solid 1px #212529;
     border-radius: 15px;
   }
+  #btn-rquest-more-device{
+    width: 100%;
+    margin: 0 auto;
+    font-size: 90px;
+  }
+  .request-more-devices-button span {
+    margin-bottom: 5%;
+  }
   .container-request-current-order-display {
     display: flex;
     justify-content: space-between;
@@ -160,11 +172,15 @@
     align-items: center;
     margin-top: 20%;
     margin-bottom: 0%;
-    width: 90%;
+    width: 95%;
   }
-  .link-help-router span{
-    color: #0000ff;
-    font-weight: 400;
+    .link-help-router{
+    margin: 2% auto;
+  }
+  .link-help-router span {
+    color: var(--main-colorsbluetiful);
+    font-weight: 600;
+    margin: 5% 0%;
     margin-bottom: 50%;
   }
 }
