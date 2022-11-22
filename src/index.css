@@ -55,7 +55,7 @@ code {
 input {
   width: 35%;
   height: 3vh;
-  border-radius: 5px;
+  border-radius: 0px;
   margin: 2px auto;
   padding-left: 15px;
 }
@@ -71,8 +71,16 @@ input::-webkit-inner-spin-button {
   input {
     width: 80%;
     height: 3vh;
-    border-radius: 5px;
+    border-radius: 0px;
     margin: 2px auto;
     padding-left: 15px;
+  }
+  input::placeholder {
+    color: var(--main-colorsfading-horizon);
+  }
+  .btn {
+    color: var(--bs-body-bg);
+    background-color: var(--bs-primary);
+    transition: none;
   }
 }
