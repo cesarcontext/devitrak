@@ -93,17 +93,9 @@ export const DisplayDataReceiversStatus = () => {
     }
   }
   return (
-    <div
-      style={{
-        width: "32%",
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <div>
       <label>Receivers Status</label>
-      <PieChart width={630} height={350}>
+      <PieChart width={335} height={350}>
         <Pie
           data={aux}
           cx="50%"

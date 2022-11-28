@@ -4,6 +4,7 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 import { UserTable } from "../../../helper/UserTable";
 import { Pagination } from "../ui/Pagination";
 import { DeviceUsersHistory } from "./DeviceUsersHistory";
+import "../../../style/component/admin/DeviceDatabase.css";
 
 export const ReceiverStock = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
@@ -66,27 +67,12 @@ export const ReceiverStock = () => {
   const fileName = "receiver-inventory";
 
   return (
-    <div
-      style={{
-        width: "70%",
-        display: "flex",
-        columnGap: "2%",
-        margin: "2% auto",
-        height: "25%",
-      }}
-    >
-      <div
-        style={{
-          width: "60%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-        }}
-      >
+    <div className="container-stock-device">
+      <div className="container-stock-device-list">
         <div>
           <h2>Stock</h2>
         </div>
-        <div>
+        <div className="container-device-info-table">
           <table className="table">
             <thead>
               <tr>
@@ -120,45 +106,47 @@ export const ReceiverStock = () => {
                 })
               : ""}
           </table>
-          <div
-            style={{
-              width: "100%",
-              padding: "25px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              textAlign: "left",
-            }}
-          >
-            <div>
-              <Pagination
-                childrenRenderedPerPage={receiverRenderedPerPage}
-                totalChildren={listOfReceiver.length}
-                paginate={paginate}
-              />
-            </div>
-            <div>
-              <button
-                variant="contained"
-                color="primary"
-                className="export-btn"
-                onClick={() => setLoadingDownload(false)}
+        </div>
+        <div
+          className=""
+          style={{
+            width: "100%",
+            padding: "25px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            textAlign: "left",
+          }}
+        >
+          <div>
+            <Pagination
+              childrenRenderedPerPage={receiverRenderedPerPage}
+              totalChildren={listOfReceiver.length}
+              paginate={paginate}
+            />
+          </div>
+          <div>
+            <button
+              variant="contained"
+              color="primary"
+              className="export-btn"
+              onClick={() => setLoadingDownload(false)}
+            >
+              <CSVLink
+                headers={headers}
+                data={listOfReceiver}
+                filename={fileName}
+                style={{ textDecoration: "none", color: "#fff" }}
               >
-                <CSVLink
-                  headers={headers}
-                  data={listOfReceiver}
-                  filename={fileName}
-                  style={{ textDecoration: "none", color: "#fff" }}
-                >
-                  {loadingDownload ? "Loading csv..." : "Export Data"}
-                </CSVLink>
-              </button>
-            </div>
+                {loadingDownload ? "Loading csv..." : "Export Data"}
+              </CSVLink>
+            </button>
           </div>
         </div>
       </div>
 
       <div
+        className="container-stock-device-list"
         style={{
           width: "35%",
           border: "solid 2px #212529",
