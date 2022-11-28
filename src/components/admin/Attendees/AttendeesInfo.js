@@ -5,6 +5,7 @@ import { Pagination } from "../ui/Pagination";
 import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import "../../../style/component/admin/attendeesInfo.css";
 
 export const AttendeesInfo = ({ searchTerm }) => {
   const { user } = useAdminStore();
@@ -24,7 +25,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
       .get("/auth/users")
       .then((response) => response.data)
       .then((data) => setUsers(data.users));
-  }, [createUserButton,createTransactionForNoRegularUser]);
+  }, [createUserButton, createTransactionForNoRegularUser]);
 
   const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
   const indexOfFirstUsersRendered =
@@ -38,26 +39,14 @@ export const AttendeesInfo = ({ searchTerm }) => {
     setCurrentPage(pageNumbers);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        columnGap: "2%",
-        margin: "2%",
-        height: "25%",
-      }}
-    >
+    <div className="container-attendees">
       <div
-        style={{
-          width: "45%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-        }}
+        className="container-attendees-info"
       >
         <div>
           <h2>Users</h2>
         </div>
-        <div>
+        <div className="container-attendees-info-table">
           <table className="table">
             <thead>
               <tr>
@@ -140,16 +129,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
         </div>
       </div>
       <div
-        style={{
-          width: "70%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
+      className="container-attendees-info-detail"
       >
         <div>
           <h2>Details</h2>
@@ -201,33 +181,35 @@ export const AttendeesInfo = ({ searchTerm }) => {
               })}
             </div>
             <div>
-              {user.role === "Administrator" ? users?.map((user) => {
-                if (user.id === sendObjectIdUser) {
-                    return (
-                      <button
-                        onClick={() => {
-                          setCreateTransactionForNoRegularUser(true);
-                        }}
-                      >
-                        Create Transaction
-                      </button>
-                    );
-                }
-              }): null}
+              {user.role === "Administrator"
+                ? users?.map((user) => {
+                    if (user.id === sendObjectIdUser) {
+                      return (
+                        <button
+                          onClick={() => {
+                            setCreateTransactionForNoRegularUser(true);
+                          }}
+                        >
+                          Create Transaction
+                        </button>
+                      );
+                    }
+                  })
+                : null}
             </div>
           </div>
         </div>
-        <div style={{ width: "100%" }}>
-          <div>Transactions</div>
+        <div className="container-attendes-stripe-transaction-info">
           {users?.map((user) => {
             if (user.id === sendObjectIdUser) {
               return (
-                <div key={user.id}>
+                <div id="stripe-transaction-detail-per-user-id" className="stripetransaction-detail-info" key={user.id}>
                   <StripeTransactionHistoryByUser
                     sendObjectIdUser={sendObjectIdUser}
                     userDetail={userDetail}
-                    createTransactionForNoRegularUser={createTransactionForNoRegularUser}
-                    
+                    createTransactionForNoRegularUser={
+                      createTransactionForNoRegularUser
+                    }
                   />
                 </div>
               );
