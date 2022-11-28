@@ -9,7 +9,7 @@ import { useStripeHook } from "../../../hooks/useStripeHook";
 const customStyles = {
   content: {
     width: "35%",
-    height: "60%",
+    height: "35%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -143,7 +143,9 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         <div>
           <h2>Create New User</h2>
 
-          <form onSubmit={onSubmitRegister}>
+          <form style={{
+            margin:"auto"
+          }} className="form-container" onSubmit={onSubmitRegister}>
             <div className="form-group mb-2">
               <input
                 type="text"

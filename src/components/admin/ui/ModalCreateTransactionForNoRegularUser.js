@@ -5,8 +5,8 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 const customStyles = {
   content: {
-    width: "35%",
-    height: "60%",
+    width: "30%",
+    height: "15%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -21,9 +21,9 @@ const customStyles = {
 export const ModalCreateTransactionForNoRegularUser = ({
   createTransactionForNoRegularUser,
   setCreateTransactionForNoRegularUser,
-  sendObjectIdUser
+  sendObjectIdUser,
 }) => {
-  const { errorMessage  } = useAdminStore();
+  const { errorMessage } = useAdminStore();
   const [receiversSelection, setReceiversSelection] = useState(0);
   if (createTransactionForNoRegularUser !== false) {
     Modal.setAppElement("#root");
@@ -40,15 +40,21 @@ export const ModalCreateTransactionForNoRegularUser = ({
 
   const onSubmitRegister = async (event) => {
     event.preventDefault();
-    const max = 918273645
+    const max = 918273645;
     try {
       const { data } = await devitrackApi.post(
         "/stripe/stripe-transaction-no-regular-user",
         {
-          paymentIntent:Math.floor(Math.random() * max)+sendObjectIdUser+receiversSelection,
-          clientSecret: receiversSelection+sendObjectIdUser+Math.floor(Math.random() * max),
+          paymentIntent:
+            Math.floor(Math.random() * max) +
+            sendObjectIdUser +
+            receiversSelection,
+          clientSecret:
+            receiversSelection +
+            sendObjectIdUser +
+            Math.floor(Math.random() * max),
           device: receiversSelection,
-          user:sendObjectIdUser 
+          user: sendObjectIdUser,
         }
       );
       if (data) closeModal();
@@ -70,7 +76,14 @@ export const ModalCreateTransactionForNoRegularUser = ({
       >
         <div>
           <h2>Please select number of receivers: </h2>
-          <form onSubmit={onSubmitRegister}>
+          <form
+            style={{
+              margin: "auto",
+              display: "flex",
+              alignItems: "center",
+            }}
+            onSubmit={onSubmitRegister}
+          >
             <div className="form-group mb-2">
               <input
                 type="number"
@@ -79,22 +92,17 @@ export const ModalCreateTransactionForNoRegularUser = ({
                 onChange={(event) => setReceiversSelection(event.target.value)}
               />
             </div>
-            <div className="form-group mb-2">
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <button onClick={closeModal}>Cancel</button>
-                </div>
-                <div>
-                  <button type="submit">Register</button>
-                </div>
-              </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: "3%",
+                width:"60%"
+              }}
+            >
+              <button style={{ width: "45%"}} onClick={closeModal}>Cancel</button>
+              <button style={{ width: "45%"}} type="submit">Register</button>
             </div>
           </form>
         </div>

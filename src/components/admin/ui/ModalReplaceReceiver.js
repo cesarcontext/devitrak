@@ -7,7 +7,7 @@ import { useForm } from "../../../hooks/useForm";
 const customStyles = {
   content: {
     width: "20%",
-    height: "40%",
+    height: "26%",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -135,7 +135,7 @@ export const ModalReplaceReceiver = ({
   };
 
   return (
-    <div>
+    <div style={{margin:"auto"}}>
       <Modal
         isOpen={replaceStatus}
         onRequestClose={closeModal}
@@ -196,10 +196,11 @@ export const ModalReplaceReceiver = ({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
+                gap:"3%"
               }}
             >
-              <button onClick={() => setReplaceStatus(false)}>Cancel</button>
-              <button type="submit">Save</button>
+              <button style={{ width:"45%"}} onClick={() => setReplaceStatus(false)}>Cancel</button>
+              <button style={{ width:"45%"}} type="submit">Save</button>
             </div>
           </form>
         </div>
