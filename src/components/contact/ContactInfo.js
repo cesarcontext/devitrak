@@ -125,135 +125,106 @@ export const ContactInfo = () => {
   return (
     <>
       <div className="container-contact-info mt-4">
-        <section className="gradient-custom">
-          <div className="container">
-            <div className="row justify-content-center align-items-center">
-              <div className="col-12 col-lg-9 col-xl-7">
-                <div
-                  className="card shadow-2-strong card-registration"
-                  style={{ bordeRadius: "15px" }}
-                >
-                  {token.length < 1 ? (
-                    <Devices handleOnSubmit={handleOnSubmit} />
-                  ) : (
-                    ""
-                  )}
-
-                  <div className="card-body p-4 p-md-5">
-                    <h3 className="mb-4 pb-2 pb-md-0 mb-md-5">
-                      ENTER YOUR CONTACT INFORMATION
-                    </h3>
-                    <div className="row">
-                      <form>
-                        <div className="col-md-11 m-4">
-                          <div className="form-outline">
-                            <input
-                              disabled={userCreatedDisabledInput}
-                              type="email"
-                              id="emailAddress"
-                              className={`form-control ${validationEmail} form-control-lg`}
-                              placeholder="Email"
-                              onChange={onInputCHange}
-                              name="email"
-                              value={formValues.email}
-                              minLength={4}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-md-11 m-4 mb-0">
-                          <div className="form-outline">
-                            <input
-                              disabled={userCreatedDisabledInput}
-                              type="text"
-                              id="firstName"
-                              name="name"
-                              value={formValues.name}
-                              className={`form-control ${validationName} form-control-lg`}
-                              placeholder="First name"
-                              onChange={onInputCHange}
-                              minLength={1}
-                            />
-                          </div>
-                        </div>
-                      </form>
-                      {users.status === true ? (
-                        <div
-                          style={{
-                            padding: "40px",
-                          }}
-                        >
-                          <MagicLink magicLinkParam={magicLinkParam} />
-                        </div>
-                      ) : (
-                        <>
-                          <form onSubmit={handleOnSubmit}>
-                            <div className="col-md-11 m-4">
-                              <div className="form-outline">
-                                <input
-                                  disabled={userCreatedDisabledInput}
-                                  type="text"
-                                  id="lastName"
-                                  className={`form-control ${validationLastName} form-control-lg`}
-                                  placeholder="Last name"
-                                  onChange={onInputCHange}
-                                  name="lastName"
-                                  value={formValues.lastName}
-                                  minLength={1}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-11 m-4">
-                              <div className="form-outline">
-                                <input
-                                  disabled={userCreatedDisabledInput}
-                                  type="text"
-                                  className={`form-control form-control-lg`} //${validationGroupName}
-                                  id="groupName"
-                                  placeholder="Group name"
-                                  onChange={onInputCHange}
-                                  name="groupName"
-                                  value={formValues.groupName}
-                                  minLength={3}
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-11 m-4">
-                              <div className="form-outline">
-                                <input
-                                  disabled={userCreatedDisabledInput}
-                                  type="tel"
-                                  id="phoneNumber"
-                                  className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                                  placeholder="Phone number"
-                                  onChange={onInputCHange}
-                                  name="phoneNumber"
-                                  value={formValues.phoneNumber}
-                                  maxLength={15}
-                                  minLength={5}
-                                />
-                              </div>
-                            </div>
-                          </form>
-                        </>
-                      )}
-                    </div>
-                  </div>
+        <div>
+          {token.length < 1 ? <Devices handleOnSubmit={handleOnSubmit} /> : ""}
+          <div className="row">
+            <form>
+              <div className="container-input">
+                <p className="paragraph">ENTER YOUR CONTACT INFORMATION</p>
+                <div className="form-outline">
+                  <input
+                    disabled={userCreatedDisabledInput}
+                    type="email"
+                    id="emailAddress"
+                    className={`form-control ${validationEmail} form-control-lg`}
+                    placeholder="Email"
+                    onChange={onInputCHange}
+                    name="email"
+                    value={formValues.email}
+                    minLength={4}
+                  />
                 </div>
               </div>
-            </div>
+              {users.status === true ? (
+              <div>
+                <MagicLink magicLinkParam={magicLinkParam} />
+              </div>
+            ) : null}
+              <div className="container-input">
+                <div className="form-outline">
+                  <input
+                    disabled={userCreatedDisabledInput}
+                    type="text"
+                    id="firstName"
+                    name="name"
+                    value={formValues.name}
+                    className={`form-control ${validationName} form-control-lg`}
+                    placeholder="First name"
+                    onChange={onInputCHange}
+                    minLength={1}
+                  />
+                </div>
+              </div>
+              <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        disabled={userCreatedDisabledInput}
+                        type="text"
+                        id="lastName"
+                        className={`form-control ${validationLastName} form-control-lg`}
+                        placeholder="Last name"
+                        onChange={onInputCHange}
+                        name="lastName"
+                        value={formValues.lastName}
+                        minLength={1}
+                      />
+                    </div>
+                  </div>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        disabled={userCreatedDisabledInput}
+                        type="text"
+                        className={`form-control form-control-lg`} //${validationGroupName}
+                        id="groupName"
+                        placeholder="Group name"
+                        onChange={onInputCHange}
+                        name="groupName"
+                        value={formValues.groupName}
+                        minLength={3}
+                      />
+                    </div>
+                  </div>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        disabled={userCreatedDisabledInput}
+                        type="tel"
+                        id="phoneNumber"
+                        className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                        placeholder="Phone number"
+                        onChange={onInputCHange}
+                        name="phoneNumber"
+                        value={formValues.phoneNumber}
+                        maxLength={15}
+                        minLength={5}
+                      />
+                    </div>
+                  </div>
+            </form>
           </div>
-        </section>
+        </div>
+
         {formValues.phoneNumber.length < 5 ? (
           <></>
         ) : (
           <div className={`d-${visibleButton}`} style={{ paddingTop: "1vh" }}>
             <button
-              className="btn-confirm-user-data"
+              className="btn btn-confirm-user-data"
               style={{
                 margin: "auto",
                 backgroundColor: "rgba(69, 104, 220, 1)",
                 color: "#ffff",
-                height: "5vh",
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
