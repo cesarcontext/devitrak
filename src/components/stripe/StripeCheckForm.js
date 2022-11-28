@@ -54,11 +54,11 @@ export const StripeCheckoutForm = () => {
   console.log("🚀 ~ file: StripeCheckForm.js ~ line 54 ~ StripeCheckoutForm ~ myUrl", myUrl)
   const iFrameStyle = {
     base: {
-      color: "#fff",
+      color: "var(--main-colorsfading-horizon)",
       fontSize: "16px",
       iconColor: "#fff",
       "::placeholder": {
-        color: "#87bbfd",
+        color: "var(--main-colorsfading-horizon)",
       },
     },
     invalid: {
@@ -120,11 +120,9 @@ export const StripeCheckoutForm = () => {
   };
 
   return (
-    <div id="stripe-container" className="container-stripe">
-      <div className="row justify-content-center align-items-center">
         <form id="payment-form" onSubmit={handleSubmit}>
           <PaymentElement options={paymentElementStyle} id="payment-element" />
-          <button disabled={isLoading || !stripe || !elements} id="submit">
+          <button className="btn" disabled={isLoading || !stripe || !elements} id="submit">
             <span id="button-text">
               {isLoading ? (
                 <div className="spinner" id="spinner"></div>
@@ -136,7 +134,5 @@ export const StripeCheckoutForm = () => {
           {/* Show any error or success messages */}
           {message && <div id="payment-message">{message}</div>}
         </form>
-      </div>
-    </div>
   );
 };

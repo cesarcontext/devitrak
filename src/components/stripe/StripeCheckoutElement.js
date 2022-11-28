@@ -11,16 +11,35 @@ const stripePromise = loadStripe(
 
 export const StripeCheckoutElement = ({ clientSecret }) => {
   const appearance = {
-    theme: "flat",
+    theme: "none",
     variables: {
-      colorPrimary: '#0570de',
-      colorBackground: '#ffffff',
-      colorText: 'transparent', //*#30313d
-      colorDanger: '#df1b41',
-      fontFamily: 'Ideal Sans, system-ui, sans-serif',
-      spacingUnit: '2px',
-      borderRadius: '4px',
-    }
+      fontFamily: "var(--font-family--open_sans)",
+      fontWeightNormal: "500",
+      borderRadius: "5px",
+      colorBackground: "#FFFFFF",
+      colorPrimary: "#8E5572",
+      colorPrimaryText: '#000000',
+      colorText: '#000000',
+      colorTextSecondary: '#808080',
+      colorTextPlaceholder: "#CCE0D9",
+      colorLogo: "#E55934",
+    },
+    rules: {
+      ".Block": {
+        backgroundColor: "var(--colorBackground)",
+      },
+      ".Input": {
+        fontSize: "30px",
+        border: "1px solid #D2D6DC",
+      },
+      ".Input::placeholder": {
+        fontSize: "20px",
+        color: "var(--main-colorsfading-horizon)",
+      },
+      ".Label": {
+        color: "transparent",
+      },
+    },
   };
   const options = {
     clientSecret,
@@ -28,12 +47,12 @@ export const StripeCheckoutElement = ({ clientSecret }) => {
   };
 
   return (
-    <div style={{ margin: "1% auto"}}>
+    <>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <StripeCheckoutForm />
         </Elements>
       )}
-    </div>
+    </>
   );
 };
