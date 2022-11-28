@@ -4,22 +4,24 @@ import { useAdminStore } from "../../../hooks/useAdminStore";
 
 export const ArticleCardSaved = ({ searchTerm }) => {
   const { user } = useAdminStore();
-  const [dataReceived, setDataReceived] = useState(null);
+  const [dataReceived, setDataReceived] = useState([]);
   const adminUserRole = user.role;
+  const callApiArticle = async () => {
+    await devitrackApiArticle
+      .get("/articles")
+      .then((response) => setDataReceived(response.data.articles));
+  };
 
   useEffect(() => {
-    try {
-      const response = devitrackApiArticle
-        .get("/articles")
-        .then((response) => setDataReceived(response.data.articles));
-      if (response) {
-        console.log("data received", dataReceived);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    const controller = new AbortController();
+    callApiArticle();
+    return () => {
+      controller.abort();
+    };
   }, []);
-
+  dataReceived?.map(item => {
+    console.log(Buffer.from(item.img.data).toString("base64"))
+  })
   return (
     <div
       style={{
@@ -48,11 +50,7 @@ export const ArticleCardSaved = ({ searchTerm }) => {
                 paddingRight: "25px",
               }}
             >
-              <img
-                src={article.img.slice(5)}
-                alt={article.img}
-                className="card-img-top"
-              />
+              <img src={`data:image/jpeg;base64,${Buffer.from(article.img.data).toString("base64")}`} alt=""/>
               <div className="card-body">
                 <h5 className="card-title">{article.title}</h5>
                 <p className="card-text">{article.body}</p>
@@ -73,7 +71,8 @@ export const ArticleCardSaved = ({ searchTerm }) => {
                       )}
                     </span>
                   </button>
-                  {adminUserRole === "Approver" || adminUserRole === "Administrator" ? (
+                  {adminUserRole === "Approver" ||
+                  adminUserRole === "Administrator" ? (
                     <>
                       <button style={{ width: "30%" }}>
                         <span>Edit</span>
