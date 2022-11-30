@@ -4,6 +4,7 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 export const DeviceUsersHistory = ({ receiverId, receiverDetail }) => {
   const [listOfReceiverAssigned, setListOfReceiverAssigned] = useState([]);
   const [usersPerDevice, setUsersPerDevice] = useState([]);
+  const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] = useState([])
   const callApiListOfReceiverAssigned = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
     if (response) {
@@ -23,14 +24,24 @@ export const DeviceUsersHistory = ({ receiverId, receiverDetail }) => {
     setUsersPerDevice(usersPerDevice);
   };
 
+const callApiReceierReturnedByIssue =async() => {
+    const response = await devitrackApi.get("/receiver/list-receiver-returned-issue");
+    if (response) {
+      setListReceiverReturnedByIssue(response.data.record);
+      console.log(response)
+    }
+  }
+
   useEffect(() => {
     const controller = new AbortController();
     callApiListOfReceiverAssigned();
+    callApiReceierReturnedByIssue()
     return () => {
       controller.abort();
     };
   }, [receiverId]);
-
+  
+  
   useEffect(() => {
     const controller = new AbortController();
     checkingUsersInHistory();
@@ -55,7 +66,6 @@ export const DeviceUsersHistory = ({ receiverId, receiverDetail }) => {
           </thead>
           <tbody>
             {usersPerDevice?.map((user, index) => {
-              console.log("users mapped", user);
               return (
                 <tr>
                   <td>{index + 1}</td>
