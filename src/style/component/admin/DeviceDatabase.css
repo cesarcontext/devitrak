@@ -1,0 +1,25 @@
+.container-stock-device {
+  width: 60%;
+  display: flex;
+  column-gap: 2%;
+  margin: 2% auto;
+  height: 25%;
+}
+.container-stock-device-list{
+    width: 50%;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 100%;
+    background-color: #fff;
+}
+.container-device-info-table{
+    height: 300px;
+}
+.container-graphic{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 40%;
+  margin: auto;
+}

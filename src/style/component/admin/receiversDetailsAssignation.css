@@ -1,0 +1,25 @@
+.container-payment-detail-assignment-section {
+  border: 2px solid var(--black);
+  border-radius: 15px;
+  width: 96%;
+  margin: 2% auto;
+}
+.payment-detail-assignment-section {
+  display: flex;
+}
+
+.detail-assignment-user-section {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 1% 3%;
+  width: 100%;
+}
+.detail-user-info-assignment-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-content: center;
+  color: var(--black);
+}
+

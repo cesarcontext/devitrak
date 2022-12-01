@@ -21,6 +21,10 @@
     align-items: center;
     margin-top: 5%;
   }
+  .container-my-profile-info h3{
+    margin-bottom: 1.25rem;
+  }
+
   .container-box-user-info-detail {
     width: 90%;
     display: flex;
@@ -30,6 +34,7 @@
     margin: 0 auto;
     border: dashed 1px #212529;
     border-radius: 15px;
+    background-color: #FFFF;
   }
   .container-user-info-detail-fetched {
     display: flex;

@@ -1,37 +1,108 @@
-.staff-roles{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 40%;
-    margin: 0 auto;
+.container-setting-detail {
+  display: flex;
+  column-gap: 2%;
+  margin: 2% auto;
+  height: 25%;
+  width: 65%;
 }
-.container-staff-roles-title{
-    width: 35%;
-    margin: 0 auto;
-    padding: 20px;
+.container-company-staff {
+  width: 60%;
+  border: solid 2px #212529;
+  border-radius: 15px;
+  padding: 20px;
+  height: 50vh;
+  background-color: var(--main-colorswhite);
 }
-.container-staff-roles-title h4{
-text-align: left;
+.container-company-staff-detail {
+  width: 30%;
+  border: solid 2px var(--main-colorsfly-by-night);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 50vh;
 }
-.staff-roles-description{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 25%;
-    margin: 0 auto;
-    text-align: justify;
+.container-section-pagination-button {
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
 }
-.container-admin-user-details{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.staff-roles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 40%;
+  margin: 0 auto;
+  color: var(--main-colorsexcalibur);
 }
-.container-admin-user-details-card{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.container-staff-roles-title {
+  width: 35%;
+  margin: 0 auto;
+  padding: 20px;
 }
-.container-admin-user-details-card h3 h6{
+.container-staff-roles-title h4 {
+  text-align: left;
+  color: var(--main-colorsexcalibur);
+}
+.staff-roles-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  margin: 0 auto;
+  text-align: justify;
+}
+.container-admin-user-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.container-admin-user-details-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.admin-user-details-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.container-admin-user-details-card label {
+  text-align: left;
+  color: var(--main-colorsexcalibur);
+  display: inline;
+}
+.container-admin-user-details-card span {
     text-align: left;
+    color: var(--black);
+    display: inline;
+  }
+  
+.edit-button {
+  width: fit-content;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  cursor: pointer;
+}
+.buttons-edit-permission {
+  display: flex;
+  padding: 15px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+.buttons-edit-permission i{
+    text-orientation: var(50);
+  }
+.buttons-edit-permission button{
+    width: fit-content;
+    text-align: center;
+    border-radius: 10%;
 }

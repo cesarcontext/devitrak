@@ -5,6 +5,7 @@
     justify-content: space-around;
     align-items: center;
     margin: 2% auto;
+    width: 75%;
 }
 .profile-info-detail{
     display: flex;

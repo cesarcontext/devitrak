@@ -1,0 +1,44 @@
+.container-attendees {
+  width: 70%;
+  display: flex;
+  column-gap: 2%;
+  margin: 2% auto;
+  height: 25%;
+}
+.container-attendees-info {
+  width: 55%;
+  height: 50vh;
+  border: solid 1px #212529;
+  border-radius: 15px;
+  padding: 20px;
+  background-color: #ffff;
+}
+.container-attendees-info-detail {
+  width: 65%;
+  border: solid 1px #212529;
+  border-radius: 15px;
+  padding: 20px;
+  background-color: #ffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.container-attendees-info-table {
+  height: 300px;
+}
+.container-attendes-stripe-transaction-info {
+  width: 100%;
+}
+.stripetransaction-detail-info {
+  width: 100%;
+}
+.container-user-info-detail {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}

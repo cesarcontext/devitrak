@@ -26,7 +26,7 @@
 .btnSubmit
 {
     border-radius: 1rem;
-    padding: 1.5%;
+    padding: 0.5%;
     border: none;
     cursor: pointer;
     margin: 0px 10px;
@@ -48,4 +48,10 @@
     color:  rgb(30, 115, 190);
     font-weight: 600;
     text-decoration: none;
+}
+.forgot-link{
+    margin-top: 5%;
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--main-colorsbeatiful);
 }
