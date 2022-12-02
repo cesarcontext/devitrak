@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { Navbar } from "../ui/Navbar";
 import {
@@ -11,6 +10,11 @@ import {
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { NavLink } from "react-router-dom";
 import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
+import "../../../style/component/admin/receiversDetailsAssignation.css";
+import {
+  rightDoneMessage,
+  swalErrorMessage,
+} from "../../../helper/swalFireMessage";
 
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -28,11 +32,6 @@ export const ReceiversDetailsAssignation = () => {
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
-  // const [emptyArrayVerification, setEmptyArrayVerification] = useState(true);
-  const [
-    updateListAfterAddNewReceiverForNoRegularUser,
-    setUpdateListAfterAddNewReceiverForNoRegularUser,
-  ] = useState(false);
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -54,7 +53,6 @@ export const ReceiversDetailsAssignation = () => {
     loading,
     fetchedData,
     replaceStatus,
-    updateListAfterAddNewReceiverForNoRegularUser,
   ]);
 
   useEffect(() => {
@@ -62,26 +60,16 @@ export const ReceiversDetailsAssignation = () => {
     devitrackApi
       .get("/receiver/receiver-pool-list")
       .then((data) => setListOfDeviceInPool(data.data.receiversInventory));
-    // if (listOfDeviceInPool.length > 1) {
-    //   setEmptyArrayVerification(false);
-    // }
     return () => {
       controller.abort();
     };
-  }, [
-    paymentIntentToCheck,
-    loading,
-    fetchedData,
-    replaceStatus,
-    updateListAfterAddNewReceiverForNoRegularUser,
-  ]);
-  console.log("setListOfDevice", listOfDeviceInPool);
+  }, [paymentIntentToCheck, loading, fetchedData, replaceStatus]);
 
   const addReceiver = async () => {
     const replacementList = [...receiversAssigned, receiverObject];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
-      await setReceiversAssigned(replacementList);
-      await setReceiverNumberAssgined("");
+      setReceiversAssigned(replacementList);
+      setReceiverNumberAssgined("");
     }
   };
 
@@ -94,19 +82,13 @@ export const ReceiversDetailsAssignation = () => {
     setReceiversAssigned(result);
   };
   const objDeviceContainer = new Map();
-
-  const checkDeviceInPool = async () => {
-    for (let i = 0; i < listOfDeviceInPool.length; i++) {
-      if (!objDeviceContainer[listOfDeviceInPool[i].device]) {
-        objDeviceContainer.set(
-          listOfDeviceInPool[i].device,
-          listOfDeviceInPool[i].id
-        );
-      } else objDeviceContainer[listOfDeviceInPool[i].device]++;
-    }
-    return objDeviceContainer;
-  };
-  console.log("hashmap", checkDeviceInPool());
+  for (let i = 0; i < listOfDeviceInPool.length; i++) {
+    objDeviceContainer.set(
+      listOfDeviceInPool[i].device,
+      listOfDeviceInPool[i].id
+    );
+  }
+  console.log("🚀 ~ file: ReceiversDetailsAssignation.js:85 ~ ReceiversDetailsAssignation ~ objDeviceContainer", objDeviceContainer)
 
   const handleDataSubmitted = async () => {
     try {
@@ -117,67 +99,39 @@ export const ReceiversDetailsAssignation = () => {
         active: true,
       });
       if (response) {
-        receiversAssigned?.map((receiver) => {
-          if (objDeviceContainer.has(receiver.serialNumber)) {
-            const idToUpdateStatus = objDeviceContainer.get(
-              receiver.serialNumber
-            );
-            devitrackApi.put(
-              `/receiver/receivers-pool-update/${idToUpdateStatus}`,
-              {
+        receiversAssigned?.map((receiver) => {      
+
+            if (objDeviceContainer.has(receiver.serialNumber)) {
+              devitrackApi.put(
+                `/receiver/receivers-pool-update/${
+                  objDeviceContainer.get(receiver.serialNumber)
+                }`,
+                {
+                  status: "Operational",
+                  activity: "In-use",
+                  comment: "No comment",
+                }
+              );
+            } else {
+              devitrackApi.post("/receiver/receivers-pool", {
+                device: receiver.serialNumber,
                 status: "Operational",
                 activity: "In-use",
                 comment: "No comment",
-              }
-            );
-          } else {
-            devitrackApi.post("/receiver/receivers-pool", {
-              device: receiver.serialNumber,
-              status: "Operational",
-              activity: "In-use",
-              comment: "No comment",
-            });
-          }
+              });
+            }
         });
         setFetchedData(response.data);
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
         setSaveButtonDisplay(true);
       }
-      Swal.fire({
-        title: "",
-        width: 600,
-        padding: "3em",
-        text: `Receivers were assigned to payment intent successfully`,
-        icon: "success",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-      	rgb(30, 115, 190)
-        	url("../image/logo.jpg")
-        	left top
-        	no-repeat
-      	`,
-      });
+      rightDoneMessage(
+        `Receivers were assigned to payment intent successfully`
+      );
     } catch (error) {
       console.log(error);
-      Swal.fire({
-        title: "Upss something went wrong!!",
-        width: 600,
-        padding: "3em",
-        text: `${error.response.data.msg}`,
-        icon: "error",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-        	rgb(30, 115, 190)
-          	url("../image/logo.jpg")
-          	left top
-          	no-repeat
-        	`,
-      });
+      swalErrorMessage(error);
     }
   };
   const handleReturnDevice = async (receiver, index) => {
@@ -217,10 +171,10 @@ export const ReceiversDetailsAssignation = () => {
           }
         );
         setLoading(true);
-        alert("Receiver returned");
+        rightDoneMessage("Receiver returned");
       }
     } catch (error) {
-      alert("Something went wrong, pelase try it later");
+      swalErrorMessage(error);
     }
   };
   const handleAssignDevice = async (receiver, index) => {
@@ -260,10 +214,10 @@ export const ReceiversDetailsAssignation = () => {
           }
         );
         setLoading(true);
-        alert("Receiver assigned");
+        rightDoneMessage("Receiver assigned");
       }
     } catch (error) {
-      alert("Something went wrong, please try later");
+      swalErrorMessage(error);
     }
   };
 
@@ -289,10 +243,25 @@ export const ReceiversDetailsAssignation = () => {
       );
       if (response) {
         setLoading(true);
-        alert("Receivers returned");
+        rightDoneMessage("Receivers returned");
+        receiversAssignedListCopy.map((item) => {
+          for (let i = 0; i < listOfDeviceInPool.length; i++) {
+            if (item.serialNumber === listOfDeviceInPool[i].device) {
+              devitrackApi.put(
+                `/receiver/receivers-pool-update/${listOfDeviceInPool[i].id}`,
+                {
+                  device: item.serialNumber,
+                  status: "Operational",
+                  activity: "Stored",
+                  comment: "No comment",
+                }
+              );
+            }
+          }
+        });
       }
     } catch (error) {
-      alert("Something went wrong, pelase try it later");
+      swalErrorMessage(error);
     }
   };
 
@@ -314,6 +283,7 @@ export const ReceiversDetailsAssignation = () => {
         "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 201 ~ replaceFunctionTrigger ~ error",
         error
       );
+      swalErrorMessage(error);
     }
   };
 
@@ -327,89 +297,58 @@ export const ReceiversDetailsAssignation = () => {
       <div>
         <Navbar />
       </div>
-      <div style={{ width: "5%" }}>
-        <NavLink to="/admin/attendees">
-          <button onClick={cleanUpPaymentIntentDetailSelect}>Back</button>
-        </NavLink>
-      </div>
-      <div
-        style={{
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          width: "96%",
-          margin: "2% auto",
-        }}
-      >
-        <div style={{ display: "flex" }} key={paymentIntentDetailSelected.id}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              margin: "1% 3%",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                felxDirection: "column",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
+
+      <div className="container-payment-detail-assignment-section">
+        {/* <div style={{ width: "5%", marginLeft: "1%", marginTop: "1%" }}>
+          <NavLink to="/admin/attendees">
+            <button
+              className="btn btn-delete"
+              onClick={cleanUpPaymentIntentDetailSelect}
             >
+              Back
+            </button>
+          </NavLink>
+        </div> */}
+        <div
+          className="payment-detail-assignment-section"
+          key={paymentIntentDetailSelected.id}
+        >
+          <div className="detail-assignment-user-section">
+            <div className="detail-user-info-assignment-section">
+              <NavLink to="/admin/attendees">
+                <button
+                  className="btn btn-delete"
+                  onClick={cleanUpPaymentIntentDetailSelect}
+                >
+                  Back
+                </button>
+              </NavLink>
+            </div>
+            <div className="detail-user-info-assignment-section">
               {" "}
-              <label>Full Name: </label> <br />
-              <h5>
+              <strong>Full Name: </strong>
+              <span>
                 {paymentIntentDetailSelected.user.name}{" "}
                 {paymentIntentDetailSelected.user.lastName}
-              </h5>
+              </span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                felxDirection: "column",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
-            >
-              <label>Email: </label> <br />
-              <h5> {paymentIntentDetailSelected.user.email}</h5>
+            <div className="detail-user-info-assignment-section">
+              <strong>Email: </strong>
+              <span> {paymentIntentDetailSelected.user.email}</span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                felxDirection: "column",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
-            >
-              <label>Phone #: </label> <br />
-              <h5> {paymentIntentDetailSelected.user.phoneNumber}</h5>
+            <div className="detail-user-info-assignment-section">
+              <strong>Phone #: </strong>
+              <span> {paymentIntentDetailSelected.user.phoneNumber}</span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                felxDirection: "column",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
-            >
+            <div className="detail-user-info-assignment-section">
               {" "}
-              <label>Payment Intent ID: </label> <br />
-              <h5> {paymentIntentDetailSelected.paymentIntent}</h5>
+              <strong>Payment Intent ID: </strong>
+              <span> {paymentIntentDetailSelected.paymentIntent}</span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                felxDirection: "column",
-                justifyContent: "space-between",
-                alignContent: "center",
-              }}
-            >
+            <div className="detail-user-info-assignment-section">
               {" "}
-              <label>Device Selected: </label> <br />
-              <h5> {paymentIntentDetailSelected.device}</h5>
+              <strong>Device Selected: </strong>
+              <span> {paymentIntentDetailSelected.device}</span>
             </div>
           </div>
         </div>
@@ -419,14 +358,11 @@ export const ReceiversDetailsAssignation = () => {
           {loading !== true ? (
             <>
               {paymentIntentReceiversAssigned?.length < 1 ? (
-                <div
-                  style={{ width: "40%", display: "flex", margin: "0 auto" }}
-                >
+                <div className="container-input-button">
                   {receiversAssigned.length !==
                   paymentIntentDetailSelected.device ? (
                     <>
                       <input
-                        style={{ width: "100%" }}
                         value={receiverNumberAssgined}
                         name="receiverNumberAssgined"
                         id="receiverNumberAssgined"
@@ -435,7 +371,7 @@ export const ReceiversDetailsAssignation = () => {
                           setReceiverNumberAssgined(event.target.value)
                         }
                       />
-                      <button style={{ width: "50%" }} onClick={addReceiver}>
+                      <button className="btn btn-create" onClick={addReceiver}>
                         Add receiver
                       </button>
                     </>
@@ -488,6 +424,7 @@ export const ReceiversDetailsAssignation = () => {
                                   </td>
                                   <td>
                                     <button
+                                      className="btn btn-create"
                                       onClick={() =>
                                         replaceFunctionTrigger(receiver, index)
                                       }
@@ -498,6 +435,7 @@ export const ReceiversDetailsAssignation = () => {
                                   <td>
                                     {receiver.status !== false ? (
                                       <button
+                                        className="btn btn-delete"
                                         onClick={() =>
                                           handleReturnDevice(receiver, index)
                                         }
@@ -506,6 +444,7 @@ export const ReceiversDetailsAssignation = () => {
                                       </button>
                                     ) : (
                                       <button
+                                        className="btn btn-create"
                                         onClick={() =>
                                           handleAssignDevice(receiver, index)
                                         }
@@ -536,6 +475,7 @@ export const ReceiversDetailsAssignation = () => {
                                 </td>
                                 <td>
                                   <button
+                                    className="btn btn-delete"
                                     onClick={() =>
                                       removeReceiverBeforeSavedData(index)
                                     }
@@ -554,6 +494,7 @@ export const ReceiversDetailsAssignation = () => {
                 {receiversAssigned?.length ===
                   paymentIntentDetailSelected.device && (
                   <button
+                    className="btn btn-create"
                     disabled={saveButtonDisplay}
                     onClick={handleDataSubmitted}
                   >
@@ -570,6 +511,7 @@ export const ReceiversDetailsAssignation = () => {
       {paymentIntentReceiversAssigned?.length > 0 ? (
         paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
           <button
+            className="btn btn-delete"
             style={{ width: "25%", margin: "2% auto", padding: "15px" }}
             onClick={returnAllReceiversAtOnce}
           >
