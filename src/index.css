@@ -67,6 +67,26 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.btn {
+  color: var(--bs-body-bg);
+  background-color: var(--bs-primary);
+  transition: none;
+}
+.btn-create{
+  color: var(--bs-body-bg);
+  background-color: var(--main-colorsbluetiful);
+  transition: none;
+}
+.btn-detail{
+  color: var(--bs-primary);
+  background-color: var(--bs-body-bg);
+  transition: none;
+}
+.btn-delete{
+  color: var(--bs-body-bg);
+  background-color: var(--main-colorslobster);
+  transition: none;
+}
 @media only screen and (max-width: 650px) {
   input {
     width: 80%;
@@ -81,6 +101,21 @@ input::-webkit-inner-spin-button {
   .btn {
     color: var(--bs-body-bg);
     background-color: var(--bs-primary);
+    transition: none;
+  }
+  .btn-create{
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorsbluetiful);
+    transition: none;
+  }
+  .btn-delete{
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorslobster);
+    transition: none;
+  }
+  .btn-detail{
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorslobster);
     transition: none;
   }
 }

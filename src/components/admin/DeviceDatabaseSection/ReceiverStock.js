@@ -61,11 +61,10 @@ export const ReceiverStock = () => {
     { label: "status", key: "status" },
     { label: "Activity", key: "activity" },
     { label: "Comment", key: "comment" },
-    { label: "User", key: "user" },
   ];
 
   const fileName = "receiver-inventory";
-
+  let conditionReturned = null;
   return (
     <div className="container-stock-device">
       <div className="container-stock-device-list">
@@ -92,6 +91,7 @@ export const ReceiverStock = () => {
                         <td>{receiver.activity}</td>
                         <td>
                           <button
+                            className="btn btn-detail"
                             onClick={() => {
                               setReceiverId(receiver.id);
                               setReceiverDetail(receiver.device);
@@ -129,7 +129,7 @@ export const ReceiverStock = () => {
             <button
               variant="contained"
               color="primary"
-              className="export-btn"
+              className="export-btn btn-delete"
               onClick={() => setLoadingDownload(false)}
             >
               <CSVLink
@@ -184,6 +184,12 @@ export const ReceiverStock = () => {
           >
             {listOfReceiver?.map((receiver, index) => {
               if (receiver.id === receiverId) {
+                if (
+                  receiver.activity === "Stored" &&
+                  receiver.status !== "Operational"
+                ) {
+                  conditionReturned = receiver.device
+                }
                 return (
                   <div key={receiver.id}>
                     <div>
@@ -212,6 +218,7 @@ export const ReceiverStock = () => {
           receiverId={receiverId}
           receiverDetail={receiverDetail}
           listOfReceiver={listOfReceiver}
+          conditionReturned={conditionReturned}
         />
       </div>
       <div className="d-none">

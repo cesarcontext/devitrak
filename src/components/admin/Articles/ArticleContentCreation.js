@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { rightDoneMessage } from "../../../helper/swalFireMessage";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { Navbar } from "../ui/Navbar";
 
@@ -13,7 +14,7 @@ export const ArticleContentCreation = () => {
   const navigate = useNavigate();
 
   const addImgURL = (event) => {
-    setImg(URL.createObjectURL(event.target.files[0]));
+    setImg(URL.createObjectURL(event.target.files));
   };
   const handleArticleSubmitted = async (event) => {
     event.preventDefault();
@@ -23,42 +24,35 @@ export const ArticleContentCreation = () => {
         title,
         body,
       });
-      Swal.fire({
-        title: "",
-        width: 600,
-        padding: "3em",
-        text: `Article created`,
-        icon: "success",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-      rgb(30, 115, 190)
-        url("../image/logo.jpg")
-        left top
-        no-repeat
-      `,
-      });
-      navigate("/admin/articles");
+      rightDoneMessage(`Article created`);
     } catch (error) {
-      Swal.fire({
-        title: "Upss something went wrong!!",
-        width: 600,
-        padding: "3em",
-        text: `${error.response.data.msg}`,
-        icon: "error",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-      rgb(30, 115, 190)
-        url("../image/logo.jpg")
-        left top
-        no-repeat
-      `,
-      });
+     rightDoneMessage(error.response.data.msg)
     }
   };
+  let base64code = "";
+
+  const onChangeImage = (event) => {
+    const files = event.target.value;
+    const file = files[0];
+    getbase64(file);
+  };
+
+  const onLoad = (fileString) => {
+    this.base64code = fileString;
+  };
+
+  const getbase64 = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result);
+      console.log(
+        "🚀 ~ file: ArticleContentCreation.js ~ line 79 ~ getbase64 ~ onLoad",
+        onLoad
+      );
+    };
+  };
+
   return (
     <div>
       <Navbar />
@@ -75,9 +69,9 @@ export const ArticleContentCreation = () => {
           margin: "0 auto",
         }}
       >
-        <input type="file" name="img" onChange={addImgURL} />
-        {console.log(img)}
-        <img src={img} alt={img} />
+        <input type="file" name="img" onChange={onChangeImage} />
+        {console.log(base64code)}
+        <img src={base64code} alt={img} />
         <input
           type="text"
           value={title}
@@ -96,9 +90,9 @@ export const ArticleContentCreation = () => {
           onChange={(event) => setBody(event.target.value)}
         />
         <div>
-          <button type="submit">Save</button>
+          <button className="btn btn-create" type="submit">Save</button>
           <NavLink to="/admin/articles">
-            <button style={{backgroundColor: "red"}}>Cancel</button>
+            <button className="btn btn-delete" style={{ backgroundColor: "red" }}>Cancel</button>
           </NavLink>
         </div>
       </form>

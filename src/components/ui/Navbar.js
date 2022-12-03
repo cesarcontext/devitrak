@@ -19,7 +19,8 @@ export const Navbar = () => {
           <div
             style={{
               width: "30%",
-              height:"30%"
+              height:"30%",
+              paddingLeft:"15px"
             }}
           >
             <svg
@@ -46,23 +47,6 @@ export const Navbar = () => {
                 fill="white"
               />
             </svg>
-          </div>
-          <div
-            style={{
-              width: "30%",
-            }}
-          >
-            <div>
-              <i
-                style={{
-                  fontSize: "35px",
-                  backgroundColor: "rgba(30, 115, 190, 1)",
-                  borderRadius: "50%",
-                  padding: "15px",
-                }}
-                className="bi bi-list"
-              ></i>
-            </div>
           </div>
           <div
             style={{

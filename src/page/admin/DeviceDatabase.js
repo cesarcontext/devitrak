@@ -3,24 +3,16 @@ import { DisplayDataReceiversActivity } from "../../components/admin/DeviceDatab
 import { DisplayDataReceiversStatus } from "../../components/admin/DeviceDatabaseSection/DisplayDataReceiversStatus";
 import { ReceiverStock } from "../../components/admin/DeviceDatabaseSection/ReceiverStock";
 import { Navbar } from "../../components/admin/ui/Navbar";
-
+import "../../style/component/admin/DeviceDatabase.css"
 export const DeviceDatabase = () => {
   return (
     <div>
       <Navbar />
-      <h2>Database</h2>
+      {/* <h2>Database</h2> */}
       <div>
         <ReceiverStock />
       </div>
-      <div style={{
-        width:"70%",
-        display:"flex",
-        flexWrap:"wrap",
-        justifyContent:"space-between",
-        alignItems:"center",
-        margin:"auto"
-      }}>
-        <hr />
+      <div className="container-graphic" style={{display:"flex", justifyContent:"space-around", alignItems:"center"}}>
         <DisplayDataReceiversActivity />
         <DisplayDataReceiversStatus />
       </div>

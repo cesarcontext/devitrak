@@ -9,6 +9,7 @@ import { useStripeHook } from "../hooks/useStripeHook";
 import QRCode from "react-qr-code";
 import { AccordionListPaymentIntent } from "../components/ui/AccordionListPaymentIntent";
 import "../style/pages/myProfile.css";
+import { useSelector } from "react-redux";
 
 const initalFormValues = {
   groupName: "",
@@ -25,6 +26,7 @@ export const MyProfile = () => {
   const [formValues, setFormValues] = useState(initalFormValues);
   const [buttonState, setButtonState] = useState(true);
   const tokenVerification = localStorage.getItem("token");
+  const { users } = useSelector(state => state.contactInfo)
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -147,7 +149,6 @@ export const MyProfile = () => {
         confirmButtonColor: "rgb(30, 115, 190)",
       });
     }
-
     await startUpdatingContactInfo(formValues);
     setShowInfo(!showInfo);
   };
@@ -162,12 +163,11 @@ export const MyProfile = () => {
         <div className="container-box-user-info-detail">
           <div style={{ width: "100%", display: "flex" }}>
             <div className="box-user-detail-buttons">
-              {showInfo !== true ? (
-                <button
+              {users.id !== "" ? showInfo !== true ? (
+                <p
                   disabled={buttonState}
                   id="box-user-detail-edit-button"
-                  onClick={handleButtonState}
-                >
+                  onClick={handleButtonState}>
                   <h5>
                     EDIT{" "}
                     <svg
@@ -181,7 +181,7 @@ export const MyProfile = () => {
                       <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                     </svg>
                   </h5>
-                </button>
+                </p>
               ) : (
                 <div
                   style={{
@@ -191,11 +191,10 @@ export const MyProfile = () => {
                   }}
                 >
                   <div className="col">
-                    <button
+                    <p
                       className="col"
                       id="box-user-detail-cancel-button"
-                      onClick={handleButtonState}
-                    >
+                      onClick={handleButtonState}>
                       <h5>
                         CANCEL{" "}
                         <svg
@@ -215,10 +214,10 @@ export const MyProfile = () => {
                           <path d="M13 9H15V17H13V9Z" fill="currentColor" />
                         </svg>
                       </h5>
-                    </button>
+                    </p>
                   </div>
                   <div className="col">
-                    <button
+                    <p
                       className="col"
                       id="box-user-detail-save-button"
                       onClick={handleEditContactInfo}
@@ -231,15 +230,14 @@ export const MyProfile = () => {
                           height="15"
                           fill="currentColor"
                           className="bi bi-save"
-                          viewBox="0 0 16 16"
-                        >
+                          viewBox="0 0 16 16">
                           <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
                         </svg>
                       </h5>
-                    </button>
+                    </p>
                   </div>
                 </div>
-              )}
+              ): null}
             </div>
           </div>
           <div>
@@ -306,16 +304,15 @@ export const MyProfile = () => {
               </>
             </div>
           )}
-          <hr style={{ width: "0%" }} />
           <div className="container-box-user-info-detail-qrcode">
             {checkPaymentIntentArray(paymentIntent)}
           </div>
         </div>
         {/* 
-        //*section commented while the function to render receivers with status true only 
+        //*section commented while the function to render receivers with status true only */}
         <div className="container-device-alert">
           <ReturnDeviceAlert />
-        </div> */}
+        </div>
         <div className="container-device-accordion-List">
           <div>
             <h3>Your devices</h3>

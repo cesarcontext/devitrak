@@ -5,16 +5,20 @@
   width: 100%;
   padding: 20px;
   border: solid 1px rgb(255, 255, 255);
-  background-color: rgb(30, 115, 190);
+  background-color: var(--main-colorsbluetiful)
 }
-.navbar-admin .nav-item .nav-link {
+.navbar-admin, .nav-item, .nav-link{
   height: 10%;
   color: rgb(255, 255, 255);
   text-decoration: none;
 }
 
-a,
-.navbar-admin .nav-item .nav-link a {
+.navbar-admin, .nav-item, .nav-link{
+  height: 10%;
   color: rgb(255, 255, 255);
   text-decoration: none;
+}
+.nav-item h4{
+  color: var(--main-colorswhite);
+  font-size: var(--font-size-m2);
 }

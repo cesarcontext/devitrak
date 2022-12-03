@@ -2,12 +2,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApiStripe, devitrackApi } from "../apis/devitrackApi";
 import { onAddCustomer, onAddNewPaymentIntent } from "../store/slices/stripeSlice";
-import { useDeviceCount } from "./useDeviceCountStore";
 
 export const useStripeHook = () => {
-  const { paymentIntent, customer } = useSelector((state) => state.stripe);
+  const { paymentIntent } = useSelector((state) => state.stripe);
   const dispatch = useDispatch();
-  const { device } = useDeviceCount();
   const [data, setData] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
   const [paymentIntentId, setPaymentIntentId] = useState(null);
@@ -33,7 +31,6 @@ export const useStripeHook = () => {
   };
 
   const startStripePaymentIntent = async (device) => {
-    console.log("🚀 ~ file: useStripeHook.js ~ line 36 ~ startStripePaymentIntent ~ device", device)
     try {
       await devitrackApi
         .post("/stripe/create-payment-intent", {
@@ -74,13 +71,13 @@ export const useStripeHook = () => {
     }
   };
 
-  const listAllPaymentIntentFunction = () => {
+  const listAllPaymentIntentFunction = async () => {
     const displayData = new URLSearchParams(window.location.search).get(
       "device-database"
     );
     if (displayData) {
       try {
-        const response = devitrackApi
+       await devitrackApi
           .get("/stripe/payment-intents")
           .then((response) => response.data)
           .then((data) => data.paymentIntents)

@@ -7,13 +7,13 @@
   min-width: 500px;
   align-self: center;
   color: var(--main-colorsfading-horizon);
-  margin-bottom: 12vh;
+  margin-bottom: 5vh;
 }
 
 #payment-message {
   background-color: var(--main-colorslobster);
   color: rgb(253, 254, 255);
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 20px;
   padding: 12px;
   text-align: center;

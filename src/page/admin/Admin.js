@@ -1,43 +1,30 @@
-import { useEffect, useState } from "react";
-import { devitrackApi } from "../../apis/devitrackApi";
+import { useState } from "react";
 import { Navbar } from "../../components/admin/ui/Navbar";
+import "../../style/pages/admin/admin.css"
 
 export const Admin = () => {
   const [message, setMessage] = useState('')
-  const [userPermisssion, setUserPermisssion] = useState([]);
-  const getUserPermissionResponse = async () => {
-    const response = await devitrackApi.get("/auth/users");
-    if (response) {
-      setUserPermisssion(response.data.users);
-    }
-  };
-
-  useEffect(() => {
-    const controller = new AbortController();
-    getUserPermissionResponse();
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   const sendNotifications = async(event) => {
     event.preventDefault()
     const notification = new Notification("New Notification", {
       body:message,
       timestamp: new Date(),
-      icon: "../image/logo.jpg"
+      icon: "logo.jpg"
     })
+    setMessage("")
     return notification
+    
   }
 
   return (
     <div>
       <Navbar />
-      <div>
+      <div className="notification-box">
         <h3>Notification</h3>
-        <form onSubmit={sendNotifications}>
+        <form className="notification-form" onSubmit={sendNotifications}>
           <textarea name="message" value={message} onChange={event => setMessage(event.target.value)}/>
-          <button type="submit">Send</button>
+          <button className="btn btn-create" type="submit">Send</button>
         </form>
       </div>
     </div>

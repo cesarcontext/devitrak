@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { ModalUpdatePassword } from "../../components/admin/ui/ModalUpdatePassword";
+import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useAdminStore } from "../../hooks/useAdminStore";
 import { useForm } from "../../hooks/useForm"
 import "../../style/pages/admin/login.css";
@@ -18,6 +20,7 @@ const registerFormFields = {
 
 export const LoginPage = () => {
   const { startLogin, errorMessage, startRegister } = useAdminStore();
+  const [updatePasswordModalState, setUpdatePasswordModalState] = useState(false)
 
   const {
     loginEmail,
@@ -43,7 +46,7 @@ export const LoginPage = () => {
 
     if ( registerPassword !== registerPassword2) {
 
-        Swal.fire('error','Passwords must match', 'error')
+        swalErrorMessage('Passwords must match')
         return;
     } else {
         startRegister({ 
@@ -58,6 +61,10 @@ export const LoginPage = () => {
       Swal.fire("Incorrect credentials", errorMessage, "error");
     }
   }, [errorMessage]);
+
+  const updatePasswordFunction = async () => {
+    setUpdatePasswordModalState(true)
+  }
 
   return (
     <div className="container login-container">
@@ -88,6 +95,7 @@ export const LoginPage = () => {
             <div className="d-grid gap-2">
               <input type="submit" className="btnSubmit" value="Login" />
             </div>
+            <p className="forgot-link" onClick={updatePasswordFunction}>Forgot the password? Click here!</p>
           </form>
         </div>
 
@@ -142,6 +150,7 @@ export const LoginPage = () => {
           </form>
         </div>
       </div>
+      <ModalUpdatePassword updatePasswordModalState={updatePasswordModalState} setUpdatePasswordModalState={setUpdatePasswordModalState} />
     </div>
   );
 };

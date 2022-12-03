@@ -56,16 +56,15 @@ export const ModalReplaceReceiver = ({
     }
   }, [errorMessage]);
 
-  console.log('checking',replaceReceiverFormFields)
   const returnExistentReceiverInPool = async () => {
-    let receiverInPoolId;
-    await listOfDeviceInPool?.map((item) => {
-      if (item.device === receiverObjectToReplace.serialNumbe) {
-        return (receiverInPoolId = item.id);
-      }
-    });
+    // let receiverInPoolId;
+    // await listOfDeviceInPool?.map((item) => {
+    //   if (item.device === receiverObjectToReplace.serialNumbe) {
+    //     return receiverInPoolId = item.id;
+    //   }
+    // });
     try {
-      await devitrackApi.put(
+      const response = await devitrackApi.put(
         `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
         {
           device: receiverObjectToReplace.serialNumber,
@@ -74,6 +73,18 @@ export const ModalReplaceReceiver = ({
           comment: otherComment,
         }
       );
+      if( response ) {
+        await devitrackApi.post(
+          `/receiver/receiver-returned-issue`,
+          {
+            device: receiverObjectToReplace.serialNumber,
+            status: reason,
+            activity: "Stored",
+            comment: otherComment,
+            user: paymentIntentDetailSelected.user.email
+          }
+        );
+      }
     } catch (error) {
       console.log(
         "🚀 ~ file: ModalReplaceReceiver.js ~ line 59 ~ changeStatusReceiverReplaced ~ error",
@@ -199,8 +210,8 @@ export const ModalReplaceReceiver = ({
                 gap:"3%"
               }}
             >
-              <button style={{ width:"45%"}} onClick={() => setReplaceStatus(false)}>Cancel</button>
-              <button style={{ width:"45%"}} type="submit">Save</button>
+              <button className="btn btn-delete" style={{ width:"45%"}} onClick={() => setReplaceStatus(false)}>Cancel</button>
+              <button className="btn btn-create" style={{ width:"45%"}} type="submit">Save</button>
             </div>
           </form>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
 import { Navbar } from "../components/ui/Navbar";
@@ -24,9 +24,7 @@ export const Checkout = () => {
       <Navbar />
       <div className="container-checkout">
         {!clientSecret ? (
-          <div className="border-section-wrapper">
             <Devices />
-          </div>
         ) : (
           ""
         )}
@@ -34,7 +32,7 @@ export const Checkout = () => {
           <></>
         ) : (
           <div className={`button-wrapper d-${visibleButton}`}>
-            <button onClick={handleOnSubmit}>Looks right?</button>
+            <button className="btn" onClick={handleOnSubmit}>Looks right?</button>
           </div>
         )}
         

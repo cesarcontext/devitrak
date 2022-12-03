@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { swalErrorMessage } from "../../../helper/swalFireMessage"
+
 const customStyles = {
   content: {
     width: "30%",
@@ -34,7 +35,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
 
   useEffect(() => {
     if (errorMessage !== undefined) {
-      Swal.fire("Incorrect credentials", errorMessage, "error");
+      swalErrorMessage(errorMessage);
     }
   }, [errorMessage]);
 
@@ -93,6 +94,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
               />
             </div>
             <div
+            className="button-container"
               style={{
                 display: "flex",
                 flexWrap: "wrap",
@@ -101,8 +103,8 @@ export const ModalCreateTransactionForNoRegularUser = ({
                 width:"60%"
               }}
             >
-              <button style={{ width: "45%"}} onClick={closeModal}>Cancel</button>
-              <button style={{ width: "45%"}} type="submit">Register</button>
+              <button className="btn btn-delete" style={{ width: "45%"}} onClick={closeModal}>Cancel</button>
+              <button className="btn btn-create" style={{ width: "45%"}} type="submit">Register</button>
             </div>
           </form>
         </div>

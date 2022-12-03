@@ -1,21 +1,28 @@
-.email-sent-message-magic-link{
-    display: flex;
+.email-sent-message-magic-link {
+  display: flex;
 }
 .email-sent-message-magic-link i {
-    text-decoration: underline;
-    font-size: 12px;
-    color: blue;
-  }
+  text-decoration: underline;
+  font-size: 12px;
+  color: blue;
+}
 .email-sent-message-magic-link p {
-text-decoration: underline;
-font-size: 10px;
-color: blue;
+  text-decoration: underline;
+  font-size: 10px;
+  color: blue;
 }
 
 @media screen and (min-width: 320px) and (max-width: 480px) {
-    .email-sent-message-magic-link{
-        display: flex;
-    }
+  .email-sent-message-magic-link {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+  }
+  .email-sent-message-magic-link i{
+    font-size: var(--font-size-m2);
+    color: var(--black);
+  }
   .email-sent-message-magic-link p {
     text-decoration: underline;
     font-size: 10px;

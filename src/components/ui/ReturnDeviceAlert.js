@@ -1,48 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { useDeviceCount } from "../../hooks/useDeviceCountStore";
-import { useAdminStore } from "../../hooks/useAdminStore";
-import { useStripeHook } from "../../hooks/useStripeHook";
 import { useSelector } from "react-redux";
+import { devitrackApi } from "../../apis/devitrackApi";
 import "../../style/component/ui/ReturnDeviceAlert.css"
+
 export const ReturnDeviceAlert = () => {
-  const { paymentIntent } = useStripeHook();
-  const { paymentIntentReceiversAssigned } = useSelector(
-    (state) => state.stripe
-  );
-  const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
+  const { users } = useSelector(state => state.contactInfo)
   const [loading, setLoading] = useState(false);
-  const [paymentToCheck, setPaymentToCheck] = useState(null);
-  const { device } = useDeviceCount();
-
-  useEffect(() => {
-    if (paymentIntent.length > 0) {
-      return setPaymentToCheck(paymentIntent.at(-1).data.payment_intent_id);
+  const [poolReceivers, setPoolReceivers] = useState([])
+  
+  const checkActivatedReceivers = async () => {
+    const response = await devitrackApi.get("/receiver/receiver-assigned-list")
+    if(response) {
+      setPoolReceivers(response.data.listOfReceivers)
+      setLoading(true)
     }
-  }, [paymentIntent]);
+  }
 
-  const check = async () => {
-    await checkReceiversAssignedToPaymentIntent(paymentToCheck);
-  };
-  useEffect(() => {
-    check();
-  }, [paymentToCheck]);
+useEffect(() => {
+  const controller = new AbortController()
+  checkActivatedReceivers()
+  return () => {
+    controller.abort()
+  }
+}, [])
 
-  useEffect(() => {
-    if (paymentIntentReceiversAssigned !== []) {
-      setLoading(true);
+const listOfDevice = new Map()
+
+const selectDevicePerUser = async () => {
+  poolReceivers?.map((transaction) => {
+    if(transaction.user === users.email){
+      transaction.device.map( item => {
+        if( item.status === true){
+          listOfDevice.set(item.serialNumber, item.status)
+        }
+      })
     }
-  }, [paymentIntentReceiversAssigned]);
+  })
+  return listOfDevice
+}
+selectDevicePerUser()
   return (
     <div>
       <div className="container-alert-info">
-        {loading !== false ? (
+        {listOfDevice.size > 0 ? (
           <div className="alert-message-loading-true">
             <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                margin: "25px",
-              }}
               className="alert alert-danger d-flex align-items-center"
               role="alert"
             >
@@ -58,9 +60,9 @@ export const ReturnDeviceAlert = () => {
                 <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
               </svg>
               <div>
-                <h4>
-                  You need to return {device} {" "}
-                  {device > 1 ? "devices" : "device"}
+              <h4>
+                  You need to return {listOfDevice.size} {" "}
+                  {listOfDevice.size > 1 ? "devices" : "device"}
                 </h4>
                 <span>
                   You have 3 days remaining. <br />
@@ -74,11 +76,6 @@ export const ReturnDeviceAlert = () => {
           <div
             className="alert alert-success d-flex align-items-center"
             role="alert"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              margin: "25px",
-            }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +89,7 @@ export const ReturnDeviceAlert = () => {
             </svg>
             <div>
               <h4>
-                You have {device} pending {device > 1 ? "devices" : "device"}
+                You have {listOfDevice.size} pending {listOfDevice.size > 1 ? "devices" : "device"}
               </h4>
               <span>You have returned all your devices.</span>
             </div>

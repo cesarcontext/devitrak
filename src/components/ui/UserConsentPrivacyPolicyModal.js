@@ -80,12 +80,13 @@ export const UserConsentPrivacyPolicyModal = () => {
               }}
             >
               <button
+              className="btn btn-delete"
                 onClick={() => navigate("/declineTerms")}
                 style={{ paddig: "5px" }}
               >
                 Decline
               </button>
-              <button type="submit" style={{ paddig: "5px" }}>
+              <button className="btn btn-create" type="submit" style={{ paddig: "5px" }}>
                 Accept
               </button>
             </div>

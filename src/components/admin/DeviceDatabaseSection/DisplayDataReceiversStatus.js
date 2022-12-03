@@ -3,8 +3,12 @@ import { useSelector } from "react-redux";
 import { PieChart, Pie, Cell, LabelList } from "recharts";
 import { devitrackApi } from "../../../apis/devitrackApi";
 
-const colors = ["#214469", "#4000FF", "#7B2836", "#000000", "#080144"];
-
+const colors = [
+  "var(--main-colorsbluetiful)",
+  "var(--main-colorszen)",
+  "var(--main-colorsfly-by-night)",
+  "var(--main-colorscarbon)",
+];
 export const DisplayDataReceiversStatus = () => {
   const { paymentIntentDetailSelected } = useSelector((state) => state.stripe);
 
@@ -107,8 +111,8 @@ export const DisplayDataReceiversStatus = () => {
           <LabelList
             dataKey="name"
             position="insideTop"
-            angle="0"
-            stroke="#ffff"
+            angle="25"
+            stroke="var(--main-colorslobster"
           />
           {aux.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index]} />

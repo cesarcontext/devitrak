@@ -1,14 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { useForm } from "../../../hooks/useForm";
-import { useStripeHook } from "../../../hooks/useStripeHook";
 
 const customStyles = {
   content: {
-    width: "35%",
+    width: "20%",
     height: "35%",
     top: "50%",
     left: "50%",
@@ -31,9 +30,7 @@ const initalFormValues = {
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
-  const { errorMessage, user } = useAdminStore();
-  const [deviceNoRegularUser, setDeviceNoRegularUser] = useState();
-  const { saveStripeTransaction } = useStripeHook();
+  const { errorMessage } = useAdminStore();
   const {
     groupName,
     name,
@@ -140,7 +137,9 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
-        <div>
+        <div style={{
+          textAlign:"center"
+        }}>
           <h2>Create New User</h2>
 
           <form style={{
@@ -206,10 +205,10 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
               }}
             >
               <div>
-                <button onClick={closeModal}>Cancel</button>
+                <button className="btn btn-delete" onClick={closeModal}>Cancel</button>
               </div>
               <div>
-                <button type="submit">Register</button>
+                <button className="btn btn-create" type="submit">Register</button>
               </div>
             </div>
           </form>

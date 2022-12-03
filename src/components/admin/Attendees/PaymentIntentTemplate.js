@@ -18,10 +18,15 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
       .then((data) => setDataListed(data.paymentIntents.data));
   }, [sendPaymentIntentId]);
 
-  const receiversArray = (n) => {
-    const array = new Array(n);
-    return array;
-  };
+  // const receiversArray = (n) => {
+  //   const array = new Array(n);
+  //   return array;
+  // };
+
+  // const displayDate = async(item) => {
+  //   const day = new Date( item )
+  //   return day
+  // }
   return (
     <div
       style={{
@@ -30,7 +35,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
         marginBottom: "3%",
         border: "solid 2px #212529",
         borderRadius: "15px",
-        padding: "40px",
+        padding: "30px",
       }}
     >
       <div
@@ -71,21 +76,22 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
               <th scope="col">Device #</th>
               <th scope="col">Capture</th>
               <th scope="col">Cancel</th>
-              <th scope="col">Date</th>
+              {/* <th scope="col">Date</th> */}
             </tr>
           </thead>
-          {dataListed?.map((index) => {
-            const device = index.amount_capturable / 20000;
-            const amount_authorized = index.amount_capturable;
-            const date = index.created;
-            if (index.id === paymentIntentSelected) {
+          {dataListed?.map((data, index) => {
+            const device = data.amount_capturable / 20000;
+            const amount_authorized = data.amount_capturable;
+            const date = new Date(data.created);
+            console.log("🚀 ~ file: PaymentIntentTemplate.js ~ line 86 ~ {dataListed?.map ~ date", date)
+            if (data.id === paymentIntentSelected) {
               return (
-                <tbody key={index.id}>
+                <tbody key={data.id}>
                   <tr>
                     <th scope="row">
                       {device !== 0 ? (
                         <NavLink to="/admin/attendees/receiver_assignation">
-                          <button style={{ width: "90%", padding: "5px" }}>
+                          <button className="btn btn-create" style={{ width: "90%", padding: "5px" }}>
                             Assign Device
                           </button>
                         </NavLink>
@@ -93,34 +99,35 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                         <div
                           style={{ backgroundColor: "#212529", color: "#fff" }}
                         >
-                          <h4>{index.status.toUpperCase()}</h4>
+                          <h4>{data.status.toUpperCase()}</h4>
                         </div>
                       )}
                     </th>
-                    <td>{index.id}</td>
+                    <td>{data.id}</td>
                     <td>
-                      {index.charges.data[0].payment_method_details.card.brand.toUpperCase()}{" "}
+                      {data.charges.data[0].payment_method_details.card.brand.toUpperCase()}{" "}
                       (*****
-                      {index.charges.data[0].payment_method_details.card.last4})
+                      {data.charges.data[0].payment_method_details.card.last4})
                     </td>
                     <td>
                       {
-                        index.charges.data[0].payment_method_details.card
+                        data.charges.data[0].payment_method_details.card
                           .exp_month
                       }{" "}
                       /{" "}
                       {
-                        index.charges.data[0].payment_method_details.card
+                        data.charges.data[0].payment_method_details.card
                           .exp_year
                       }
                     </td>
-                    <td style={{ backgroundColor: `${index.status}` }}>
+                    <td style={{ backgroundColor: `${data.status}` }}>
                       ${amount_authorized / 100}
                     </td>
                     <td>{device}</td>
                     <td>
                       {device !== 0 ? (
                         <button
+                        className="btn btn-create"
                           onClick={() => {
                             Swal.fire({
                               title: "",
@@ -145,7 +152,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                     "amount to capture",
                                     amount
                                   );
-                                  const id = index.id;
+                                  const id = data.id;
                                    devitrackApi.post(
                                     `/stripe/payment-intents/${id}/capture`,
                                     {id, amount_to_capture: amount }
@@ -176,6 +183,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                         </button>
                       ) : (
                         <button
+                        className="btn btn-create"
                           disabled
                           onClick={() => {
                             Swal.fire({
@@ -191,16 +199,16 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                               inputAttributes: {
                                 autocapitalize: "off",
                                 placeholder:
-                                  `Max amount to capture: $${index.amount_capturable}`.slice(
+                                  `Max amount to capture: $${data.amount_capturable}`.slice(
                                     0,
                                     -2
                                   ),
                               },
                             }).then((result) => {
                               if (result.isConfirmed) {
-                                const id = index.id;
+                                const id = data.id;
                                 devitrackApi.post(
-                                  `/stripe/payment-intents/${index.id}/capture`,
+                                  `/stripe/payment-intents/${data.id}/capture`,
                                   { id: id }
                                 );
                                 Swal.fire(
@@ -221,6 +229,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                       {device !== 0 ? (
                         <>
                           <button
+                          className="btn btn-delete"
                             style={{ backgroundColor: "red" }}
                             onClick={() => {
                               Swal.fire({
@@ -233,9 +242,9 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                 backdrop: "rgba(0,0,123,0.4)",
                               }).then((result) => {
                                 if (result.isConfirmed) {
-                                  const id = index.id;
+                                  const id = data.id;
                                   devitrackApi.post(
-                                    `/stripe/payment-intents/${index.id}/cancel`,
+                                    `/stripe/payment-intents/${data.id}/cancel`,
                                     { id: id }
                                   );
                                   Swal.fire(
@@ -253,6 +262,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                       ) : (
                         <>
                           <button
+                          className="btn btn-delete"
                             disabled
                             style={{ backgroundColor: "red" }}
                             onClick={() => {
@@ -267,9 +277,9 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                 backdrop: "rgba(0,0,123,0.4)",
                               }).then((result) => {
                                 if (result.isConfirmed) {
-                                  const id = index.id;
+                                  const id = data.id;
                                   devitrackApi.post(
-                                    `/stripe/payment-intents/${index.id}/cancel`,
+                                    `/stripe/payment-intents/${data.id}/cancel`,
                                     { id: id }
                                   );
                                   Swal.fire(
@@ -286,7 +296,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                         </>
                       )}
                     </td>
-                    <td>{date}</td>
+                    {/* <td>{date.toDateString()}</td> */}
                   </tr>
                 </tbody>
               );

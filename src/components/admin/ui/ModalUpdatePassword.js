@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
@@ -7,7 +7,7 @@ import { useForm } from "../../../hooks/useForm";
 import { onLogin } from "../../../store/slices/adminSlice";
 const customStyles = {
   content: {
-    width: "60%",
+    width: "25%",
     height: "30%",
     top: "50%",
     left: "50%",
@@ -68,8 +68,8 @@ export const ModalUpdatePassword = ({
         style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
-        <div>
-          <h2>Submit a new password</h2>
+        <div style={{textAlign:"center"}}>
+          <h2>Update password</h2>
           <form
             style={{
               margin: "auto",
@@ -120,10 +120,10 @@ export const ModalUpdatePassword = ({
                 marginBottom: "0%",
               }}
             >
-              <button style={{ width: "45%" }} onClick={closeModal}>
+              <button className="btn btn-delete" style={{ width: "45%" }} onClick={closeModal}>
                 Cancel
               </button>
-              <button style={{ width: "45%" }} type="submit">
+              <button className="btn btn-create" style={{ width: "45%" }} type="submit">
                 Submit
               </button>
             </div>

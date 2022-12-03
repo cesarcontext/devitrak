@@ -10,7 +10,7 @@ export const Attendees = () => {
     <div>
       <div>
         <Navbar />
-        <h2>Users</h2>
+        {/* <h2>Users</h2> */}
         <div>
           <div className="search-div">
             <div>
@@ -29,7 +29,7 @@ export const Attendees = () => {
             {" "}
             <AttendeesInfo searchTerm={ searchTerm } />
           </div>
-          <div style={{ display: "flex", width: "100%", margin: "2% auto" }}>
+          <div style={{ display: "flex",justifyContent:"center",alignItems: "center", width: "70%", marginLeft: "16rem" }}>
             {" "}
             <PaymentIntentTemplate searchTerm={searchTerm } />
           </div>

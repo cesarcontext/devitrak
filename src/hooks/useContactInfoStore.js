@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../apis/devitrackApi";
+import { swalErrorMessage } from "../helper/swalFireMessage";
 import {
   onAddNewContact,
   onUpdateContact,
@@ -54,28 +55,11 @@ export const useContactInfoStore = () => {
         })
       );
     } catch (error) {
-      console.log(error.repsonse);
+      console.log(error);
       setToken("");
       setEmailUserRegistered("");
-      Swal.fire({
-        title: "Something went wrong",
-        width: 600,
-        padding: "3em",
-        text: error,
-        icon: "error",
-        color: "rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-          rgb(30, 115, 190)
-            url("../image/logo.jpg")
-            left top
-            no-repeat
-          `,
-      });
-
+      swalErrorMessage(error.response.data.msg)
       navigate("/");
-
     }
   };
   const startShowingData = () => {
@@ -125,22 +109,7 @@ export const useContactInfoStore = () => {
       localStorage.setItem("status", data.ok);
     } catch (error) {
       console.log(error);
-      Swal.fire({
-        title: "Upss something went wrong!!",
-        width: 600,
-        padding: "3em",
-        text: `${error.response.data.msg}`,
-        icon: "error",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-        rgb(30, 115, 190)
-          url("../image/logo.jpg")
-          left top
-          no-repeat
-        `,
-      });
+      swalErrorMessage(`${error.response.data.msg}`)
     }
   };
 

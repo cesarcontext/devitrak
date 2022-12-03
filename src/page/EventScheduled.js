@@ -26,22 +26,28 @@ export const EventScheduled = () => {
             <h2>Expo Hall 3rd Floor</h2>
           </div>
           <div className="container-schedule-event-body-description">
-            <div className="col info-detail-each">
+            <div className="info-detail-each">
               <p>Room<br/>301-A</p>
             </div>
-            <div className="col info-detail-each">
+            <div className="info-detail-each">
               <p>Room<br/>301-B</p>
             </div>
-            <div className="col info-detail-each">
+            <div className="info-detail-each">
               <p>Room<br/>30</p>
             </div>
           </div>
           <div className="container-schedule-event-body-title">
             <h4>New Hall 2nd Floor</h4>
           </div>
-          <div>
-            <div className="col info-detail-each">
+          <div className="container-schedule-event-body-description">
+            <div>
+              <p></p>
+            </div>
+            <div className="info-detail-each">
               <p>Room<br/>220</p>
+            </div>
+            <div>
+              <p></p>
             </div>
           </div>
         </div>

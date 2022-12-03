@@ -13,7 +13,7 @@ export const UserTable = ({ headers, listOfReceiver }) => {
             })}
           </tr>
         </thead>
-        {listOfReceiver.map(({id, device, status, activity, comment, user, index}) => (
+        {listOfReceiver.map(({id, device, status, activity, comment, index}) => (
           <tbody key={index}>
             <tr key={id * Math.floor(Math.random() * max)}>
               <td>{index + 1}</td>
@@ -21,7 +21,6 @@ export const UserTable = ({ headers, listOfReceiver }) => {
               <td>{status}</td>
               <td>{activity}</td>
               <td>{comment}</td>
-              <td>{user}</td>
             </tr>
           </tbody>
         ))}

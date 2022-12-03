@@ -57,7 +57,7 @@ export const ArticleEdit = () => {
         onChange={(event) => setBody(event.target.value)}
       />
       <div>
-        <button type="submit">Save</button>
+        <button className="btn btn-create" type="submit">Save</button>
       </div>
     </form>
   );

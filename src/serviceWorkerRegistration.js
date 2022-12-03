@@ -51,17 +51,6 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
-    let prompt;
-    window.addEventListener("beforeinstallprompt", function (e) {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later.
-      prompt = e;
-    });
-
-    installButton.addEventListener("click", function () {
-      prompt.prompt();
-    });
   }
 }
 

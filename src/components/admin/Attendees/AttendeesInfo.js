@@ -40,9 +40,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
   };
   return (
     <div className="container-attendees">
-      <div
-        className="container-attendees-info"
-      >
+      <div className="container-attendees-info">
         <div>
           <h2>Users</h2>
         </div>
@@ -66,6 +64,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                         <td>{user.email}</td>
                         <td>
                           <button
+                          className="btn btn-detail"
                             onClick={() => {
                               setSendObjectIdUser(user.id);
                               setUserDetail(user.category);
@@ -90,6 +89,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                           <td>{user.email}</td>
                           <td>
                             <button
+                            className="btn btn-detail"
                               onClick={() => {
                                 setSendObjectIdUser(user.id);
                                 setUserDetail(user.category);
@@ -120,7 +120,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
             </div>
             {user.role === "Administrator" ? (
               <div>
-                <button onClick={() => setCreateUserButton(true)}>
+                <button className="btn btn-create" onClick={() => setCreateUserButton(true)}>
                   Create user
                 </button>
               </div>
@@ -128,22 +128,11 @@ export const AttendeesInfo = ({ searchTerm }) => {
           </div>
         </div>
       </div>
-      <div
-      className="container-attendees-info-detail"
-      >
+      <div className="container-attendees-info-detail">
         <div>
           <h2>Details</h2>
         </div>
-        <div
-          style={{
-            width: "100%",
-            padding: "25px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            textAlign: "left",
-          }}
-        >
+        <div className="container-user-info-detail">
           {" "}
           <div
             style={{
@@ -186,6 +175,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                     if (user.id === sendObjectIdUser) {
                       return (
                         <button
+                        className="btn btn-create"
                           onClick={() => {
                             setCreateTransactionForNoRegularUser(true);
                           }}
@@ -203,7 +193,11 @@ export const AttendeesInfo = ({ searchTerm }) => {
           {users?.map((user) => {
             if (user.id === sendObjectIdUser) {
               return (
-                <div id="stripe-transaction-detail-per-user-id" className="stripetransaction-detail-info" key={user.id}>
+                <div
+                  id="stripe-transaction-detail-per-user-id"
+                  className="stripetransaction-detail-info"
+                  key={user.id}
+                >
                   <StripeTransactionHistoryByUser
                     sendObjectIdUser={sendObjectIdUser}
                     userDetail={userDetail}

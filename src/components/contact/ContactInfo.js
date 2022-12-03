@@ -9,6 +9,7 @@ import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import "../../style/component/contact/contactInfo.css";
+import { swalErrorMessage } from "../../helper/swalFireMessage";
 
 export const ContactInfo = () => {
   const {
@@ -74,45 +75,20 @@ export const ContactInfo = () => {
     event.preventDefault();
 
     if (validationName === "is-invalid") {
-      return Swal.fire({
-        title: "",
-        text: "Name must be provided",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
+      return swalErrorMessage("Name must be provided")
     }
     if (validationLastName === "is-invalid") {
-      return Swal.fire({
-        title: "",
-        text: "Last name must be provided",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
+      return swalErrorMessage("lastname must be provided")
     }
     if (validationEmail === "is-invalid") {
-      return Swal.fire({
-        title: "",
-        text: "Email must be provided",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
+      return swalErrorMessage("Email must be provided")
     }
     if (validationPhoneNumber === "is-invalid") {
-      return Swal.fire({
-        title: "",
-        text: "Phone number must be provided",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
+      return swalErrorMessage("Phone number must be provided")
     }
 
     if (device === 0) {
-      return Swal.fire({
-        title: "",
-        text: "Please select the number of receiver you need before to continue",
-        icon: "error",
-        confirmButtonColor: "rgb(30, 115, 190)",
-      });
+      return swalErrorMessage("Please select the number of receiver you need before to continue")
     }
     await startSavingContactInfo({
       ...formValues,

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import Swal from "sweetalert2";
 import { devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { useForm } from "../../../hooks/useForm";
+import { swalErrorMessage } from "../../../helper/swalFireMessage";
+
 const customStyles = {
   content: {
     width: "20%",
@@ -45,22 +46,15 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
 
   useEffect(() => {
     if (errorMessage !== undefined) {
-      Swal.fire("Incorrect credentials", errorMessage, "error");
+      swalErrorMessage(errorMessage);
     }
   }, [errorMessage]);
 
   const onSubmitRegister = async (event) => {
     event.preventDefault();
-    console.log(
-      (registerFormFields = {
-        registerName,
-        registerEmail,
-        registerPassword,
-        registerPassword2,
-      })
-    );
+
     if (registerPassword !== registerPassword2) {
-      Swal.fire("error", "Passwords must match", "error");
+      swalErrorMessage("Passwords must match");
       return;
     } else {
       const { data } = await devitrackApiAdmin.post("/new_admin_user", {
@@ -69,7 +63,6 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
         password: registerPassword,
         role: rolePermission,
       });
-      console.log(data);
       if (data) closeModal();
     }
   };
@@ -138,13 +131,30 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
               </select>
             </div>
 
-            <div className="d-grid gap-2">
-              <input
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                width: "80%",
+                marginTop: "2%",
+              }}
+            >
+              <button
+                style={{ width: "30%" }}
+                className="btn btn-delete"
+                onClick={closeModal}
+              >
+                Cancel
+              </button>
+              <button
+                style={{ width: "45%" }}
+                className="btn btn-create"
                 type="submit"
-                className="btnSubmit"
-                value="Register user"
-              />
-              <button onClick={closeModal}>Cancel</button>
+              >
+                Register
+              </button>
             </div>
           </form>
         </div>

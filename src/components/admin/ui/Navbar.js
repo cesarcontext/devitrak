@@ -6,15 +6,15 @@ import "./navbar.css";
 export const Navbar = () => {
   const { user, startLogout } = useAdminStore();
   const logout = () => {
-    startLogout()
+    startLogout();
   };
   return (
     <nav className="navbar-admin">
       {" "}
       <NavLink to="/admin">
-        <div>
-          <h4>Devitrack</h4>
-        </div>
+      <div className="nav-item">
+            <h4 className="nav-link">Devitrack</h4>
+          </div>
       </NavLink>
       <ul
         className="nav"
@@ -44,13 +44,13 @@ export const Navbar = () => {
             </p>
           </div>
         </NavLink>
-        <NavLink to="/admin/articles">
+        {/* <NavLink to="/admin/articles">
           <div className="nav-item">
             <p className="nav-link" href="#">
               Articles
             </p>
           </div>
-        </NavLink>
+        </NavLink> */}
         <NavLink to="/admin/settings">
           <div className="nav-item">
             <p className="nav-link">Settings</p>
@@ -67,11 +67,11 @@ export const Navbar = () => {
         }}
       >
         <NavLink to="/admin/profile">
-          <div>
-            <h4>{user.name}</h4>
+          <div className="nav-item">
+            <h4 className="nav-link">{user.name}</h4>
           </div>
         </NavLink>
-        <button style={{ width: "40%", borderRadius: "50%" }} onClick={logout}>
+        <button className="btn btn-delete" style={{ width: "25%", borderRadius: "25px" }} onClick={logout}>
           <i style={{ fontSize: "20px" }} className="bi bi-box-arrow-left" />
         </button>
       </div>

@@ -62,7 +62,7 @@ export const ArticleCardSaved = ({ searchTerm }) => {
                   }}
                 >
                   <hr />
-                  <button style={{ width: "35%" }}>
+                  <button className="btn btn-create" style={{ width: "35%" }}>
                     <span>
                       {active !== false ? (
                         <span style={{ color: "#fff" }}>PUBLISHED</span>
@@ -74,10 +74,10 @@ export const ArticleCardSaved = ({ searchTerm }) => {
                   {adminUserRole === "Approver" ||
                   adminUserRole === "Administrator" ? (
                     <>
-                      <button style={{ width: "30%" }}>
+                      <button className="btn btn-edit" style={{ width: "30%" }}>
                         <span>Edit</span>
                       </button>
-                      <button style={{ width: "30%" }}>
+                      <button className="btn btn-delete" style={{ width: "30%" }}>
                         <span>Delete</span>
                       </button>
                     </>

@@ -21,7 +21,7 @@ export const Profile = () => {
       <Navbar />
       <div className="profile-admin-container">
         <div>
-          <h2>Profile</h2>
+          {/* <h2>Profile</h2> */}
         </div>
         <div className="profile-info-detail">
           <div>
@@ -36,6 +36,7 @@ export const Profile = () => {
             />
             <div>
               <button
+              className=""
                 style={{
                   backgroundColor: "transparent",
                   border: "transparent",

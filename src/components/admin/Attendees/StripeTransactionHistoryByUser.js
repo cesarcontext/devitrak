@@ -7,6 +7,7 @@ import {
   onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
 import "../../../style/component/admin/stripeTransactionHistoryByUser.css";
+import { Pagination } from "../ui/Pagination";
 
 export const StripeTransactionHistoryByUser = ({
   sendObjectIdUser,
@@ -16,18 +17,46 @@ export const StripeTransactionHistoryByUser = ({
   const [stripeTransactions, setStripeTransactions] = useState();
   const [paymentIntentId, setSendPaymentIntentId] = useState();
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [stripeTransactionsRenderedPerPage] = useState(2);
 
+  const callApiStripeTransaction = async () => {
+    const response = await devitrackApi.get("/admin/users");
+    if (response) {
+      setStripeTransactions(response.data.stripeTransactions);
+    }
+  };
   useEffect(() => {
     const controller = new AbortController();
-    devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
+    callApiStripeTransaction();
     return () => {
       controller.abort();
     };
   }, [sendObjectIdUser, createTransactionForNoRegularUser]);
 
+  let userTransaction = [];
+  const substractUserTransactionsOnly = async () => {
+    if (stripeTransactions !== []) {
+      stripeTransactions?.map((transaction, index) => {
+        if (transaction.user._id === sendObjectIdUser) {
+          userTransaction.splice(index, 0, transaction);
+        }
+      });
+    }
+  };
+  substractUserTransactionsOnly();
+
+  const indexOfLastStripeTransactionRendered =
+    currentPage * stripeTransactionsRenderedPerPage;
+  const indexOfFirstStripeTransactionRendered =
+    indexOfLastStripeTransactionRendered - stripeTransactionsRenderedPerPage;
+  const currentStripeTransactionRendered = userTransaction?.slice(
+    indexOfFirstStripeTransactionRendered,
+    indexOfLastStripeTransactionRendered
+  );
+  const paginate = (pageNumbers) => {
+    setCurrentPage(pageNumbers);
+  };
   return (
     <div className="container-stripe-transaction">
       <div>
@@ -40,70 +69,71 @@ export const StripeTransactionHistoryByUser = ({
               <th scope="col">Details</th>
             </tr>
           </thead>
-          {stripeTransactions?.map((transaction) => {
+          {currentStripeTransactionRendered?.map((transaction) => {
             const amount = transaction.device * 200;
-            if (transaction?.user?._id !== null) {
-              if (transaction?.user?._id === sendObjectIdUser) {
-                return (
-                  <tbody key={transaction.id}>
-                    <tr>
-                      <td>{transaction.paymentIntent}</td>
-                      <td>{transaction.device}</td>
-                      {userDetail !== "No-regular" ? (
-                        <td>${amount}</td>
-                      ) : (
-                        <td style={{ textDecoration: "line-through" }}>
-                          ${amount}
-                        </td>
-                      )}
-                      <td>
-                        {transaction.paymentIntent[0] === "p" ? (
-                          <button
-                            onClick={async () => {
-                              setSendPaymentIntentId(transaction.paymentIntent);
-                              dispatch(
-                                onAddPaymentIntentSelected(
-                                  transaction.paymentIntent
-                                )
-                              );
-                              dispatch(
-                                onAddPaymentIntentDetailSelected(transaction)
-                              );
-                            }}
-                          >
-                            Details
-                          </button>
-                        ) : (
-                          <NavLink to="/admin/attendees/receiver_assignation">
-                            <button
-                              onClick={async () => {
-                                setSendPaymentIntentId(
-                                  transaction.paymentIntent
-                                );
-                                dispatch(
-                                  onAddPaymentIntentSelected(
-                                    transaction.paymentIntent
-                                  )
-                                );
-                                dispatch(
-                                  onAddPaymentIntentDetailSelected(transaction)
-                                );
-                              }}
-                            >
-                              Details 
-                            </button>
-                          </NavLink>
-                        )}
-                      </td>
-                    </tr>
-                  </tbody>
-                );
-              }
-            } else {
-              <h5>No data displayed</h5>;
-            }
+            return (
+              <tbody key={transaction.id}>
+                <tr>
+                  <td>{transaction.paymentIntent}</td>
+                  <td>{transaction.device}</td>
+                  {userDetail !== "No-regular" ? (
+                    <td>${amount}</td>
+                  ) : (
+                    <td style={{ textDecoration: "line-through" }}>
+                      ${amount}
+                    </td>
+                  )}
+                  <td>
+                    {transaction.paymentIntent[0] === "p" ? (
+                      <button
+                      className="btn btn-detail"
+                        onClick={async () => {
+                          setSendPaymentIntentId(transaction.paymentIntent);
+                          dispatch(
+                            onAddPaymentIntentSelected(
+                              transaction.paymentIntent
+                            )
+                          );
+                          dispatch(
+                            onAddPaymentIntentDetailSelected(transaction)
+                          );
+                        }}
+                      >
+                        Details
+                      </button>
+                    ) : (
+                      <NavLink to="/admin/attendees/receiver_assignation">
+                        <button
+                        className="btn btn-detail"
+                          onClick={async () => {
+                            setSendPaymentIntentId(transaction.paymentIntent);
+                            dispatch(
+                              onAddPaymentIntentSelected(
+                                transaction.paymentIntent
+                              )
+                            );
+                            dispatch(
+                              onAddPaymentIntentDetailSelected(transaction)
+                            );
+                          }}
+                        >
+                          Details
+                        </button>
+                      </NavLink>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            );
           })}
         </table>
+        <div>
+          <Pagination
+            childrenRenderedPerPage={stripeTransactionsRenderedPerPage}
+            totalChildren={userTransaction.length}
+            paginate={paginate}
+          />
+        </div>
       </div>
     </div>
   );

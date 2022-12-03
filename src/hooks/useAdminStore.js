@@ -8,6 +8,7 @@ import {
   devitrackApi,
   devitrackApiArticle,
 } from "../apis/devitrackApi";
+import { rightDoneMessage, swalErrorMessage } from "../helper/swalFireMessage";
 import {
   clearErrorMessage,
   onChecking,
@@ -36,12 +37,7 @@ export const useAdminStore = () => {
       setAdminName(data.name);
       setAdminEmail(data.email);
       localStorage.setItem("admin-token", data.token);
-      Swal.fire({
-        text: "Redirectioning to your Admin page",
-        icon: "success",
-      }).then(() => {
-        window.location = "http://localhost:3000/admin";
-      });
+      rightDoneMessage("Redirectioning to your Admin page");
       dispatch(
         onLogin({
           name: data.name,
@@ -52,7 +48,7 @@ export const useAdminStore = () => {
       );
     } catch (error) {
       dispatch(onLogout("Incorrect credentials"));
-      Swal.fire("Error", error.response.data.msg, "error");
+      swalErrorMessage(error.response.data.msg);
 
       setTimeout(() => {
         dispatch(clearErrorMessage());
@@ -62,7 +58,6 @@ export const useAdminStore = () => {
 
   const startRegister = async ({ name, email, password }) => {
     dispatch(onChecking());
-
     const role = "Editor";
     try {
       const { data } = await devitrackApiAdmin.post("/new_admin_user", {
@@ -81,22 +76,13 @@ export const useAdminStore = () => {
           role: data.role,
         })
       );
-      Swal.fire("User created", "Account has been created", "success").then(
-        () => {
-          window.location = "http://localhost:3000/admin";
-        }
-      );
+      rightDoneMessage("Account has been created");
     } catch (error) {
-      console.log(error.response.data.errors);
       dispatch(onLogout(error.response.data?.errors.check.msg || "---"));
       if (error.response.data.errors.name) {
-        Swal.fire("Error", "Name must be provided", "error");
+        swalErrorMessage("Name must be provided");
       } else if (error.response.data.errors.email) {
-        Swal.fire(
-          "Error",
-          "Email address must be provided in valid format",
-          "error"
-        );
+        swalErrorMessage("Email address must be provided in valid format");
       }
 
       setTimeout(() => {
@@ -121,9 +107,10 @@ export const useAdminStore = () => {
           role: data.role,
         })
       );
-      Swal.fire("Email updated", "The new email was saved!", "success");
+      rightDoneMessage("Email updated!");
     } catch (error) {
       console.log(error);
+      swalErrorMessage(error);
     }
   };
 
@@ -176,7 +163,9 @@ export const useAdminStore = () => {
       const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
         role,
       });
-      Swal.fire("", "Permission updated successfully", "success");
+      if (data) {
+        rightDoneMessage("Permission updated successfully");
+      }
     } catch (error) {
       console.log(error);
       alert("Error. Please try again later");
@@ -190,25 +179,12 @@ export const useAdminStore = () => {
         title,
         body,
       });
-      console.log("article data", response);
+      if (response) {
+        navigate("/articles");
+      }
     } catch (error) {
       console.log(error);
-      Swal.fire({
-        title: "Upss something went wrong!!",
-        width: 600,
-        padding: "3em",
-        text: `${error.response.data.msg}`,
-        icon: "error",
-        color: "#rgb(30, 115, 190)",
-        background: "#fff",
-        confirmButtonColor: "rgb(30, 115, 190)",
-        backdrop: `
-    rgb(30, 115, 190)
-      url("../image/logo.jpg")
-      left top
-      no-repeat
-    `,
-      });
+      swalErrorMessage(`${error.response.data.msg}`);
     }
   };
   return {

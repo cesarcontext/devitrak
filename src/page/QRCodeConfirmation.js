@@ -21,7 +21,7 @@ export const QRCodeConfirmation = () => {
 
   useEffect(() => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
-  }, []);
+  }, [payment_intent]);
 
   const QRCodeGenerated = (
     <QRCode
@@ -50,12 +50,9 @@ export const QRCodeConfirmation = () => {
           </svg>
         </div>
         <div className="message-confirmation">
-          <p>
-            <span>
-            Your devices are now ready!
-            </span>
-          </p>
-          <p>
+          <p id="first-paragraph">
+            <span>Your devices are now ready!</span>
+            <br />
             <span>
               Please proceed to Headset Distribuition Desk located at
               International registration.

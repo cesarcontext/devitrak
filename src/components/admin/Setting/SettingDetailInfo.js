@@ -50,22 +50,8 @@ export const SettingDetailInfo = ({ searchTerm }) => {
     await setReloadListAfterChange(!reloadListAfterChange);
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        columnGap: "2%",
-        margin: "2%",
-        height: "25%",
-      }}
-    >
-      <div
-        style={{
-          width: "60%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-        }}
-      >
+    <div className="container-setting-detail">
+      <div className="container-company-staff">
         <div>
           <h2>Company Staff</h2>
         </div>
@@ -88,7 +74,10 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                         <td>{user.role}</td>
                         <td>{user.email}</td>
                         <td>
-                          <button onClick={() => setSendObjectIdUser(user.id)}>
+                          <button
+                            className="btn btn-detail"
+                            onClick={() => setSendObjectIdUser(user.id)}
+                          >
                             Details <i className="bi bi-caret-right" />{" "}
                           </button>
                         </td>
@@ -109,6 +98,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           <td>{user.email}</td>
                           <td>
                             <button
+                              className="btn btn-detail"
                               onClick={() => setSendObjectIdUser(user.id)}
                             >
                               Details <i className="bi bi-caret-right" />{" "}
@@ -119,17 +109,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                     );
                   })}
           </table>
-          <div
-            className="container-section-pagination-button"
-            style={{
-              width: "100%",
-              padding: "25px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              textAlign: "left",
-            }}
-          >
+          <div className="container-section-pagination-button">
             <Pagination
               childrenRenderedPerPage={usersRenderedPerPage}
               totalChildren={adminUser.length}
@@ -137,7 +117,10 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             />
             <div>
               {user.role === "Administrator" ? (
-                <button onClick={() => setModalState(true)}>
+                <button
+                  className="btn btn-create"
+                  onClick={() => setModalState(true)}
+                >
                   Create new user
                 </button>
               ) : null}
@@ -145,131 +128,103 @@ export const SettingDetailInfo = ({ searchTerm }) => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          width: "30%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-around",
-          // alignItems: "center",
-        }}
-      >
+      <div className="container-company-staff-detail">
         <div
           style={{
-            width: "100%",
-            padding: "25px",
+            // width: "100%",
+            padding: "5px",
             display: "flex",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            justifyContent: "flex-start",
             // alignItems: "center",
             textAlign: "left",
           }}
         >
-          {" "}
-          <div
-            style={{
-              // width: "100%",
-              padding: "5px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              // alignItems: "center",
-              textAlign: "left",
-            }}
-          >
-            {adminUser?.map((user) => {
-              if (user.id === sendObjectIdUser) {
-                return (
-                  <div key={user.id} className="container-admin-user-details">
-                    <div className="container-admin-user-details-card">
-                      <div>
-                        {" "}
-                        <h3>
-                          {user.name} {user.lastName}
-                        </h3>
-                      </div>
-                      <div className="container-admin-role">
-                        <h6>{user.role}</h6>
-                        <div>
-                          <div className="edit-button">
-                            {adminUserRole === "Approver" ||
-                            adminUserRole === "Administrator" ? (
-                              <button onClick={handleEditAdminPermission}>
-                                Edit <i className="bi bi-pencil" />
-                              </button>
-                            ) : null}
-                          </div>
-                          <div>
-                            {permissionStatus === true ? (
-                              <>
-                                <select
-                                  onChange={(event) =>
-                                    setPermissionUpdated(event.target.value)
-                                  }
-                                >
-                                  <option defaultValue>
-                                    Please select permission
-                                  </option>
-                                  <option value="Administrator">
-                                    Administrator
-                                  </option>
-                                  <option value="Approver">Approver</option>
-                                  <option value="Editor">Editor</option>
-                                </select>
-                              </>
-                            ) : null}
-                          </div>
-                          <div>
-                            {permissionStatus === true ? (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  padding: "15px",
-                                  justifyCotent: "space-between",
-                                  algnItems: "center",
-                                  gap: "5px",
-                                }}
-                              >
-                                <button
-                                  onClick={() =>
-                                    updatePermission(permissionUpdated)
-                                  }
-                                >
-                                  Save
-                                </button>
-                                <button onClick={handleEditAdminPermission}>
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : null}
-                          </div>
-                        </div>
+          {adminUser?.map((user) => {
+            if (user.id === sendObjectIdUser) {
+              return (
+                <div key={user.id} className="container-admin-user-details">
+                  <div className="container-admin-user-details-card">
+                    <div className="admin-user-details-card">
+                      <h3>
+                        {user.name} {user.lastName}
+                      </h3>
+                      <div className="edit-button">
+                        {adminUserRole === "Approver" ||
+                        adminUserRole === "Administrator" ? (
+                          <>
+                            <h6 onClick={handleEditAdminPermission}>
+                              {user.role}
+                            </h6>
+                            <i className="bi bi-pencil" />
+                          </>
+                        ) : (
+                          <h6>{user.role}</h6>
+                        )}
                       </div>
                     </div>
-                    <div className="container-admin-user-details-card">
-                      <h5>CONTACT INFO</h5>
+                    <hr />
+                    <div className="container-admin-role">
                       <div>
-                        <div>
-                          <p>Phone</p>
-                          {user.phoneNumber}
-                        </div>
-                        <div>
-                          <p>Email</p>
-                          {user.email}
-                        </div>
+                        {permissionStatus === true ? (
+                          <>
+                            <select
+                              onChange={(event) =>
+                                setPermissionUpdated(event.target.value)
+                              }
+                            >
+                              <option defaultValue>
+                                Please select permission
+                              </option>
+                              <option value="Administrator">
+                                Administrator
+                              </option>
+                              <option value="Approver">Approver</option>
+                              <option value="Editor">Editor</option>
+                            </select>
+                          </>
+                        ) : null}
+                      </div>
+                      <div>
+                        {permissionStatus === true ? (
+                          <div className="buttons-edit-permission">
+                            <button
+                              className="btn btn-create"
+                              onClick={() =>
+                                updatePermission(permissionUpdated)
+                              }
+                            >
+                              Save
+                            </button>
+                            <button
+                              className="btn btn-delete"
+                              onClick={handleEditAdminPermission}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
-                );
-              }
-            })}
-          </div>
+                  <div className="container-admin-user-details-card">
+                    <h5>CONTACT INFO</h5>
+                    <div>
+                      <label>Phone: </label> <span>{user.phoneNumber}</span>
+                      <br />
+                      <label>Email :</label> <span>{user.email}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          })}
         </div>
+        {/* </div> */}
         {sendObjectIdUser !== undefined && user.role === "Administrator" ? (
           <div>
             <button
+              className="btn btn-delete"
               onClick={() => {
                 Swal.fire({
                   title: "Are you sure?",

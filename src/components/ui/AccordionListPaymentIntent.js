@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
-import { devitrackApi } from "../../apis/devitrackApi";
+import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
-import "../../style/component/ui/AccordionListPaymentIntent.css"
+import "../../style/component/ui/AccordionListPaymentIntent.css";
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
-  const [stripeTransactions, setStripeTransactions] = useState();
+  const [stripeTransactions, setStripeTransactions] = useState([]);
+  const [openAccordion, setOpenAccordion] = useState(false);
+  const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
+
+  const callApiStripeTransaction = async () => {
+    await devitrackApi
+    .get("/admin/users")
+    .then((response) => response.data)
+    .then((data) => setStripeTransactions(data.stripeTransactions));
+  }
   useEffect(() => {
     const controller = new AbortController();
-    devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
+    callApiStripeTransaction()
     return () => {
       controller.abort();
     };
@@ -49,7 +55,7 @@ export const AccordionListPaymentIntent = () => {
             size={100}
             value={`${info.paymentIntent}`}
             style={{
-              margin: "0 auto"
+              margin: "0 auto",
             }}
           />
         </div>
@@ -58,63 +64,62 @@ export const AccordionListPaymentIntent = () => {
   };
   return (
     <>
-      <div className="accordion accordion-List-payment" id="accordionPanelsStayOpenExample">
-        <div className="accordion-item">
-          <h2 className="accordion-header" id="panelsStayOpen-headingOne">
-            <button
-              className="accordion-button"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-collapseOne"
-              aria-expanded="true"
-              aria-controls="panelsStayOpen-collapseOne"
-            >
-              Your orders:
-            </button>
-          </h2>
-          <div
-            id="panelsStayOpen-collapseOne"
-            className="accordion-collapse collapse show"
-            aria-labelledby="panelsStayOpen-headingOne"
-          >
+      <div className="accordion-List-payment">
+        <h2 className="accordion-header">
+          <p onClick={() => setOpenAccordion(!openAccordion)}>
+            Your orders
+            {openAccordion !== true ? (
+              <i className="bi bi-chevron-up" />
+            ) : (
+              <i className="bi bi-chevron-down" />
+            )}
+          </p>
+        </h2>
+        {openAccordion === true ? (
+          <div className="accordion-collapse collapse show">
             <div className="accordion-body">
               {" "}
               {stripeTransactions?.map((item) => {
                 if (item?.user?.email === users.email) {
                   return (
-                    <div
-                      className="accordion accordion-flush"
-                      id="accordionFlushExample"
-                      key={item.id}
-                    >
-                      <div className="accordion-item">
-                        <h2 className="accordion-header" id="flush-headingOne">
-                          <button
-                           
-                            className="accordion-button collapsed"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapseOne"
-                            aria-expanded="false"
-                            aria-controls="flush-collapseOne"
+                    <div key={item.id}>
+                      <div className="accordion-detail-title">
+                        <div className="order-list">
+                         <i className="bi bi-circle" />{" "}
+                          <p
+                            onClick={() =>
+                              setOpenAccordionDetail(!openAccordionDetail)
+                            }
+                            className="accordion-header"
                           >
-                            <h4>
-                              Device reserved: <strong>{item.device}</strong>
-                            </h4>
-                            {checkPaymentIntentArray(item)}
-                            <h6>Last 4: <strong>{`${item.paymentIntent}`.slice(-5, -1)}</strong></h6>
-                          </button>
-                        </h2>
-                        <div
-                          id="flush-collapseOne"
-                          className="accordion-collapse collapse"
-                          aria-labelledby="flush-headingOne"
-                          data-bs-parent="#accordionFlushExample"
-                        >
-                          <div className="accordion-body">
-                            <Accordion item={item} />
-                          </div>
+                            Order {item.id}{" "}
+                          </p>
+                          {openAccordionDetail !== true ? (
+                            <i className="bi bi-chevron-up" />
+                          ) : (
+                            <i className="bi bi-chevron-down" />
+                          )}
                         </div>
+
+                        {openAccordionDetail === true ? (
+                          <div className="accordion-body-detail">
+                            <div className="">{checkPaymentIntentArray(item)}</div>
+                            <div>
+                              <span>
+                                Device ordered:{" "}
+                                <p>
+                                  <strong>{item.device}</strong>
+                                </p>
+                              </span>
+                              <span>
+                                Pending return:{" "}
+                                <strong>
+                                  <Accordion item={item} />
+                                </strong>
+                              </span>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -122,7 +127,7 @@ export const AccordionListPaymentIntent = () => {
               })}
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </>
   );
