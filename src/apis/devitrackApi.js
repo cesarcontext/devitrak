@@ -1,11 +1,11 @@
 import axios from "axios";
 
 export const devitrackApi = axios.create({
-  baseURL: "http://localhost:34001/api",
+  baseURL: "https://devitrackdb.itmastersltd.com/api",
 });
 
 export const devitrackApiPayment = axios.create({
-  baseURL: "http://localhost:34001/api/creditCard",
+  baseURL: "https://devitrackdb.itmastersltd.com/api/creditCard",
 });
 
 //TODO: config interceptors
@@ -19,7 +19,7 @@ devitrackApiPayment.interceptors.request.use((config) => {
 });
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: "http://localhost:34001/api/admin"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/admin"
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
@@ -32,7 +32,7 @@ devitrackApiAdmin.interceptors.request.use((config) => {
 });
 
 export const devitrackApiStripe = axios.create({
-  baseURL: "http://localhost:34001/api/stripe"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/stripe"
 })
 
 //TODO: config interceptors
@@ -46,7 +46,7 @@ devitrackApiStripe.interceptors.request.use((config) => {
 });
 
 export const devitrackApiArticle = axios.create({
-  baseURL: "http://localhost:34001/api/article"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/article"
 })
 
 //TODO: config interceptors
