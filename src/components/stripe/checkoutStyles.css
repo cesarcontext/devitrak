@@ -30,6 +30,11 @@
 .p-GridCell .p-GridCell--6 .p-GridCell--md3 {
   width: 100%;
 }
+.Input {
+  font-size: var(--font-size-l2);
+  font-family: var(--font-family-open_sans);
+}
+
 label {
   display: none;
 }
@@ -158,9 +163,10 @@ form {
     display: none;
   }
   .Input {
-    height: 15vh;
+    font-size: var(--font-size-l2);
+    font-family: var(--font-family-open_sans);
   }
-  .Label {
+    .Label {
     display: none;
   }
 }
