@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
@@ -44,7 +43,7 @@ export const ContactInfo = () => {
   };
   useEffect(() => {
     startCheckingUser(formValues.email);
-  }, [formValues.email]);
+  }, [formValues.email]);// eslint-disable-next-line react-hooks/exhaustive-deps
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -196,11 +195,9 @@ export const ContactInfo = () => {
         ) : (
           <div className={`d-${visibleButton}`} style={{ paddingTop: "1vh" }}>
             <button
-              className="btn btn-confirm-user-data"
+              className="btn btn-create"
               style={{
                 margin: "auto",
-                backgroundColor: "rgba(69, 104, 220, 1)",
-                color: "#ffff",
                 borderRadius: "10px",
                 outline: "transparency",
                 border: "rgba(69, 104, 220, 1)",
