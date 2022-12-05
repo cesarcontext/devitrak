@@ -1,0 +1,38 @@
+.container-navbar-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--haddocks-sweater);
+  /* color: #fff; */
+}
+.navbar-logo-section {
+    width: 30%;
+    height: 30%;
+    padding-left: 15px;
+  }
+  .navbar-name-section {
+    width: 30%;
+    display: flex;
+  }
+
+@media only screen and (max-width: 650px) {
+  .container-navbar-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--haddocks-sweater);
+    color: #fff;
+  }
+  .navbar-logo-section {
+    width: 30%;
+    height: 30%;
+    padding-left: 15px;
+  }
+  .navbar-name-section {
+    width: 30%;
+    display: flex;
+  }
+  .navbar-main-title{
+    padding: 15px;
+  }
+}

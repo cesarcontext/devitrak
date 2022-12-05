@@ -23,20 +23,25 @@
   .navbar-fixed {
     display: flex;
     align-items: center;
-    background-color: rgba(22,22,81,1);
+    background-color: var(--haddocks-sweater);
     gap: 1px;
     left: 0;
     padding: 12px 10px;
     position: fixed;
     bottom: 0;
     width: 100%;
-    z-index: 1;  
+    z-index: 1;
+    height: 10vh;
   }
   .icon-span{
     padding: 15px;
     display: flex;
     flex-direction: column;
     color: #ffff;
+  }
+  .icon-span:first-child(){
+    color: var(---bunting);
+
   }
   .icon-span i{
     font-size: 30px;
