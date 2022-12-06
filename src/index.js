@@ -12,11 +12,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 
 const stytch = initStytch(
-  "public-token-test-6b62a560-fb54-42e5-85ca-cab49d61b0bd"
+  "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"
 );
-  // "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"
+  // "public-token-test-6b62a560-fb54-42e5-85ca-cab49d61b0bd"
 
-const persistor = persistStore(store);
+  const persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
