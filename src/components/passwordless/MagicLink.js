@@ -18,10 +18,10 @@ export const MagicLink = (magicLinkParam) => {
   return (
     <div className="email-sent-message-magic-link">
       
-      <p onClick={handleLogin}>
+      <button onClick={handleLogin}>
       <i className="bi bi-exclamation" />  Your email is already in the system. Please click this link to log in
         through your email inblox <i className="bi bi-chevron-right" />
-      </p>
+      </button>
     </div>
   );
 };
