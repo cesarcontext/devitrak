@@ -58,7 +58,7 @@ export const useContactInfoStore = () => {
       console.log(error);
       setToken("");
       setEmailUserRegistered("");
-      swalErrorMessage(error.response.data.msg)
+      swalErrorMessage(error.response.data.msg);
       navigate("/");
     }
   };
@@ -74,8 +74,8 @@ export const useContactInfoStore = () => {
           id: data.uid,
         })
       );
-      localStorage.setItem("uid", data.uid)
-      localStorage.setItem("token", data.token)
+      localStorage.setItem("uid", data.uid);
+      localStorage.setItem("token", data.token);
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +88,7 @@ export const useContactInfoStore = () => {
     phoneNumber,
   }) => {
     try {
-      const userUID = localStorage.getItem('uid')
+      const userUID = localStorage.getItem("uid");
       const { data } = await devitrackApi.put(`/auth/${userUID}`, {
         name,
         lastName,
@@ -109,7 +109,7 @@ export const useContactInfoStore = () => {
       localStorage.setItem("status", data.ok);
     } catch (error) {
       console.log(error);
-      swalErrorMessage(`${error.response.data.msg}`)
+      swalErrorMessage(`${error.response.data.msg}`);
     }
   };
 
@@ -135,12 +135,11 @@ export const useContactInfoStore = () => {
             status: data.ok,
           })
         );
-      }
-       else {
+      } else {
         localStorage.setItem("uid", JSON.stringify(""));
         localStorage.setItem("token", "");
         setToken("");
-        setEmailUserRegistered("")
+        setEmailUserRegistered("");
         dispatch(
           onCheckContact({
             groupName: "",
@@ -150,7 +149,7 @@ export const useContactInfoStore = () => {
             phoneNumber: "",
             id: "",
             status: "",
-            permissionNotification: ""
+            permissionNotification: "",
           })
         );
       }
@@ -166,7 +165,6 @@ export const useContactInfoStore = () => {
     visible,
     userCreatedDisabledInput,
     emailUserRegistered,
-
 
     //* Methods
     startSavingContactInfo,
