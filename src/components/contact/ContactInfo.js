@@ -1,24 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { MagicLink } from "../passwordless/MagicLink";
-import { useContactInfoStore } from "../../hooks/useContactInfoStore";
-import { NavbarBottom } from "../ui/NavbarBottom";
-import { useDeviceCount } from "../../hooks/useDeviceCountStore";
-import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { Devices } from "../device/Devices";
+import { MagicLink } from "../passwordless/MagicLink";
+import { NavbarBottom } from "../ui/NavbarBottom";
+import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
+import { swalErrorMessage } from "../../helper/swalFireMessage";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import "../../style/component/contact/contactInfo.css";
-import { swalErrorMessage } from "../../helper/swalFireMessage";
 
 export const ContactInfo = () => {
   const {
     startSavingContactInfo,
     startCheckingUser,
-    users,
     token,
+    userCreatedDisabledInput,
+    users,
     visible,
     visibleButton,
-    userCreatedDisabledInput,
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { device } = useDeviceCount();
@@ -26,10 +26,10 @@ export const ContactInfo = () => {
     useStripeHook();
 
   const initalFormValues = {
-    groupName: "",
-    name: "",
-    lastName: "",
     email: "",
+    groupName: "",
+    lastName: "",
+    name: "",
     phoneNumber: "",
     privacyPolicy: response,
   };
@@ -43,7 +43,7 @@ export const ContactInfo = () => {
   };
   useEffect(() => {
     startCheckingUser(formValues.email);
-  }, [formValues.email]);// eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formValues.email]); // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
@@ -74,20 +74,22 @@ export const ContactInfo = () => {
     event.preventDefault();
 
     if (validationName === "is-invalid") {
-      return swalErrorMessage("Name must be provided")
+      return swalErrorMessage("Name must be provided");
     }
     if (validationLastName === "is-invalid") {
-      return swalErrorMessage("lastname must be provided")
+      return swalErrorMessage("lastname must be provided");
     }
     if (validationEmail === "is-invalid") {
-      return swalErrorMessage("Email must be provided")
+      return swalErrorMessage("Email must be provided");
     }
     if (validationPhoneNumber === "is-invalid") {
-      return swalErrorMessage("Phone number must be provided")
+      return swalErrorMessage("Phone number must be provided");
     }
 
     if (device === 0) {
-      return swalErrorMessage("Please select the number of receiver you need before to continue")
+      return swalErrorMessage(
+        "Please select the number of receiver you need before to continue"
+      );
     }
     await startSavingContactInfo({
       ...formValues,
@@ -121,10 +123,10 @@ export const ContactInfo = () => {
                 </div>
               </div>
               {users.status === true ? (
-              <div>
-                <MagicLink magicLinkParam={magicLinkParam} />
-              </div>
-            ) : null}
+                <div>
+                  <MagicLink magicLinkParam={magicLinkParam} />
+                </div>
+              ) : null}
               <div className="container-input">
                 <div className="form-outline">
                   <input
@@ -141,51 +143,51 @@ export const ContactInfo = () => {
                 </div>
               </div>
               <div className="container-input">
-                    <div className="form-outline">
-                      <input
-                        disabled={userCreatedDisabledInput}
-                        type="text"
-                        id="lastName"
-                        className={`form-control ${validationLastName} form-control-lg`}
-                        placeholder="Last name"
-                        onChange={onInputCHange}
-                        name="lastName"
-                        value={formValues.lastName}
-                        minLength={1}
-                      />
-                    </div>
-                  </div>
-                  <div className="container-input">
-                    <div className="form-outline">
-                      <input
-                        disabled={userCreatedDisabledInput}
-                        type="text"
-                        className={`form-control form-control-lg`} //${validationGroupName}
-                        id="groupName"
-                        placeholder="Group name"
-                        onChange={onInputCHange}
-                        name="groupName"
-                        value={formValues.groupName}
-                        minLength={3}
-                      />
-                    </div>
-                  </div>
-                  <div className="container-input">
-                    <div className="form-outline">
-                      <input
-                        disabled={userCreatedDisabledInput}
-                        type="tel"
-                        id="phoneNumber"
-                        className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                        placeholder="Phone number"
-                        onChange={onInputCHange}
-                        name="phoneNumber"
-                        value={formValues.phoneNumber}
-                        maxLength={15}
-                        minLength={5}
-                      />
-                    </div>
-                  </div>
+                <div className="form-outline">
+                  <input
+                    disabled={userCreatedDisabledInput}
+                    type="text"
+                    id="lastName"
+                    className={`form-control ${validationLastName} form-control-lg`}
+                    placeholder="Last name"
+                    onChange={onInputCHange}
+                    name="lastName"
+                    value={formValues.lastName}
+                    minLength={1}
+                  />
+                </div>
+              </div>
+              <div className="container-input">
+                <div className="form-outline">
+                  <input
+                    disabled={userCreatedDisabledInput}
+                    type="text"
+                    className={`form-control form-control-lg`} //${validationGroupName}
+                    id="groupName"
+                    placeholder="Group name"
+                    onChange={onInputCHange}
+                    name="groupName"
+                    value={formValues.groupName}
+                    minLength={3}
+                  />
+                </div>
+              </div>
+              <div className="container-input">
+                <div className="form-outline">
+                  <input
+                    disabled={userCreatedDisabledInput}
+                    type="tel"
+                    id="phoneNumber"
+                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                    placeholder="Phone number"
+                    onChange={onInputCHange}
+                    name="phoneNumber"
+                    value={formValues.phoneNumber}
+                    maxLength={15}
+                    minLength={5}
+                  />
+                </div>
+              </div>
             </form>
           </div>
         </div>

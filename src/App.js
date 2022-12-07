@@ -2,35 +2,35 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { Routes, Route } from "react-router";
 import { Admin } from "./page/admin/Admin";
+import { ArticleContentCreation } from "./components/admin/Articles/ArticleContentCreation";
+import { Articles } from "./page/admin/Articles";
+import { Attendees } from "./page/admin/Attendees";
 import { Authenticate } from "./page/Authenticate";
 import { Checkout } from "./page/Checkout";
+import { DeclineTerms } from "./page/DeclineTerms";
+import { DeviceDatabase } from "./page/admin/DeviceDatabase";
 import { EventScheduled } from "./page/EventScheduled";
+import { Home } from "./page/Home";
 import { HowToReturnTheDevices } from "./page/moreInfo/HowToReturnTheDevices";
 import { HowToUseTheReceiver } from "./page/moreInfo/HowToUseTheReceiver";
 import { LoginPage } from "./page/admin/LoginAdmin";
 import { MoreInfo } from "./page/MoreInfo";
 import { MyProfile } from "./page/MyProfile";
+import { Profile } from "./page/admin/Profile";
 import { QRCodeConfirmation } from "./page/QRCodeConfirmation";
+import { ReceiversDetailsAssignation } from "./components/admin/Attendees/ReceiversDetailsAssignation";
 import { RequestDevices } from "./page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "./page/moreInfo/RequestSupportDuringTheEvent";
-import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
-import { Home } from "./page/Home";
-import { DeviceDatabase } from "./page/admin/DeviceDatabase";
-import { Articles } from "./page/admin/Articles";
 import { Settings } from "./page/admin/Settings";
-import { Profile } from "./page/admin/Profile";
-import { Attendees } from "./page/admin/Attendees";
-import { ReceiversDetailsAssignation } from "./components/admin/Attendees/ReceiversDetailsAssignation";
+import { StripeCheckoutElement } from "./components/stripe/StripeCheckoutElement";
 import { useSelector } from "react-redux";
-import { ArticleContentCreation } from "./components/admin/Articles/ArticleContentCreation";
 import "./App.css";
-import { DeclineTerms } from "./page/DeclineTerms";
 
 function App() {
   const { status } = useSelector((state) => state.admin);
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const adminToken = localStorage.getItem("admin-token");
-
+  
   return (
     <div className="App">
       <Routes>

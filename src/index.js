@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
@@ -10,6 +9,7 @@ import { store } from "./store/Store";
 import { StytchProvider, initStytch } from "@stytch/stytch-react";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import "./index.css";
 
 const stytch = initStytch(
   "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"

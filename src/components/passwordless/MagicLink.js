@@ -1,5 +1,5 @@
 import { useStytch } from "@stytch/stytch-react";
-import { swalErrorMessage } from "../../helper/swalFireMessage";
+import { rightDoneMessage } from "../../helper/swalFireMessage";
 import "../../style/component/passwrodless/MagicLink.css";
 
 export const MagicLink = (magicLinkParam) => {
@@ -15,7 +15,7 @@ export const MagicLink = (magicLinkParam) => {
   );
   const handleLogin = async () => {
     await client.magicLinks.email.loginOrCreate(emailToPass);
-    swalErrorMessage(`An email has been sent to ${emailString}`);
+    rightDoneMessage(`An email has been sent to ${emailString}`);
   };
   return (
     <div className="email-sent-message-magic-link">

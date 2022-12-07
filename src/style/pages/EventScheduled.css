@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
 .event-schedule-container {
   width: 95%;
+  height: 100vh;
+  padding-bottom: 15px;
 }
 
 .container-schedule-event-title {

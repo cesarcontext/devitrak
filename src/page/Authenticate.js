@@ -1,7 +1,7 @@
 import { useStytch, useStytchSession } from "@stytch/stytch-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import Swal from "sweetalert2";
+import { rightDoneMessage } from "../helper/swalFireMessage";
 
 
 export const Authenticate = () => {
@@ -19,17 +19,7 @@ export const Authenticate = () => {
           session_duration_minutes: 15,
         })
         .then(() => {
-          Swal.fire({
-            title: `Successfully authenticated`,
-            showConfirmButton: false,
-            timer: 3000,
-            showClass: {
-              popup: "animate__animated animate__fadeInDown",
-            },
-            hideClass: {
-              popup: "animate__animated animate__fadeOutUp",
-            },
-          });
+          rightDoneMessage(`Successfully authenticated`)
           navigate(0) //navigate to 0 to refrese page
         });
     }
