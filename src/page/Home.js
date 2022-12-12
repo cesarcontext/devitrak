@@ -5,10 +5,10 @@ import { UserConsentPrivacyPolicyModal } from "../components/ui/UserConsentPriva
 
 export const Home = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <ContactInfo />
       <UserConsentPrivacyPolicyModal />
-    </>
+    </div>
   );
 };
