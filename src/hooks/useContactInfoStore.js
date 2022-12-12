@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { devitrackApi } from "../apis/devitrackApi";
 import { swalErrorMessage } from "../helper/swalFireMessage";
 import {
@@ -36,24 +35,25 @@ export const useContactInfoStore = () => {
         phoneNumber,
         privacyPolicy,
       });
-      localStorage.setItem("uid", data.uid);
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("status", data.ok);
-      setVisible("content");
-      setVisibleButton("none");
-      setUserCreatedDisabledInput(true);
-      setToken(data.token);
-      setEmailUserRegistered(data.email);
-
-      dispatch(
-        onAddNewContact({
-          name: data.name,
-          lastName: data.lastName,
-          email: data.email,
-          phoneNumber: data.phone,
-          id: data.uid,
-        })
-      );
+      if (data) {
+        localStorage.setItem("uid", data.uid);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("status", data.ok);
+        setVisible("content");
+        setVisibleButton("none");
+        setUserCreatedDisabledInput(true);
+        setToken(data.token);
+        setEmailUserRegistered(data.email);
+        dispatch(
+          onAddNewContact({
+            name: data.name,
+            lastName: data.lastName,
+            email: data.email,
+            phoneNumber: data.phone,
+            id: data.uid,
+          })
+        );
+      }
     } catch (error) {
       console.log(error);
       setToken("");
@@ -118,7 +118,6 @@ export const useContactInfoStore = () => {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,
       });
-
       if (data.ok === true) {
         localStorage.setItem("uid", data.user.id);
         localStorage.setItem("token", data.token);
@@ -130,8 +129,8 @@ export const useContactInfoStore = () => {
             name: data.user.name,
             lastName: data.user.lastName,
             email: data.user.email,
-            phone: data.user.phoneNumber,
-            id: data.user.uid,
+            phoneNumber: data.user.phoneNumber,
+            id: data.id,
             status: data.ok,
           })
         );
