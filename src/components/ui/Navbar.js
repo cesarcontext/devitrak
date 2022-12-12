@@ -3,9 +3,12 @@ import "../../style/component/ui/Navbar.css";
 
 export const Navbar = () => {
   return (
-    <div
+    <div className="navbar-container"
       style={{
         transition: "all .3s",
+        position:"sticky",
+        top:"0px",
+        zIndex:"3"
       }}
     >
       <nav className="container-navbar-main">
