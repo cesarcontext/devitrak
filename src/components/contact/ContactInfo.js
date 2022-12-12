@@ -1,30 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { Devices } from "../device/Devices";
+import React, { useEffect, useMemo, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import { Devices } from "../device/Devices";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
-import { StripeCheckoutElement } from "../stripe/StripeCheckoutElement";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
+import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
 
 export const ContactInfo = () => {
   const {
     startSavingContactInfo,
     startCheckingUser,
-    token,
+    // token,
     userCreatedDisabledInput,
     users,
-    visible,
     visibleButton,
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { device } = useDeviceCount();
-  const { startStripePaymentIntent, clientSecret, stripeCustomer } =
-    useStripeHook();
-
+  const { stripeCustomer } = useStripeHook();
+  const dispatch = useDispatch();
   const initalFormValues = {
     email: "",
     groupName: "",
@@ -95,15 +93,25 @@ export const ContactInfo = () => {
       ...formValues,
       privacyPolicy: true,
     });
-    await startStripePaymentIntent(device);
+    // await startStripePaymentIntent(device);
     await stripeCustomer(formValues);
+    // setTrigger(true); //*trigger action to notify user about the account creation
+    // magicLinkNewUser(magicLinkParam);
+    // navigate("/checkout")
+
   };
+
+  if (users.status === true) {
+    dispatch(blockLinks("none"));
+  } else {
+    dispatch(blockLinks("auto"));
+  }
 
   return (
     <>
       <div className="container-contact-info mt-4">
         <div>
-          {token.length < 1 ? <Devices handleOnSubmit={handleOnSubmit} /> : ""}
+          {/* {token.length < 1 ? <Devices handleOnSubmit={handleOnSubmit} /> : ""} */}
           <div className="row">
             <form>
               <div className="container-input">
@@ -162,7 +170,7 @@ export const ContactInfo = () => {
                   <input
                     disabled={userCreatedDisabledInput}
                     type="text"
-                    className={`form-control form-control-lg`} //${validationGroupName}
+                    className={`form-control form-control-lg`}
                     id="groupName"
                     placeholder="Group name"
                     onChange={onInputCHange}
@@ -192,7 +200,8 @@ export const ContactInfo = () => {
           </div>
         </div>
 
-        {formValues.phoneNumber.length < 5 ? (
+        {formValues.phoneNumber.length < 5 ||
+        (formValues.phoneNumber.length > 5 && users.status === true) ? (
           <></>
         ) : (
           <div className={`d-${visibleButton}`} style={{ paddingTop: "1vh" }}>
@@ -212,13 +221,16 @@ export const ContactInfo = () => {
           </div>
         )}
 
-        <div
+        {/* <div
           style={{ gap: "20px" }}
           className={`d-${visible} stripe-container-contact-info-section`}
         >
           <StripeCheckoutElement clientSecret={clientSecret} />
-        </div>
+        </div> */}
       </div>
+      {/* <div className="d-none">
+        <WelcomeEmail formValues={formValues} trigger={trigger} />
+      </div> */}
       <NavbarBottom />
     </>
   );
