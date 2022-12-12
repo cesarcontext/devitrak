@@ -1,15 +1,22 @@
 import React, { useState, useMemo, useEffect } from "react";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useStytchSession, useStytch } from "@stytch/stytch-react";
+import { AccordionListPaymentIntent } from "../components/ui/AccordionListPaymentIntent";
 import { ContactInfoProfile } from "../components/contact/ContactInfoProfile";
+import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { Navbar } from "../components/ui/Navbar";
 import { useStripeHook } from "../hooks/useStripeHook";
 import QRCode from "react-qr-code";
-import { AccordionListPaymentIntent } from "../components/ui/AccordionListPaymentIntent";
+
 import "../style/pages/myProfile.css";
-import { useSelector } from "react-redux";
+import "../style/component/ui/NavbarBottom.css";
+import { onAddNewContact } from "../store/slices/contactInfoSlice";
+import { onUserPrivacyPolicyResponse } from "../store/slices/privacyPolicyUserResponseSlice";
+import { reset } from "../store/slices/deviceSlice";
 
 const initalFormValues = {
   groupName: "",
@@ -26,7 +33,11 @@ export const MyProfile = () => {
   const [formValues, setFormValues] = useState(initalFormValues);
   const [buttonState, setButtonState] = useState(true);
   const tokenVerification = localStorage.getItem("token");
-  const { users } = useSelector(state => state.contactInfo)
+  const { users } = useSelector((state) => state.contactInfo);
+  const client = useStytch();
+  const session = useStytchSession();
+  const newUser = users.email;
+  const dispatch = useDispatch();
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -152,9 +163,36 @@ export const MyProfile = () => {
     await startUpdatingContactInfo(formValues);
     setShowInfo(!showInfo);
   };
+  const handleLogout = async () => {
+    if (session) {
+      await client.session.revoke();
+    }
+    Swal.fire({
+      title: `Your session is finished`,
+      confirmButtonColor: "rgb(30, 115, 190)",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+    });
+    dispatch(
+      onAddNewContact({
+        id: "",
+        groupName: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        status: "",
+      })
+    );
+    dispatch(onUserPrivacyPolicyResponse());
+    dispatch(reset());
+  };
 
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-my-profile-info">
         <div>
@@ -163,81 +201,116 @@ export const MyProfile = () => {
         <div className="container-box-user-info-detail">
           <div style={{ width: "100%", display: "flex" }}>
             <div className="box-user-detail-buttons">
-              {users.id !== "" ? showInfo !== true ? (
-                <p
-                  disabled={buttonState}
-                  id="box-user-detail-edit-button"
-                  onClick={handleButtonState}>
-                  <h5>
-                    EDIT{" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      fill="currentColor"
-                      className="bi bi-pencil"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                    </svg>
-                  </h5>
-                </p>
-              ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div className="col">
+              {users.id !== "" ? (
+                showInfo !== true ? (
+                  <>
                     <p
-                      className="col"
-                      id="box-user-detail-cancel-button"
-                      onClick={handleButtonState}>
-                      <h5>
-                        CANCEL{" "}
-                        <svg
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
-                            fill="currentColor"
-                          />
-                          <path d="M9 9H11V17H9V9Z" fill="currentColor" />
-                          <path d="M13 9H15V17H13V9Z" fill="currentColor" />
-                        </svg>
-                      </h5>
-                    </p>
-                  </div>
-                  <div className="col">
-                    <p
-                      className="col"
-                      id="box-user-detail-save-button"
-                      onClick={handleEditContactInfo}
+                      disabled={buttonState}
+                      id="box-user-detail-edit-button"
+                      onClick={handleButtonState}
                     >
                       <h5>
-                        SAVE{" "}
+                        EDIT{" "}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="15"
                           height="15"
                           fill="currentColor"
-                          className="bi bi-save"
-                          viewBox="0 0 16 16">
-                          <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                          className="bi bi-pencil"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                         </svg>
                       </h5>
                     </p>
+
+                    <Link to="/">
+                      <div className="btn-logout-section">
+                        {(session && (
+                          <button
+                            style={{
+                              width: "45px",
+                              height: "45px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            className="btn-logout"
+                            onClick={handleLogout}
+                          >
+                            <i className="bi bi-box-arrow-right"></i>
+                          </button>
+                        )) ||
+                          (newUser && (
+                            <button
+                              className="btn-logout"
+                              onClick={handleLogout}
+                            >
+                              <i className="bi bi-box-arrow-right"></i>
+                            </button>
+                          ))}
+                      </div>
+                    </Link>
+                  </>
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div className="col">
+                      <p
+                        className="col"
+                        id="box-user-detail-cancel-button"
+                        onClick={handleButtonState}
+                      >
+                        <h5>
+                          CANCEL{" "}
+                          <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
+                              fill="currentColor"
+                            />
+                            <path d="M9 9H11V17H9V9Z" fill="currentColor" />
+                            <path d="M13 9H15V17H13V9Z" fill="currentColor" />
+                          </svg>
+                        </h5>
+                      </p>
+                    </div>
+                    <div className="col">
+                      <p
+                        className="col"
+                        id="box-user-detail-save-button"
+                        onClick={handleEditContactInfo}
+                      >
+                        <h5>
+                          SAVE{" "}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="15"
+                            height="15"
+                            fill="currentColor"
+                            className="bi bi-save"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                          </svg>
+                        </h5>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ): null}
+                )
+              ) : null}
             </div>
           </div>
           <div>
@@ -246,6 +319,7 @@ export const MyProfile = () => {
           {showInfo !== true ? (
             <div>
               <ContactInfoProfile />
+              <hr />
             </div>
           ) : (
             <div className="box-user-edit-info">
@@ -324,6 +398,6 @@ export const MyProfile = () => {
         </div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
