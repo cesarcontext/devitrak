@@ -5,7 +5,7 @@ import { NavbarBottom } from '../components/ui/NavbarBottom'
 
 export const DeclineTerms = () => {
   return (
-    <div>
+    <div className='general-container'>
       <Navbar />
         <div style={{
           margin: "50% auto"
