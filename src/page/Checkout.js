@@ -11,7 +11,6 @@ import "../style/pages/Checkout.css";
 
 export const Checkout = () => {
   const [customerStripeId, setCustomerStripeId] = useState("")
-  console.log("🚀 ~ file: Checkout.js:14 ~ Checkout ~ customerStripeId", customerStripeId)
   const { device } = useDeviceCount();
   const { users } = useSelector((state) => state.contactInfo);
   const { startStripePaymentIntent, clientSecret, visibleButton } =
@@ -32,7 +31,8 @@ export const Checkout = () => {
       }
     }
   };
-  
+    console.log("🚀 ~ file: Checkout.js:14 ~ Checkout ~ customerStripeId", customerStripeId)
+
   useEffect(() => {
     callStripeCustomerFind();
   },[users.id, device]);
