@@ -1,13 +1,11 @@
 import axios from "axios";
 
-//*replace link
-
 export const devitrackApi = axios.create({
-  baseURL: "https://tracker-backend-file.netlify.app/api",
+  baseURL: "https://devitrackdb.itmastersltd.com/api",
 });
 
 export const devitrackApiPayment = axios.create({
-  baseURL: "https://tracker-backend-file.netlify.app/api/creditCard",
+  baseURL: "https://devitrackdb.itmastersltd.com/api/creditCard",
 });
 
 //TODO: config interceptors
@@ -21,7 +19,7 @@ devitrackApiPayment.interceptors.request.use((config) => {
 });
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: "https://tracker-backend-file.netlify.app/api/admin"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/admin"
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
@@ -34,7 +32,7 @@ devitrackApiAdmin.interceptors.request.use((config) => {
 });
 
 export const devitrackApiStripe = axios.create({
-  baseURL: "https://tracker-backend-file.netlify.app/api/stripe"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/stripe"
 })
 
 //TODO: config interceptors
@@ -48,7 +46,7 @@ devitrackApiStripe.interceptors.request.use((config) => {
 });
 
 export const devitrackApiArticle = axios.create({
-  baseURL: "https://tracker-backend-file.netlify.app/api/article"
+  baseURL: "https://devitrackdb.itmastersltd.com/api/article"
 })
 
 //TODO: config interceptors
