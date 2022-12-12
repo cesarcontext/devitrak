@@ -5,7 +5,7 @@ import { NavbarBottom } from "../components/ui/NavbarBottom";
 import "../style/pages/moreInfo/MoreInfo.css";
 export const MoreInfo = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-more-info">
         <div className="more-info-title">
@@ -110,6 +110,6 @@ export const MoreInfo = () => {
         ></div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
