@@ -50,8 +50,8 @@ export const StripeCheckoutForm = () => {
       }
     });
   }, [stripe]);
-  const myUrl = window.location.origin
-  console.log("🚀 ~ file: StripeCheckForm.js ~ line 54 ~ StripeCheckoutForm ~ myUrl", myUrl)
+  const myUrl = window.location.origin;
+
   const iFrameStyle = {
     base: {
       color: "var(--main-colorsfading-horizon)",
@@ -71,7 +71,6 @@ export const StripeCheckoutForm = () => {
   };
 
   const paymentElementStyle = {
-    // billing_details: billingDetails,
     style: iFrameStyle,
   };
 
@@ -79,27 +78,16 @@ export const StripeCheckoutForm = () => {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
     setIsLoading(true);
 
-    {
-      /*need to pass customer id generated when customer submit the info before to submit credit card info */
-    }
     const { error, response } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: myUrl+"/confirmation",
-      },
-      receipt_email: customer.email,
-      billing_details: {
-        name: customer.fullname,
-        email: customer.email,
-        phone: customer.phone,
+        return_url: myUrl + "/confirmation",
       },
     });
     if (response) {
@@ -120,19 +108,19 @@ export const StripeCheckoutForm = () => {
   };
 
   return (
-        <form id="payment-form" onSubmit={handleSubmit}>
-          <PaymentElement options={paymentElementStyle} id="payment-element" />
-          <button className="btn" disabled={isLoading || !stripe || !elements} id="submit">
-            <span id="button-text">
-              {isLoading ? (
-                <div className="spinner" id="spinner"></div>
-              ) : (
-                "Pay now"
-              )}
-            </span>
-          </button>
-          {/* Show any error or success messages */}
-          {message && <div id="payment-message">{message}</div>}
-        </form>
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <PaymentElement options={paymentElementStyle} id="payment-element" />
+      <button
+        className="btn"
+        disabled={isLoading || !stripe || !elements}
+        id="submit"
+      >
+        <span id="button-text">
+          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+        </span>
+      </button>
+      {/* Show any error or success messages */}
+      {message && <div id="payment-message">{message}</div>}
+    </form>
   );
 };
