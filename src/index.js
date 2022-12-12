@@ -14,9 +14,9 @@ import "./index.css";
 const stytch = initStytch(
   "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"
 );
-  // "public-token-test-6b62a560-fb54-42e5-85ca-cab49d61b0bd"
+// "public-token-test-6b62a560-fb54-42e5-85ca-cab49d61b0bd"
 
-  const persistor = persistStore(store);
+const persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -24,9 +24,9 @@ root.render(
     <React.StrictMode>
       <StytchProvider stytch={stytch}>
         <BrowserRouter>
-          <PersistGate persistor={persistor}>
-            <App />
-          </PersistGate>
+            <PersistGate persistor={persistor}>
+              <App />
+            </PersistGate>
         </BrowserRouter>
       </StytchProvider>
     </React.StrictMode>
