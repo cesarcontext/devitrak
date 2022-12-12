@@ -35,7 +35,7 @@ export const Checkout = () => {
   
   useEffect(() => {
     callStripeCustomerFind();
-  },[users.id]);
+  },[users.id, device]);
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
