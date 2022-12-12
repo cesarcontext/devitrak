@@ -8,7 +8,7 @@ import "../../style/pages/moreInfo/HowToReturnTheDevices.css";
 
 export const HowToReturnTheDevices = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-more-info-how-to-use">
         <div className="container-more-info-how-to-use-title">
@@ -85,6 +85,6 @@ export const HowToReturnTheDevices = () => {
         <div className="div-bottom-space"></div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };

@@ -6,7 +6,7 @@ import { Navbar } from "../../components/ui/Navbar";
 import "../../style/pages/moreInfo/HowToUseTheReceiver.css";
 export const HowToUseTheReceiver = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-more-info-how-to-use">
         <div className="container-more-info-how-to-use-title">
@@ -83,6 +83,6 @@ export const HowToUseTheReceiver = () => {
         <div className="div-bottom-space"></div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };

@@ -6,7 +6,7 @@ import { Navbar } from "../../components/ui/Navbar";
 
 export const RequestSupportDuringTheEvent = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-more-info-how-to-use">
         <div className="container-more-info-how-to-use-title">
@@ -83,6 +83,6 @@ export const RequestSupportDuringTheEvent = () => {
         <div className="div-bottom-space"></div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
