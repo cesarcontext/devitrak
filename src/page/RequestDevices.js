@@ -35,7 +35,7 @@ export const RequestDevices = () => {
   }
   checkPaymentIntentPerUser()
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-request-device-section">
         <div>
@@ -108,6 +108,6 @@ export const RequestDevices = () => {
         </div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
