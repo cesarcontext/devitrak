@@ -10,13 +10,13 @@ import { PrivacyPolicyContract } from "./PrivacyPolicyContract";
 const customStyles = {
   content: {
     width: "97%",
-    height: "84%",
-    top: "10%",
+    height: "80%",
+    top: "12%",
     left: "11%",
     right: "auto",
     bottom: "auto",
     marginRight: "-10%",
-    transform: "translate(-10%, -10%)",
+    transform: "translate(-10%, 0%)",
   },
 };
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
@@ -77,6 +77,7 @@ export const UserConsentPrivacyPolicyModal = () => {
             <div
               style={{
                 display: "flex",
+                gap:"15px"
               }}
             >
               <button
