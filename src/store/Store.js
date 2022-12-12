@@ -4,6 +4,7 @@ import contactInfoSlice from "./slices/contactInfoSlice";
 import deviceSlice from "./slices/deviceSlice";
 import stripeSlice from "./slices/stripeSlice";
 import privacyPolicyUserResponseSlice from "./slices/privacyPolicyUserResponseSlice";
+import uiSlice from "./slices/uiSlice";
 import storage from "redux-persist/es/storage";
 import {
   persistReducer,
@@ -26,7 +27,8 @@ const reducers = combineReducers({
   contactInfo: contactInfoSlice,
   admin: adminSlice,
   stripe: stripeSlice,
-  privacyPolicyUserResponse: privacyPolicyUserResponseSlice
+  privacyPolicyUserResponse: privacyPolicyUserResponseSlice,
+  ui: uiSlice
 });
 
 const persistedReducers = persistReducer(persistConfig, reducers);
