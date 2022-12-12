@@ -4,25 +4,42 @@ import { useSelector } from "react-redux";
 import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
+
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
   const [stripeTransactions, setStripeTransactions] = useState([]);
+  console.log(
+    "🚀 ~ file: AccordionListPaymentIntent.js:10 ~ AccordionListPaymentIntent ~ stripeTransactions",
+    stripeTransactions
+  );
   const [openAccordion, setOpenAccordion] = useState(false);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
 
   const callApiStripeTransaction = async () => {
     await devitrackApi
-    .get("/admin/users")
-    .then((response) => response.data)
-    .then((data) => setStripeTransactions(data.stripeTransactions));
-  }
+      .get("/admin/users")
+      .then((response) => response.data)
+      .then((data) => setStripeTransactions(data.stripeTransactions));
+  };
   useEffect(() => {
     const controller = new AbortController();
-    callApiStripeTransaction()
+    callApiStripeTransaction();
     return () => {
       controller.abort();
     };
   }, [users.id]);
+
+  const removeDuplicatesStripePaymentIntent = async () => {
+    const duplicates = {};
+    for (let i = 0; i < stripeTransactions.length; i++) {
+      if (!duplicates[stripeTransactions[i].paymentIntent]) {
+        duplicates[stripeTransactions[i].paymentIntent] = stripeTransactions[i].paymentIntent
+      } else {
+        devitrackApiStripe.delete(`/remove-duplicate/${stripeTransactions[i].id}`)
+      }
+    }
+  };
+  removeDuplicatesStripePaymentIntent()
 
   const checkPaymentIntentArray = (info) => {
     if (info.paymentIntent === undefined) {
@@ -85,7 +102,7 @@ export const AccordionListPaymentIntent = () => {
                     <div key={item.id}>
                       <div className="accordion-detail-title">
                         <div className="order-list">
-                         <i className="bi bi-circle" />{" "}
+                          <i className="bi bi-circle" />{" "}
                           <p
                             onClick={() =>
                               setOpenAccordionDetail(!openAccordionDetail)
@@ -103,16 +120,18 @@ export const AccordionListPaymentIntent = () => {
 
                         {openAccordionDetail === true ? (
                           <div className="accordion-body-detail">
-                            <div className="">{checkPaymentIntentArray(item)}</div>
+                            <div className="">
+                              {checkPaymentIntentArray(item)}
+                            </div>
                             <div>
                               <span>
-                                Device ordered:{" "}
+                                Device ordered:&nbsp;{" "}
                                 <p>
                                   <strong>{item.device}</strong>
                                 </p>
                               </span>
                               <span>
-                                Pending return:{" "}
+                                Pending return:&nbsp;{" "}
                                 <strong>
                                   <Accordion item={item} />
                                 </strong>
