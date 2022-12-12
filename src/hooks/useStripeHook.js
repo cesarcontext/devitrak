@@ -1,7 +1,13 @@
+import { useStytch } from "@stytch/stytch-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApiStripe, devitrackApi } from "../apis/devitrackApi";
-import { onAddCustomer, onAddNewPaymentIntent } from "../store/slices/stripeSlice";
+import { rightDoneMessage } from "../helper/swalFireMessage";
+import {
+  onAddCustomer,
+  onAddNewPaymentIntent,
+} from "../store/slices/stripeSlice";
+import { blockLinks } from "../store/slices/uiSlice";
 
 export const useStripeHook = () => {
   const { paymentIntent } = useSelector((state) => state.stripe);
@@ -11,32 +17,37 @@ export const useStripeHook = () => {
   const [paymentIntentId, setPaymentIntentId] = useState(null);
   const [visibleButton, setVisibleButton] = useState("content");
   const [listAllPaymentIntent, setListAllPaymentIntent] = useState(null);
+  const client = useStytch();
 
   const stripeCustomer = async ({ name, lastName, email, phoneNumber }) => {
-    const fullName = name+" "+lastName
+    const fullName = name + " " + lastName;
     try {
-      const response = await devitrackApi
-        .post("/stripe/customer", {
-          name: fullName,
-          email,
-          phone: phoneNumber,
-        })
-        const data = await response.data
-        if(data){
-          dispatch( onAddCustomer( data ))
-        }
+      const response = await devitrackApi.post("/stripe/customer", {
+        name: fullName,
+        email,
+        phone: phoneNumber,
+      });
+      const data = await response.data;
+      if (data) {
+        dispatch(onAddCustomer(data));
+        dispatch(blockLinks("none"))
+        client.magicLinks.email.loginOrCreate(email);
+        rightDoneMessage(`An email has been sent to ${email}`);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const startStripePaymentIntent = async (device) => {
+  const startStripePaymentIntent = async ({ device, stripeCustomer }) => {
     try {
       await devitrackApi
         .post("/stripe/create-payment-intent", {
           device: device,
+          customerId: stripeCustomer,
         })
         .then((data) => {
+          console.log("🚀 ~ file: useStripeHook.js:40 ~ .then ~ data", data);
           setData(data);
           setClientSecret(data.data.clientSecret);
           setVisibleButton("none");
@@ -56,14 +67,14 @@ export const useStripeHook = () => {
   const saveStripeTransaction = async ({
     payment_intent,
     clientSecret,
-    device
+    device,
   }) => {
     try {
       await devitrackApiStripe
         .post("/stripe-transaction", {
           paymentIntent: payment_intent,
           clientSecret,
-          device
+          device,
         })
         .then((response) => response.data);
     } catch (error) {
@@ -77,7 +88,7 @@ export const useStripeHook = () => {
     );
     if (displayData) {
       try {
-       await devitrackApi
+        await devitrackApi
           .get("/stripe/payment-intents")
           .then((response) => response.data)
           .then((data) => data.paymentIntents)
