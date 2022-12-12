@@ -33,7 +33,7 @@ export const QRCodeConfirmation = () => {
     />
   );
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="container-qr-code-confirmation">
         <div className="top-icon">
@@ -94,6 +94,6 @@ export const QRCodeConfirmation = () => {
         </div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
