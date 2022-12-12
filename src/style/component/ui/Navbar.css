@@ -3,17 +3,21 @@
   justify-content: space-between;
   align-items: center;
   background-color: var(--haddocks-sweater);
-  /* color: #fff; */
+  color: #fff;
+  position: sticky;
 }
 .navbar-logo-section {
-    width: 30%;
-    height: 30%;
-    padding-left: 15px;
-  }
-  .navbar-name-section {
-    width: 30%;
-    display: flex;
-  }
+  width: 30%;
+  height: 30%;
+  padding-left: 15px;
+}
+.navbar-name-section {
+  width: 30%;
+  display: flex;
+}
+.navbar-main-title{
+  padding: 15px;
+}
 
 @media only screen and (max-width: 650px) {
   .container-navbar-main {
@@ -22,6 +26,9 @@
     align-items: center;
     background-color: var(--haddocks-sweater);
     color: #fff;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
   }
   .navbar-logo-section {
     width: 30%;

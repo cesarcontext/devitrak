@@ -57,4 +57,12 @@
   .btn-logout i{
     font-size: 20px;
   }
+  .btn-logout-section{
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding-right: 39px;
+  }
 }

@@ -1,8 +1,17 @@
 .container-alert-info{
-    width: 30%;
+    width: 45%;
+    margin: 3% auto;
+}
+.alert{
+    border-radius: 15px 15px 0 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -1px 1px 3px;
+}
+.alert-message-loading-true{
+    width: 100%;
     margin: auto;
 }
-
 @media only screen and ( min-width:320px) and ( max-width:480px){
     .container-alert-info{
         width: 95%;

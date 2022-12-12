@@ -1,19 +1,22 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
 
 .container-request-device-section {
-  width: 90%;
+  width: 40%;
   margin: 0 auto;
-  margin-top: 10%;
+  margin-top: 2%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
 }
 .container-request-current-order {
-  width: 100%;
-  margin: 8% auto;
+  width: 55%;
+  height: fit-content;
+  margin: 2% auto;
+  margin-bottom: 1%;
   border: solid 1px #212529;
   border-radius: 15px;
+  background-color: #ffff;
 }
 .container-request-current-order-display {
   display: flex;
@@ -22,11 +25,17 @@
   padding: 15px;
 }
 .view-more-details-acount {
+  font-size: 13px;
   letter-spacing: 0;
   line-height: normal;
   min-height: 16px;
   min-width: 247px;
   text-align: center;
+}
+
+.view-more-details-acount span {
+  margin: 0 auto;
+  color: #0000ff;
 }
 .request-more-devices-button {
   display: flex;
@@ -42,13 +51,35 @@
   margin: 0 auto;
   background-color: var(--main-colorsbluetiful);
 }
+.request-more-devices-button span {
+  font-size: 16px;
+  margin: 0 auto;
+  margin-bottom: 2%;
+}
+.request-more-devices-button p {
+  font-size: 12px;
+  margin: 0 auto;
+  padding-left: 60px;
+  padding-right: 60px;
+}
+
 .request-device-help-links-body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20%;
+  margin-top: 8%;
   margin-bottom: 0%;
+  width: 90%;
+}
+.link-help-router{
+  margin: 2% auto;
+}
+
+.link-help-router span {
+  color: var(--main-colorsbluetiful);
+  font-weight: 600;
+  margin-bottom: 50%;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 480px) {

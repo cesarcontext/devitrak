@@ -1,10 +1,14 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
-.event-schedule-container {
-  width: 95%;
-  height: 100vh;
-  padding-bottom: 15px;
-}
 
+.event-schedule-container {
+  width: 40%;
+  margin: 2% auto;
+  margin-bottom: 6%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
 .container-schedule-event-title {
   display: flex;
   justify-content: center;
@@ -18,7 +22,7 @@
   font-size: 13px;
 }
 .container-schedule-event-img {
-  width: 95%;
+  width: 70%;
   margin: 5% auto;
   margin-bottom: 3rem;
 }
@@ -26,9 +30,10 @@
   width: 100%;
   object-fit: fill;
   object-position: center;
+  border-radius: 5px;
 }
 .container-schedule-event-body {
-  width: 95%;
+  width: 55%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -50,7 +55,7 @@
   border-radius: 12px;
   margin: 0 3%;
   padding: 5px;
-  width: 33%;
+  width: 20%;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 480px){

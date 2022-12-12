@@ -1,15 +1,78 @@
 .container-my-profile-info {
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--wild-sand);
+  margin-top: 5%;
+  margin: 0 auto;
+}
+.container-my-profile-info h3{
+  margin-bottom: 1.25rem;
+}
+
+.container-box-user-info-detail {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  border: dashed 1px #212529;
+  border-radius: 15px;
+  background-color: #FFFF;
 }
 .container-user-info-detail-fetched {
   display: flex;
   justify-content: left;
   align-items: center;
+  text-align: left;
   width: 100%;
+}
+
+.box-user-detail-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-top: 5%;
+}
+#box-user-detail-edit-button {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 15%;
+}
+#box-user-detail-cancel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#box-user-detail-save-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box-user-edit-info {
+  width: 95%;
+}
+.box-user-edit-info input {
+  width: 90%;
+}
+.container-box-user-info-detail-qrcode {
+  width: 70%;
+  height: 70%;
+  margin-bottom: 4%;
+}
+.container-device-alert {
+  width: 95%;
+}
+.container-device-accordion-List {
+  width: 45%;
+  margin: 0 auto;
+  margin-bottom: 5%;
+  display: flex;
+  flex-direction: column;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 480px) {

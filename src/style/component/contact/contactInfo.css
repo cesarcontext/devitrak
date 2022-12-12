@@ -12,10 +12,11 @@
 @media only screen and (min-width: 320px) and (max-width: 480px) {
   .container-contact-info {
     margin: 0 auto;
-    margin-bottom: 16vh;
+    margin-bottom: 25vh;
+    /* height: 115vh; */
   }
   .row {
-    width:95%;
+    width: 95%;
     margin: 4% auto;
     margin-top: 10%;
   }
