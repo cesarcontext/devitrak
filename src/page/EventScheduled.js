@@ -4,7 +4,7 @@ import { NavbarBottom } from "../components/ui/NavbarBottom";
 import "../style/pages/EventScheduled.css";
 export const EventScheduled = () => {
   return (
-    <>
+    <div className="general-container">
       <Navbar />
       <div className="event-schedule-container">
         <div className="container-schedule-event-title">
@@ -53,6 +53,6 @@ export const EventScheduled = () => {
         </div>
       </div>
       <NavbarBottom />
-    </>
+    </div>
   );
 };
