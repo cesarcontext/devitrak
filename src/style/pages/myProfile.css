@@ -119,6 +119,7 @@
     justify-content: flex-start;
     align-items: center;
     margin-left: 15%;
+    margin-bottom: 0rem;
   }
   #box-user-detail-cancel-button {
     display: flex;
