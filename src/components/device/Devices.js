@@ -24,7 +24,7 @@ export const Devices = () => {
       </div>
       <div className="show-amount-section">
         <div></div>
-        <div className="container-devices-deposit-">
+        <div className="container-devices-deposit-display">
           <p id="deposit-total">DEPOSIT TOTAL:</p>
           <p id="amount-displayed">${device * 200}</p>
         </div>
