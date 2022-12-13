@@ -84,11 +84,6 @@ export const ContactInfo = () => {
       return swalErrorMessage("Phone number must be provided");
     }
 
-    if (device === 0) {
-      return swalErrorMessage(
-        "Please select the number of receiver you need before to continue"
-      );
-    }
     await startSavingContactInfo({
       ...formValues,
       privacyPolicy: true,
