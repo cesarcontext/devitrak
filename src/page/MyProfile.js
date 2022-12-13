@@ -234,23 +234,34 @@ export const MyProfile = () => {
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
-                              borderRadius:"7%",
-                              fontSize:"10px",
-                              color:"#fff",
-                              backgroundColor:"var(--main-colorslobster)"
+                              borderRadius: "7%",
+                              fontSize: "10px",
+                              color: "#fff",
+                              backgroundColor: "var(--main-colorslobster)",
                             }}
                             // className="btn-logout"
                             onClick={handleLogout}
                           >
-                            <strong>Logout</strong>
+                            <span>Logout</span>
                           </button>
                         )) ||
                           (newUser && (
                             <button
-                              className="btn-logout"
+                              style={{
+                                width: "45px",
+                                height: "45px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "7%",
+                                fontSize: "10px",
+                                color: "#fff",
+                                backgroundColor: "var(--main-colorslobster)",
+                              }}
+                              // className="btn-logout"
                               onClick={handleLogout}
                             >
-                              <strong>Logout</strong>
+                              <span>Logout</span>
                             </button>
                           ))}
                       </div>
