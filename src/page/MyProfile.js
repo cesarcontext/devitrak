@@ -234,8 +234,12 @@ export const MyProfile = () => {
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
+                              borderRadius:"7%",
+                              fontSize:"10px",
+                              color:"#fff",
+                              backgroundColor:"var(--main-colorslobster)"
                             }}
-                            className="btn-logout"
+                            // className="btn-logout"
                             onClick={handleLogout}
                           >
                             <strong>Logout</strong>
