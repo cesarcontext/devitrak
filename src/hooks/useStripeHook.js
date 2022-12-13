@@ -39,12 +39,12 @@ export const useStripeHook = () => {
     }
   };
 
-  const startStripePaymentIntent = async ({ device, stripeCustomer }) => {
+  const startStripePaymentIntent = async ({ device, stripeId }) => {
     try {
       await devitrackApi
         .post("/stripe/create-payment-intent", {
           device: device,
-          customerId: stripeCustomer,
+          customerId: stripeId,
         })
         .then((data) => {
           console.log("🚀 ~ file: useStripeHook.js:40 ~ .then ~ data", data);
