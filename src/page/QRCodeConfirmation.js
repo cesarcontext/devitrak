@@ -3,6 +3,7 @@ import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
+import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
 import "../style/pages/QRCodeConfirmation.css";
@@ -10,6 +11,8 @@ import "../style/pages/QRCodeConfirmation.css";
 export const QRCodeConfirmation = () => {
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
+  const { users } = useContactInfoStore()
+  console.log("🚀 ~ file: QRCodeConfirmation.js:15 ~ QRCodeConfirmation ~ users", users)
 
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
@@ -29,7 +32,7 @@ export const QRCodeConfirmation = () => {
       bgColor="#ffff"
       level="Q"
       size={150}
-      value={clientSecret}
+      value={users.email}
     />
   );
   return (
