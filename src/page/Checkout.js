@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import "../style/pages/Checkout.css";
 
 export const Checkout = () => {
-  const [customerStripeId, setCustomerStripeId] = useState("")
+  const [customerStripeId, setCustomerStripeId] = useState([])
   const { device } = useDeviceCount();
   const { users } = useSelector((state) => state.contactInfo);
   const { startStripePaymentIntent, clientSecret, visibleButton } =
@@ -20,18 +20,10 @@ export const Checkout = () => {
     const response = await devitrackApiStripe.get("/customers", {
       email: users.email,
     });
-    if (response) {
-      const emailReference = response.data.customer;
-      console.log("🚀 ~ file: Checkout.js:27 ~ callStripeCustomerFind ~ emailReference", emailReference)
-      for (let i = 0; i < emailReference.length; i++) {
-        if (emailReference[i].email === users.email) {
-          return setCustomerStripeId(emailReference[i].email);
-        }
-        return;
-      }
+    if(response){
+      return setCustomerStripeId(response.data.customer)
     }
   };
-    console.log("🚀 ~ file: Checkout.js:14 ~ Checkout ~ customerStripeId", customerStripeId)
 
   useEffect(() => {
     callStripeCustomerFind();
@@ -39,7 +31,13 @@ export const Checkout = () => {
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
-    startStripePaymentIntent({ device, customerStripeId });
+    let stripeId;
+    for ( let i = 0; i < customerStripeId.length; i++){
+      if(customerStripeId[i].email === users.email){
+        stripeId= customerStripeId[i].id
+      }
+    }
+    startStripePaymentIntent({ device, stripeId });
     localStorage.setItem("device", device);
   };
   return (
