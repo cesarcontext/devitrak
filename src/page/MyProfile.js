@@ -246,7 +246,7 @@ export const MyProfile = () => {
                               className="btn-logout"
                               onClick={handleLogout}
                             >
-                              <i className="bi bi-box-arrow-right"></i>
+                              <label>Logout</label>
                             </button>
                           ))}
                       </div>
