@@ -238,7 +238,7 @@ export const MyProfile = () => {
                             className="btn-logout"
                             onClick={handleLogout}
                           >
-                            <label>Logout</label>
+                            <strong>Logout</strong>
                           </button>
                         )) ||
                           (newUser && (
@@ -246,7 +246,7 @@ export const MyProfile = () => {
                               className="btn-logout"
                               onClick={handleLogout}
                             >
-                              <label>Logout</label>
+                              <strong>Logout</strong>
                             </button>
                           ))}
                       </div>
