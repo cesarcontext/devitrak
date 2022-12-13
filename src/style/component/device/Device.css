@@ -113,17 +113,17 @@
   #deposit-total {
     margin-top: 0%;
     margin-bottom: 0%;
-    position: absolute;
+    /* position: absolute;
     top: 24%;
-    right: 10%;
+    right: 10%; */
     font-weight: 600;
   }
   #amount-displayed{
     margin-top: 0%;
     margin-bottom: 0%;
-    position: absolute;
+    /* position: absolute;
     top: 26%;
-    right: 11%;
+    right: 11%; */
     font-weight: 600;
   }
   .container-devices-deposit-display {
