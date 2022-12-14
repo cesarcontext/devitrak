@@ -114,7 +114,7 @@ export const StripeCheckoutForm = () => {
         id="submit"
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : `Deposit ${device * 200}`}
+          {isLoading ? <div className="spinner" id="spinner"></div> : `Deposit $${device * 200}`}
         </span>
       </button>
       {/* Show any error or success messages */}
