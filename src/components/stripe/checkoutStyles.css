@@ -163,8 +163,22 @@ form {
     display: none;
   }
   .Input {
-    font-size: var(--font-size-l2);
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-clip: padding-box;
+    background-color: #fff;
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    color: #212529;
+    display: block;
     font-family: var(--font-family-open_sans);
+    font-size: var(--font-size-m2);
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    width: 100%;
   }
     .Label {
     display: none;
