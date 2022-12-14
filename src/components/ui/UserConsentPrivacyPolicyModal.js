@@ -91,7 +91,7 @@ export const UserConsentPrivacyPolicyModal = () => {
               Decline
             </button>
             <button
-              onSubmit={submitResponseToTermsAndConditions}
+              onClick={submitResponseToTermsAndConditions}
               className="btn btn-create"
               type="submit"
               style={{ paddig: "5px" }}
