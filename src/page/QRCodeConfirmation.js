@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/ui/Navbar";
@@ -9,10 +9,16 @@ import { useStripeHook } from "../hooks/useStripeHook";
 import "../style/pages/QRCodeConfirmation.css";
 
 export const QRCodeConfirmation = () => {
+  const [stripeTransactions, setStripeTransactions] = useState([]);
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
-  const { users } = useContactInfoStore()
-  console.log("🚀 ~ file: QRCodeConfirmation.js:15 ~ QRCodeConfirmation ~ users", users)
+  const { users } = useContactInfoStore();
+  const callApiStripeTransaction = async () => {
+    await devitrackApi
+      .get("/admin/users")
+      .then((response) => response.data)
+      .then((data) => setStripeTransactions(data.stripeTransactions));
+  };
 
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
@@ -26,6 +32,14 @@ export const QRCodeConfirmation = () => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
   }, [payment_intent]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    callApiStripeTransaction();
+    return () => {
+      controller.abort();
+    };
+  }, [users.id]);
+
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
@@ -35,6 +49,22 @@ export const QRCodeConfirmation = () => {
       value={users.email}
     />
   );
+
+  const removeDuplicatesStripePaymentIntent = async () => {
+    const duplicates = {};
+    for (let i = 0; i < stripeTransactions.length; i++) {
+      if (!duplicates[stripeTransactions[i].paymentIntent]) {
+        duplicates[stripeTransactions[i].paymentIntent] =
+          stripeTransactions[i].paymentIntent;
+      } else {
+        devitrackApiStripe.delete(
+          `/remove-duplicate/${stripeTransactions[i].id}`
+        );
+      }
+    }
+  };
+  removeDuplicatesStripePaymentIntent();
+  
   return (
     <div className="general-container">
       <Navbar />
