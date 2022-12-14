@@ -10,7 +10,7 @@ import { PrivacyPolicyContract } from "./PrivacyPolicyContract";
 const customStyles = {
   content: {
     width: "97%",
-    height: "80%",
+    height: "75%",
     top: "12%",
     left: "11%",
     right: "auto",
