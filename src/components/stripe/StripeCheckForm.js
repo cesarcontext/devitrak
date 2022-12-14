@@ -7,16 +7,14 @@ import {
 } from "@stripe/react-stripe-js";
 import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 import "./checkoutStyles.css";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
 export const StripeCheckoutForm = () => {
   const dispatch = useDispatch();
   const stripe = useStripe();
   const elements = useElements();
-  const { customer } = useSelector((state) => state.stripe);
-  console.log(
-    "🚀 ~ file: StripeCheckForm.js ~ line 16 ~ StripeCheckoutForm ~ customer",
-    customer
-  );
+  const { device } = useDeviceCount()
+
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -116,7 +114,7 @@ export const StripeCheckoutForm = () => {
         id="submit"
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          {isLoading ? <div className="spinner" id="spinner"></div> : `Deposit ${device * 200}`}
         </span>
       </button>
       {/* Show any error or success messages */}
