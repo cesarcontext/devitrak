@@ -12,7 +12,7 @@ export const DeclineTerms = () => {
         }}>
             <h1>We understand your concern</h1>
             <span>
-                Please understand our, we hope to have you back sooner!
+                Please understand our, we hope to have you back soon!
             </span>
             <NavLink to="/">
               <p style={{
