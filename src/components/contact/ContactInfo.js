@@ -211,7 +211,7 @@ export const ContactInfo = () => {
               }}
               onClick={handleOnSubmit}
             >
-              Looks right?
+              Submit
             </button>
           </div>
         )}
