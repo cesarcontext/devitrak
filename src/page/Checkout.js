@@ -50,7 +50,7 @@ export const Checkout = () => {
         ) : (
           <div className={`button-wrapper d-${visibleButton}`}>
             <button className="btn" onClick={handleOnSubmit}>
-              Looks right?
+              Submit
             </button>
           </div>
         )}
@@ -58,13 +58,13 @@ export const Checkout = () => {
         <div className="stripe-wrapper-checkout">
           <StripeCheckoutElement clientSecret={clientSecret} />
         </div>
-        {clientSecret ? (
+        {/* {clientSecret ? (
           <div className="checkout-amount-stripe-clientSecret">
             <h3>Deposit: ${device * 200},00</h3>
           </div>
         ) : (
           ""
-        )}
+        )} */}
       </div>
       <NavbarBottom />
     </div>
