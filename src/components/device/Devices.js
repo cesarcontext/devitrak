@@ -8,9 +8,9 @@ export const Devices = () => {
     useDeviceCount();
     const [blockButton, setBlockButton] = useState(false)
 
-    if(device > 6){
+    if(device > 5){
       setBlockButton(true)
-      alert("For more than 5 devices, please contact the staff")
+      // alert("For more than 5 devices, please contact the staff")
     }
   return (
     <div className="col-md-11 m-4 mb-0">
