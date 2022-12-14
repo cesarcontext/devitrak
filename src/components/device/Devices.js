@@ -22,13 +22,13 @@ export const Devices = () => {
           </button>
         </div>
       </div>
-      <div className="show-amount-section">
+      {/* <div className="show-amount-section">
         <div></div>
         <div className="container-devices-deposit-display">
           <p id="deposit-total">DEPOSIT TOTAL:</p>
           <p id="amount-displayed">${device * 200}</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
