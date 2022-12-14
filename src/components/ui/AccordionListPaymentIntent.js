@@ -29,17 +29,17 @@ export const AccordionListPaymentIntent = () => {
     };
   }, [users.id]);
 
-  const removeDuplicatesStripePaymentIntent = async () => {
-    const duplicates = {};
-    for (let i = 0; i < stripeTransactions.length; i++) {
-      if (!duplicates[stripeTransactions[i].paymentIntent]) {
-        duplicates[stripeTransactions[i].paymentIntent] = stripeTransactions[i].paymentIntent
-      } else {
-        devitrackApiStripe.delete(`/remove-duplicate/${stripeTransactions[i].id}`)
-      }
-    }
-  };
-  removeDuplicatesStripePaymentIntent()
+  // const removeDuplicatesStripePaymentIntent = async () => {
+  //   const duplicates = {};
+  //   for (let i = 0; i < stripeTransactions.length; i++) {
+  //     if (!duplicates[stripeTransactions[i].paymentIntent]) {
+  //       duplicates[stripeTransactions[i].paymentIntent] = stripeTransactions[i].paymentIntent
+  //     } else {
+  //       devitrackApiStripe.delete(`/remove-duplicate/${stripeTransactions[i].id}`)
+  //     }
+  //   }
+  // };
+  // removeDuplicatesStripePaymentIntent()
 
   const checkPaymentIntentArray = (info) => {
     if (info.paymentIntent === undefined) {
