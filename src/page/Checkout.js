@@ -45,8 +45,12 @@ export const Checkout = () => {
       <Navbar />
       <div className="container-checkout">
         {!clientSecret ? <Devices /> : ""}
-        {device < 1 ? (
-          <></>
+        {device > 5 ? (
+          <div>
+            <p>
+              <span>For more than 5 devices, please contact to the staff.</span>
+            </p>
+          </div>
         ) : (
           <div className={`button-wrapper d-${visibleButton}`}>
             <button className="btn" onClick={handleOnSubmit}>
@@ -58,13 +62,6 @@ export const Checkout = () => {
         <div className="stripe-wrapper-checkout">
           <StripeCheckoutElement clientSecret={clientSecret} />
         </div>
-        {/* {clientSecret ? (
-          <div className="checkout-amount-stripe-clientSecret">
-            <h3>Deposit: ${device * 200},00</h3>
-          </div>
-        ) : (
-          ""
-        )} */}
       </div>
       <NavbarBottom />
     </div>
