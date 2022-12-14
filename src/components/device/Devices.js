@@ -10,7 +10,7 @@ export const Devices = () => {
 
     if(device > 6){
       setBlockButton(true)
-      deviceMessageAlert()
+      alert("For more than 5 devices, please contact the staff")
     }
   return (
     <div className="col-md-11 m-4 mb-0">
