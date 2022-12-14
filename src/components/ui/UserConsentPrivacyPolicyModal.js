@@ -67,31 +67,38 @@ export const UserConsentPrivacyPolicyModal = () => {
         <div>
           <h2>Privacy Policy</h2>
 
-          <form
+          {/* <form
             style={{
               width: "99%",
             }}
             onSubmit={submitResponseToTermsAndConditions}
-          >
+          > */}
+          <div style={{ overflow: "auto" }}>
             <PrivacyPolicyContract />
-            <div
-              style={{
-                display: "flex",
-                gap:"15px"
-              }}
-            >
-              <button
+          </div>
+          {/* </form> */}
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+            }}
+          >
+            <button
               className="btn btn-delete"
-                onClick={() => navigate("/declineTerms")}
-                style={{ paddig: "5px" }}
-              >
-                Decline
-              </button>
-              <button className="btn btn-create" type="submit" style={{ paddig: "5px" }}>
-                Accept
-              </button>
-            </div>
-          </form>
+              onClick={() => navigate("/declineTerms")}
+              style={{ paddig: "5px" }}
+            >
+              Decline
+            </button>
+            <button
+              onSubmit={submitResponseToTermsAndConditions}
+              className="btn btn-create"
+              type="submit"
+              style={{ paddig: "5px" }}
+            >
+              Accept
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
