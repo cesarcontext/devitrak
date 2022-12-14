@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { deviceMessageAlert } from "../../helper/swalFireMessage";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import "../../style/component/device/Device.css";
 
@@ -8,10 +7,6 @@ export const Devices = () => {
     useDeviceCount();
     const [blockButton, setBlockButton] = useState(false)
 
-    if(device > 5){
-      setBlockButton(true)
-      // alert("For more than 5 devices, please contact the staff")
-    }
   return (
     <div className="col-md-11 m-4 mb-0">
       <div className="device-selection">
