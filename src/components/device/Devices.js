@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import { deviceMessageAlert } from "../../helper/swalFireMessage";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import "../../style/component/device/Device.css";
 
 export const Devices = () => {
   const { device, handleDecreaseDevice, handleIncreaseDevice } =
     useDeviceCount();
+    const [blockButton, setBlockButton] = useState(false)
 
+    if(device > 6){
+      setBlockButton(true)
+      deviceMessageAlert()
+    }
   return (
     <div className="col-md-11 m-4 mb-0">
       <div className="device-selection">
@@ -17,18 +23,11 @@ export const Devices = () => {
           <div className="device-selection-display">
             <p id="number-device-displayed">{device}</p>
           </div>
-          <button id="button-plus" onClick={handleIncreaseDevice}>
+          <button disabled={blockButton} id="button-plus" onClick={handleIncreaseDevice}>
             +
           </button>
         </div>
       </div>
-      {/* <div className="show-amount-section">
-        <div></div>
-        <div className="container-devices-deposit-display">
-          <p id="deposit-total">DEPOSIT TOTAL:</p>
-          <p id="amount-displayed">${device * 200}</p>
-        </div>
-      </div> */}
     </div>
   );
 };
