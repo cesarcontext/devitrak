@@ -34,13 +34,13 @@ export const QRCodeConfirmation = () => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
   }, [payment_intent]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    callApiStripeTransaction();
-    return () => {
-      controller.abort();
-    };
-  }, [users.id]);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   callApiStripeTransaction();
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // }, [users.id]);
 
   const QRCodeGenerated = (
     <QRCode
@@ -69,8 +69,9 @@ export const QRCodeConfirmation = () => {
     }
   };
 
-  useInterval(() => {
-    removeDuplicatesStripePaymentIntent();
+  useInterval(async() => {
+    await callApiStripeTransaction();
+    await removeDuplicatesStripePaymentIntent();
   }, 1_00);
 
   return (
