@@ -59,16 +59,19 @@ export const QRCodeConfirmation = () => {
         duplicates[stripeTransactions[i].paymentIntent] =
           stripeTransactions[i].paymentIntent;
       } else {
-        devitrackApiStripe.delete(
+        const response = await devitrackApiStripe.delete(
           `/remove-duplicate/${stripeTransactions[i].id}`
         );
+        if(response){
+          console.log("🚀 ~ file: QRCodeConfirmation.js:66 ~ removeDuplicatesStripePaymentIntent ~ response", response)
+        }
       }
     }
   };
 
   useInterval(() => {
     removeDuplicatesStripePaymentIntent();
-  }, 2_000);
+  }, 1_00);
 
   return (
     <div className="general-container">
