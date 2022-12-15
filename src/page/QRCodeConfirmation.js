@@ -1,6 +1,8 @@
+import { useInterval } from "interval-hooks";
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { Link } from "react-router-dom";
+import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
@@ -63,8 +65,11 @@ export const QRCodeConfirmation = () => {
       }
     }
   };
-  removeDuplicatesStripePaymentIntent();
-  
+
+  useInterval(() => {
+    removeDuplicatesStripePaymentIntent();
+  }, 2_000);
+
   return (
     <div className="general-container">
       <Navbar />
