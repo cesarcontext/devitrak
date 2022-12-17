@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
+import { useInterval } from "interval-hooks";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { ModalCreateUser } from "../ui/ModalCreateUser";
-import { Pagination } from "../ui/Pagination";
-import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
+import { ModalCreateUser } from "../ui/ModalCreateUser";
+import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import "../../../style/component/admin/attendeesInfo.css";
+import "../../../style/component/ui/paginate.css";
 
 export const AttendeesInfo = ({ searchTerm }) => {
   const { user } = useAdminStore();
@@ -15,29 +17,34 @@ export const AttendeesInfo = ({ searchTerm }) => {
     createTransactionForNoRegularUser,
     setCreateTransactionForNoRegularUser,
   ] = useState(false);
+  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [usersRenderedPerPage] = useState(4);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 4;
+
+  const callApiUser = async () => {
+    const response = await devitrackApi.get("/auth/users");
+    if (response) {
+      setUsers(response.data.users);
+    }
+  };
 
   useEffect(() => {
-    devitrackApi
-      .get("/auth/users")
-      .then((response) => response.data)
-      .then((data) => setUsers(data.users));
+    callApiUser();
   }, [createUserButton, createTransactionForNoRegularUser]);
 
-  const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
-  const indexOfFirstUsersRendered =
-    indexOfLastUsersRendered - usersRenderedPerPage;
-  const currentUsersRendered = users.slice(
-    indexOfFirstUsersRendered,
-    indexOfLastUsersRendered
-  );
-
-  const paginate = (pageNumbers) => {
-    setCurrentPage(pageNumbers);
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % users.length;
+    setItemOffset(newOffset);
   };
+
+  useInterval(async () => {
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItemsRendered(users.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(users.length / itemsPerPage));
+  }, 2_00);
   return (
     <div className="container-attendees">
       <div className="container-attendees-info">
@@ -46,6 +53,22 @@ export const AttendeesInfo = ({ searchTerm }) => {
         </div>
         <div className="container-attendees-info-table">
           <table className="table">
+            <caption>
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={2}
+                pageCount={pageCount}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+                containerClassName="pagination"
+                pageLinkClassName="page-num"
+                previousLinkClassName="page-num"
+                nextLinkClassName="page-num"
+                activeLinkClassName="tab-active"
+              />
+            </caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -54,8 +77,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {searchTerm.length < 2
-              ? currentUsersRendered?.map((user, item) => {
+            {searchTerm === ""
+              ? currentItemsRendered?.map((user, item) => {
                   return (
                     <tbody key={user.id}>
                       <tr>
@@ -64,7 +87,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                         <td>{user.email}</td>
                         <td>
                           <button
-                          className="btn btn-detail"
+                            className="btn btn-detail"
                             onClick={() => {
                               setSendObjectIdUser(user.id);
                               setUserDetail(user.category);
@@ -80,7 +103,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
               : users
                   ?.filter((item) => item.email.includes(searchTerm))
                   ?.map((user, item) => {
-                    // currentUsersRendered;
+                    // currentItemsRendered;
                     return (
                       <tbody key={user.id}>
                         <tr>
@@ -89,7 +112,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                           <td>{user.email}</td>
                           <td>
                             <button
-                            className="btn btn-detail"
+                              className="btn btn-detail"
                               onClick={() => {
                                 setSendObjectIdUser(user.id);
                                 setUserDetail(user.category);
@@ -111,16 +134,12 @@ export const AttendeesInfo = ({ searchTerm }) => {
               alignItems: "center",
             }}
           >
-            <div>
-              <Pagination
-                childrenRenderedPerPage={usersRenderedPerPage}
-                totalChildren={users.length}
-                paginate={paginate}
-              />
-            </div>
             {user.role === "Administrator" ? (
               <div>
-                <button className="btn btn-create" onClick={() => setCreateUserButton(true)}>
+                <button
+                  className="btn btn-create"
+                  onClick={() => setCreateUserButton(true)}
+                >
                   Create user
                 </button>
               </div>
@@ -128,6 +147,8 @@ export const AttendeesInfo = ({ searchTerm }) => {
           </div>
         </div>
       </div>
+      {/**Second rectangule where details are displayed */}
+
       <div className="container-attendees-info-detail">
         <div>
           <h2>Details</h2>
@@ -175,7 +196,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                     if (user.id === sendObjectIdUser) {
                       return (
                         <button
-                        className="btn btn-create"
+                          className="btn btn-create"
                           onClick={() => {
                             setCreateTransactionForNoRegularUser(true);
                           }}
