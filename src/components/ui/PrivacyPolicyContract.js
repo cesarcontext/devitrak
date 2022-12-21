@@ -6,7 +6,7 @@ export const PrivacyPolicyContract = () => {
       style={{
         textAlign: "justify",
         overflow:"auto",
-        height:"55vh"
+        height:"50vh"
       }}
     >
       <span>
