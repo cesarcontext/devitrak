@@ -14,13 +14,11 @@ export const ContactInfo = () => {
   const {
     startSavingContactInfo,
     startCheckingUser,
-    // token,
     userCreatedDisabledInput,
     users,
     visibleButton,
   } = useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
-  const { device } = useDeviceCount();
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
   const initalFormValues = {
@@ -29,6 +27,7 @@ export const ContactInfo = () => {
     lastName: "",
     name: "",
     phoneNumber: "",
+    category: "Regular",
     privacyPolicy: response,
   };
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -88,12 +87,7 @@ export const ContactInfo = () => {
       ...formValues,
       privacyPolicy: true,
     });
-    // await startStripePaymentIntent(device);
     await stripeCustomer(formValues);
-    // setTrigger(true); //*trigger action to notify user about the account creation
-    // magicLinkNewUser(magicLinkParam);
-    // navigate("/checkout")
-
   };
 
   if (users.status === true) {
@@ -215,17 +209,7 @@ export const ContactInfo = () => {
             </button>
           </div>
         )}
-
-        {/* <div
-          style={{ gap: "20px" }}
-          className={`d-${visible} stripe-container-contact-info-section`}
-        >
-          <StripeCheckoutElement clientSecret={clientSecret} />
-        </div> */}
       </div>
-      {/* <div className="d-none">
-        <WelcomeEmail formValues={formValues} trigger={trigger} />
-      </div> */}
       <NavbarBottom />
     </>
   );
