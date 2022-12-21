@@ -85,7 +85,7 @@ export const MyProfile = () => {
 
   const checkPaymentIntentArray = (info) => {
     if (info.length > 0) {
-      const QRCodeValue = info?.at(-1).data?.clientSecret;
+      const QRCodeValue = info?.at(-1).data?.payment_intent_id;
       return (
         <>
           <div
