@@ -60,7 +60,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={2}
                 pageCount={pageCount}
-                previousLabel="< previous"
+                previousLabel="< prev"
                 renderOnZeroPageCount={null}
                 containerClassName="pagination"
                 pageLinkClassName="page-num"
@@ -104,7 +104,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              justifyContent: "space-between",
+              justifyContent: "flex-end",
               alignItems: "center",
             }}
           >
