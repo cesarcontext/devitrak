@@ -9,7 +9,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
   const [dataListed, setDataListed] = useState(null);
   const [selection, setSelection] = useState("");
   const { paymentIntentSelected } = useSelector((state) => state.stripe);
-  const [amountToCapture, setAmountToCapture] = useState("");
 
   useEffect(() => {
     devitrackApi
@@ -18,57 +17,12 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
       .then((data) => setDataListed(data.paymentIntents.data));
   }, [sendPaymentIntentId]);
 
-  // const receiversArray = (n) => {
-  //   const array = new Array(n);
-  //   return array;
-  // };
-
-  // const displayDate = async(item) => {
-  //   const day = new Date( item )
-  //   return day
-  // }
   return (
-    <div
-      style={{
-        width: "96%",
-        margin: "0 auto",
-        marginBottom: "3%",
-        border: "solid 2px #212529",
-        borderRadius: "15px",
-        padding: "30px",
-      }}
-    >
-      <div
-        style={{
-          width: "10%",
-          position: "relative",
-          right: "0",
-        }}
-      >
-        <select
-          className="form-select form-select-sm"
-          aria-label=".form-select-sm example"
-        >
-          <option defaultValue="filter">Filter</option>
-          <option
-            onClick={() => setSelection("requires_capture")}
-            value="requires_capture"
-          >
-            Requires captured
-          </option>
-          <option onClick={() => setSelection("succeeded")} value="suceeded">
-            Captured
-          </option>
-          <option onClick={() => setSelection("canceled")} value="canceled">
-            Cancelled
-          </option>
-        </select>
-      </div>
+    <div className="container-stripe-transaction-per-user">
       <div>
         <table className="table">
           <thead>
             <tr>
-              <th scope="col">Status</th>
               <th scope="col">Payment Intent ID</th>
               <th scope="col">Credit Card Info</th>
               <th scope="col">CC MM/YYYY</th>
@@ -76,33 +30,16 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
               <th scope="col">Device #</th>
               <th scope="col">Capture</th>
               <th scope="col">Cancel</th>
-              {/* <th scope="col">Date</th> */}
             </tr>
           </thead>
           {dataListed?.map((data, index) => {
             const device = data.amount_capturable / 20000;
             const amount_authorized = data.amount_capturable;
             const date = new Date(data.created);
-            console.log("🚀 ~ file: PaymentIntentTemplate.js ~ line 86 ~ {dataListed?.map ~ date", date)
             if (data.id === paymentIntentSelected) {
               return (
                 <tbody key={data.id}>
                   <tr>
-                    <th scope="row">
-                      {device !== 0 ? (
-                        <NavLink to="/admin/attendees/receiver_assignation">
-                          <button className="btn btn-create" style={{ width: "90%", padding: "5px" }}>
-                            Assign Device
-                          </button>
-                        </NavLink>
-                      ) : (
-                        <div
-                          style={{ backgroundColor: "#212529", color: "#fff" }}
-                        >
-                          <h4>{data.status.toUpperCase()}</h4>
-                        </div>
-                      )}
-                    </th>
                     <td>{data.id}</td>
                     <td>
                       {data.charges.data[0].payment_method_details.card.brand.toUpperCase()}{" "}
@@ -127,7 +64,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                     <td>
                       {device !== 0 ? (
                         <button
-                        className="btn btn-create"
+                          className="btn btn-create"
                           onClick={() => {
                             Swal.fire({
                               title: "",
@@ -148,19 +85,16 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                               confirmButtonText: "Capture authorized amount",
                               backdrop: "rgba(0,0,123,0.4)",
                               preConfirm: (amount) => {
-                                console.log(
-                                    "amount to capture",
-                                    amount
-                                  );
-                                  const id = data.id;
-                                   devitrackApi.post(
-                                    `/stripe/payment-intents/${id}/capture`,
-                                    {id, amount_to_capture: amount }
-                                  );
+                                console.log("amount to capture", amount);
+                                const id = data.id;
+                                devitrackApi.post(
+                                  `/stripe/payment-intents/${id}/capture`,
+                                  { id, amount_to_capture: amount }
+                                );
                               },
                             })
                               .then((result) => {
-                                if (result.isConfirmed) { 
+                                if (result.isConfirmed) {
                                   Swal.fire(
                                     "Captured!",
                                     "The authorized amount has been captured",
@@ -183,7 +117,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                         </button>
                       ) : (
                         <button
-                        className="btn btn-create"
+                          className="btn btn-create"
                           disabled
                           onClick={() => {
                             Swal.fire({
@@ -229,7 +163,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                       {device !== 0 ? (
                         <>
                           <button
-                          className="btn btn-delete"
+                            className="btn btn-delete"
                             style={{ backgroundColor: "red" }}
                             onClick={() => {
                               Swal.fire({
@@ -262,7 +196,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                       ) : (
                         <>
                           <button
-                          className="btn btn-delete"
+                            className="btn btn-delete"
                             disabled
                             style={{ backgroundColor: "red" }}
                             onClick={() => {
