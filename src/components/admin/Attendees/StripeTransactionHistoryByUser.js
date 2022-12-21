@@ -1,4 +1,6 @@
+import { useInterval } from "interval-hooks";
 import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
@@ -7,18 +9,21 @@ import {
   onAddPaymentIntentSelected,
 } from "../../../store/slices/stripeSlice";
 import "../../../style/component/admin/stripeTransactionHistoryByUser.css";
-import { Pagination } from "../ui/Pagination";
+import "../../../style/component/ui/paginate.css";
 
 export const StripeTransactionHistoryByUser = ({
   sendObjectIdUser,
-  userDetail,
   createTransactionForNoRegularUser,
+  
 }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  const [paymentIntentId, setSendPaymentIntentId] = useState();
+  const [paymentIntentId, setSendPaymentIntentId] = useState("");
+  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 2;
+
   const dispatch = useDispatch();
-  const [currentPage, setCurrentPage] = useState(0);
-  const [stripeTransactionsRenderedPerPage] = useState(2);
 
   const callApiStripeTransaction = async () => {
     const response = await devitrackApi.get("/admin/users");
@@ -27,11 +32,7 @@ export const StripeTransactionHistoryByUser = ({
     }
   };
   useEffect(() => {
-    const controller = new AbortController();
     callApiStripeTransaction();
-    return () => {
-      controller.abort();
-    };
   }, [sendObjectIdUser, createTransactionForNoRegularUser]);
 
   let userTransaction = [];
@@ -39,28 +40,45 @@ export const StripeTransactionHistoryByUser = ({
     if (stripeTransactions !== []) {
       stripeTransactions?.map((transaction, index) => {
         if (transaction.user._id === sendObjectIdUser) {
-          userTransaction.splice(index, 0, transaction);
+          return userTransaction.splice(index, 0, transaction);
         }
       });
     }
   };
   substractUserTransactionsOnly();
 
-  const indexOfLastStripeTransactionRendered =
-    currentPage * stripeTransactionsRenderedPerPage;
-  const indexOfFirstStripeTransactionRendered =
-    indexOfLastStripeTransactionRendered - stripeTransactionsRenderedPerPage;
-  const currentStripeTransactionRendered = userTransaction?.slice(
-    indexOfFirstStripeTransactionRendered,
-    indexOfLastStripeTransactionRendered
-  );
-  const paginate = (pageNumbers) => {
-    setCurrentPage(pageNumbers);
+  useInterval(async () => {
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItemsRendered(userTransaction.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(userTransaction.length / itemsPerPage));
+  }, 2_00);
+
+  const handlePageClick = (event) => {
+    const newOffset =
+      (event.selected * itemsPerPage) % stripeTransactions.length;
+    setItemOffset(newOffset);
   };
+
   return (
     <div className="container-stripe-transaction">
       <div>
         <table className="table">
+          <caption>
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={pageCount}
+              previousLabel="< previous"
+              renderOnZeroPageCount={null}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              previousLinkClassName="page-num"
+              nextLinkClassName="page-num"
+              activeLinkClassName="active"
+            />
+          </caption>
           <thead>
             <tr>
               <th scope="col">Payment Intent ID</th>
@@ -69,24 +87,18 @@ export const StripeTransactionHistoryByUser = ({
               <th scope="col">Details</th>
             </tr>
           </thead>
-          {currentStripeTransactionRendered?.map((transaction) => {
+          {currentItemsRendered?.map((transaction) => {
             const amount = transaction.device * 200;
             return (
               <tbody key={transaction.id}>
                 <tr>
-                  <td>{transaction.paymentIntent}</td>
+                  <td>{transaction.paymentIntent.slice(0, 27)}</td>
                   <td>{transaction.device}</td>
-                  {userDetail !== "No-regular" ? (
-                    <td>${amount}</td>
-                  ) : (
-                    <td style={{ textDecoration: "line-through" }}>
-                      ${amount}
-                    </td>
-                  )}
+                  <td>${amount}</td>
                   <td>
-                    {transaction.paymentIntent[0] === "p" ? (
+                    <NavLink to="/admin/attendees/receiver_assignation">
                       <button
-                      className="btn btn-detail"
+                        className="btn btn-detail"
                         onClick={async () => {
                           setSendPaymentIntentId(transaction.paymentIntent);
                           dispatch(
@@ -101,39 +113,13 @@ export const StripeTransactionHistoryByUser = ({
                       >
                         Details
                       </button>
-                    ) : (
-                      <NavLink to="/admin/attendees/receiver_assignation">
-                        <button
-                        className="btn btn-detail"
-                          onClick={async () => {
-                            setSendPaymentIntentId(transaction.paymentIntent);
-                            dispatch(
-                              onAddPaymentIntentSelected(
-                                transaction.paymentIntent
-                              )
-                            );
-                            dispatch(
-                              onAddPaymentIntentDetailSelected(transaction)
-                            );
-                          }}
-                        >
-                          Details
-                        </button>
-                      </NavLink>
-                    )}
+                    </NavLink>{" "}
                   </td>
                 </tr>
               </tbody>
             );
           })}
         </table>
-        <div>
-          <Pagination
-            childrenRenderedPerPage={stripeTransactionsRenderedPerPage}
-            totalChildren={userTransaction.length}
-            paginate={paginate}
-          />
-        </div>
       </div>
     </div>
   );
