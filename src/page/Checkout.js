@@ -16,6 +16,8 @@ export const Checkout = () => {
   const { startStripePaymentIntent, clientSecret, visibleButton } =
     useStripeHook();
 
+    const userEmail = users.email
+
   const callStripeCustomerFind = async () => {
     const response = await devitrackApiStripe.get("/customers", {
       email: users.email,
@@ -37,7 +39,7 @@ export const Checkout = () => {
         stripeId= customerStripeId[i].id
       }
     }
-    startStripePaymentIntent({ device, stripeId });
+    startStripePaymentIntent({ device, stripeId, userEmail });
     localStorage.setItem("device", device);
   };
   return (
@@ -51,13 +53,13 @@ export const Checkout = () => {
               <span>For more than 5 devices, please contact to the staff.</span>
             </p>
           </div>
-        ) : (
-          <div className={`button-wrapper d-${visibleButton}`}>
+        ) : device > 0 ? (
+          <div className={`button-wrapper`}>
             <button className="btn" onClick={handleOnSubmit}>
               Submit
             </button>
           </div>
-        )}
+        ): null}
 
         <div className="stripe-wrapper-checkout">
           <StripeCheckoutElement clientSecret={clientSecret} />
