@@ -4,15 +4,36 @@ import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
+import { devitrackApi } from "../../../apis/devitrackApi";
 
 export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
+  const [showOptionToUpdate, setShowOptionToUpdate] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
   const { user } = useAdminStore();
   const [
     createTransactionForNoRegularUser,
     setCreateTransactionForNoRegularUser,
   ] = useState(false);
 
-  const handleEditCategory = async () => {};
+  const handleEditCategory = async () => {
+    try {
+      const response = await devitrackApi.put(`/auth/${userDetail.id}`, {
+        ...userDetail,
+        category: newCategory,
+      });
+      if (response) {
+        alert("User category updated");
+        setShowOptionToUpdate(false);
+        window.location.reload()
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: DetailUser.js:22 ~ handleEditCategory ~ error",
+        error
+      );
+      alert(error);
+    }
+  };
 
   return (
     <div>
@@ -45,13 +66,50 @@ export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
                   <strong>Phone: </strong>
                   {userDetail?.phoneNumber}
                 </div>
-                <div style={{display:"flex"}}>
+                <div style={{ display: "flex" }}>
                   <strong>Category: </strong>
                   {user.role === "Administrator" ? (
-                    <p style={{cursor:"pointer", textDecorationLine:"underline", textDecorationColor:"var(--main-bluetiful)"}} onClick={handleEditCategory}>&nbsp;{userDetail?.category}</p>
+                    <p
+                      style={{
+                        cursor: "pointer",
+                        textDecorationLine: "underline",
+                        textDecorationColor: "var(--main-bluetiful)",
+                      }}
+                      onClick={() => setShowOptionToUpdate(true)}
+                    >
+                      &nbsp;{userDetail?.category}
+                    </p>
                   ) : (
                     `${userDetail?.category}`
                   )}
+                </div>
+                <div>
+                  {showOptionToUpdate !== false ? (
+                    <div>
+                      <select
+                        name="newCategory"
+                        onChange={(event) => setNewCategory(event.target.value)}
+                      >
+                        <option></option>
+                        <option value="Regular">Regular</option>
+                        <option value="Corporate">Corporate</option>
+                      </select>{" "}
+                      <button
+                        style={{ width: "fit-content" }}
+                        className="btn btn-delete"
+                        onClick={() => setShowOptionToUpdate(false)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        style={{ width: "fit-content" }}
+                        className="btn btn-create"
+                        onClick={handleEditCategory}
+                      >
+                        Update
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
