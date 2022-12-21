@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { AttendeesInfo } from "../../components/admin/Attendees/AttendeesInfo";
-import { PaymentIntentTemplate } from "../../components/admin/Attendees/PaymentIntentTemplate";
+import { StripeTransactionHistoryByUser } from "../../components/admin/Attendees/StripeTransactionHistoryByUser";
 import { Navbar } from "../../components/admin/ui/Navbar";
+import { ResultBySearch } from "../../helper/ResultBySearch";
+import "../../style/pages/admin/attendees.css"
 
 export const Attendees = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,7 +12,6 @@ export const Attendees = () => {
     <div>
       <div>
         <Navbar />
-        {/* <h2>Users</h2> */}
         <div>
           <div className="search-div">
             <div>
@@ -18,20 +19,21 @@ export const Attendees = () => {
             </div>
             <div className="search-input">
               <input
+              className="search-input-field"
                 name="value"
                 onChange={(e) => setSearchTerm(e.target.value)}
                 value={searchTerm}
-                placeholder="Search by email!"
+                placeholder="Search"
               />
+              <i onClick={() => setSearchTerm("")} id="icon-delete-searchTerm" className="bi bi-x"/>
             </div>
           </div>
           <div>
-            {" "}
-            <AttendeesInfo searchTerm={ searchTerm } />
+            {searchTerm === "" ? <AttendeesInfo/> : <ResultBySearch searchTerm={searchTerm} />}
           </div>
-          <div style={{ display: "flex",justifyContent:"center",alignItems: "center", width: "70%", marginLeft: "16rem" }}>
+          <div className="d-none">
             {" "}
-            <PaymentIntentTemplate searchTerm={searchTerm } />
+            <StripeTransactionHistoryByUser searchTerm={searchTerm} />
           </div>
         </div>
       </div>
