@@ -7,8 +7,8 @@ import { useForm } from "../../../hooks/useForm";
 
 const customStyles = {
   content: {
-    width: "20%",
-    height: "35%",
+    width: "20vw",
+    height: "40vh",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -24,7 +24,7 @@ const initalFormValues = {
   lastName: "",
   email: "",
   phoneNumber: "",
-  category: "No-regular",
+  category: "",
   privacyPolicy: true,
 };
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
@@ -38,6 +38,7 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
     email,
     phoneNumber,
     privacyPolicy,
+    category,
     onInputCHange: onRegisterInputChange,
   } = useForm(initalFormValues);
 
@@ -119,14 +120,17 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         lastName,
         email,
         phoneNumber,
-        category: "No-regular",
+        category,
         privacyPolicy,
       });
       alert("New user created succesfully");
       if (data) closeModal();
     } catch (error) {
-      console.log("🚀 ~ file: ModalCreateUser.js ~ line 136 ~ onSubmitRegister ~ error", error)
-      alert(error)
+      console.log(
+        "🚀 ~ file: ModalCreateUser.js ~ line 136 ~ onSubmitRegister ~ error",
+        error
+      );
+      alert(error);
     }
   };
   return (
@@ -137,14 +141,20 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
-        <div style={{
-          textAlign:"center"
-        }}>
+        <div
+          style={{
+            textAlign: "center",
+          }}
+        >
           <h2>Create New User</h2>
 
-          <form style={{
-            margin:"auto"
-          }} className="form-container" onSubmit={onSubmitRegister}>
+          <form
+            style={{
+              margin: "auto",
+            }}
+            className="form-container"
+            onSubmit={onSubmitRegister}
+          >
             <div className="form-group mb-2">
               <input
                 type="text"
@@ -195,6 +205,18 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
                 onChange={onRegisterInputChange}
               />
             </div>
+            <div className="form-group mb-2">
+              <select
+                type="text"
+                className="form-control"
+                name="category"
+                onChange={onRegisterInputChange}
+              >
+                <option value="Regular">Regular</option>
+                <option value="Corporate">Corporate</option>
+              </select>
+            </div>
+
             <div className="form-group mb-2"></div>
             <div
               style={{
@@ -205,10 +227,14 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
               }}
             >
               <div>
-                <button className="btn btn-delete" onClick={closeModal}>Cancel</button>
+                <button className="btn btn-delete" onClick={closeModal}>
+                  Cancel
+                </button>
               </div>
               <div>
-                <button className="btn btn-create" type="submit">Register</button>
+                <button className="btn btn-create" type="submit">
+                  Register
+                </button>
               </div>
             </div>
           </form>
