@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import "../../style/component/device/Device.css";
 
 export const Devices = () => {
   const { device, handleDecreaseDevice, handleIncreaseDevice } =
     useDeviceCount();
-    const [blockButton, setBlockButton] = useState(false)
 
   return (
     <div className="col-md-11 m-4 mb-0">
@@ -18,7 +17,7 @@ export const Devices = () => {
           <div className="device-selection-display">
             <p id="number-device-displayed">{device}</p>
           </div>
-          <button disabled={blockButton} id="button-plus" onClick={handleIncreaseDevice}>
+          <button id="button-plus" onClick={handleIncreaseDevice}>
             +
           </button>
         </div>
