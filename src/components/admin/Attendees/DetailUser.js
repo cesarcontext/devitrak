@@ -6,12 +6,13 @@ import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
 
 export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
-
   const { user } = useAdminStore();
   const [
     createTransactionForNoRegularUser,
     setCreateTransactionForNoRegularUser,
   ] = useState(false);
+
+  const handleEditCategory = async () => {};
 
   return (
     <div>
@@ -43,6 +44,14 @@ export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
                 <div>
                   <strong>Phone: </strong>
                   {userDetail?.phoneNumber}
+                </div>
+                <div style={{display:"flex"}}>
+                  <strong>Category: </strong>
+                  {user.role === "Administrator" ? (
+                    <p style={{cursor:"pointer", textDecorationLine:"underline", textDecorationColor:"var(--main-bluetiful)"}} onClick={handleEditCategory}>&nbsp;{userDetail?.category}</p>
+                  ) : (
+                    `${userDetail?.category}`
+                  )}
                 </div>
               </div>
             </div>
