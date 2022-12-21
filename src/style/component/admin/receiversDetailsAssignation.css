@@ -1,8 +1,10 @@
 .container-payment-detail-assignment-section {
-  border: 2px solid var(--black);
+  width: 61%;
+  margin: 1% auto;
+  margin-top: 2%;
+  border: solid 2px var(--black);
   border-radius: 15px;
-  width: 80%;
-  margin: 2% auto;
+  padding: 15px;
 }
 .payment-detail-assignment-section {
   display: flex;

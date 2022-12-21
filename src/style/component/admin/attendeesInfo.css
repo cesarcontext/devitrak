@@ -14,7 +14,8 @@
   background-color: #ffff;
 }
 .container-attendees-info-detail {
-  width: 65%;
+  width: 100%;
+  height: 100%;
   border: solid 1px #212529;
   border-radius: 15px;
   padding: 20px;
