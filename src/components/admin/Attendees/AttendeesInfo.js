@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { useInterval } from "interval-hooks";
+import { DetailUser } from "./DetailUser";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
-import { ModalCreateUser } from "../ui/ModalCreateUser";
-import { StripeTransactionHistoryByUser } from "./StripeTransactionHistoryByUser";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
+import { ModalCreateUser } from "../ui/ModalCreateUser";
 
 export const AttendeesInfo = ({ searchTerm }) => {
   const { user } = useAdminStore();
@@ -45,6 +44,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
     setCurrentItemsRendered(users.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(users.length / itemsPerPage));
   }, 2_00);
+
   return (
     <div className="container-attendees">
       <div className="container-attendees-info">
@@ -77,54 +77,28 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {searchTerm === ""
-              ? currentItemsRendered?.map((user, item) => {
-                  return (
-                    <tbody key={user.id}>
-                      <tr>
-                        <th scope="row">{item + 1}</th>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <button
-                            className="btn btn-detail"
-                            onClick={() => {
-                              setSendObjectIdUser(user.id);
-                              setUserDetail(user.category);
-                            }}
-                          >
-                            Details <i className="bi bi-caret-right" />{" "}
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })
-              : users
-                  ?.filter((item) => item.email.includes(searchTerm))
-                  ?.map((user, item) => {
-                    // currentItemsRendered;
-                    return (
-                      <tbody key={user.id}>
-                        <tr>
-                          <th scope="row">{item + 1}</th>
-                          <td>{user.name}</td>
-                          <td>{user.email}</td>
-                          <td>
-                            <button
-                              className="btn btn-detail"
-                              onClick={() => {
-                                setSendObjectIdUser(user.id);
-                                setUserDetail(user.category);
-                              }}
-                            >
-                              Details <i className="bi bi-caret-right" />{" "}
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  })}
+            {currentItemsRendered?.map((user, item) => {
+              return (
+                <tbody key={user.id}>
+                  <tr>
+                    <th scope="row">{item + 1}</th>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <button
+                        className="btn btn-detail"
+                        onClick={() => {
+                          setSendObjectIdUser(user.id);
+                          setUserDetail(user);
+                        }}
+                      >
+                        Details <i className="bi bi-caret-right" />{" "}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
           </table>
           <div
             style={{
@@ -147,101 +121,10 @@ export const AttendeesInfo = ({ searchTerm }) => {
           </div>
         </div>
       </div>
-      {/**Second rectangule where details are displayed */}
-
-      <div className="container-attendees-info-detail">
-        <div>
-          <h2>Details</h2>
-        </div>
-        <div className="container-user-info-detail">
-          {" "}
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              {users?.map((user) => {
-                if (user.id === sendObjectIdUser) {
-                  return (
-                    <div key={user.id}>
-                      <div>
-                        <strong>Fullname:</strong> {user.name} {user.lastName}
-                      </div>
-                      <div>
-                        <strong>Email: </strong>
-                        {user.email}
-                      </div>
-                      <div>
-                        <strong>Phone: </strong>
-                        {user.phoneNumber}
-                      </div>
-                      <div>
-                        <strong>Category: </strong>
-                        {user.category}
-                      </div>
-                    </div>
-                  );
-                }
-              })}
-            </div>
-            <div>
-              {user.role === "Administrator"
-                ? users?.map((user) => {
-                    if (user.id === sendObjectIdUser) {
-                      return (
-                        <button
-                          className="btn btn-create"
-                          onClick={() => {
-                            setCreateTransactionForNoRegularUser(true);
-                          }}
-                        >
-                          Create Transaction
-                        </button>
-                      );
-                    }
-                  })
-                : null}
-            </div>
-          </div>
-        </div>
-        <div className="container-attendes-stripe-transaction-info">
-          {users?.map((user) => {
-            if (user.id === sendObjectIdUser) {
-              return (
-                <div
-                  id="stripe-transaction-detail-per-user-id"
-                  className="stripetransaction-detail-info"
-                  key={user.id}
-                >
-                  <StripeTransactionHistoryByUser
-                    sendObjectIdUser={sendObjectIdUser}
-                    userDetail={userDetail}
-                    createTransactionForNoRegularUser={
-                      createTransactionForNoRegularUser
-                    }
-                  />
-                </div>
-              );
-            }
-          })}
-        </div>
-      </div>
+      <DetailUser sendObjectIdUser={sendObjectIdUser} userDetail={userDetail} />
       <ModalCreateUser
         createUserButton={createUserButton}
         setCreateUserButton={setCreateUserButton}
-      />
-      <ModalCreateTransactionForNoRegularUser
-        createTransactionForNoRegularUser={createTransactionForNoRegularUser}
-        setCreateTransactionForNoRegularUser={
-          setCreateTransactionForNoRegularUser
-        }
-        sendObjectIdUser={sendObjectIdUser}
       />
     </div>
   );
