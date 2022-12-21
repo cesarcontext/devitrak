@@ -33,22 +33,14 @@ export const QRCodeConfirmation = () => {
   useEffect(() => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
   }, [payment_intent]);
-
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   callApiStripeTransaction();
-  //   return () => {
-  //     controller.abort();
-  //   };
-  // }, [users.id]);
-
+  
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
       bgColor="#ffff"
       level="Q"
       size={150}
-      value={users.email}
+      value={payment_intent}
     />
   );
 
