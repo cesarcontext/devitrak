@@ -1,44 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
-import "../../style/component/ui/ReturnDeviceAlert.css"
+import "../../style/component/ui/ReturnDeviceAlert.css";
 
 export const ReturnDeviceAlert = () => {
-  const { users } = useSelector(state => state.contactInfo)
-  const [loading, setLoading] = useState(false);
-  const [poolReceivers, setPoolReceivers] = useState([])
-  
+  const { users } = useSelector((state) => state.contactInfo);
+  console.log("🚀 ~ file: ReturnDeviceAlert.js:8 ~ ReturnDeviceAlert ~ users", users)
+  const [poolReceivers, setPoolReceivers] = useState([]);
+
   const checkActivatedReceivers = async () => {
-    const response = await devitrackApi.get("/receiver/receiver-assigned-list")
-    if(response) {
-      setPoolReceivers(response.data.listOfReceivers)
-      setLoading(true)
+    const response = await devitrackApi.get("/receiver/receiver-assigned-list");
+    if (response) {
+      setPoolReceivers(response.data.listOfReceivers);
     }
-  }
+  };
 
-useEffect(() => {
-  const controller = new AbortController()
-  checkActivatedReceivers()
-  return () => {
-    controller.abort()
-  }
-}, [])
+  useEffect(() => {
+    const controller = new AbortController();
+    checkActivatedReceivers();
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
-const listOfDevice = new Map()
+  const listOfDevice = new Map();
 
-const selectDevicePerUser = async () => {
-  poolReceivers?.map((transaction) => {
-    if(transaction.user === users.email){
-      transaction.device.map( item => {
-        if( item.status === true){
-          listOfDevice.set(item.serialNumber, item.status)
-        }
-      })
-    }
-  })
-  return listOfDevice
-}
-selectDevicePerUser()
+  const selectDevicePerUser = async () => {
+    poolReceivers?.map((transaction) => {
+      if (transaction.user === users.email) {
+        transaction.device.map((item) => {
+          if (item.status === true) {
+            listOfDevice.set(item.serialNumber, item.status);
+          }
+        });
+      }
+    });
+    return listOfDevice;
+  };
+  selectDevicePerUser();
   return (
     <div>
       <div className="container-alert-info">
@@ -60,15 +59,23 @@ selectDevicePerUser()
                 <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
               </svg>
               <div>
-              <h4>
-                  You need to return {listOfDevice.size} {" "}
+                <h4>
+                  You need to return {listOfDevice.size}{" "}
                   {listOfDevice.size > 1 ? "devices" : "device"}
                 </h4>
-                <span>
-                  You have 3 days remaining. <br />
-                  Devices not returned within 3 days will be charged to your
-                  credit card on file.
-                </span>
+                {users.category === "Corporate" ? (
+                  <span>
+                    You have 5 days remaining. <br />
+                    Devices not returned within 5 days will be charged to your
+                    credit card on file.
+                  </span>
+                ) : (
+                  <span>
+                    You have 3 days remaining. <br />
+                    Devices not returned within 3 days will be charged to your
+                    credit card on file.
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -89,7 +96,8 @@ selectDevicePerUser()
             </svg>
             <div>
               <h4>
-                You have {listOfDevice.size} pending {listOfDevice.size > 1 ? "devices" : "device"}
+                You have {listOfDevice.size} pending{" "}
+                {listOfDevice.size > 1 ? "devices" : "device"}
               </h4>
               <span>You have returned all your devices.</span>
             </div>
