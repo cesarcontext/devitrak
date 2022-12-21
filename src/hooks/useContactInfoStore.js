@@ -25,6 +25,7 @@ export const useContactInfoStore = () => {
     lastName,
     email,
     phoneNumber,
+    category,
     privacyPolicy,
   }) => {
     try {
@@ -33,6 +34,7 @@ export const useContactInfoStore = () => {
         lastName,
         email,
         phoneNumber,
+        category,
         privacyPolicy,
       });
       if (data) {
@@ -50,6 +52,7 @@ export const useContactInfoStore = () => {
             lastName: data.lastName,
             email: data.email,
             phoneNumber: data.phone,
+            category: data.category,
             id: data.uid,
           })
         );
@@ -71,6 +74,7 @@ export const useContactInfoStore = () => {
           lastName: data.lastName,
           email: data.email,
           phoneNumber: data.phone,
+          category: data.category,
           id: data.uid,
         })
       );
@@ -125,12 +129,13 @@ export const useContactInfoStore = () => {
         setEmailUserRegistered(data.user.email);
         dispatch(
           onCheckContact({
-            groupName: data.user.groupName,
-            name: data.user.name,
-            lastName: data.user.lastName,
+            category: data.user.category,
             email: data.user.email,
-            phoneNumber: data.user.phoneNumber,
+            groupName: data.user.groupName,
             id: data.id,
+            lastName: data.user.lastName,
+            name: data.user.name,
+            phoneNumber: data.user.phoneNumber,
             status: data.ok,
           })
         );
