@@ -36,10 +36,6 @@ export const ReceiversDetailsAssignation = () => {
     status: true,
   };
   const inputReference = useRef(receiverNumberAssgined);
-  console.log(
-    "🚀 ~ file: ReceiversDetailsAssignation.js:39 ~ ReceiversDetailsAssignation ~ inputReference",
-    inputReference.current
-  );
 
   useEffect(() => {
     const controller = new AbortController();
