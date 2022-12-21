@@ -7,6 +7,7 @@ const users =
     name: "",
     email: "",
     phoneNumber: "",
+    category:"",
     status: "",
   };
 
