@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { DetailSelectedUserFOrAssignReceiver } from "./DetailSelectedUserFOrAssignReceiver";
@@ -7,14 +7,15 @@ import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
 import { Navbar } from "../ui/Navbar";
 import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import {
   rightDoneMessage,
+  swalAlertMessage,
   swalErrorMessage,
 } from "../../../helper/swalFireMessage";
-import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import "../../../style/component/admin/receiversDetailsAssignation.css";
 
-export const ReceiversDetailsAssignation = () => {
+export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
   const dispatch = useDispatch();
@@ -24,18 +25,18 @@ export const ReceiversDetailsAssignation = () => {
   const [loading, setLoading] = useState(true);
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
   const [replaceStatus, setReplaceStatus] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTermField, setSearchTermField] = useState("");
   const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
+  const inputReference = useRef();
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
   };
-  const inputReference = useRef(receiverNumberAssgined);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -64,23 +65,21 @@ export const ReceiversDetailsAssignation = () => {
   }, [paymentIntentToCheck, loading, fetchedData, replaceStatus]);
 
   const addReceiver = async () => {
-    if (receiverObject.serialNumber === "") {
-      swalErrorMessage(
-        `An empty serial number was added. Please delete it before to continue.`
-      );
+    if (receiverObject.serialNumber.length < 1) {
+      setReceiverNumberAssgined("");
+      inputReference.current.focus();
+      return swalAlertMessage(`Empty serial number is not valid`);
     }
-    const findDuplicate = {};
-    const replacementList = [...receiversAssigned, receiverObject];
-    for (let i = 0; i < replacementList.length; i++) {
-      if (!findDuplicate[replacementList[i].serialNumber]) {
-        findDuplicate[replacementList[i].serialNumber] =
-          replacementList[i].serialNumber;
-      } else {
-        swalErrorMessage(
-          `Serial # ${replacementList[i].serialNumber} is duplicated. Please delete it before to continue.`
+    for (let i = 0; i < receiversAssigned.length; i++) {
+      if (receiverObject.serialNumber === receiversAssigned[i].serialNumber) {
+        setReceiverNumberAssgined("");
+        inputReference.current.focus();
+        return swalAlertMessage(
+          `Serial #${receiversAssigned[i].serialNumber} is duplicated`
         );
       }
     }
+    const replacementList = [...receiversAssigned, receiverObject];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
       setReceiversAssigned(replacementList);
       setReceiverNumberAssgined("");
@@ -307,14 +306,28 @@ export const ReceiversDetailsAssignation = () => {
       });
       setReplaceReceiverIndex(index);
       setReplaceStatus(true);
+      setSearchTermField("")
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 201 ~ replaceFunctionTrigger ~ error",
-        error
-      );
       swalErrorMessage(error);
     }
   };
+
+  let filteredResult = [];
+  const filter = async () => {
+    const devicesInPaymentIntent = paymentIntentReceiversAssigned.at(-1).device;
+    for (let i = 0; i < devicesInPaymentIntent.length; i++) {
+      if (searchTermField === devicesInPaymentIntent[i].serialNumber) {
+        return (filteredResult = [
+          {
+            serialNumber: devicesInPaymentIntent[i].serialNumber,
+            status: devicesInPaymentIntent[i].status,
+            index: i,
+          },
+        ]);
+      }
+    }
+  };
+  filter();
 
   return (
     <div>
@@ -331,13 +344,16 @@ export const ReceiversDetailsAssignation = () => {
         <div>
           {loading !== true ? (
             <>
+              {/**Second condition to display add receiver function or search input field*/}
               {paymentIntentReceiversAssigned?.length < 1 ? (
                 <div className="container-input-button">
+                  {/**Second condition to check if all receivers were assigned or not*/}
                   {receiversAssigned.length !==
                   paymentIntentDetailSelected.device ? (
                     <>
                       <input
                         ref={inputReference}
+                        className="form-control"
                         value={receiverNumberAssgined}
                         name="receiverNumberAssgined"
                         id="receiverNumberAssgined"
@@ -357,9 +373,9 @@ export const ReceiversDetailsAssignation = () => {
               ) : (
                 <div>
                   <input
-                    name="searcTerm"
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
+                    name="searchTermField"
+                    value={searchTermField}
+                    onChange={(event) => setSearchTermField(event.target.value)}
                     placeholder="Search receiver"
                   />
                 </div>
@@ -381,19 +397,18 @@ export const ReceiversDetailsAssignation = () => {
                       </tr>
                     </thead>
                     {paymentIntentReceiversAssigned?.length > 0
-                      ? paymentIntentReceiversAssigned
-                          ?.at(-1)
-                          .device?.map((receiver, index) => {
+                      ? searchTermField !== ""
+                        ? filteredResult?.map((result) => {
                             return (
-                              <tbody key={index + 1}>
+                              <tbody key={result.index + 1}>
                                 <tr>
-                                  <th scope="row">{index + 1}</th>
-                                  <td>{receiver.serialNumber}</td>
+                                  <th scope="row">{result.index + 1}</th>
+                                  <td>{result.serialNumber}</td>
                                   <td>
                                     <span>Receiver</span>
                                   </td>
                                   <td>
-                                    {receiver.status !== false
+                                    {result.status !== false
                                       ? "ACTIVATED"
                                       : "INACTIVATED"}
                                   </td>
@@ -401,18 +416,24 @@ export const ReceiversDetailsAssignation = () => {
                                     <button
                                       className="btn btn-create"
                                       onClick={() =>
-                                        replaceFunctionTrigger(receiver, index)
+                                        replaceFunctionTrigger(
+                                          result,
+                                          result.index
+                                        )
                                       }
                                     >
                                       Replace
                                     </button>
                                   </td>
                                   <td>
-                                    {receiver.status !== false ? (
+                                    {result.status !== false ? (
                                       <button
                                         className="btn btn-delete"
                                         onClick={() =>
-                                          handleReturnDevice(receiver, index)
+                                          handleReturnDevice(
+                                            result,
+                                            result.index
+                                          )
                                         }
                                       >
                                         Return
@@ -421,7 +442,10 @@ export const ReceiversDetailsAssignation = () => {
                                       <button
                                         className="btn btn-create"
                                         onClick={() =>
-                                          handleAssignDevice(receiver, index)
+                                          handleAssignDevice(
+                                            result,
+                                            result.index
+                                          )
                                         }
                                       >
                                         Assign
@@ -432,6 +456,60 @@ export const ReceiversDetailsAssignation = () => {
                               </tbody>
                             );
                           })
+                        : paymentIntentReceiversAssigned
+                            ?.at(-1)
+                            .device?.map((receiver, index) => {
+                              return (
+                                <tbody key={index + 1}>
+                                  <tr>
+                                    <th scope="row">{index + 1}</th>
+                                    <td>{receiver.serialNumber}</td>
+                                    <td>
+                                      <span>Receiver</span>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false
+                                        ? "ACTIVATED"
+                                        : "INACTIVATED"}
+                                    </td>
+                                    <td>
+                                      <button
+                                        className="btn btn-create"
+                                        onClick={() =>
+                                          replaceFunctionTrigger(
+                                            receiver,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Replace
+                                      </button>
+                                    </td>
+                                    <td>
+                                      {receiver.status !== false ? (
+                                        <button
+                                          className="btn btn-delete"
+                                          onClick={() =>
+                                            handleReturnDevice(receiver, index)
+                                          }
+                                        >
+                                          Return
+                                        </button>
+                                      ) : (
+                                        <button
+                                          className="btn btn-create"
+                                          onClick={() =>
+                                            handleAssignDevice(receiver, index)
+                                          }
+                                        >
+                                          Assign
+                                        </button>
+                                      )}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              );
+                            })
                       : receiversAssigned?.map((item, index) => {
                           return (
                             <tbody key={index + item}>
