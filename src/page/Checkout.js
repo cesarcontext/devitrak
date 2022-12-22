@@ -10,13 +10,13 @@ import { useSelector } from "react-redux";
 import "../style/pages/Checkout.css";
 
 export const Checkout = () => {
-  const [customerStripeId, setCustomerStripeId] = useState([])
+  const [customerStripeId, setCustomerStripeId] = useState([]);
   const { device } = useDeviceCount();
   const { users } = useSelector((state) => state.contactInfo);
   const { startStripePaymentIntent, clientSecret, visibleButton } =
     useStripeHook();
 
-    const userEmail = users.email
+  const userEmail = users.email;
 
   const callStripeCustomerFind = async () => {
     const response = await devitrackApiStripe.get("/customers", {
@@ -34,9 +34,9 @@ export const Checkout = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
     let stripeId;
-    for ( let i = 0; i < customerStripeId.length; i++){
-      if(customerStripeId[i].email === users.email){
-        stripeId= customerStripeId[i].id
+    for (let i = 0; i < customerStripeId.length; i++) {
+      if (customerStripeId[i].email === users.email) {
+        stripeId = customerStripeId[i].id
       }
     }
     startStripePaymentIntent({ device, stripeId, userEmail });
@@ -54,12 +54,12 @@ export const Checkout = () => {
             </p>
           </div>
         ) : device > 0 ? (
-          <div className={`button-wrapper`}>
+          <div className={`button-wrapper d-${visibleButton}`}>
             <button className="btn" onClick={handleOnSubmit}>
               Submit
             </button>
           </div>
-        ): null}
+        ) : null}
 
         <div className="stripe-wrapper-checkout">
           <StripeCheckoutElement clientSecret={clientSecret} />
