@@ -24,15 +24,14 @@ export const ReturnDeviceAlert = () => {
   }, []);
 
   useEffect(() => {
-    const specificDate = new Date('2023-01-17');
+    const specificDate = new Date("2023-01-17");
     const currentDate = new Date();
     const timeDifference = specificDate.getTime() - currentDate.getTime();
     const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
     setRemainingDays(days);
-  }, []); 
+  }, []);
 
   const listOfDevice = new Map();
-
   const selectDevicePerUser = async () => {
     poolReceivers?.map((transaction) => {
       if (transaction.user === users.email) {
@@ -71,19 +70,14 @@ export const ReturnDeviceAlert = () => {
                   You need to return {listOfDevice.size}{" "}
                   {listOfDevice.size > 1 ? "devices" : "device"}
                 </h4>
-                {users.category === "Corporate" ? (
-                  <span>
-                    You have {remainingDays} days remaining. <br />
-                    Devices not returned on <strong>Jan 17th</strong> will be charged to your
-                    credit card on file.
+                <span>
+                  <span style={{ textDecoration: "underline" }}>
+                    You have {remainingDays} days remaining{" "}
                   </span>
-                ) : (
-                  <span>
-                    You have {remainingDays} days remaining. <br />
-                    Devices not returned on <strong>Jan 17th</strong> will be charged to your
-                    credit card on file.
-                  </span>
-                )}
+                  <br />
+                  Devices not returned on <strong>Jan 17th</strong> will be
+                  charged to your credit card on file.
+                </span>
               </div>
             </div>
           </div>
