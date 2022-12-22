@@ -13,13 +13,15 @@ export const Settings = () => {
           <div>
             <h4>Search</h4>
           </div>
-          <div className="search-input">
-            <input
-              name="value"
-              onChange={(e) => setSearchTerm(e.target.value)}
-              value={searchTerm}
-              placeholder="Search"
-            />
+          <div id="search-input-setting" className="search-input">
+          <input
+              className="search-input-field"
+                name="value"
+                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+                placeholder="Search"
+              />
+              <i onClick={() => setSearchTerm("")} id="icon-delete-searchTerm" className="bi bi-x"/>
           </div>
         </div>
         <div>
