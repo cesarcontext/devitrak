@@ -24,9 +24,9 @@ root.render(
     <React.StrictMode>
       <StytchProvider stytch={stytch}>
         <BrowserRouter>
-            <PersistGate persistor={persistor}>
-              <App />
-            </PersistGate>
+          <PersistGate persistor={persistor}>
+            <App />
+          </PersistGate>
         </BrowserRouter>
       </StytchProvider>
     </React.StrictMode>
