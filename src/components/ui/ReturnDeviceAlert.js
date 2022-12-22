@@ -5,8 +5,8 @@ import "../../style/component/ui/ReturnDeviceAlert.css";
 
 export const ReturnDeviceAlert = () => {
   const { users } = useSelector((state) => state.contactInfo);
-  console.log("🚀 ~ file: ReturnDeviceAlert.js:8 ~ ReturnDeviceAlert ~ users", users)
   const [poolReceivers, setPoolReceivers] = useState([]);
+  const [remainingDays, setRemainingDays] = useState(0);
 
   const checkActivatedReceivers = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
@@ -22,6 +22,14 @@ export const ReturnDeviceAlert = () => {
       controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    const specificDate = new Date('2023-01-17');
+    const currentDate = new Date();
+    const timeDifference = specificDate.getTime() - currentDate.getTime();
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    setRemainingDays(days);
+  }, []); 
 
   const listOfDevice = new Map();
 
@@ -65,14 +73,14 @@ export const ReturnDeviceAlert = () => {
                 </h4>
                 {users.category === "Corporate" ? (
                   <span>
-                    You have 5 days remaining. <br />
-                    Devices not returned within 5 days will be charged to your
+                    You have {remainingDays} days remaining. <br />
+                    Devices not returned on <strong>Jan 17th</strong> will be charged to your
                     credit card on file.
                   </span>
                 ) : (
                   <span>
-                    You have 3 days remaining. <br />
-                    Devices not returned within 3 days will be charged to your
+                    You have {remainingDays} days remaining. <br />
+                    Devices not returned on <strong>Jan 17th</strong> will be charged to your
                     credit card on file.
                   </span>
                 )}
