@@ -34,7 +34,6 @@ export const Accordion = (item) => {
   }, [paymentToCheck]);
 
   const accumArray = new Map();
-
   const checkStatusOfEachReceiver = async () => {
     receiversAssignedPerTransaction?.map((receiver) => {
       receiver.device.map((item) => {
@@ -45,9 +44,10 @@ export const Accordion = (item) => {
     });
   };
   checkStatusOfEachReceiver()
+  console.log('accumArray', accumArray)
   return (
     <div>
-      {loading !== false ? accumArray.size : null}
+      {accumArray.size}
     </div>
   );
 };
