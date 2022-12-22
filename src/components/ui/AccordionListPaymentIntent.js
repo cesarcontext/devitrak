@@ -8,11 +8,7 @@ import "../../style/component/ui/AccordionListPaymentIntent.css";
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
   const [stripeTransactions, setStripeTransactions] = useState([]);
-  console.log(
-    "🚀 ~ file: AccordionListPaymentIntent.js:10 ~ AccordionListPaymentIntent ~ stripeTransactions",
-    stripeTransactions
-  );
-  const [openAccordion, setOpenAccordion] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState(true);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
 
   const callApiStripeTransaction = async () => {
@@ -28,18 +24,6 @@ export const AccordionListPaymentIntent = () => {
       controller.abort();
     };
   }, [users.id]);
-
-  // const removeDuplicatesStripePaymentIntent = async () => {
-  //   const duplicates = {};
-  //   for (let i = 0; i < stripeTransactions.length; i++) {
-  //     if (!duplicates[stripeTransactions[i].paymentIntent]) {
-  //       duplicates[stripeTransactions[i].paymentIntent] = stripeTransactions[i].paymentIntent
-  //     } else {
-  //       devitrackApiStripe.delete(`/remove-duplicate/${stripeTransactions[i].id}`)
-  //     }
-  //   }
-  // };
-  // removeDuplicatesStripePaymentIntent()
 
   const checkPaymentIntentArray = (info) => {
     if (info.paymentIntent === undefined) {
@@ -85,7 +69,7 @@ export const AccordionListPaymentIntent = () => {
         <h2 className="accordion-header">
           <p onClick={() => setOpenAccordion(!openAccordion)}>
             Your orders
-            {openAccordion !== true ? (
+            {openAccordion !== false ? (
               <i className="bi bi-chevron-up" />
             ) : (
               <i className="bi bi-chevron-down" />
