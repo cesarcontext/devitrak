@@ -3,26 +3,17 @@ import { devitrackApi } from "../../apis/devitrackApi";
 import "../../style/component/ui/Accordion.css";
 
 export const Accordion = (item) => {
-  const [loading, setLoading] = useState(false);
-  const [paymentToCheck, setPaymentToCheck] = useState(null);
   const [receiversAssignedPerTransaction, setReceiversAssignedPerTransaction] =
-    useState(null);
-
-  useEffect(() => {
-    if (item.item.paymentIntent) {
-      setPaymentToCheck(item.item.paymentIntent);
-    }
-  }, [item.item.paymentIntent]);
-
+    useState([]);
+  let payIntId = Object.values(item);
   const retreiveData = async () => {
     try {
       const response = await devitrackApi.post("/receiver/receiver-assigned", {
-        paymentIntent: paymentToCheck,
+        paymentIntent: payIntId.at(-1),
       });
       const data = await response?.data.receiver;
       if (data) {
         setReceiversAssignedPerTransaction(data);
-        setLoading(true);
       }
     } catch (error) {
       console.log(error);
@@ -31,23 +22,19 @@ export const Accordion = (item) => {
 
   useEffect(() => {
     retreiveData();
-  }, [paymentToCheck]);
+  }, [payIntId.at(-1)]);
 
   const accumArray = new Map();
   const checkStatusOfEachReceiver = async () => {
-    receiversAssignedPerTransaction?.map((receiver) => {
-      receiver.device.map((item) => {
+    for (let i = 0; i < receiversAssignedPerTransaction.length; i++) {
+      console.log(receiversAssignedPerTransaction[i].device);
+      receiversAssignedPerTransaction[i].device.map((item) => {
         if (item.status === true) {
-          accumArray.set(item);
+          return accumArray.set(item);
         }
       });
-    });
+    }
   };
-  checkStatusOfEachReceiver()
-  console.log('accumArray', accumArray)
-  return (
-    <div>
-      {accumArray.size}
-    </div>
-  );
+  checkStatusOfEachReceiver();
+  return <div>{accumArray.size}</div>;
 };
