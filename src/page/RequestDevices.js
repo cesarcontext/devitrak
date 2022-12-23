@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useStytchSession } from "@stytch/stytch-react";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { Navbar } from "../components/ui/Navbar";
-import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import "../style/pages/RequestDevices.css";
 import { useSelector } from "react-redux";
-import { devitrackApi } from "../apis/devitrackApi";
 import { TotalOrder } from "../helper/TotalOrder";
 
 export const RequestDevices = () => {
