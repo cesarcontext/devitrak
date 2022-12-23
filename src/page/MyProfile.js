@@ -187,7 +187,7 @@ export const MyProfile = () => {
         status: "",
       })
     );
-    dispatch(onUserPrivacyPolicyResponse());
+    dispatch(onUserPrivacyPolicyResponse(false));
     dispatch(reset());
   };
 
