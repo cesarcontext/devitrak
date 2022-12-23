@@ -22,21 +22,21 @@ export const Checkout = () => {
     const response = await devitrackApiStripe.get("/customers", {
       email: users.email,
     });
-    if(response){
-      return setCustomerStripeId(response.data.customer)
+    if (response) {
+      return setCustomerStripeId(response.data.customer);
     }
   };
 
   useEffect(() => {
     callStripeCustomerFind();
-  },[users.id, device]);
+  }, [users.id, device]);
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
     let stripeId;
     for (let i = 0; i < customerStripeId.length; i++) {
       if (customerStripeId[i].email === users.email) {
-        stripeId = customerStripeId[i].id
+        stripeId = customerStripeId[i].id;
       }
     }
     startStripePaymentIntent({ device, stripeId, userEmail });
@@ -48,7 +48,12 @@ export const Checkout = () => {
       <div className="container-checkout">
         {!clientSecret ? <Devices /> : ""}
         {device > 5 ? (
-          <div>
+          <div
+            style={{
+              width: " 80vw",
+              paddingTop: "5vh",
+            }}
+          >
             <p>
               <span>For more than 5 devices, please contact to the staff.</span>
             </p>
