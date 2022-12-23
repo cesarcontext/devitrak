@@ -1,19 +1,22 @@
+import { useInterval } from "interval-hooks";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
 import "../../style/component/ui/ReturnDeviceAlert.css";
+import { notification } from "./Notification";
 
 export const ReturnDeviceAlert = () => {
   const { users } = useSelector((state) => state.contactInfo);
   const [poolReceivers, setPoolReceivers] = useState([]);
   const [remainingDays, setRemainingDays] = useState(0);
+  const [remainingHours, setRemainingHours] = useState(0);
 
   const checkActivatedReceivers = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
     if (response) {
       setPoolReceivers(response.data.listOfReceivers);
     }
-  };
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -23,13 +26,17 @@ export const ReturnDeviceAlert = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const specificDate = new Date("2023-01-17");
+  useInterval(() => {
+    const dueDate = new Date("2023-01-17 16:59:59");
     const currentDate = new Date();
-    const timeDifference = specificDate.getTime() - currentDate.getTime();
+    const timeDifference = dueDate.getTime() - currentDate.getTime();
     const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     setRemainingDays(days);
-  }, []);
+    setRemainingHours(hours);
+  }, 1_000);
 
   const listOfDevice = new Map();
   const selectDevicePerUser = async () => {
@@ -72,7 +79,8 @@ export const ReturnDeviceAlert = () => {
                 </h4>
                 <span>
                   <span style={{ textDecoration: "underline" }}>
-                    You have {remainingDays} days remaining{" "}
+                    You have {remainingDays} days and {remainingHours} hours
+                    remaining{" "}
                   </span>
                   <br />
                   Devices not returned on <strong>Jan 17th</strong> will be
