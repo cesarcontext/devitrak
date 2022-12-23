@@ -19,18 +19,6 @@ export const RequestSupportDuringTheEvent = () => {
             </p>
           </Link>
         </div>
-        <div className="container-more-info-how-to-use-video">
-          <div className="video-how-to-use">
-            <ReactPlayer
-              url="https://www.youtube.com/watch?v=9kvR_5KCEh4"
-              controls={true}
-              muted
-              light={true}
-              width="100%"
-              height="100%"
-            />
-          </div>
-        </div>
         <div className="container-info-cards">
           <div className="container-info-cards-body">
             <h5 className="card-title">How to request support</h5>
