@@ -13,7 +13,7 @@ export const Authenticate = () => {
   useEffect(() => {
     if (session) {
       navigate("/checkout");
-      dispatch(blockLinks("auto"))
+      dispatch(blockLinks("auto"));
     } else {
       const token = new URLSearchParams(window.location.search).get("token");
       client.magicLinks
@@ -22,8 +22,8 @@ export const Authenticate = () => {
         })
         .then(() => {
           rightDoneMessage(`Successfully authenticated`);
-          navigate(0); //navigate to 0 to refrese page
-          dispatch(blockLinks("auto"))
+          window.location.reload(); //navigate to 0 to refrese page
+          dispatch(blockLinks("auto"));
         });
     }
   }, [client, session]);
