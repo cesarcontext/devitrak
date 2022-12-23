@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
-import { Pagination } from "../ui/Pagination";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import Swal from "sweetalert2";
 import { ModalAdminNewUser } from "../ui/Modal";
 
 import "../../../style/pages/admin/setting.css";
+import ReactPaginate from "react-paginate";
+import { useInterval } from "interval-hooks";
 
 export const SettingDetailInfo = ({ searchTerm }) => {
   const { user } = useAdminStore();
   const { editAdminPermission } = useAdminStore();
   const [adminUser, setAdminUser] = useState([]);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [usersRenderedPerPage] = useState(4);
   const [permissionStatus, setPermissionStatus] = useState(false);
   const [permissionUpdated, setPermissionUpdated] = useState("");
   const [reloadListAfterChange, setReloadListAfterChange] = useState(false);
   const [modalState, setModalState] = useState(false);
+  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 4;
 
   const adminUserRole = user.role;
 
@@ -28,17 +31,16 @@ export const SettingDetailInfo = ({ searchTerm }) => {
       .then((data) => setAdminUser(data.adminUsers));
   }, [reloadListAfterChange, adminUser]);
 
-  const indexOfLastUsersRendered = currentPage * usersRenderedPerPage;
-  const indexOfFirstUsersRendered =
-    indexOfLastUsersRendered - usersRenderedPerPage;
-  const currentUsersRendered = adminUser.slice(
-    indexOfFirstUsersRendered,
-    indexOfLastUsersRendered
-  );
-
-  const paginate = (pageNumbers) => {
-    setCurrentPage(pageNumbers);
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % adminUser.length;
+    setItemOffset(newOffset);
   };
+
+  useInterval(async () => {
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItemsRendered(adminUser.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(adminUser.length / itemsPerPage));
+  }, 2_00);
 
   const handleEditAdminPermission = async () => {
     setPermissionStatus(!permissionStatus);
@@ -66,7 +68,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
               </tr>
             </thead>
             {searchTerm.length < 2
-              ? currentUsersRendered?.map((user) => {
+              ? currentItemsRendered?.map((user) => {
                   return (
                     <tbody key={user.id}>
                       <tr>
@@ -110,10 +112,19 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                   })}
           </table>
           <div className="container-section-pagination-button">
-            <Pagination
-              childrenRenderedPerPage={usersRenderedPerPage}
-              totalChildren={adminUser.length}
-              paginate={paginate}
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={pageCount}
+              previousLabel="< prev"
+              renderOnZeroPageCount={null}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              previousLinkClassName="page-num"
+              nextLinkClassName="page-num"
+              activeLinkClassName="tab-active"
             />
             <div>
               {user.role === "Administrator" ? (
@@ -129,17 +140,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
         </div>
       </div>
       <div className="container-company-staff-detail">
-        <div
-          style={{
-            // width: "100%",
-            padding: "5px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            // alignItems: "center",
-            textAlign: "left",
-          }}
-        >
+        <div className="staff-detail">
           {adminUser?.map((user) => {
             if (user.id === sendObjectIdUser) {
               return (
