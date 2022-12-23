@@ -53,22 +53,7 @@ export const AttendeesInfo = ({ searchTerm }) => {
         </div>
         <div className="container-attendees-info-table">
           <table className="table">
-            <caption>
-              <ReactPaginate
-                breakLabel="..."
-                nextLabel="next >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={2}
-                pageCount={pageCount}
-                previousLabel="< prev"
-                renderOnZeroPageCount={null}
-                containerClassName="pagination"
-                pageLinkClassName="page-num"
-                previousLinkClassName="page-num"
-                nextLinkClassName="page-num"
-                activeLinkClassName="tab-active"
-              />
-            </caption>
+            <caption></caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -100,14 +85,21 @@ export const AttendeesInfo = ({ searchTerm }) => {
               );
             })}
           </table>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
+          <div className="container-section-pagination-button">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={pageCount}
+              previousLabel="< prev"
+              renderOnZeroPageCount={null}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              previousLinkClassName="page-num"
+              nextLinkClassName="page-num"
+              activeLinkClassName="tab-active"
+            />
             {user.role === "Administrator" ? (
               <div>
                 <button
