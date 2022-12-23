@@ -15,7 +15,7 @@ export const Navbar = () => {
         <div className="navbar-logo-section">
           <svg
             width="100"
-            height="100"
+            height="40"
             viewBox="0 0 29 13"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ export const Navbar = () => {
         </div>
         <div className="navbar-name-section">
           <div className="navbar-main-title">
-            <h4>Event Name</h4>
+            <h4>National Retail Federation</h4>
           </div>
         </div>
       </nav>
