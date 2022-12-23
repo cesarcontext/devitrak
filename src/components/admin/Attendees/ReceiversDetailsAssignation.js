@@ -319,8 +319,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       if (searchTermField === devicesInPaymentIntent[i].serialNumber) {
         return (filteredResult = [
           {
-            serialNumber: devicesInPaymentIntent[i].serialNumber,
-            status: devicesInPaymentIntent[i].status,
+            ...devicesInPaymentIntent[i],
             index: i,
           },
         ]);
