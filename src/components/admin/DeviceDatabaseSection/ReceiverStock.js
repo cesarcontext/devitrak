@@ -2,29 +2,21 @@ import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { UserTable } from "../../../helper/UserTable";
-import { Pagination } from "../ui/Pagination";
 import { DeviceUsersHistory } from "./DeviceUsersHistory";
 import "../../../style/component/admin/DeviceDatabase.css";
+import { useInterval } from "interval-hooks";
+import ReactPaginate from "react-paginate";
 
-export const ReceiverStock = () => {
+export const ReceiverStock = ({ searchTerm }) => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [receiverId, setReceiverId] = useState(null);
   const [receiverDetail, setReceiverDetail] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [receiverRenderedPerPage] = useState(4);
-  const indexOfLastReceiverRendered = currentPage * receiverRenderedPerPage;
-  const indexOfFirstReceiverRendered =
-    indexOfLastReceiverRendered - receiverRenderedPerPage;
-  const currentReceiversRendered = listOfReceiver.slice(
-    indexOfFirstReceiverRendered,
-    indexOfLastReceiverRendered
-  );
-
-  const paginate = (pageNumbers) => {
-    setCurrentPage(pageNumbers);
-  };
+  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 4;
 
   const callApi = async () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -41,6 +33,17 @@ export const ReceiverStock = () => {
       controller.abort();
     };
   }, [listOfReceiver.length, loading]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % listOfReceiver.length;
+    setItemOffset(newOffset);
+  };
+
+  useInterval(async () => {
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItemsRendered(listOfReceiver.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listOfReceiver.length / itemsPerPage));
+  }, 2_00);
 
   const getReceiverData = async () => {
     setLoadingDownload(true);
@@ -65,6 +68,23 @@ export const ReceiverStock = () => {
 
   const fileName = "receiver-inventory";
   let conditionReturned = null;
+
+  let filteredResult = [];
+
+  const filter = async () => {
+    for (let i = 0; i < listOfReceiver.length; i++) {
+      if (searchTerm === listOfReceiver[i].device) {
+        return (filteredResult = [
+          {
+            ...listOfReceiver[i],
+            index: i,
+          },
+        ]);
+      }
+    }
+  };
+  filter();
+
   return (
     <div className="container-stock-device">
       <div className="container-stock-device-list">
@@ -73,6 +93,7 @@ export const ReceiverStock = () => {
         </div>
         <div className="container-device-info-table">
           <table className="table">
+            <caption></caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -81,8 +102,8 @@ export const ReceiverStock = () => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {loading !== false
-              ? currentReceiversRendered?.map((receiver, index) => {
+            {searchTerm === ""
+              ? currentItemsRendered?.map((receiver, index) => {
                   return (
                     <tbody key={receiver.id}>
                       <tr>
@@ -104,29 +125,46 @@ export const ReceiverStock = () => {
                     </tbody>
                   );
                 })
-              : ""}
+              : filteredResult.map((receiver) => {
+                  return (
+                    <tbody key={receiver.id}>
+                      <tr>
+                        <th scope="row">{receiver.index + 1}</th>
+                        <td>{receiver.device}</td>
+                        <td>{receiver.activity}</td>
+                        <td>
+                          <button
+                            className="btn btn-detail"
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
           </table>
-        </div>
-        <div
-          className=""
-          style={{
-            width: "100%",
-            padding: "25px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            textAlign: "left",
-          }}
-        >
-          <div>
-            <Pagination
-              childrenRenderedPerPage={receiverRenderedPerPage}
-              totalChildren={listOfReceiver.length}
-              paginate={paginate}
+          <div className="container-section-pagination-button">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={2}
+              pageCount={pageCount}
+              previousLabel="< prev"
+              renderOnZeroPageCount={null}
+              containerClassName="pagination"
+              pageLinkClassName="page-num"
+              previousLinkClassName="page-num"
+              nextLinkClassName="page-num"
+              activeLinkClassName="tab-active"
             />
-          </div>
-          <div>
             <button
+              style={{ width: "12vw", padding: "2px" }}
               variant="contained"
               color="primary"
               className="export-btn btn-delete"
@@ -145,50 +183,20 @@ export const ReceiverStock = () => {
         </div>
       </div>
 
-      <div
-        className="container-stock-device-list"
-        style={{
-          width: "35%",
-          border: "solid 2px #212529",
-          borderRadius: "15px",
-          padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
+      <div className="container-stock-device-details">
         <div>
           <h2>Details</h2>
         </div>
-        <div
-          style={{
-            width: "100%",
-            padding: "25px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            textAlign: "left",
-          }}
-        >
+        <div className="detail-history-container">
           {" "}
-          <div
-            style={{
-              padding: "5px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              textAlign: "left",
-            }}
-          >
+          <div className="device-detail-section">
             {listOfReceiver?.map((receiver, index) => {
               if (receiver.id === receiverId) {
                 if (
                   receiver.activity === "Stored" &&
                   receiver.status !== "Operational"
                 ) {
-                  conditionReturned = receiver.device
+                  conditionReturned = receiver.device;
                 }
                 return (
                   <div key={receiver.id}>
@@ -213,16 +221,18 @@ export const ReceiverStock = () => {
               }
             })}
           </div>
+          <DeviceUsersHistory
+            receiverId={receiverId}
+            receiverDetail={receiverDetail}
+            listOfReceiver={listOfReceiver}
+            conditionReturned={conditionReturned}
+          />{" "}
         </div>
-        <DeviceUsersHistory
-          receiverId={receiverId}
-          receiverDetail={receiverDetail}
-          listOfReceiver={listOfReceiver}
-          conditionReturned={conditionReturned}
-        />
       </div>
       <div className="d-none">
-        <UserTable headers={headers} listOfReceiver={listOfReceiver} />
+        {loadingDownload === true ? (
+          <UserTable headers={headers} listOfReceiver={listOfReceiver} />
+        ) : null}
       </div>
     </div>
   );
