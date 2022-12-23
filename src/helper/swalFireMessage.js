@@ -76,3 +76,19 @@ export const deviceMessageAlert = () => {
       	`,
   });
 }
+
+export const swalAlertMessage = (error) => {
+  Swal.fire({
+    title: `${error}`,
+    width: 600,
+    padding: "3em",
+    icon: "error",
+    color: "#rgb(30, 115, 190)",
+    background: "#fff",
+    confirmButtonColor: "rgb(30, 115, 190)",
+    backdrop: `
+      rgb(30, 115, 190)
+        no-repeat
+      `,
+  });
+};
