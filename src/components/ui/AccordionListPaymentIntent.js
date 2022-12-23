@@ -1,32 +1,37 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
-import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
+import { devitrackApiStripe } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
 
 export const AccordionListPaymentIntent = () => {
   const { users } = useSelector((state) => state.contactInfo);
-  const [stripeTransactions, setStripeTransactions] = useState([]);
   const [openAccordion, setOpenAccordion] = useState(true);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
-
-  const callApiStripeTransaction = async () => {
-    await devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
+  const [receiverData, setReceiverData] = useState([]);
+  let listOfPaymentPerUser = [];
+  const callStripePaymentIntentApi = async () => {
+    const response = await devitrackApiStripe.get("/payment-intents");
+    if (response) {
+      setReceiverData(response.data.paymentIntents.data);
+    }
   };
   useEffect(() => {
-    const controller = new AbortController();
-    callApiStripeTransaction();
-    return () => {
-      controller.abort();
-    };
-  }, [users.id]);
+    callStripePaymentIntentApi();
+  }, [users.id, openAccordion, openAccordionDetail]);
+
+  for (let i = 0; i < receiverData.length; i++) {
+    if (
+      users.email === receiverData[i].receipt_email &&
+      receiverData[i].status === "requires_capture"
+    ) {
+      listOfPaymentPerUser.push(receiverData[i]);
+    }
+  }
 
   const checkPaymentIntentArray = (info) => {
-    if (info.paymentIntent === undefined) {
+    if (info === undefined) {
       return (
         <>
           <QRCode
@@ -54,7 +59,7 @@ export const AccordionListPaymentIntent = () => {
             bgColor="#ffff"
             level="Q"
             size={100}
-            value={`${info.paymentIntent}`}
+            value={`${info}`}
             style={{
               margin: "0 auto",
             }}
@@ -80,53 +85,52 @@ export const AccordionListPaymentIntent = () => {
           <div className="accordion-collapse collapse show">
             <div className="accordion-body">
               {" "}
-              {stripeTransactions?.map((item) => {
-                if (item?.user?.email === users.email) {
-                  return (
-                    <div key={item.id}>
-                      <div className="accordion-detail-title">
-                        <div className="order-list">
-                          <i className="bi bi-circle" />{" "}
-                          <p
-                            onClick={() =>
-                              setOpenAccordionDetail(!openAccordionDetail)
-                            }
-                            className="accordion-header"
-                          >
-                            Order {item.id}{" "}
-                          </p>
-                          {openAccordionDetail !== true ? (
-                            <i className="bi bi-chevron-up" />
-                          ) : (
-                            <i className="bi bi-chevron-down" />
-                          )}
-                        </div>
-
-                        {openAccordionDetail === true ? (
-                          <div className="accordion-body-detail">
-                            <div className="">
-                              {checkPaymentIntentArray(item)}
-                            </div>
-                            <div>
-                              <span>
-                                Device ordered:&nbsp;{" "}
-                                <p>
-                                  <strong>{item.device}</strong>
-                                </p>
-                              </span>
-                              <span>
-                                Pending return:&nbsp;{" "}
-                                <strong>
-                                  <Accordion item={item} />
-                                </strong>
-                              </span>
-                            </div>
-                          </div>
-                        ) : null}
+              {listOfPaymentPerUser?.map((item) => {
+                const device = item.amount / 20000
+                return (
+                  <div key={item.id}>
+                    <div className="accordion-detail-title">
+                      <div className="order-list">
+                        <i className="bi bi-circle" />{" "}
+                        <p
+                          onClick={() =>
+                            setOpenAccordionDetail(!openAccordionDetail)
+                          }
+                          className="accordion-header"
+                        >
+                          Order {item.id}{" "}
+                        </p>
+                        {openAccordionDetail !== true ? (
+                          <i className="bi bi-chevron-up" />
+                        ) : (
+                          <i className="bi bi-chevron-down" />
+                        )}
                       </div>
+
+                      {openAccordionDetail === true ? (
+                        <div className="accordion-body-detail">
+                          <div className="">
+                            {checkPaymentIntentArray(item.id)}
+                          </div>
+                          <div>
+                            <span>
+                              Device ordered:&nbsp;{" "}
+                              <p>
+                                <strong>{device}</strong>
+                              </p>
+                            </span>
+                            <span>
+                              Pending return:&nbsp;{" "}
+                              <strong>
+                                <Accordion item={item.id} />
+                              </strong>
+                            </span>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
-                  );
-                }
+                  </div>
+                );
               })}
             </div>
           </div>
