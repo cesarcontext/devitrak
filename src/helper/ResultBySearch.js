@@ -30,7 +30,7 @@ export const ResultBySearch = ({ searchTerm }) => {
   }, [searchTerm]);
 
   if (searchTerm) {
-    if (searchTerm[0] === "0" || searchTerm[0] === "1") {
+    if (searchTerm[0].match(/[0-9]/)) {
       receiversList.map((item) => {
         for (let i = 0; i < item.device.length; i++) {
           if (
