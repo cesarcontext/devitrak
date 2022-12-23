@@ -5,39 +5,47 @@ import { StripeCheckoutForm } from "./StripeCheckForm";
 const stripePromise = loadStripe(
   "pk_test_51LkbrKA4UM3TTNMjsa6TvhL78emkZK3YyHWYsE9n95zfrDNFNPcCQAwZz4ZK4XHyODZimzeU7I1PEfK9OcYJLb8N0010TL3oW6"
 );
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-// This is your test publishable API key.
 
 export const StripeCheckoutElement = ({ clientSecret }) => {
   const appearance = {
-    theme: "none",
+    theme: "flat",
+    labels: 'floating',
     variables: {
       fontFamily: "var(--font-family--open_sans)",
-      fontWeightNormal: "500",
+      fontLineHeight: "1.5",
       borderRadius: "5px",
-      colorBackground: "#FFFFFF",
-      colorPrimary: "#8E5572",
-      colorPrimaryText: '#000000',
-      colorText: '#000000',
-      colorTextSecondary: '#808080',
-      colorTextPlaceholder: "#CCE0D9",
-      colorLogo: "#E55934",
+      colorBackground: "#ffffff",
+      colorPrimaryText: "#00000",
     },
     rules: {
       ".Block": {
         backgroundColor: "var(--colorBackground)",
+        boxShadow: "none",
+        padding: "12px",
       },
       ".Input": {
-        fontSize: "30px",
-        border: "1px solid #D2D6DC",
+        padding: "12px",
       },
-      ".Input::placeholder": {
-        fontSize: "20px",
-        color: "var(--main-colorsfading-horizon)",
+      ".Input:disabled, .Input--invalid:disabled": {
+        color: "var(--main-colorsaluminium)",
+      },
+      ".Tab": {
+        padding: "10px 12px 8px 12px",
+        border: "none",
+      },
+      ".Tab:hover": {
+        border: "none",
+        boxShadow:
+          "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
+      },
+      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
+        border: "var(--black)",
+        backgroundColor: "#fff",
+        boxShadow:
+          "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
       },
       ".Label": {
-        color: "transparent",
+        fontWeight: "500",
       },
     },
   };
