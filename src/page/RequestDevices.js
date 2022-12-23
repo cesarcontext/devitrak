@@ -7,47 +7,26 @@ import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import "../style/pages/RequestDevices.css";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../apis/devitrackApi";
+import { TotalOrder } from "../helper/TotalOrder";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
   const { users } = useSelector(state => state.contactInfo)
-  const { device } = useDeviceCount();
-  const [stripeTransactions, setStripeTransactions] = useState([])
 
-  useEffect(() => {
-    const controller = new AbortController();
-    devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
-    return () => {
-      controller.abort();
-    };
-  }, [users.id]);
-
-  const list = []
-  const checkPaymentIntentPerUser = async() => {
-    stripeTransactions?.map(item => {
-      if( item.user.email === users.email){
-      return list.push(item.device)
-      }
-    })
-  }
-  checkPaymentIntentPerUser()
   return (
     <div className="general-container">
       <Navbar />
       <div className="container-request-device-section">
         <div>
-          <h4>Your current order</h4>
+          <h4>Your total order</h4>
         </div>
         <div className="container-request-current-order">
           <div
             className="container-request-current-order-display">
             <p>
-              {list.at(-1)} {device > 1 ? "Devices" : "Devices"}
+              {TotalOrder().device} {TotalOrder().device > 1 ? "Devices" : "Devices"}
             </p>
-            <p>${list.at(-1) * 200} deposit</p>
+            <p>${TotalOrder().order} deposit</p>
           </div>
         </div>
         <div className="view-more-details-acount">
