@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useStytchSession } from "@stytch/stytch-react";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { Navbar } from "../components/ui/Navbar";
-import "../style/pages/RequestDevices.css";
 import { useSelector } from "react-redux";
+import { Navbar } from "../components/ui/Navbar";
+import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { TotalOrder } from "../helper/TotalOrder";
+import "../style/pages/RequestDevices.css";
 
 export const RequestDevices = () => {
   const session = useStytchSession();
