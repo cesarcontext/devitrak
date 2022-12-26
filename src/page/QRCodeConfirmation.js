@@ -1,6 +1,7 @@
 import { useInterval } from "interval-hooks";
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
 import { Navbar } from "../components/ui/Navbar";
@@ -8,20 +9,14 @@ import { NavbarBottom } from "../components/ui/NavbarBottom";
 import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
+import { onAddNewPaymentIntent } from "../store/slices/stripeSlice";
 import "../style/pages/QRCodeConfirmation.css";
 
 export const QRCodeConfirmation = () => {
   const [stripeTransactions, setStripeTransactions] = useState([]);
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
-  const { users } = useContactInfoStore();
-  const callApiStripeTransaction = async () => {
-    await devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
-  };
-
+  const dispatch = useDispatch();
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
   );
@@ -30,10 +25,29 @@ export const QRCodeConfirmation = () => {
     "payment_intent_client_secret"
   );
 
+  const callApiStripeTransaction = async () => {
+    await devitrackApi
+      .get("/admin/users")
+      .then((response) => response.data)
+      .then((data) => setStripeTransactions(data.stripeTransactions));
+  };
+
+  const callApiPaymenTIntent = async () => {
+    const response = await devitrackApiStripe.get("/payment-intents");
+    if (response) {
+      for (let data of response.data.paymentIntents.data) {
+        if (data.id === payment_intent) {
+          dispatch(onAddNewPaymentIntent(data));
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
+    callApiPaymenTIntent();
   }, [payment_intent]);
-  
+
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
@@ -54,14 +68,11 @@ export const QRCodeConfirmation = () => {
         const response = await devitrackApiStripe.delete(
           `/remove-duplicate/${stripeTransactions[i].id}`
         );
-        if(response){
-          console.log("🚀 ~ file: QRCodeConfirmation.js:66 ~ removeDuplicatesStripePaymentIntent ~ response", response)
-        }
       }
     }
   };
 
-  useInterval(async() => {
+  useInterval(async () => {
     await callApiStripeTransaction();
     await removeDuplicatesStripePaymentIntent();
   }, 1_00);
