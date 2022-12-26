@@ -5,9 +5,9 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 import "./checkoutStyles.css";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 
 export const StripeCheckoutForm = () => {
   const dispatch = useDispatch();
@@ -88,9 +88,6 @@ export const StripeCheckoutForm = () => {
         return_url: myUrl + "/confirmation",
       },
     });
-    if (response) {
-      dispatch(onAddNewPaymentIntent(response));
-    }
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`. For some payment methods like iDEAL, your customer will
