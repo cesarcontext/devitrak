@@ -45,3 +45,27 @@
     gap: 50px;
   }
 }
+@media only screen and (max-with: 319px){
+  .container-accordion-info-asinged {
+    width: 100%;
+    margin: auto;
+    border: solid 1px #fff;
+  }
+  .accordion-table {
+    width: 100%;
+  }
+  .table-thead {
+    width: 100%;
+  }
+  .table-tr{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table-tr-category-title{
+    width: 100%;
+    display: grid;
+    gap: 50px;
+  }
+}

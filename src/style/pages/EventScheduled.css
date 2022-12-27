@@ -53,19 +53,20 @@
 .info-detail-each {
   border: 1px solid #212529;
   border-radius: 12px;
+  background-color: var(--main-colorswhite);
   margin: 0 3%;
   padding: 5px;
   width: 20%;
 }
-
-@media only screen and (min-width: 320px) and (max-width: 480px){
+@media only screen and (min-width:481px){
   .event-schedule-container {
-    width: 90%;
+    width: 90vw;
     margin: 5% auto;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    padding-bottom: 15vh;
   }
   .container-schedule-event-title {
     display: flex;
@@ -111,8 +112,129 @@
   .info-detail-each {
     border: 1px solid #212529;
     border-radius: 12px;
-    margin: 0 3%;
-    padding: 5px;
-    width: 20%;
+    margin: 0 1vw;
+    padding: 1px;
+    width: 20vw;
+    background-color: var(--main-colorswhite);
+}
+}
+@media only screen and (min-width: 320px) and (max-width: 480px){
+  .event-schedule-container {
+    width: 90vw;
+    margin: 5% auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 15vh;
   }
+  .container-schedule-event-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container-schedule-event-title h2 {
+    font-size: 25px;
+    font-family: "Inner", "Open Sans";
+  }
+  .container-schedule-event-text p {
+    font-size: 13px;
+  }
+  .container-schedule-event-img {
+    width: 95%;
+    margin: 5% auto;
+    margin-bottom: 3rem;
+  }
+  .container-schedule-event-img img {
+    width: 100%;
+    object-fit: fill;
+    object-position: center;
+  }
+  .container-schedule-event-body {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5vh;
+  }
+  .container-schedule-event-body-title h4{
+    margin-top: 5%;
+    padding: 15px;
+  }
+  .container-schedule-event-body-description {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .info-detail-each {
+    border: 1px solid #212529;
+    border-radius: 12px;
+    margin: 0 1vw;
+    padding: 1px;
+    width: 20vw;
+    background-color: var(--main-colorswhite);
+}
+}
+@media only screen and (max-width: 319px){
+  .event-schedule-container {
+    width: 90%;
+    margin: 5% auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 15vh;
+  }
+  .container-schedule-event-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container-schedule-event-title h2 {
+    font-size: 25px;
+    font-family: "Inner", "Open Sans";
+  }
+  .container-schedule-event-text p {
+    font-size: 13px;
+  }
+  .container-schedule-event-img {
+    width: 95%;
+    margin: 5% auto;
+    margin-bottom: 3rem;
+  }
+  .container-schedule-event-img img {
+    width: 100%;
+    object-fit: fill;
+    object-position: center;
+  }
+  .container-schedule-event-body {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5vh;
+  }
+  .container-schedule-event-body-title h4{
+    margin-top: 5%;
+    padding: 15px;
+  }
+  .container-schedule-event-body-description {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .info-detail-each {
+    border: 1px solid #212529;
+    border-radius: 12px;
+    margin: 0 1vw;
+    padding: 1px;
+    width: 20vw;
+    background-color: var(--main-colorswhite);
+}
 }

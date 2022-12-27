@@ -1,108 +1,340 @@
-.container-setting-detail {
-  display: flex;
-  column-gap: 2%;
-  margin: 2% auto;
-  height: 25%;
-  width: 65%;
-}
-.container-company-staff {
-  width: 60%;
-  border: solid 2px #212529;
-  border-radius: 15px;
-  padding: 20px;
-  height: 50vh;
-  background-color: var(--main-colorswhite);
-}
-.container-company-staff-detail {
-  width: 30%;
-  border: solid 2px var(--main-colorsfly-by-night);
-  border-radius: 15px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 50vh;
-}
-.container-section-pagination-button {
-  width: 100%;
-  padding: 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-}
-.staff-roles {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 40%;
-  margin: 0 auto;
-  color: var(--main-colorsexcalibur);
-}
-.container-staff-roles-title {
-  width: 35%;
-  margin: 0 auto;
-  padding: 20px;
-}
-.container-staff-roles-title h4 {
-  text-align: left;
-  color: var(--main-colorsexcalibur);
-}
-.staff-roles-description {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 25%;
-  margin: 0 auto;
-  text-align: justify;
-}
-.container-admin-user-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-.container-admin-user-details-card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.admin-user-details-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.container-admin-user-details-card label {
-  text-align: left;
-  color: var(--main-colorsexcalibur);
-  display: inline;
-}
-.container-admin-user-details-card span {
+@media only screen and (min-width:1451px) {
+  .container-setting-detail {
+    display: flex;
+    column-gap: 2%;
+    margin: 2% auto;
+    height: 55vh;
+    width: 90ww;
+  }
+  .container-company-staff {
+    width: 60vw;
+    border: solid 2px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    height: 55vh;
+    background-color: var(--main-colorswhite);
+  }
+  .container-company-staff-detail {
+    width: 30vw;
+    border: solid 2px var(--main-colorsfly-by-night);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 55vh;
+  }
+  .container-section-pagination-button {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .staff-roles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 45vw;
+    margin: 0 auto;
+    color: var(--main-colorsexcalibur);
+  }
+  .container-staff-roles-title {
+    width: 35%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .container-staff-roles-title h4 {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+  }
+  .staff-roles-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    margin: 0 auto;
+    text-align: justify;
+  }
+  .container-admin-user-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .admin-user-details-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card label {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+    display: inline;
+  }
+  .container-admin-user-details-card span {
     text-align: left;
     color: var(--black);
     display: inline;
   }
-  
-.edit-button {
-  width: fit-content;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  cursor: pointer;
-}
-.buttons-edit-permission {
-  display: flex;
-  padding: 15px;
-  justify-content: space-between;
-  align-items: center;
-  gap: 5px;
-}
-.buttons-edit-permission i{
+
+  .edit-button {
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+  }
+  .buttons-edit-permission {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+  }
+  .buttons-edit-permission i {
     text-orientation: var(50);
   }
-.buttons-edit-permission button{
+  .buttons-edit-permission button {
     width: fit-content;
     text-align: center;
     border-radius: 10%;
+  }
+}
+
+@media only screen and (min-width:769px) and (max-width: 1450px) {
+  .container-setting-detail {
+    display: flex;
+    column-gap: 2%;
+    margin: 2% auto;
+    height: 55vh;
+    width: 90vw;
+  }
+  .container-company-staff {
+    width: 60vw;
+    border: solid 2px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    height: 55vh;
+    background-color: var(--main-colorswhite);
+  }
+  .container-company-staff-detail {
+    width: 30vw;
+    border: solid 2px var(--main-colorsfly-by-night);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 55vh;
+    background-color: var(--main-colorswhite);
+}
+  .container-section-pagination-button {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .staff-roles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 45vw;
+    margin: 0 auto;
+    color: var(--main-colorsexcalibur);
+  }
+  .container-staff-roles-title {
+    width: 35%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .container-staff-roles-title h4 {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+  }
+  .staff-roles-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    margin: 0 auto;
+    text-align: justify;
+  }
+  .container-admin-user-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .admin-user-details-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card label {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+    display: inline;
+  }
+  .container-admin-user-details-card span {
+    text-align: left;
+    color: var(--black);
+    display: inline;
+  }
+
+  .edit-button {
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+  }
+  .buttons-edit-permission {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+  }
+  .buttons-edit-permission i {
+    text-orientation: var(50);
+  }
+  .buttons-edit-permission button {
+    width: fit-content;
+    text-align: center;
+    border-radius: 10%;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .container-setting-detail {
+    display: flex;
+    column-gap: 2%;
+    margin: 2% auto;
+    height: 25%;
+    width: 65%;
+  }
+  .container-company-staff {
+    width: 60%;
+    border: solid 2px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    height: 50vh;
+    background-color: var(--main-colorswhite);
+  }
+  .container-company-staff-detail {
+    width: 30%;
+    border: solid 2px var(--main-colorsfly-by-night);
+    background-color: var(--main-colorswhite);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 50vh;
+  }
+  .staff-detail {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 17vw;
+  }
+  .container-section-pagination-button {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .staff-roles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+    margin: 0 auto;
+    color: var(--main-colorsexcalibur);
+  }
+  .container-staff-roles-title {
+    width: 35%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .container-staff-roles-title h4 {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+  }
+  .staff-roles-description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    margin: 0 auto;
+    text-align: justify;
+  }
+  .container-admin-user-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .admin-user-details-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .container-admin-user-details-card label {
+    text-align: left;
+    color: var(--main-colorsexcalibur);
+    display: inline;
+  }
+  .container-admin-user-details-card span {
+    text-align: left;
+    color: var(--black);
+    display: inline;
+  }
+
+  .edit-button {
+    width: fit-content;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+  }
+  .buttons-edit-permission {
+    display: flex;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+  }
+  .buttons-edit-permission i {
+    text-orientation: var(50);
+  }
+  .buttons-edit-permission button {
+    width: fit-content;
+    text-align: center;
+    border-radius: 10%;
+  }
 }

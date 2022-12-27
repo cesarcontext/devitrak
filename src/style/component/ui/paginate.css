@@ -13,10 +13,10 @@
     border-radius: 3px;
     font-weight: 400;
 } 
-.page-num:hover{
+/* .page-num:hover{
     background-color: var(--main-colorsbluetiful);
     color: #fff;
-} 
+}  */
 .tab-active{
 background-color: var(--main-colorslobster);
 color: #fff;

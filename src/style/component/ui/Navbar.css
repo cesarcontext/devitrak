@@ -15,7 +15,7 @@
   width: 30%;
   display: flex;
 }
-.navbar-main-title{
+.navbar-main-title {
   padding: 15px;
 }
 
@@ -29,17 +29,16 @@
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    padding: 5px;
   }
   .navbar-logo-section {
     width: 30%;
-    height: 30%;
-    padding-left: 15px;
   }
   .navbar-name-section {
-    width: 30%;
+    width: 45%;
     display: flex;
   }
-  .navbar-main-title{
-    padding: 15px;
+  .navbar-main-title {
+    padding: 0px;
   }
 }

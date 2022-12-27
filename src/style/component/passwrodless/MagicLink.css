@@ -7,8 +7,26 @@
 }
 .email-sent-message-magic-link p {
   text-decoration: underline;
+  cursor: pointer;
   font-size: 10px;
   color: blue;
+}
+@media screen and (min-width:481px) {
+  .email-sent-message-magic-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .email-sent-message-magic-link .bi-exclamation-diamond {
+    font-size: var(--font-size-m2);
+    color: var(--main-colorslobster);
+  }
+  .email-sent-message-magic-link p {
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 15px;
+    color: blue;
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 480px) {
@@ -23,7 +41,25 @@
   }
   .email-sent-message-magic-link p {
     text-decoration: underline;
+    cursor: pointer;
     font-size: 15px;
+    color: blue;
+  }
+}
+@media screen and (max-width: 319px) {
+  .email-sent-message-magic-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .email-sent-message-magic-link .bi-exclamation-diamond {
+    font-size: var(--font-size-m2);
+    color: var(--main-colorslobster);
+  }
+  .email-sent-message-magic-link p {
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: var(--font-size-m2);
     color: blue;
   }
 }

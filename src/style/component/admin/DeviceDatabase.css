@@ -1,25 +1,136 @@
 .container-stock-device {
-  width: 60%;
+  width: 70vw;
   display: flex;
   column-gap: 2%;
   margin: 2% auto;
-  height: 25%;
+  height: 51vh;
 }
-.container-stock-device-list{
-    width: 50%;
-    border: solid 1px #212529;
-    border-radius: 15px;
-    padding: 20px;
-    min-height: 100%;
-    background-color: #fff;
+.container-stock-device-list {
+  width: 40vw;
+  border: solid 1px #212529;
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 55vh;
+  background-color: #fff;
 }
-.container-device-info-table{
-    height: 300px;
+.container-stock-device-details {
+  width: 23vw;
+  border: solid 1px #212529;
+  border-radius: 15px;
+  padding: 20px;
+  min-height: 55vh;
+  background-color: #fff;
 }
-.container-graphic{
+
+.container-device-info-table {
+  height: 300px;
+}
+.container-graphic {
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 40%;
   margin: auto;
+}
+.container-footer-stock {
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+.device-detail-section {
+  padding: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  width: 17vw;
+}
+.detail-history-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+  width: 11vw;
+}
+.device-user-history-container {
+  width: 17vw;
+  height: 28vh;
+  overflow: auto;
+}
+.table-device-user-history {
+  width: fit-content;
+}
+
+@media only screen and (max-width: 1450px){
+  .container-stock-device {
+    width: 95vw;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    column-gap: 2%;
+    margin: 2% auto;
+    height: 60vh;
+  }
+  .container-stock-device-list {
+    width: 50vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 55vh;
+    background-color: #fff;
+  }
+  .container-stock-device-details {
+    width: 31vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 55vh;
+    background-color: #fff;
+  }
+  
+  .container-device-info-table {
+    height: 300px;
+  }
+  .container-graphic {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 40%;
+    margin: auto;
+  }
+  .container-footer-stock {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .device-detail-section {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    width: 20vw;
+  }
+  .detail-history-container {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    width: 27vw;
+  }
+  .device-user-history-container {
+    width: 26vw;
+    height: 28vh;
+    overflow: auto;
+  }
+  .table-device-user-history {
+    width: fit-content;
+  }
 }
