@@ -68,10 +68,17 @@ export const SettingDetailInfo = ({ searchTerm }) => {
               </tr>
             </thead>
             {searchTerm.length < 2
-              ? currentItemsRendered?.map((user) => {
+              ? currentItemsRendered?.map((user, index) => {
+                let background;
+                if( index === 0){
+                  background = "#ffff"
+                }
+                if(index % 2 === 0){
+                  background = "#F1F6F9"
+                } 
                   return (
                     <tbody key={user.id}>
-                      <tr>
+                      <tr style={{background:`${background}`}}>
                         <td>{user.name}</td>
                         <td>{user.role}</td>
                         <td>{user.email}</td>
