@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import "../../../style/pages/admin/attendees.css";
 
 export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
   const [dataListed, setDataListed] = useState(null);
-  const [selection, setSelection] = useState("");
   const { paymentIntentSelected } = useSelector((state) => state.stripe);
 
   useEffect(() => {
@@ -35,7 +33,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
           {dataListed?.map((data, index) => {
             const device = data.amount_capturable / 20000;
             const amount_authorized = data.amount_capturable;
-            const date = new Date(data.created);
             if (data.id === paymentIntentSelected) {
               return (
                 <tbody key={data.id}>
@@ -172,7 +169,8 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                 showCancelButton: true,
                                 confirmButtonColor: "#3085d6",
                                 cancelButtonColor: "#d33",
-                                confirmButtonText: "Cancel authorized amount",
+                                confirmButtonText: "Cancel Device",
+                                cancelButtonText:"Dismiss this prompt",
                                 backdrop: "rgba(0,0,123,0.4)",
                               }).then((result) => {
                                 if (result.isConfirmed) {
@@ -230,7 +228,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                         </>
                       )}
                     </td>
-                    {/* <td>{date.toDateString()}</td> */}
                   </tr>
                 </tbody>
               );
