@@ -4,10 +4,12 @@ import { PieChart, Pie, Cell, LabelList } from "recharts";
 import { devitrackApi } from "../../../apis/devitrackApi";
 
 const colors = [
-  "var(--main-colorsbluetiful)",
   "var(--main-colorszen)",
-  "var(--main-colorsfly-by-night)",
-  "var(--main-colorscarbon)",
+  "var(--graphic-status-damage)",
+  "var(--graphic-status-network)",
+  "var(--graphic-status-missed)",
+  "var(--graphic-status-hardware)",
+  "var(--graphic-status-other)",
 ];
 export const DisplayDataReceiversStatus = () => {
   const { paymentIntentDetailSelected } = useSelector((state) => state.stripe);
@@ -97,9 +99,9 @@ export const DisplayDataReceiversStatus = () => {
     }
   }
   return (
-    <div>
-      <label>Receivers Status</label>
-      <PieChart width={335} height={350}>
+    <div className="mt-5">
+      <p><strong>Receivers Status</strong></p>
+      <PieChart width={350} height={350}>
         <Pie
           data={aux}
           cx="50%"
@@ -111,8 +113,8 @@ export const DisplayDataReceiversStatus = () => {
           <LabelList
             dataKey="name"
             position="insideTop"
-            angle="25"
-            stroke="var(--main-colorslobster"
+            angle="0"
+            stroke="var(--black)"
           />
           {aux.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index]} />
