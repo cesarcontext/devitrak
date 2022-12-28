@@ -2,22 +2,8 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
-import { swalErrorMessage } from "../../../helper/swalFireMessage"
-
-const customStyles = {
-  content: {
-    width: "30%",
-    height: "15%",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
-// Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
+import { swalErrorMessage } from "../../../helper/swalFireMessage";
+import { nanoid } from "@reduxjs/toolkit";
 
 export const ModalCreateTransactionForNoRegularUser = ({
   createTransactionForNoRegularUser,
@@ -26,14 +12,57 @@ export const ModalCreateTransactionForNoRegularUser = ({
 }) => {
   const { errorMessage } = useAdminStore();
   const [receiversSelection, setReceiversSelection] = useState(0);
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   if (createTransactionForNoRegularUser !== false) {
     Modal.setAppElement("#root");
   }
   function closeModal() {
     setCreateTransactionForNoRegularUser(false);
   }
+  const handleResize = () => {
+    setScreenSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  const customeStyleBaseOnScreenSize = () => {
+    let customStyles;
+    if (screenSize.width < 1201) {
+      return (customStyles = {
+        content: {
+          width: "50vw",
+          height: "15%",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        },
+      });
+    } else {
+      return (customStyles = {
+        content: {
+          width: "30%",
+          height: "15%",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        },
+      });
+    }
+  };
+  customeStyleBaseOnScreenSize();
 
   useEffect(() => {
+    handleResize();
     if (errorMessage !== undefined) {
       swalErrorMessage(errorMessage);
     }
@@ -41,15 +70,13 @@ export const ModalCreateTransactionForNoRegularUser = ({
 
   const onSubmitRegister = async (event) => {
     event.preventDefault();
+    const id = nanoid(24);
     const max = 918273645;
     try {
       const { data } = await devitrackApi.post(
         "/stripe/stripe-transaction-no-regular-user",
         {
-          paymentIntent:
-            Math.floor(Math.random() * max) +
-            sendObjectIdUser +
-            receiversSelection,
+          paymentIntent: "pi_" + id,
           clientSecret:
             receiversSelection +
             sendObjectIdUser +
@@ -72,7 +99,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
       <Modal
         isOpen={createTransactionForNoRegularUser}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={customeStyleBaseOnScreenSize()}
         shouldCloseOnOverlayClick={false}
       >
         <div>
@@ -94,17 +121,29 @@ export const ModalCreateTransactionForNoRegularUser = ({
               />
             </div>
             <div
-            className="button-container"
+              className="button-container"
               style={{
                 display: "flex",
                 flexWrap: "wrap",
+                justifyContent:"space-around",
                 alignItems: "center",
-                gap: "3%",
-                width:"60%"
+                width: "13vw",
               }}
             >
-              <button className="btn btn-delete" style={{ width: "45%"}} onClick={closeModal}>Cancel</button>
-              <button className="btn btn-create" style={{ width: "45%"}} type="submit">Register</button>
+              <button
+                className="btn btn-delete"
+                style={{ width: "45%" }}
+                onClick={closeModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-create"
+                style={{ width: "45%" }}
+                type="submit"
+              >
+                Register
+              </button>
             </div>
           </form>
         </div>
