@@ -5,19 +5,6 @@ import { useAdminStore } from "../../../hooks/useAdminStore";
 import { useForm } from "../../../hooks/useForm";
 import { swalErrorMessage } from "../../../helper/swalFireMessage";
 
-const customStyles = {
-  content: {
-    width: "20%",
-    height: "40%",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
 let registerFormFields = {
   registerName: "",
   registerEmail: "",
@@ -36,6 +23,10 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
     onInputCHange: onRegisterInputChange,
   } = useForm(registerFormFields);
   const [rolePermission, setRolePermission] = useState(null);
+    const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   if (modalState !== false) {
     Modal.setAppElement("#root");
@@ -43,8 +34,47 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
   function closeModal() {
     setModalState(false);
   }
+    const handleResize = () => {
+    setScreenSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  const customeStyleBaseOnScreenSize = () => {
+    let customStyles;
+    if(screenSize.width < 1201){
+      return customStyles = {
+        content: {
+          width: "50vw",
+          height: "45vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        }
+      };
+    } else {
+      return customStyles = {
+        content: {
+          width: "20vw",
+          height: "45vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        }
+      };
+    }
+  }
+  customeStyleBaseOnScreenSize()
 
   useEffect(() => {
+    handleResize()
     if (errorMessage !== undefined) {
       swalErrorMessage(errorMessage);
     }
@@ -71,7 +101,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
       <Modal
         isOpen={modalState}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={customeStyleBaseOnScreenSize()}
         shouldCloseOnOverlayClick={false}
       >
         <div>
