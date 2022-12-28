@@ -510,9 +510,16 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                               );
                             })
                       : receiversAssigned?.map((item, index) => {
+                        let background;
+                        if( index === 0){
+                          background = "#ffff"
+                        }
+                        if(index % 2 === 0){
+                          background = "#F1F6F9"
+                        }   
                           return (
                             <tbody key={index + item}>
-                              <tr>
+                              <tr style={{background:`${background}`}}>
                                 <th scope="row">{index + 1}</th>
                                 <td>{item.serialNumber}</td>
                                 <td>
