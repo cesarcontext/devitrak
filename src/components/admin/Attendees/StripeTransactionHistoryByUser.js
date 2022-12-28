@@ -38,8 +38,8 @@ export const StripeTransactionHistoryByUser = ({
   let userTransaction = [];
   const substractUserTransactionsOnly = async () => {
     if (stripeTransactions !== []) {
-      stripeTransactions?.map((transaction, index) => {
-        if (transaction.user._id === sendObjectIdUser) {
+      stripeTransactions?.map((transaction, index) => {        
+        if (transaction.user?._id === sendObjectIdUser) {
           return userTransaction.splice(index, 0, transaction);
         }
       });
