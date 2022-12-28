@@ -6,8 +6,6 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 const colors = [
   "var(--main-colorsbluetiful)",
   "var(--main-colorszen)",
-  "var(--main-colorsfly-by-night)",
-  "var(--main-colorscarbon)",
 ];
 
 export const DisplayDataReceiversActivity = () => {
@@ -70,9 +68,9 @@ export const DisplayDataReceiversActivity = () => {
     }
   }
   return (
-    <div>
-      <label>Receivers Activity</label>
-      <PieChart width={280} height={350}>
+    <div className="mt-5">
+    <p><strong>Receivers Activity</strong></p>
+      <PieChart width={300} height={350}>
         <Pie
           data={aux}
           cx="50%"
