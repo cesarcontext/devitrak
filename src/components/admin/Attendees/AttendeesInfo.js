@@ -8,7 +8,7 @@ import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
 import { ModalCreateUser } from "../ui/ModalCreateUser";
 
-export const AttendeesInfo = ({ searchTerm }) => {
+export const AttendeesInfo = () => {
   const { user } = useAdminStore();
   const [users, setUsers] = useState([]);
   const [userDetail, setUserDetail] = useState(null);
@@ -62,10 +62,17 @@ export const AttendeesInfo = ({ searchTerm }) => {
                 <th scope="col">details</th>
               </tr>
             </thead>
-            {currentItemsRendered?.map((user, item) => {
+            {currentItemsRendered?.map((user, item) => {                  
+              let background;
+              if( item === 0){
+                background = "#ffff"
+              }
+              if(item % 2 === 0){
+                background = "#F1F6F9"
+              }   
               return (
                 <tbody key={user.id}>
-                  <tr>
+                   <tr style={{background:`${background}`}}>
                     <th scope="row">{item + 1}</th>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
