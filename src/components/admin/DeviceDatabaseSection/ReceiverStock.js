@@ -16,7 +16,7 @@ export const ReceiverStock = ({ searchTerm }) => {
   const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 4;
+  const itemsPerPage = 5;
 
   const callApi = async () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -104,9 +104,17 @@ export const ReceiverStock = ({ searchTerm }) => {
             </thead>
             {searchTerm === ""
               ? currentItemsRendered?.map((receiver, index) => {
+                let background;
+                if( index === 0){
+                  background = "#ffff"
+                }
+                if(index % 2 === 0){
+                  background = "#F1F6F9"
+                } 
+
                   return (
                     <tbody key={receiver.id}>
-                      <tr>
+                     <tr style={{background:`${background}`}}>
                         <th scope="row">{index + 1}</th>
                         <td>{receiver.device}</td>
                         <td>{receiver.activity}</td>
