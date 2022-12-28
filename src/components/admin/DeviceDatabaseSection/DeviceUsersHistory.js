@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
+import "../../../style/component/admin/DeviceDatabase.css";
 
 export const DeviceUsersHistory = ({
   receiverId,
   receiverDetail,
   conditionReturned,
 }) => {
-  console.log(
-    "🚀 ~ file: DeviceUsersHistory.js ~ line 5 ~ DeviceUsersHistory ~ conditionReturned",
-    conditionReturned
-  );
+
   const [listOfReceiverAssigned, setListOfReceiverAssigned] = useState([]);
   const [usersPerDevice, setUsersPerDevice] = useState([]);
   const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] =
@@ -60,42 +58,36 @@ export const DeviceUsersHistory = ({
   }, [receiverId]);
 
   return (
-    <div>
-      <div>
-        <div></div>
-        <label>Receiver Users History</label>
-      </div>
-      <div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th scope="col">User</th>
-            </tr>
-          </thead>
-          <tbody>
-            {conditionReturned === null
-              ? usersPerDevice?.map((user, index) => {
+    <div className="device-user-history-container">
+      <table className="table table-device-user-history">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th scope="col">User</th>
+          </tr>
+        </thead>
+        <tbody>
+          {conditionReturned === null
+            ? usersPerDevice?.map((user, index) => {
+                return (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td scope="col">{user}</td>
+                  </tr>
+                );
+              })
+            : listReceiverReturnedByIssue?.map((receiver, index) => {
+                if (conditionReturned === receiver.device) {
                   return (
                     <tr>
                       <td>{index + 1}</td>
-                      <td scope="col">{user}</td>
+                      <td scope="col">{receiver.user}</td>
                     </tr>
                   );
-                })
-              : listReceiverReturnedByIssue?.map((receiver, index) => {
-                  if(conditionReturned === receiver.device){
-                    return (
-                      <tr>
-                        <td>{index + 1}</td>
-                        <td scope="col">{receiver.user}</td>
-                      </tr>
-                    );
-                  }
-                })}
-          </tbody>
-        </table>
-      </div>
+                }
+              })}
+        </tbody>
+      </table>
     </div>
   );
 };
