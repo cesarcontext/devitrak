@@ -76,7 +76,7 @@ export const StripeTransactionHistoryByUser = ({
               pageLinkClassName="page-num"
               previousLinkClassName="page-num"
               nextLinkClassName="page-num"
-              activeLinkClassName="active"
+              activeLinkClassName="tab-active"
             />
           </caption>
           <thead>
