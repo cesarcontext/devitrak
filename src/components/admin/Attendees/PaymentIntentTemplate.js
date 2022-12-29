@@ -113,44 +113,7 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                           Capture
                         </button>
                       ) : (
-                        <button
-                          className="btn btn-create"
-                          disabled
-                          onClick={() => {
-                            Swal.fire({
-                              title: "",
-                              text: "The amount submitted will be captured!",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Capture authorized amount",
-                              backdrop: "rgba(0,0,123,0.4)",
-                              input: "number",
-                              inputAttributes: {
-                                autocapitalize: "off",
-                                placeholder:
-                                  `Max amount to capture: $${data.amount_capturable}`.slice(
-                                    0,
-                                    -2
-                                  ),
-                              },
-                            }).then((result) => {
-                              if (result.isConfirmed) {
-                                const id = data.id;
-                                devitrackApi.post(
-                                  `/stripe/payment-intents/${data.id}/capture`,
-                                  { id: id }
-                                );
-                                Swal.fire(
-                                  "Captured!",
-                                  "The authorized amount has been captured",
-                                  "success"
-                                );
-                              }
-                            });
-                          }}
-                        >
+                        <button className="btn btn-create" disabled>
                           {" "}
                           Capture
                         </button>
@@ -169,8 +132,8 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                                 showCancelButton: true,
                                 confirmButtonColor: "#3085d6",
                                 cancelButtonColor: "#d33",
-                                confirmButtonText: "Cancel Device",
-                                cancelButtonText:"Dismiss this prompt",
+                                confirmButtonText: "Cancel Transaction",
+                                cancelButtonText: "Dismiss this prompt",
                                 backdrop: "rgba(0,0,123,0.4)",
                               }).then((result) => {
                                 if (result.isConfirmed) {
@@ -197,31 +160,6 @@ export const PaymentIntentTemplate = ({ sendPaymentIntentId }) => {
                             className="btn btn-delete"
                             disabled
                             style={{ backgroundColor: "red" }}
-                            onClick={() => {
-                              Swal.fire({
-                                title: "Are you sure?",
-                                text: "Transacrtion will be cancelled!",
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Cancel authorized amount",
-                                backdrop: "rgba(0,0,123,0.4)",
-                              }).then((result) => {
-                                if (result.isConfirmed) {
-                                  const id = data.id;
-                                  devitrackApi.post(
-                                    `/stripe/payment-intents/${data.id}/cancel`,
-                                    { id: id }
-                                  );
-                                  Swal.fire(
-                                    "Cancelled!",
-                                    "The authorized transaction has been cancelled",
-                                    "success"
-                                  );
-                                }
-                              });
-                            }}
                           >
                             Cancel
                           </button>{" "}
