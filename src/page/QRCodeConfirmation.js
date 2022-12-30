@@ -1,12 +1,11 @@
 import { useInterval } from "interval-hooks";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { useContactInfoStore } from "../hooks/useContactInfoStore";
 import { useDeviceCount } from "../hooks/useDeviceCountStore";
 import { useStripeHook } from "../hooks/useStripeHook";
 import { onAddNewPaymentIntent } from "../store/slices/stripeSlice";
@@ -16,7 +15,7 @@ export const QRCodeConfirmation = () => {
   const [stripeTransactions, setStripeTransactions] = useState([]);
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
   );
@@ -32,7 +31,7 @@ export const QRCodeConfirmation = () => {
       .then((data) => setStripeTransactions(data.stripeTransactions));
   };
 
-  const callApiPaymenTIntent = async () => {
+  const callApiPaymenTIntent = useCallback(async () => {
     const response = await devitrackApiStripe.get("/payment-intents");
     if (response) {
       for (let data of response.data.paymentIntents.data) {
@@ -41,7 +40,7 @@ export const QRCodeConfirmation = () => {
         }
       }
     }
-  };
+  }, []);
 
   useEffect(() => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
