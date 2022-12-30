@@ -1,27 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
-import { useForm } from "../../../hooks/useForm";
-const customStyles = {
-  content: {
-    width: "20%",
-    height: "26%",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
 
-let replaceReceiverFormFields = {
-  serialNumber: "",
-  reason: "",
-  otherComment: "",
-};
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 export const ModalReplaceReceiver = ({
@@ -33,15 +15,17 @@ export const ModalReplaceReceiver = ({
   replaceReceiverIndex,
   setLoading,
   receiverIdSavedInPool,
-  listOfDeviceInPool,
 }) => {
   const { errorMessage } = useAdminStore();
-  const {
-    serialNumber,
-    reason,
-    otherComment,
-    onInputCHange: onReplaceInputChange,
-  } = useForm(replaceReceiverFormFields);
+  const [displayed, setDisplayed] = useState(true);
+  const [serialNumber, setSerialNumber] = useState("");
+  const [reason, setReason] = useState("");
+  const [otherComment, setOtherComment] = useState("");
+
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
 
   if (replaceStatus !== false) {
     Modal.setAppElement("#root");
@@ -50,19 +34,67 @@ export const ModalReplaceReceiver = ({
     setReplaceStatus(false);
   }
 
+  const buttonBehaviorChange = () => {
+    if (reason.length > 0 && serialNumber.length > 0) {
+      return setDisplayed(false);
+    }
+  };
+
+  const handleResize = () => {
+    setScreenSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  const customeStyleBaseOnScreenSize = () => {
+    let customStyles;
+    if (screenSize.width < 1301) {
+      return (customStyles = {
+        content: {
+          width: "50vw",
+          height: "25vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        },
+      });
+    } else {
+      return (customStyles = {
+        content: {
+          width: "30%",
+          height: "25vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        },
+      });
+    }
+  };
+  customeStyleBaseOnScreenSize();
   useEffect(() => {
+    const controller = new AbortController();
+    buttonBehaviorChange();
+
+    return () => {
+      controller.abort();
+    };
+  }, [reason]);
+
+  useEffect(() => {
+    handleResize();
     if (errorMessage !== undefined) {
       Swal.fire("Incorrect credentials", errorMessage, "error");
     }
   }, [errorMessage]);
 
   const returnExistentReceiverInPool = async () => {
-    // let receiverInPoolId;
-    // await listOfDeviceInPool?.map((item) => {
-    //   if (item.device === receiverObjectToReplace.serialNumbe) {
-    //     return receiverInPoolId = item.id;
-    //   }
-    // });
     try {
       const response = await devitrackApi.put(
         `/receiver/receivers-pool-update/${receiverIdSavedInPool}`,
@@ -73,23 +105,16 @@ export const ModalReplaceReceiver = ({
           comment: otherComment,
         }
       );
-      if( response ) {
-        await devitrackApi.post(
-          `/receiver/receiver-returned-issue`,
-          {
-            device: receiverObjectToReplace.serialNumber,
-            status: reason,
-            activity: "Stored",
-            comment: otherComment,
-            user: paymentIntentDetailSelected.user.email
-          }
-        );
+      if (response) {
+        await devitrackApi.post(`/receiver/receiver-returned-issue`, {
+          device: receiverObjectToReplace.serialNumber,
+          status: reason,
+          activity: "Stored",
+          comment: otherComment,
+          user: paymentIntentDetailSelected.user.email,
+        });
       }
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ModalReplaceReceiver.js ~ line 59 ~ changeStatusReceiverReplaced ~ error",
-        error
-      );
       alert(error);
     }
   };
@@ -101,7 +126,7 @@ export const ModalReplaceReceiver = ({
         return (receiversAssignedListCopy = item.device);
       });
       const element_deleted = 1;
-      replaceReceiverFormFields = {
+      let replaceReceiverFormFields = {
         serialNumber: serialNumber,
         status: true,
       };
@@ -121,7 +146,7 @@ export const ModalReplaceReceiver = ({
       );
       if (response) {
         devitrackApi.post("/receiver/receivers-pool", {
-          device: replaceReceiverFormFields.serialNumber,
+          device: serialNumber,
           status: "Operational",
           activity: "In-use",
           comment: "No comment",
@@ -132,10 +157,6 @@ export const ModalReplaceReceiver = ({
       }
       alert("New receiver assigned");
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ReceiversDetailsAssignation.js ~ line 129 ~ handleAssignDevice ~ error",
-        error
-      );
       alert("Something went wrong, please try later");
     }
   };
@@ -143,14 +164,18 @@ export const ModalReplaceReceiver = ({
     event.preventDefault();
     await returnExistentReceiverInPool();
     await returnExistentReceiverInTransaction();
+    setSerialNumber("")
+    setReason("")
+    setOtherComment("")
+    setDisplayed(true)
   };
 
   return (
-    <div style={{margin:"auto"}}>
+    <div style={{ margin: "auto" }}>
       <Modal
         isOpen={replaceStatus}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={customeStyleBaseOnScreenSize()}
         shouldCloseOnOverlayClick={false}
       >
         <div>
@@ -170,14 +195,13 @@ export const ModalReplaceReceiver = ({
                 placeholder="New serial number"
                 name="serialNumber"
                 value={serialNumber}
-                onChange={onReplaceInputChange}
+                onChange={(event) => setSerialNumber(event.target.value)}
               />
             </div>
             <div className="form-group mb-2">
               <select
                 name="reason"
-                value={reason}
-                onChange={onReplaceInputChange}
+                onChange={(event) => setReason(event.target.value)}
               >
                 <option defaultValue></option>
                 <option value="Missing">Missing</option>
@@ -194,7 +218,7 @@ export const ModalReplaceReceiver = ({
                     placeholder="Add comment"
                     name="otherComment"
                     value={otherComment}
-                    onChange={onReplaceInputChange}
+                    onChange={(event) => setOtherComment(event.target.value)}
                   />
                 </div>
               ) : (
@@ -207,11 +231,25 @@ export const ModalReplaceReceiver = ({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                gap:"3%"
+                gap: "3%",
               }}
             >
-              <button className="btn btn-delete" style={{ width:"45%"}} onClick={() => setReplaceStatus(false)}>Cancel</button>
-              <button className="btn btn-create" style={{ width:"45%"}} type="submit">Save</button>
+              <button
+                disabled={displayed}
+                className="btn btn-delete"
+                style={{ width: "45%" }}
+                onClick={() => setReplaceStatus(false)}
+              >
+                Cancel
+              </button>
+              <button
+                disabled={displayed}
+                className="btn btn-create"
+                style={{ width: "45%" }}
+                type="submit"
+              >
+                Save
+              </button>
             </div>
           </form>
         </div>
