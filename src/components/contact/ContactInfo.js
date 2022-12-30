@@ -1,23 +1,16 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { Devices } from "../device/Devices";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
-import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
 
 export const ContactInfo = () => {
-  const {
-    startSavingContactInfo,
-    startCheckingUser,
-    userCreatedDisabledInput,
-    users,
-    visibleButton,
-  } = useContactInfoStore();
+  const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
+    useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
@@ -100,14 +93,12 @@ export const ContactInfo = () => {
     <>
       <div className="container-contact-info mt-4">
         <div>
-          {/* {token.length < 1 ? <Devices handleOnSubmit={handleOnSubmit} /> : ""} */}
           <div className="row">
             <form>
               <div className="container-input">
                 <p className="paragraph">ENTER YOUR CONTACT INFORMATION</p>
                 <div className="form-outline">
                   <input
-                    disabled={userCreatedDisabledInput}
                     type="email"
                     id="emailAddress"
                     className={`form-control ${validationEmail} form-control-lg`}
@@ -127,7 +118,6 @@ export const ContactInfo = () => {
               <div className="container-input">
                 <div className="form-outline">
                   <input
-                    disabled={userCreatedDisabledInput}
                     type="text"
                     id="firstName"
                     name="name"
@@ -142,7 +132,6 @@ export const ContactInfo = () => {
               <div className="container-input">
                 <div className="form-outline">
                   <input
-                    disabled={userCreatedDisabledInput}
                     type="text"
                     id="lastName"
                     className={`form-control ${validationLastName} form-control-lg`}
@@ -157,7 +146,6 @@ export const ContactInfo = () => {
               <div className="container-input">
                 <div className="form-outline">
                   <input
-                    disabled={userCreatedDisabledInput}
                     type="text"
                     className={`form-control form-control-lg`}
                     id="groupName"
@@ -172,7 +160,6 @@ export const ContactInfo = () => {
               <div className="container-input">
                 <div className="form-outline">
                   <input
-                    disabled={userCreatedDisabledInput}
                     type="tel"
                     id="phoneNumber"
                     className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
