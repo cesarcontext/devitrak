@@ -35,11 +35,6 @@ export const DeviceDatabase = () => {
       </div>
       <div
         className="container-graphic"
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
       >
         <DisplayDataReceiversActivity />
         <DisplayDataReceiversStatus />
