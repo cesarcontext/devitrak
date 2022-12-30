@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600|Inter:400");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap");
 :root {
   --black: rgba(0, 0, 0, 1);
   --main-colorsfresh-blue-of-bel-air: rgba(21, 170, 245, 1);
@@ -22,6 +22,11 @@
   --cultured-pearl: rgba(245, 245, 245, 1);
   --white: rgba(255, 255, 255, 0);
   --main-colorswhite: rgba(255, 255, 255, 1);
+  --graphic-status-damage: #da2c38;
+  --graphic-status-networking: #f5b700;
+  --graphic-status-missed: #00a1e4;
+  --graphic-status-hardware: #ebebeb;
+  --graphic-status-other: #89fc00;
 
   --font-size-xs: 8px;
   --font-size-s: 10px;
@@ -39,9 +44,7 @@
 body {
   background-color: var(--wild-sand);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
@@ -52,9 +55,9 @@ code {
     monospace;
 }
 
-input {
+/* input {
   width: 35%;
-  height: 3vh;
+  height: 4vh;
   border-radius: 0px;
   margin: 2px auto;
   padding-left: 15px;
@@ -65,35 +68,67 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
-}
+} */
 
 .btn {
   color: var(--bs-body-bg);
   background-color: var(--bs-primary);
   transition: none;
 }
-.btn-create{
+.btn-create {
   color: var(--bs-body-bg);
   background-color: var(--main-colorsbluetiful);
   transition: none;
 }
-.btn-detail{
+.btn-detail {
   color: var(--bs-primary);
   background-color: var(--bs-body-bg);
   transition: none;
 }
-.btn-delete{
+.btn-delete {
   color: var(--bs-body-bg);
   background-color: var(--main-colorslobster);
   transition: none;
 }
-@media only screen and (max-width: 650px) {
+@media only screen and (min-width: 481px) and (max-width: 1439px) {
   /* .general-container{
     height:100vh
   } */
+  /* input {
+    width: 50vw;
+    height: 4vh;
+    border-radius: 0px;
+    margin: 2px auto;
+    padding-left: 15px;
+  }
+  input::placeholder {
+    color: var(--main-colorsfading-horizon);
+  } */
+  .btn {
+    color: var(--bs-body-bg);
+    background-color: var(--bs-primary);
+    transition: none;
+  }
+  .btn-create {
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorsbluetiful);
+    transition: none;
+  }
+  .btn-delete {
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorslobster);
+    transition: none;
+  }
+  .btn-detail {
+    color: var(--bs-body-bg);
+    background-color: var(--main-colorslobster);
+    transition: none;
+  }
+}
+@media only screen and (max-width: 480px) {
   input {
-    width: 80%;
-    height: 3vh;
+    width: 50vw;
+    height: 4vh;
     border-radius: 0px;
     margin: 2px auto;
     padding-left: 15px;
@@ -106,17 +141,17 @@ input::-webkit-inner-spin-button {
     background-color: var(--bs-primary);
     transition: none;
   }
-  .btn-create{
+  .btn-create {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
     transition: none;
   }
-  .btn-delete{
+  .btn-delete {
     color: var(--bs-body-bg);
     background-color: var(--main-colorslobster);
     transition: none;
   }
-  .btn-detail{
+  .btn-detail {
     color: var(--bs-body-bg);
     background-color: var(--main-colorslobster);
     transition: none;
