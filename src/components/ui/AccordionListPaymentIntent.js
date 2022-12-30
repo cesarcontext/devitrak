@@ -22,10 +22,7 @@ export const AccordionListPaymentIntent = () => {
   }, [users.id, openAccordion, openAccordionDetail]);
 
   for (let i = 0; i < receiverData.length; i++) {
-    if (
-      users.email === receiverData[i].receipt_email &&
-      receiverData[i].status === "requires_capture"
-    ) {
+    if (users.email === receiverData[i].receipt_email) {
       listOfPaymentPerUser.push(receiverData[i]);
     }
   }
@@ -59,7 +56,7 @@ export const AccordionListPaymentIntent = () => {
             bgColor="#ffff"
             level="Q"
             size={100}
-            value={`${info}`}
+            value={info}
             style={{
               margin: "0 auto",
             }}
@@ -86,51 +83,125 @@ export const AccordionListPaymentIntent = () => {
             <div className="accordion-body">
               {" "}
               {listOfPaymentPerUser?.map((item) => {
-                const device = item.amount / 20000
-                return (
-                  <div key={item.id}>
-                    <div className="accordion-detail-title">
-                      <div className="order-list">
-                        <i className="bi bi-circle" />{" "}
-                        <p
-                          onClick={() =>
-                            setOpenAccordionDetail(!openAccordionDetail)
-                          }
-                          className="accordion-header"
-                        >
-                          Order {item.id}{" "}
-                        </p>
-                        {openAccordionDetail !== true ? (
-                          <i className="bi bi-chevron-up" />
-                        ) : (
-                          <i className="bi bi-chevron-down" />
-                        )}
-                      </div>
-
-                      {openAccordionDetail === true ? (
-                        <div className="accordion-body-detail">
-                          <div className="">
-                            {checkPaymentIntentArray(item.id)}
-                          </div>
-                          <div>
-                            <span>
-                              Device ordered:&nbsp;{" "}
-                              <p>
-                                <strong>{device}</strong>
-                              </p>
-                            </span>
-                            <span>
-                              Pending return:&nbsp;{" "}
-                              <strong>
-                                <Accordion item={item.id} />
-                              </strong>
-                            </span>
-                          </div>
+                if (item.status !== "requires_payment_method") {
+                  const device = item.amount / 20000;
+                  return (
+                    <div key={item.id}>
+                      <div className="accordion-detail-title">
+                        <div className="order-list">
+                          <i className="bi bi-circle" />{" "}
+                          <p
+                            onClick={() =>
+                              setOpenAccordionDetail(!openAccordionDetail)
+                            }
+                            className="accordion-header"
+                          >
+                            Order {item.id}{" "}
+                          </p>
+                          {openAccordionDetail !== true ? (
+                            <i className="bi bi-chevron-up" />
+                          ) : (
+                            <i className="bi bi-chevron-down" />
+                          )}
                         </div>
-                      ) : null}
+                        {openAccordionDetail === true ? (
+                          <div className="accordion-body-detail">
+                            <div className="">
+                              {checkPaymentIntentArray(item.id)}
+                            </div>
+                            <div>
+                              <span>
+                                Device ordered:&nbsp;{" "}
+                                <p>
+                                  <strong>{device}</strong>
+                                </p>
+                              </span>
+                              <span>
+                                Pending return:&nbsp;{" "}
+                                <strong>
+                                  <Accordion item={item.id} />
+                                </strong>
+                              </span>
+                              <a
+                                style={{
+                                  color: "var(--main-colorsbluetiful)",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                                href={`${item.charges.data[0].receipt_url}`}
+                                target="_blank"
+                              >
+                                View receipt
+                              </a>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                );
+                  );
+                }
+              })}
+            </div>
+            <div className="accordion-body">
+              {" "}
+              {listOfPaymentPerUser?.map((item) => {
+                if (item.status === "suceeded" || item.status === "canceled") {
+                  const device = item.amount / 20000;
+                  return (
+                    <div key={item.id}>
+                      <div className="accordion-detail-title">
+                        <div className="order-list">
+                          <i className="bi bi-circle" />{" "}
+                          <p
+                            onClick={() =>
+                              setOpenAccordionDetail(!openAccordionDetail)
+                            }
+                            className="accordion-header"
+                          >
+                            Order {item.id}{" "}
+                          </p>
+                          {openAccordionDetail !== true ? (
+                            <i className="bi bi-chevron-up" />
+                          ) : (
+                            <i className="bi bi-chevron-down" />
+                          )}
+                        </div>
+                        {openAccordionDetail === true ? (
+                          <div className="accordion-body-detail">
+                            <div className="">
+                              {checkPaymentIntentArray(item.id)}
+                            </div>
+                            <div>
+                              <span>
+                                Device ordered:&nbsp;{" "}
+                                <p>
+                                  <strong>{device}</strong>
+                                </p>
+                              </span>
+                              <span>
+                                Pending return:&nbsp;{" "}
+                                <strong>
+                                  <Accordion item={item.id} />
+                                </strong>
+                              </span>
+                              <a
+                                style={{
+                                  color: "var(--main-colorsbluetiful)",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                                href={`${item.charges.data[0].receipt_url}`}
+                                target="_blank"
+                              >
+                                View receipt
+                              </a>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                }
               })}
             </div>
           </div>
