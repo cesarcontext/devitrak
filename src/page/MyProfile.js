@@ -28,6 +28,7 @@ const initalFormValues = {
 
 export const MyProfile = () => {
   const { paymentIntent } = useStripeHook();
+  console.log("🚀 ~ file: MyProfile.js:31 ~ MyProfile ~ paymentIntent", paymentIntent)
   const { startUpdatingContactInfo } = useContactInfoStore();
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -329,12 +330,11 @@ export const MyProfile = () => {
             </div>
           </div>
           <div>
-            <h5>Your conntact infomartion</h5>
+            <h5>Your information</h5>
           </div>
           {showInfo !== true ? (
             <div>
               <ContactInfoProfile />
-              <hr />
             </div>
           ) : (
             <div className="box-user-edit-info">
@@ -393,9 +393,9 @@ export const MyProfile = () => {
               </>
             </div>
           )}
-          <div className="container-box-user-info-detail-qrcode">
+          {/* <div className="container-box-user-info-detail-qrcode">
             {checkPaymentIntentArray(paymentIntent)}
-          </div>
+          </div> */}
         </div>
         {/* 
         //*section commented while the function to render receivers with status true only */}
