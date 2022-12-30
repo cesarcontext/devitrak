@@ -5,7 +5,6 @@ import { devitrackApiStripe, devitrackApi } from "../apis/devitrackApi";
 import { rightDoneMessage } from "../helper/swalFireMessage";
 import {
   onAddCustomer,
-  onAddNewPaymentIntent,
 } from "../store/slices/stripeSlice";
 import { blockLinks } from "../store/slices/uiSlice";
 
@@ -30,7 +29,7 @@ export const useStripeHook = () => {
       const data = await response.data;
       if (data) {
         dispatch(onAddCustomer(data));
-        dispatch(blockLinks("none"))
+        dispatch(blockLinks("none"));
         client.magicLinks.email.loginOrCreate(email);
         rightDoneMessage(`An email has been sent to ${email}`);
       }
@@ -45,20 +44,13 @@ export const useStripeHook = () => {
         .post("/stripe/create-payment-intent", {
           device: device,
           customerId: stripeId,
-          customerEmail: userEmail
+          customerEmail: userEmail,
         })
         .then((data) => {
-          console.log("🚀 ~ file: useStripeHook.js:40 ~ .then ~ data", data);
           setData(data);
           setClientSecret(data.data.clientSecret);
           setVisibleButton("none");
           setPaymentIntentId(data.data.paymentIntent);
-
-          if (data) {
-            dispatch(onAddNewPaymentIntent(data));
-          } else {
-            //**return state as inital state in redux to avoid duplicate info from last user */
-          }
         });
     } catch (error) {
       console.log(error);
@@ -71,13 +63,11 @@ export const useStripeHook = () => {
     device,
   }) => {
     try {
-      await devitrackApiStripe
-        .post("/stripe-transaction", {
-          paymentIntent: payment_intent,
-          clientSecret,
-          device,
-        })
-        .then((response) => response.data);
+      await devitrackApiStripe.post("/stripe-transaction", {
+        paymentIntent: payment_intent,
+        clientSecret,
+        device,
+      });
     } catch (error) {
       console.log(error);
     }
