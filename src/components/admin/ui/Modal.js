@@ -10,6 +10,8 @@ let registerFormFields = {
   registerEmail: "",
   registerPassword: "",
   registerPassword2: "",
+  registerSecretQuestion: "",
+  registerSecretAnswer: "",
 };
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
@@ -20,10 +22,12 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
     registerEmail,
     registerPassword,
     registerPassword2,
+    registerSecretQuestion,
+    registerSecretAnswer,
     onInputCHange: onRegisterInputChange,
   } = useForm(registerFormFields);
   const [rolePermission, setRolePermission] = useState(null);
-    const [screenSize, setScreenSize] = useState({
+  const [screenSize, setScreenSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
@@ -34,7 +38,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
   function closeModal() {
     setModalState(false);
   }
-    const handleResize = () => {
+  const handleResize = () => {
     setScreenSize({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -43,8 +47,8 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
 
   const customeStyleBaseOnScreenSize = () => {
     let customStyles;
-    if(screenSize.width < 1201){
-      return customStyles = {
+    if (screenSize.width < 1025) {
+      return (customStyles = {
         content: {
           width: "50vw",
           height: "45vh",
@@ -54,27 +58,27 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
-        }
-      };
+        },
+      });
     } else {
-      return customStyles = {
+      return (customStyles = {
         content: {
-          width: "20vw",
-          height: "45vh",
+          width: "25vw",
+          height: "55vh",
           top: "50%",
           left: "50%",
           right: "auto",
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
-        }
-      };
+        },
+      });
     }
-  }
-  customeStyleBaseOnScreenSize()
+  };
+  customeStyleBaseOnScreenSize();
 
   useEffect(() => {
-    handleResize()
+    handleResize();
     if (errorMessage !== undefined) {
       swalErrorMessage(errorMessage);
     }
@@ -91,6 +95,8 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
         name: registerName,
         email: registerEmail,
         password: registerPassword,
+        question: registerSecretQuestion,
+        answer: registerSecretAnswer.toLowerCase().trim(),
         role: rolePermission,
       });
       if (data) closeModal();
@@ -104,11 +110,11 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
         style={customeStyleBaseOnScreenSize()}
         shouldCloseOnOverlayClick={false}
       >
-        <div>
+        <div className="container-modal-form">
           <h2>Create New Admin User</h2>
 
           <form onSubmit={onSubmitRegister}>
-            <div className="form-group mb-2">
+            <div className="form-group mb-2 mt-3">
               <input
                 type="text"
                 className="form-control"
@@ -118,7 +124,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
                 onChange={onRegisterInputChange}
               />
             </div>
-            <div className="form-group mb-2">
+            <div className="form-group mb-2 mt-3">
               <input
                 type="email"
                 className="form-control"
@@ -128,7 +134,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
                 onChange={onRegisterInputChange}
               />
             </div>
-            <div className="form-group mb-2">
+            <div className="form-group mb-2 mt-3">
               <input
                 type="password"
                 className="form-control"
@@ -139,7 +145,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
               />
             </div>
 
-            <div className="form-group mb-2">
+            <div className="form-group mb-2 mt-3">
               <input
                 type="password"
                 className="form-control"
@@ -149,8 +155,53 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
                 onChange={onRegisterInputChange}
               />
             </div>
-            <div className="form-input-registration-admin-user">
+            <div className="form-group mb-2 mt-3">
               <select
+                className="form-control"
+                value={registerSecretQuestion}
+                name="registerSecretQuestion"
+                onChange={onRegisterInputChange}
+              >
+                <option defaultValue>Choose your question</option>
+                <option value="What was the make of your first car?">
+                  What was the make of your first car?
+                </option>
+                <option value="In what city were you born?">
+                  In what city were you born?
+                </option>
+                <option value="What is the name of your favorite pet?">
+                  What is the name of your favorite pet?
+                </option>
+                <option value="What is your mother's maiden name?">
+                  What is your mother's maiden name?
+                </option>
+                <option value="What high school did you attend?">
+                  What high school did you attend?
+                </option>
+                <option value="What was your favorite food as a child?">
+                  What was your favorite food as a child?
+                </option>
+                <option value="Where did you meet your spouse?">
+                  Where did you meet your spouse?
+                </option>
+                <option value="What year was your father (or mother) born?">
+                  What year was your father (or mother) born?
+                </option>
+              </select>
+            </div>
+            <div className="form-group mb-2 mt-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Provide an answer"
+                name="registerSecretAnswer"
+                value={registerSecretAnswer}
+                onChange={onRegisterInputChange}
+              />
+            </div>
+            <div className="form-group mb-2 mt-3 form-input-registration-admin-user">
+              <select
+              style={{border:"solid 1px var(--main-colorszen)"}}
                 name="role"
                 onChange={(event) => setRolePermission(event.target.value)}
               >
@@ -167,8 +218,8 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
                 flexDirection: "row",
                 justifyContent: "space-around",
                 alignItems: "center",
-                width: "80%",
-                marginTop: "2%",
+                width: "20vw",
+                marginTop: "2vh",
               }}
             >
               <button
