@@ -1,82 +1,113 @@
-.container-stock-device {
-  width: 70vw;
-  display: flex;
-  column-gap: 2%;
-  margin: 2% auto;
-  height: 51vh;
-}
-.container-stock-device-list {
-  width: 40vw;
-  border: solid 1px #212529;
-  border-radius: 15px;
-  padding: 20px;
-  min-height: 55vh;
-  background-color: #fff;
-}
-.container-stock-device-details {
-  width: 23vw;
-  border: solid 1px #212529;
-  border-radius: 15px;
-  padding: 20px;
-  min-height: 55vh;
-  background-color: #fff;
-}
-
-.container-device-info-table {
-  height: 300px;
-}
-.container-graphic {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 40%;
-  margin: auto;
-}
-.container-footer-stock {
-  width: 100%;
-  padding: 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-}
-.device-detail-section {
-  padding: 5px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  text-align: left;
-  width: 17vw;
-}
-.detail-history-container {
-  padding: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  text-align: left;
-  width: 11vw;
-}
-.device-user-history-container {
-  width: 17vw;
-  height: 28vh;
-  overflow: auto;
-}
-.table-device-user-history {
-  width: fit-content;
-}
-
-@media only screen and (max-width: 1450px){
-  .container-stock-device {
-    width: 95vw;
+@media only screen and (min-width: 1441px) {
+  .container-graphic {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    width: 64vw;
+    margin-left: 15vw;
+    border: 1px solid var(--black);
+    background-color: var(--main-colorswhite);
+    border-radius: 15px;
+  }
+  .container-graphic p {
+    text-decoration: underline;
+    padding-top: 20px;
+    color: var(--black);
+  }
+  .container-stock-device {
+    width: 70vw;
+    display: flex;
     column-gap: 2%;
-    margin: 2% auto;
+    margin: 2vh auto;
+    height: 55vh;
+  }
+  .container-stock-device-list {
+    width: 40vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 5vh;
+    background-color: #fff;
+  }
+  .container-stock-device-details {
+    width: 23vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 5vh;
+    background-color: #fff;
+  }
+
+  .container-device-info-table {
+    height: 300px;
+  }
+
+  .container-footer-stock {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .device-detail-section {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    width: 17vw;
+    margin-bottom: 2vh;
+  }
+  .detail-history-container {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    width: 11vw;
+  }
+  .device-user-history-container {
+    width: 17vw;
+    height: 28vh;
+    overflow: auto;
+  }
+  .table-device-user-history {
+    width: fit-content;
+  }
+  #icon-delete-searchTerm {
+    display: block;
+    position: absolute;
+    right: 37vw;
+    top: 22%;
+    font-size: var(--font-size-xl2);
+  }
+}
+@media only screen and (min-width: 1025px) and (max-width: 1440px) {
+  .container-graphic {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 64vw;
+    margin-left: 15vw;
+    border: 1px solid var(--black);
+    background-color: var(--main-colorswhite);
+    border-radius: 15px;
+  }
+  .container-graphic p {
+    text-decoration: underline;
+    padding-top: 20px;
+    color: var(--black);
+  }
+  .container-stock-device {
+    width: 70vw;
+    display: flex;
+    column-gap: 2%;
+    margin: 2vh auto;
     height: 60vh;
   }
   .container-stock-device-list {
-    width: 50vw;
+    width: 40vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -84,23 +115,102 @@
     background-color: #fff;
   }
   .container-stock-device-details {
-    width: 31vw;
+    width: 23vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
     min-height: 55vh;
     background-color: #fff;
   }
-  
+
   .container-device-info-table {
     height: 300px;
   }
+
+  .container-footer-stock {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .device-detail-section {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    width: 17vw;
+    margin-bottom: 2vh;
+  }
+  .detail-history-container {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    width: 11vw;
+  }
+  .device-user-history-container {
+    width: 17vw;
+    height: 28vh;
+    overflow: auto;
+  }
+  .table-device-user-history {
+    width: fit-content;
+  }
+  #icon-delete-searchTerm {
+    display: block;
+    position: absolute;
+    right: 36.5vw;
+    top: 22.5%;
+    font-size: var(--font-size-xl2);
+  }
+}
+@media only screen and (max-width: 1024px) {
   .container-graphic {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 40%;
+    width: 86vw;
     margin: auto;
+    border: 1px solid var(--black);
+    background-color: var(--main-colorswhite);
+    border-radius: 15px;
+  }
+  .container-graphic p {
+    text-decoration: underline;
+    padding-top: 20px;
+    color: var(--black);
+  }
+  .container-stock-device {
+    width: 95vw;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 2% auto;
+    height: 70vh;
+  }
+  .container-stock-device-list {
+    width: 50vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 70vh;
+    background-color: #fff;
+  }
+  .container-stock-device-details {
+    width: 31vw;
+    border: solid 1px #212529;
+    border-radius: 15px;
+    padding: 20px;
+    min-height: 70vh;
+    background-color: #fff;
+  }
+
+  .container-device-info-table {
+    height: 300px;
   }
   .container-footer-stock {
     width: 100%;
@@ -116,6 +226,7 @@
     align-items: center;
     text-align: left;
     width: 20vw;
+    margin-bottom: 2vh;
   }
   .detail-history-container {
     padding: 5px;
@@ -132,5 +243,12 @@
   }
   .table-device-user-history {
     width: fit-content;
+  }
+  #icon-delete-searchTerm {
+    display: block;
+    position: absolute;
+    right: 30vw;
+    top: 22%;
+    font-size: var(--font-size-xl2);
   }
 }

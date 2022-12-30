@@ -1,22 +1,24 @@
-@media only screen and (min-width:1451px) {
+@media only screen and (min-width:1025px) {
   .container-setting-detail {
     display: flex;
     column-gap: 2%;
     margin: 2% auto;
     height: 55vh;
-    width: 90ww;
+    width: 90vw;
   }
   .container-company-staff {
-    width: 60vw;
+    width: 40vw;
     border: solid 2px #212529;
     border-radius: 15px;
+    margin-left: 15vw;
     padding: 20px;
     height: 55vh;
     background-color: var(--main-colorswhite);
   }
   .container-company-staff-detail {
-    width: 30vw;
+    width: 20vw;
     border: solid 2px var(--main-colorsfly-by-night);
+    background-color: var(--main-colorswhite);
     border-radius: 15px;
     padding: 20px;
     display: flex;
@@ -62,6 +64,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    height: 15vh;
   }
   .container-admin-user-details-card {
     width: 100%;
@@ -75,11 +78,13 @@
     align-items: center;
   }
   .container-admin-user-details-card label {
+    font-size: var(--font-size-l2);
     text-align: left;
     color: var(--main-colorsexcalibur);
     display: inline;
   }
   .container-admin-user-details-card span {
+    font-size: var(--font-size-m2);
     text-align: left;
     color: var(--black);
     display: inline;
@@ -109,12 +114,12 @@
   }
 }
 
-@media only screen and (min-width:769px) and (max-width: 1450px) {
+@media only screen and (min-width:769px) and (max-width:1024px) {
   .container-setting-detail {
     display: flex;
     column-gap: 2%;
     margin: 2% auto;
-    height: 55vh;
+    height: 80vh;
     width: 90vw;
   }
   .container-company-staff {
@@ -122,7 +127,7 @@
     border: solid 2px #212529;
     border-radius: 15px;
     padding: 20px;
-    height: 55vh;
+    height: 80vh;
     background-color: var(--main-colorswhite);
   }
   .container-company-staff-detail {
@@ -133,7 +138,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 55vh;
+    height: 80vh;
     background-color: var(--main-colorswhite);
 }
   .container-section-pagination-button {

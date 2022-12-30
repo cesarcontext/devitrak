@@ -1,4 +1,4 @@
-@media only screen and (min-width: 1440px) {
+@media only screen and (min-width: 1025px) {
   .container-attendees {
     width: 98vw;
     display: flex;
@@ -7,15 +7,16 @@
     height: 50vh;
   }
   .container-attendees-info {
-    width: 50vw;
+    width: 36vw;
     height: 70vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
     background-color: #ffff;
+    margin-left: 10vw;
   }
   .container-attendees-info-detail {
-    width: 40vw;
+    width: 29vw;
     height: 70vh;
     border: solid 1px #212529;
     border-radius: 15px;
@@ -25,6 +26,15 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+  }
+  .container-stripe-transaction-per-user{
+    background: var(--main-colorswhite);
+    width: 97vw;
+    margin: 1% auto;
+    margin-top: 2%;
+    border: solid 2px var(--black);
+    border-radius: 15px;
+    padding: 15px;
   }
 
   .container-attendees-info-table {
@@ -45,7 +55,7 @@
     text-align: left;
   }
 }
-@media only screen and (max-width: 1439px) {
+@media only screen and (min-width:769px) and (max-width:1024px) {
   .container-attendees {
     width: 98vw;
     display: flex;
@@ -57,7 +67,7 @@
   }
   .container-attendees-info {
     width: 70vw;
-    height: 70vh;
+    height: 80vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -65,7 +75,7 @@
   }
   .container-attendees-info-detail {
     width: 70vw;
-    height: 50vh;
+    height: 80vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -74,6 +84,15 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+  }
+  .container-stripe-transaction-per-user{
+    background: var(--main-colorswhite);
+    width: 97vw;
+    margin: 1% auto;
+    margin-top: 2%;
+    border: solid 2px var(--black);
+    border-radius: 15px;
+    padding: 15px;
   }
 
   .container-attendees-info-table {

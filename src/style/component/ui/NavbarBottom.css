@@ -18,6 +18,11 @@
   flex-direction: column;
   color: #ffff;
 }
+.active-tab-navbar{
+  transform: rotateY(360deg);
+  color: #00306A;
+}
+
 @media only screen and (min-width:481px){
   .navbar-fixed {
     display: flex;
@@ -64,6 +69,10 @@
     align-items: center;
     width: 100%;
     padding-right: 39px;
+  }
+  .active-tab-navbar{
+    transform: rotateY(360deg);
+    color: #00306A;
   }
 }
 
@@ -113,6 +122,10 @@
     width: 100%;
     padding-right: 39px;
   }
+  .active-tab-navbar{
+    transform: rotateY(360deg);
+  color: #00306A;
+}
 }
 @media only screen and (max-width: 319px){
   .navbar-fixed {
@@ -136,10 +149,6 @@
     flex-direction: column;
     color: #ffff;
   }
-  .icon-span:first-child(){
-    color: var(---bunting);
-
-  }
   .icon-span i{
     font-size: 30px;
   }
@@ -161,5 +170,9 @@
     align-items: center;
     width: 100%;
     padding-right: 39px;
+  }
+  .active-tab-navbar{
+    transform: rotateY(360deg);
+    color: #00306A;
   }
 }
