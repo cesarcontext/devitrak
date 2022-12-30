@@ -7,7 +7,7 @@ import { ArticleContentCreation } from "../components/admin/Articles/ArticleCont
 import { Articles } from "../page/admin/Articles";
 import { Attendees } from "../page/admin/Attendees";
 import { DeviceDatabase } from "../page/admin/DeviceDatabase";
-import { LoginPage } from "../page/admin/LoginAdmin";
+import { LoginRegisterAdmin } from "../page/admin/LoginAdmin";
 import { Profile } from "../page/admin/Profile";
 import { ReceiversDetailsAssignation } from "../components/admin/Attendees/ReceiversDetailsAssignation";
 import { Settings } from "../page/admin/Settings";
@@ -43,7 +43,7 @@ export const AdminRoutes = () => {
           </>
         ) : (
           <>
-            <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="/admin/login" element={<LoginRegisterAdmin />} />
             <Route
               path="/admin/*"
               element={<Navigate to="/admin/login" replace />}
