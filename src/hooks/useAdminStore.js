@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import {
   devitrackApiAdmin,
   devitrackApiPayment,
@@ -56,7 +55,7 @@ export const useAdminStore = () => {
     }
   };
 
-  const startRegister = async ({ name, email, password }) => {
+  const startRegister = async ({ name, email, password, question, answer }) => {
     dispatch(onChecking());
     const role = "Editor";
     try {
@@ -64,6 +63,8 @@ export const useAdminStore = () => {
         name,
         email,
         password,
+        question,
+        answer,
         role,
       });
       setTokenAdmin(data.token);
