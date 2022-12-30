@@ -1,22 +1,10 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { useForm } from "../../../hooks/useForm";
-
-const customStyles = {
-  content: {
-    width: "20vw",
-    height: "40vh",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
+import "../../../style/component/admin/ui/CreateUserModal.css";
 
 const initalFormValues = {
   groupName: "",
@@ -30,6 +18,10 @@ const initalFormValues = {
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
+  const [screenSize, setScreenSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const { errorMessage } = useAdminStore();
   const {
     groupName,
@@ -48,11 +40,50 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
   function closeModal() {
     setCreateUserButton(false);
   }
+  const handleResize = () => {
+    setScreenSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+
+  const customeStyleBaseOnScreenSize = () => {
+    let customStyles;
+    if(screenSize.width < 1201){
+      return customStyles = {
+        content: {
+          width: "50vw",
+          height: "45vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        }
+      };
+    } else {
+      return customStyles = {
+        content: {
+          width: "20vw",
+          height: "45vh",
+          top: "50%",
+          left: "50%",
+          right: "auto",
+          bottom: "auto",
+          marginRight: "-50%",
+          transform: "translate(-50%, -50%)",
+        }
+      };
+    }
+  }
+  customeStyleBaseOnScreenSize()
 
   useEffect(() => {
     if (errorMessage !== undefined) {
       Swal.fire("Incorrect credentials", errorMessage, "error");
     }
+    handleResize();
   }, [errorMessage]);
 
   const validationName = useMemo(() => {
@@ -138,7 +169,7 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
       <Modal
         isOpen={createUserButton}
         onRequestClose={closeModal}
-        style={customStyles}
+        style={customeStyleBaseOnScreenSize()}
         shouldCloseOnOverlayClick={false}
       >
         <div
