@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useDispatch } from "react-redux";
-import Swal from "sweetalert2";
-import { devitrackApiAdmin } from "../../../apis/devitrackApi";
+import { useNavigate } from "react-router-dom";
+import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
+import {
+  rightDoneMessage,
+  swalErrorMessage,
+} from "../../../helper/swalFireMessage";
 import { useForm } from "../../../hooks/useForm";
 import { onLogin } from "../../../store/slices/adminSlice";
 const customStyles = {
   content: {
-    width: "25%",
-    height: "30%",
+    width: "25vw",
+    height: "50vh",
     top: "50%",
     left: "50%",
     right: "auto",
@@ -22,6 +26,7 @@ const customStyles = {
 
 const adminUserObj = {
   email: "",
+  answer: "",
   password1: "",
   password2: "",
 };
@@ -29,35 +34,67 @@ export const ModalUpdatePassword = ({
   updatePasswordModalState,
   setUpdatePasswordModalState,
 }) => {
-  const { email, password1, password2, onInputCHange } = useForm(adminUserObj);
-    const dispatch = useDispatch()
-
+  const { email, answer, password1, password2, onInputCHange } =
+    useForm(adminUserObj);
+  const dispatch = useDispatch();
+  const [dataToDisplay, setDataToDisplay] = useState([]);
+  const navigator = useNavigate()
   if (updatePasswordModalState !== false) {
     Modal.setAppElement("#root");
   }
   function closeModal() {
-    setUpdatePasswordModalState(false);
+    setUpdatePasswordModalState(true);
   }
-
-  const onSubmit = async () => {
-    if (password1 !== password2) {
-      Swal.fire("error", "password must match", "error");
-    }
-
-    const response = await devitrackApiAdmin.put("/update-password", {
-      email,
-      password: password1,
-    });
+  const callApiToCheckExistAdminUser = async () => {
+    const response = await devitrackApi.get("/staff/admin-users");
     if (response) {
-      localStorage.setItem("admin-token", response.data.token);
-      dispatch(
-        onLogin({
-          name: response.data.name,
-          uid: response.data.uid,
-          email: response.data.email,
-          role: response.data.role,
-        })
-      );
+      console.log(response);
+      setDataToDisplay(response.data.adminUsers);
+    }
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    callApiToCheckExistAdminUser();
+
+    return () => {
+      controller.abort();
+    };
+  }, [updatePasswordModalState]);
+
+  const checkAnswer = () => {
+    let result = true;
+    for (let data of dataToDisplay) {
+      if (email === data.email) {
+        if (answer.toLowerCase().trim() !== data.answer) {
+          return (result = false);
+        }
+      }
+    }
+    return result;
+  };
+  const onSubmit = async () => {
+    try {
+      const response = await devitrackApiAdmin.put("/update-password", {
+        email,
+        password: password1,
+        answer: answer,
+      });
+      if (response) {
+        localStorage.setItem("admin-token", response.data.token);
+        dispatch(
+          onLogin({
+            name: response.data.name,
+            uid: response.data.uid,
+            email: response.data.email,
+            role: response.data.role,
+          })
+        );
+        rightDoneMessage("Password updated");
+        navigator("/admin")
+      }
+    } catch (error) {
+      setUpdatePasswordModalState(false);
+      swalErrorMessage(error.response.data.msg);
     }
   };
   return (
@@ -68,7 +105,7 @@ export const ModalUpdatePassword = ({
         style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
-        <div style={{textAlign:"center"}}>
+        <div style={{ textAlign: "center" }}>
           <h2>Update password</h2>
           <form
             style={{
@@ -79,9 +116,13 @@ export const ModalUpdatePassword = ({
             }}
             onSubmit={onSubmit}
           >
-            <div className="form-group mb-2">
+            <div className="mb-2">
               <input
-                style={{ width: "100%" }}
+                style={{
+                  width: "15vw",
+                  border: "solid 1px var(--main-colorsaluminium)",
+                  paddingLeft: "1vw",
+                }}
                 placeholder="Email address"
                 type="text"
                 name="email"
@@ -89,26 +130,104 @@ export const ModalUpdatePassword = ({
                 onChange={onInputCHange}
               />
             </div>
-            <div className="form-group mb-2">
-              <input
-                style={{ width: "100%" }}
-                placeholder="Password"
-                type="password"
-                name="password1"
-                value={password1}
-                onChange={onInputCHange}
-              />
-            </div>
-            <div className="">
-              <input
-                style={{ width: "100%" }}
-                placeholder="Repite password"
-                type="password"
-                name="password2"
-                value={password2}
-                onChange={onInputCHange}
-              />
-            </div>
+            {dataToDisplay?.map((data) => {
+              if (email === data.email) {
+                return (
+                  <>
+                    <div className="mb-2 form-control">
+                      <p>Question:</p>
+                      <h5
+                        style={{
+                          width: "15vw",
+                          outline: "none",
+                          paddingLeft: "1vw",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        {data.question}
+                      </h5>
+                    </div>
+                    <div
+                      className={`mb-2 form-control ${
+                        checkAnswer() === false ? "is-invalid" : ""
+                      }`}
+                    >
+                      <input
+                        style={{
+                          width: "100%",
+                          borderTop: "none",
+                          borderRight: "none",
+                          borderBottom: "solid 1px var(--main-colorsaluminium)",
+                          borderLeft: "none",
+                          outline: "none",
+                          paddingLeft: "1vw",
+                        }}
+                        placeholder="Your secret answer"
+                        type="text"
+                        name="answer"
+                        value={answer}
+                        onChange={onInputCHange}
+                      />
+                      {answer !== "" && checkAnswer() === false ? (
+                        <span>Answer does not match</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <div
+                      className={`mb-2 form-control ${
+                        password1 !== password2 ? "is-invalid" : ""
+                      }`}
+                    >
+                      <input
+                        style={{
+                          width: "100%",
+                          borderTop: "none",
+                          borderRight: "none",
+                          borderBottom: "solid 1px var(--main-colorsaluminium)",
+                          borderLeft: "none",
+                          outline: "none",
+                          paddingLeft: "1vw",
+                        }}
+                        placeholder="Password"
+                        type="password"
+                        name="password1"
+                        value={password1}
+                        onChange={onInputCHange}
+                      />
+                    </div>
+                    <div
+                      className={`mb-2 form-control ${
+                        password1 !== password2 ? "is-invalid" : ""
+                      }`}
+                    >
+                      <input
+                        style={{
+                          width: "100%",
+                          borderTop: "none",
+                          borderRight: "none",
+                          borderBottom: "solid 1px var(--main-colorsaluminium)",
+                          borderLeft: "none",
+                          outline: "none",
+                          paddingLeft: "1vw",
+                        }}
+                        placeholder="Repite password"
+                        type="password"
+                        name="password2"
+                        value={password2}
+                        onChange={onInputCHange}
+                      />
+                      {password1 !== password2 ? (
+                        <span>Passwords does not match</span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </>
+                );
+              }
+            })}
+
             <div
               style={{
                 display: "flex",
@@ -120,10 +239,28 @@ export const ModalUpdatePassword = ({
                 marginBottom: "0%",
               }}
             >
-              <button className="btn btn-delete" style={{ width: "45%" }} onClick={closeModal}>
+              <button
+                className="btn btn-delete"
+                style={{ width: "45%" }}
+                onClick={closeModal}
+              >
                 Cancel
               </button>
-              <button className="btn btn-create" style={{ width: "45%" }} type="submit">
+
+              <button
+                disabled={
+                  checkAnswer() === false ||
+                  password1 !== password2 ||
+                  email === "" ||
+                  password1 === "" ||
+                  password2 === ""
+                    ? true
+                    : false
+                }
+                className="btn btn-create"
+                style={{ width: "45%" }}
+                type="submit"
+              >
                 Submit
               </button>
             </div>
