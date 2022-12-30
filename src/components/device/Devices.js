@@ -7,20 +7,18 @@ export const Devices = () => {
     useDeviceCount();
 
   return (
-    <div className="col-md-11 m-4 mb-0">
-      <div className="device-selection">
-        <p>HOW MANY RECEIVERS DO YOU NEED?</p>
-        <div className="button-selection">
-          <button id="button-less" onClick={handleDecreaseDevice}>
-            -
-          </button>
-          <div className="device-selection-display">
-            <p id="number-device-displayed">{device}</p>
-          </div>
-          <button id="button-plus" onClick={handleIncreaseDevice}>
-            +
-          </button>
+    <div className="device-selection">
+      <p>HOW MANY RECEIVERS DO YOU NEED?</p>
+      <div className="button-selection">
+        <button id="button-less" onClick={handleDecreaseDevice}>
+          -
+        </button>
+        <div className="device-selection-display">
+          <p id="number-device-displayed">{device}</p>
         </div>
+        <button id="button-plus" onClick={handleIncreaseDevice}>
+          +
+        </button>
       </div>
     </div>
   );
