@@ -27,7 +27,6 @@ export const Accordion = (item) => {
   const accumArray = new Map();
   const checkStatusOfEachReceiver = async () => {
     for (let i = 0; i < receiversAssignedPerTransaction.length; i++) {
-      console.log(receiversAssignedPerTransaction[i].device);
       receiversAssignedPerTransaction[i].device.map((item) => {
         if (item.status === true) {
           return accumArray.set(item);
