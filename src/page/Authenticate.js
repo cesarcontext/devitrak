@@ -10,21 +10,43 @@ export const Authenticate = () => {
   const session = useStytchSession();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isMobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
   useEffect(() => {
-    if (session) {
-      navigate("/checkout");
-      dispatch(blockLinks("auto"));
+    if (isMobile) {
+      if (session) {
+        navigate("/checkout");
+        dispatch(blockLinks("auto"));
+      } else {
+        const token = new URLSearchParams(window.location.search).get("token");
+        client.magicLinks
+          .authenticate(token, {
+            session_duration_minutes: 15,
+          })
+          .then(() => {
+            rightDoneMessage(`Successfully authenticated`);
+            navigate(0); //navigate to 0 to refrese page
+            dispatch(blockLinks("auto"));
+          });
+      }
     } else {
-      const token = new URLSearchParams(window.location.search).get("token");
-      client.magicLinks
-        .authenticate(token, {
-          session_duration_minutes: 15,
-        })
-        .then(() => {
-          rightDoneMessage(`Successfully authenticated`);
-          navigate(0); //navigate to 0 to refrese page
-          dispatch(blockLinks("auto"));
-        });
+      if (session) {
+        navigate("/checkout");
+        dispatch(blockLinks("auto"));
+      } else {
+        const token = new URLSearchParams(window.location.search).get("token");
+        client.magicLinks
+          .authenticate(token, {
+            session_duration_minutes: 15,
+          })
+          .then(() => {
+            rightDoneMessage(`Successfully authenticated`);
+            navigate(0); //navigate to 0 to refrese page
+            dispatch(blockLinks("auto"));
+          });
+      }
     }
   }, [client, session]);
 
