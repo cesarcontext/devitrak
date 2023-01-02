@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
@@ -21,7 +21,18 @@ export const ModalReplaceReceiver = ({
   const [serialNumber, setSerialNumber] = useState("");
   const [reason, setReason] = useState("");
   const [otherComment, setOtherComment] = useState("");
-
+  const [customStyles, setCustomStyles] = useState({
+    content: {
+      width: "",
+      height: "",
+      top: "",
+      left: "",
+      right: "",
+      bottom: "",
+      marginRight: "",
+      transform: "",
+    },
+  });
   const [screenSize, setScreenSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -48,9 +59,8 @@ export const ModalReplaceReceiver = ({
   };
 
   const customeStyleBaseOnScreenSize = () => {
-    let customStyles;
     if (screenSize.width < 1301) {
-      return (customStyles = {
+      return setCustomStyles({
         content: {
           width: "50vw",
           height: "25vh",
@@ -63,7 +73,7 @@ export const ModalReplaceReceiver = ({
         },
       });
     } else {
-      return (customStyles = {
+      return setCustomStyles({
         content: {
           width: "30%",
           height: "25vh",
@@ -77,11 +87,11 @@ export const ModalReplaceReceiver = ({
       });
     }
   };
-  customeStyleBaseOnScreenSize();
+
   useEffect(() => {
     const controller = new AbortController();
     buttonBehaviorChange();
-
+    customeStyleBaseOnScreenSize();
     return () => {
       controller.abort();
     };
@@ -164,10 +174,10 @@ export const ModalReplaceReceiver = ({
     event.preventDefault();
     await returnExistentReceiverInPool();
     await returnExistentReceiverInTransaction();
-    setSerialNumber("")
-    setReason("")
-    setOtherComment("")
-    setDisplayed(true)
+    setSerialNumber("");
+    setReason("");
+    setOtherComment("");
+    setDisplayed(true);
   };
 
   return (
@@ -175,7 +185,7 @@ export const ModalReplaceReceiver = ({
       <Modal
         isOpen={replaceStatus}
         onRequestClose={closeModal}
-        style={customeStyleBaseOnScreenSize()}
+        style={customeStyles}
         shouldCloseOnOverlayClick={false}
       >
         <div>
