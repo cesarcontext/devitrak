@@ -69,16 +69,16 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             </thead>
             {searchTerm.length < 2
               ? currentItemsRendered?.map((user, index) => {
-                let background;
-                if( index === 0){
-                  background = "#ffff"
-                }
-                if(index % 2 === 0){
-                  background = "#F1F6F9"
-                } 
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
                   return (
                     <tbody key={user.id}>
-                      <tr style={{background:`${background}`}}>
+                      <tr style={{ background: `${background}` }}>
                         <td>{user.name}</td>
                         <td>{user.role}</td>
                         <td>{user.email}</td>
@@ -197,18 +197,18 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                         {permissionStatus === true ? (
                           <div className="buttons-edit-permission">
                             <button
+                              className="btn btn-delete"
+                              onClick={handleEditAdminPermission}
+                            >
+                              Cancel
+                            </button>
+                            <button
                               className="btn btn-create"
                               onClick={() =>
                                 updatePermission(permissionUpdated)
                               }
                             >
                               Save
-                            </button>
-                            <button
-                              className="btn btn-delete"
-                              onClick={handleEditAdminPermission}
-                            >
-                              Cancel
                             </button>
                           </div>
                         ) : null}
@@ -217,10 +217,14 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                   </div>
                   <div className="container-admin-user-details-card">
                     <h5>CONTACT INFO</h5>
-                    <div>
-                      <label>Phone: </label> <span>{user.phoneNumber}</span>
+                    <div style={{ textAlign: "left" }}>
+                      <label>Phone: </label>{" "}
+                      <span>
+                        &nbsp;
+                        {!user.phoneNumber ? "XXX-XXX-XXXX" : user.phoneNumber}
+                      </span>
                       <br />
-                      <label>Email :</label> <span>{user.email}</span>
+                      <label>Email :</label> <span>&nbsp;{user.email}</span>
                     </div>
                   </div>
                 </div>
