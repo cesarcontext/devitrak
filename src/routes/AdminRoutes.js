@@ -11,11 +11,11 @@ import { LoginRegisterAdmin } from "../page/admin/LoginAdmin";
 import { Profile } from "../page/admin/Profile";
 import { ReceiversDetailsAssignation } from "../components/admin/Attendees/ReceiversDetailsAssignation";
 import { Settings } from "../page/admin/Settings";
+import { TriggerNotification } from "../components/admin/Notification/TriggerNotification";
 
 export const AdminRoutes = () => {
   const { status } = useSelector((state) => state.admin);
   const adminToken = localStorage.getItem("admin-token");
-
   return (
     <div>
 
@@ -51,6 +51,11 @@ export const AdminRoutes = () => {
           </>
         )}
       </Routes>
+      {window.location.pathname === "/admin/settings" ||
+        window.location.pathname === "/admin/attendees" ||
+        (window.location.pathname === "/admin/device-database" && (
+          <TriggerNotification />
+        ))}
     </div>
   );
 };
