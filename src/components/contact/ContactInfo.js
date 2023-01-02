@@ -33,8 +33,8 @@ export const ContactInfo = () => {
   };
   useEffect(() => {
     startCheckingUser(formValues.email);
-  }, [formValues.email]); // eslint-disable-next-line react-hooks/exhaustive-deps
-
+  }, [formValues.email]);
+  
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
   }, [formValues.name]);
