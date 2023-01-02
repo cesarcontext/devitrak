@@ -1,5 +1,5 @@
 import { useInterval } from "interval-hooks";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ export const QRCodeConfirmation = () => {
   const [stripeTransactions, setStripeTransactions] = useState([]);
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
   );
@@ -31,22 +31,20 @@ export const QRCodeConfirmation = () => {
       .then((data) => setStripeTransactions(data.stripeTransactions));
   };
 
-  const callApiPaymenTIntent = useCallback(async () => {
-    const response = await devitrackApiStripe.get("/payment-intents");
-    if (response) {
-      for (let data of response.data.paymentIntents.data) {
-        if (data.id === payment_intent) {
-          dispatch(onAddNewPaymentIntent(data));
-        }
-      }
-    }
-  }, []);
-
   useEffect(() => {
     saveStripeTransaction({ payment_intent, clientSecret, device });
+    const callApiPaymenTIntent = async () => {
+      const response = await devitrackApiStripe.get("/payment-intents");
+      if (response) {
+        for (let data of response.data.paymentIntents.data) {
+          if (data.id === payment_intent) {
+            dispatch(onAddNewPaymentIntent(data));
+          }
+        }
+      }
+    };
     callApiPaymenTIntent();
   }, [payment_intent]);
-
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
@@ -64,7 +62,7 @@ export const QRCodeConfirmation = () => {
         duplicates[stripeTransactions[i].paymentIntent] =
           stripeTransactions[i].paymentIntent;
       } else {
-        const response = await devitrackApiStripe.delete(
+        await devitrackApiStripe.delete(
           `/remove-duplicate/${stripeTransactions[i].id}`
         );
       }
