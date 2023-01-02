@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 
-export function AppDownloadModal({ modalDisplay }) {
-  const [showModal, setShowModal] = useState(modalDisplay);
+export function AppDownloadModal() {
+  const [showModal, setShowModal] = useState(false);
   const userAgent = navigator.userAgent;
 
   const handleClose = () => setShowModal(false);
