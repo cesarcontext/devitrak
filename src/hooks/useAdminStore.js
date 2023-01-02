@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   devitrackApiAdmin,
-  devitrackApiPayment,
   devitrackApi,
   devitrackApiArticle,
 } from "../apis/devitrackApi";
@@ -136,14 +135,6 @@ export const useAdminStore = () => {
     navigate("/admin/login");
   };
 
-  const startRenderAllPaymentIntents = () => {
-    try {
-      if (tokenAdmin) {
-        const { data } = devitrackApiPayment.get("/payment_intents");
-      }
-    } catch (error) {}
-  };
-
   const checkReceiversAssignedToPaymentIntent = async (
     paymentIntentToCheck
   ) => {
@@ -204,7 +195,6 @@ export const useAdminStore = () => {
     startRegister,
     startEditAdminUser,
     editAdminPermission,
-    startRenderAllPaymentIntents,
     checkReceiversAssignedToPaymentIntent,
     articleSetup,
   };
