@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ReactPlayer from "react-player";
+
 import { NavbarBottom } from "../../components/ui/NavbarBottom";
 import { Navbar } from "../../components/ui/Navbar";
 
