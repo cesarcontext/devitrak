@@ -17,7 +17,7 @@ export const EventScheduled = () => {
         </div>
         <div className="container-schedule-event-img">
           <img
-            src={require("../image/event-scheduled-img.jpg")}
+            src={require("../image/buildingDistribution.PNG")}
             alt="event-scheduled"
           />
         </div>
