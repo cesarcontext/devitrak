@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useSelector } from "react-redux";
-import { devitrackApiStripe } from "../../apis/devitrackApi";
+import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
 
@@ -10,6 +10,7 @@ export const AccordionListPaymentIntent = () => {
   const [openAccordion, setOpenAccordion] = useState(true);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
   const [receiverData, setReceiverData] = useState([]);
+  const [receiverSavedData, setReceiverSavedData] = useState([]);
   let listOfPaymentPerUser = [];
   const callStripePaymentIntentApi = async () => {
     const response = await devitrackApiStripe.get("/payment-intents");
@@ -17,12 +18,22 @@ export const AccordionListPaymentIntent = () => {
       setReceiverData(response.data.paymentIntents.data);
     }
   };
+  const callSavedStripePaymentIntentApi = async () => {
+    const response = await devitrackApi.get("/admin/users");
+    if (response) {
+      setReceiverSavedData(response.data.stripeTransactions);
+    }
+  };
   useEffect(() => {
     callStripePaymentIntentApi();
+    callSavedStripePaymentIntentApi();
   }, [users.id, openAccordion, openAccordionDetail]);
 
   for (let i = 0; i < receiverData.length; i++) {
-    if (users.email === receiverData[i].receipt_email) {
+    if (
+      users.email === receiverData[i].receipt_email &&
+      receiverData[i].status !== "requires_payment_method"
+    ) {
       listOfPaymentPerUser.push(receiverData[i]);
     }
   }
@@ -83,63 +94,61 @@ export const AccordionListPaymentIntent = () => {
             <div className="accordion-body">
               {" "}
               {listOfPaymentPerUser?.map((item) => {
-                if (item.status !== "requires_payment_method") {
-                  const device = item.amount / 20000;
-                  return (
-                    <div key={item.id}>
-                      <div className="accordion-detail-title">
-                        <div className="order-list">
-                          <i className="bi bi-circle" />{" "}
-                          <p
-                            onClick={() =>
-                              setOpenAccordionDetail(!openAccordionDetail)
-                            }
-                            className="accordion-header"
-                          >
-                            Order {item.id}{" "}
-                          </p>
-                          {openAccordionDetail !== true ? (
-                            <i className="bi bi-chevron-up" />
-                          ) : (
-                            <i className="bi bi-chevron-down" />
-                          )}
-                        </div>
-                        {openAccordionDetail === true ? (
-                          <div className="accordion-body-detail">
-                            <div className="">
-                              {checkPaymentIntentArray(item.id)}
-                            </div>
-                            <div>
-                              <span>
-                                Device ordered:&nbsp;{" "}
-                                <p>
-                                  <strong>{device}</strong>
-                                </p>
-                              </span>
-                              <span>
-                                Pending return:&nbsp;{" "}
-                                <strong>
-                                  <Accordion item={item.id} />
-                                </strong>
-                              </span>
-                              <a
-                                style={{
-                                  color: "var(--main-colorsbluetiful)",
-                                  cursor: "pointer",
-                                  textDecoration: "underline",
-                                }}
-                                href={`${item.charges.data[0].receipt_url}`}
-                                target="_blank"
-                              >
-                                View receipt
-                              </a>
-                            </div>
-                          </div>
-                        ) : null}
+                const device = item.amount / 20000;
+                return (
+                  <div key={item.id}>
+                    <div className="accordion-detail-title">
+                      <div className="order-list">
+                        <i className="bi bi-circle" />{" "}
+                        <p
+                          onClick={() =>
+                            setOpenAccordionDetail(!openAccordionDetail)
+                          }
+                          className="accordion-header"
+                        >
+                          Order {item.id}{" "}
+                        </p>
+                        {openAccordionDetail !== true ? (
+                          <i className="bi bi-chevron-up" />
+                        ) : (
+                          <i className="bi bi-chevron-down" />
+                        )}
                       </div>
+                      {openAccordionDetail === true ? (
+                        <div className="accordion-body-detail">
+                          <div className="">
+                            {checkPaymentIntentArray(item.id)}
+                          </div>
+                          <div>
+                            <span>
+                              Device ordered:&nbsp;{" "}
+                              <p>
+                                <strong>{device}</strong>
+                              </p>
+                            </span>
+                            <span>
+                              Pending return:&nbsp;{" "}
+                              <strong>
+                                <Accordion item={item.id} />
+                              </strong>
+                            </span>
+                            <a
+                              style={{
+                                color: "var(--main-colorsbluetiful)",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                              href={`${item.charges.data[0].receipt_url}`}
+                              target="_blank" rel="noreferrer"
+                            >
+                              View receipt
+                            </a>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
-                  );
-                }
+                  </div>
+                );
               })}
             </div>
             <div className="accordion-body">
@@ -191,10 +200,66 @@ export const AccordionListPaymentIntent = () => {
                                   textDecoration: "underline",
                                 }}
                                 href={`${item.charges.data[0].receipt_url}`}
-                                target="_blank"
+                                target="_blank" rel="noreferrer"
                               >
                                 View receipt
                               </a>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                }
+              })}
+              {receiverSavedData?.map((item) => {
+                if (item.paymentIntent.length < 16) {
+                  return (
+                    <div key={item.id}>
+                      <div className="accordion-detail-title">
+                        <div className="order-list">
+                          <i className="bi bi-circle" />{" "}
+                          <p
+                            onClick={() =>
+                              setOpenAccordionDetail(!openAccordionDetail)
+                            }
+                            className="accordion-header"
+                          >
+                            Order {item.paymentIntent}{" "}
+                          </p>
+                          {openAccordionDetail !== true ? (
+                            <i className="bi bi-chevron-up" />
+                          ) : (
+                            <i className="bi bi-chevron-down" />
+                          )}
+                        </div>
+                        {openAccordionDetail === true ? (
+                          <div className="accordion-body-detail">
+                            <div className="">
+                              {checkPaymentIntentArray(item.paymentIntent)}
+                            </div>
+                            <div>
+                              <span>
+                                Device ordered:&nbsp;{" "}
+                                <p>
+                                  <strong>{item.device}</strong>
+                                </p>
+                              </span>
+                              <span>
+                                Pending return:&nbsp;{" "}
+                                <strong>
+                                  <Accordion item={item.paymentIntent} />
+                                </strong>
+                              </span>
+                              <span
+                                style={{
+                                  color: "var(--main-colorsbluetiful)",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                No deposit required
+                              </span>
                             </div>
                           </div>
                         ) : null}
