@@ -70,7 +70,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
 
   const onSubmitRegister = async (event) => {
     event.preventDefault();
-    const id = nanoid(24);
+    const id = nanoid(12);
     const max = 918273645;
     try {
       const { data } = await devitrackApi.post(
