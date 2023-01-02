@@ -185,7 +185,7 @@ export const ModalReplaceReceiver = ({
       <Modal
         isOpen={replaceStatus}
         onRequestClose={closeModal}
-        style={customeStyles}
+        style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
         <div>
