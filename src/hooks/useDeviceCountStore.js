@@ -27,7 +27,7 @@ export const useDeviceCount = () => {
 
   const savedReceiversPool = async (deviceInfo) => {
     try {
-      const response = await devitrackApi.post("/receiver/receivers-pool", {
+      await devitrackApi.post("/receiver/receivers-pool", {
         deviceInfo
       })
     } catch (error) {
