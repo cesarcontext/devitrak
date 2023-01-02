@@ -74,55 +74,51 @@ input::-webkit-inner-spin-button {
   color: var(--bs-body-bg);
   background-color: var(--bs-primary);
   transition: none;
+  font-family: "Open-sans", sans-serif;
 }
 .btn-create {
   color: var(--bs-body-bg);
   background-color: var(--main-colorsbluetiful);
   transition: none;
+  font-family: "Open-sans", sans-serif;
 }
 .btn-detail {
   color: var(--bs-primary);
   background-color: var(--bs-body-bg);
   transition: none;
+  font-family: "Open-sans", sans-serif;
 }
 .btn-delete {
   color: var(--bs-body-bg);
   background-color: var(--main-colorslobster);
   transition: none;
+  font-family: "Open-sans", sans-serif;
 }
 @media only screen and (min-width: 481px) and (max-width: 1439px) {
-  /* .general-container{
-    height:100vh
-  } */
-  /* input {
-    width: 50vw;
-    height: 4vh;
-    border-radius: 0px;
-    margin: 2px auto;
-    padding-left: 15px;
-  }
-  input::placeholder {
-    color: var(--main-colorsfading-horizon);
-  } */
+ 
   .btn {
     color: var(--bs-body-bg);
     background-color: var(--bs-primary);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-create {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-delete {
     color: var(--bs-body-bg);
     background-color: var(--main-colorslobster);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-detail {
-    color: var(--bs-body-bg);
-    background-color: var(--main-colorslobster);
+    color: var(--bs-primary);
+    background-color: var(--bs-body-bg);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
 }
 @media only screen and (max-width: 480px) {
@@ -140,20 +136,24 @@ input::-webkit-inner-spin-button {
     color: var(--bs-body-bg);
     background-color: var(--bs-primary);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-create {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-delete {
     color: var(--bs-body-bg);
     background-color: var(--main-colorslobster);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
   .btn-detail {
     color: var(--bs-body-bg);
-    background-color: var(--main-colorslobster);
+    background-color: var(--bs-body-bg);
     transition: none;
+    font-family: "Open-sans", sans-serif;
   }
 }
