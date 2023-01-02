@@ -5,7 +5,6 @@ import { useContactInfoStore } from "../hooks/useContactInfoStore";
 export const TotalOrder = () => {
   const { users } = useContactInfoStore();
   const [receiverData, setReceiverData] = useState([]);
-  const [triggerState, setTriggerState] = useState(true)
   const callStripePaymentIntentApi = async () => {
     const response = await devitrackApiStripe.get("/payment-intents");
     if (response) {
@@ -21,7 +20,7 @@ export const TotalOrder = () => {
     return () => {
       controller.abort();
     };
-  }, [triggerState]);
+  }, []);
 
   for (let i = 0; i < receiverData.length; i++) {
     if (
