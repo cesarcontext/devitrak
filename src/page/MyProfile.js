@@ -3,20 +3,19 @@ import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useStytchSession, useStytch } from "@stytch/stytch-react";
+// import QRCode from "react-qr-code";
+
 import { AccordionListPaymentIntent } from "../components/ui/AccordionListPaymentIntent";
 import { ContactInfoProfile } from "../components/contact/ContactInfoProfile";
 import { Navbar } from "../components/ui/Navbar";
 import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
-import { useContactInfoStore } from "../hooks/useContactInfoStore";
-import { useStripeHook } from "../hooks/useStripeHook";
-import QRCode from "react-qr-code";
-
-import "../style/pages/myProfile.css";
-import "../style/component/ui/NavbarBottom.css";
 import { onAddNewContact } from "../store/slices/contactInfoSlice";
 import { onUserPrivacyPolicyResponse } from "../store/slices/privacyPolicyUserResponseSlice";
 import { reset } from "../store/slices/deviceSlice";
+import { ReturnDeviceAlert } from "../components/ui/ReturnDeviceAlert";
+import { useContactInfoStore } from "../hooks/useContactInfoStore";
+import "../style/pages/myProfile.css";
+import "../style/component/ui/NavbarBottom.css";
 
 const initalFormValues = {
   groupName: "",
@@ -27,8 +26,6 @@ const initalFormValues = {
 };
 
 export const MyProfile = () => {
-  const { paymentIntent } = useStripeHook();
-  console.log("🚀 ~ file: MyProfile.js:31 ~ MyProfile ~ paymentIntent", paymentIntent)
   const { startUpdatingContactInfo } = useContactInfoStore();
   const [showInfo, setShowInfo] = useState(false);
   const [formValues, setFormValues] = useState(initalFormValues);
@@ -84,40 +81,40 @@ export const MyProfile = () => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
-  const checkPaymentIntentArray = (info) => {
-    if (info.length > 0) {
-      const QRCodeValue = info?.at(-1).data?.payment_intent_id;
-      return (
-        <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "10px",
-            }}
-          >
-            <QRCode
-              fgColor="#000"
-              bgColor="#ffff"
-              level="Q"
-              size={100}
-              value={QRCodeValue}
-            />
-          </div>
-        </>
-      );
-    }
-    return (
-      <QRCode
-        fgColor="#000"
-        bgColor="#ffff"
-        level="Q"
-        size={100}
-        value="no value returned"
-      />
-    );
-  };
+  // const checkPaymentIntentArray = (info) => {
+  //   if (info.length > 0) {
+  //     const QRCodeValue = info?.at(-1).data?.payment_intent_id;
+  //     return (
+  //       <>
+  //         <div
+  //           style={{
+  //             display: "flex",
+  //             justifyContent: "center",
+  //             alignItems: "center",
+  //             padding: "10px",
+  //           }}
+  //         >
+  //           <QRCode
+  //             fgColor="#000"
+  //             bgColor="#ffff"
+  //             level="Q"
+  //             size={100}
+  //             value={QRCodeValue}
+  //           />
+  //         </div>
+  //       </>
+  //     );
+  //   }
+  //   return (
+  //     <QRCode
+  //       fgColor="#000"
+  //       bgColor="#ffff"
+  //       level="Q"
+  //       size={100}
+  //       value="no value returned"
+  //     />
+  //   );
+  // };
   const handleEditContactInfo = async (event) => {
     event.preventDefault();
 
