@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 
 export function AppDownloadModal({ modalDisplay }) {
   const [showModal, setShowModal] = useState(modalDisplay);
+  const userAgent = navigator.userAgent;
 
   const handleClose = () => setShowModal(false);
   useEffect(() => {
@@ -33,25 +34,53 @@ export function AppDownloadModal({ modalDisplay }) {
   };
   return (
     <>
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>App Download</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          The app is now available for download on both iOS and Android. Click
-          the links below to download the app.
-          <br />
-          <br />
-          <button onClick={handleDownloadApp} className="btn btn-create">
-            DownLoad App
-          </button>
-        </Modal.Body>
-        <Modal.Footer>
-          <button className="btn btn-delete" onClick={handleClose}>
-            Close
-          </button>
-        </Modal.Footer>
-      </Modal>
+      {userAgent.indexOf("Android") !== -1 ? (
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>App Download</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            The app is now available for download on Android. Click
+            the links below to download the app.
+            <br />
+            <br />
+            <button onClick={handleDownloadApp} className="btn btn-create">
+              DownLoad App
+            </button>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-delete" onClick={handleClose}>
+              Close
+            </button>
+          </Modal.Footer>
+        </Modal>
+      ) : (
+        ""
+      )}
+      {userAgent.indexOf("iPhone") !== -1 ||
+      userAgent.indexOf("iPad") !== -1 ? (
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>App Download</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            The Devitrack app is now available for download. To install the app,
+            click the "Add to Home Screen" button in your browser's menu.
+            <br />
+            <br />
+            {/* <button onClick={handleDownloadApp} className="btn btn-create">
+              DownLoad App
+            </button> */}
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-delete" onClick={handleClose}>
+              Close
+            </button>
+          </Modal.Footer>
+        </Modal>
+      ) : (
+        ""
+      )}
     </>
   );
 }
