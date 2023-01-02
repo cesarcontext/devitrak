@@ -1,7 +1,12 @@
-import React from "react";
+import React,{ useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Routes, Route } from "react-router";
 import { useSelector } from "react-redux";
+import moment from "moment/moment";
+import { useStytch, useStytchSession } from "@stytch/stytch-react";
+import { useInterval } from "interval-hooks";
+
+import { Authenticate } from "../page/Authenticate";
 import { Checkout } from "../page/Checkout";
 import { DeclineTerms } from "../page/DeclineTerms";
 import { EventScheduled } from "../page/EventScheduled";
@@ -14,14 +19,28 @@ import { QRCodeConfirmation } from "../page/QRCodeConfirmation";
 import { RequestDevices } from "../page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "../page/moreInfo/RequestSupportDuringTheEvent";
 import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
-import { Authenticate } from "../page/Authenticate";
-
+import { NotificationDisplay } from "../components/admin/Notification/NotificationDisplay";
 
 export const UserRoutes = () => {
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
+  const [dateToCheck, setDateToCheck] = useState("");
+  const session = useStytchSession();
+  const client = useStytch();
+  useInterval(() => {
+    setDateToCheck(new Date().toISOString());
+  }, 1_00);
 
+  if (session !== null) {
+    const a = moment(`${session.expires_at}`);
+    const b = moment(`${dateToCheck}`);
+    if (a < b) {
+      client.session.revoke();
+      window.location.replace("https://devitrackapp.itmastersltd.com/")
+    }
+  }
   return (
     <div>
+      <NotificationDisplay />
       <Routes>
         <Route path="/" element={<Home />} />
         {response !== false ? (
