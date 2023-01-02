@@ -9,9 +9,13 @@ export const MoreInfo = () => {
       <Navbar />
       <div className="container-more-info">
         <div className="more-info-title">
-          <h5 style={{
-            color: "var(--main-colorsfading-horizon)"
-          }}>More Information</h5>
+          <h5
+            style={{
+              color: "var(--main-colorsfading-horizon)",
+            }}
+          >
+            More Information
+          </h5>
           <span>
             In this page you will find more information and frequently asked
             questions.
@@ -27,8 +31,8 @@ export const MoreInfo = () => {
               </div>
               <div className="container-text-body">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  The receiver only works when an earphone is connected and the
+                  receiver switches to stand-by state. Push shortly
                 </p>
               </div>
             </div>
