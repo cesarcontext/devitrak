@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   PaymentElement,
   useStripe,
@@ -7,10 +6,8 @@ import {
 } from "@stripe/react-stripe-js";
 import "./checkoutStyles.css";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
-import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
 
 export const StripeCheckoutForm = () => {
-  const dispatch = useDispatch();
   const stripe = useStripe();
   const elements = useElements();
   const { device } = useDeviceCount()
@@ -81,7 +78,7 @@ export const StripeCheckoutForm = () => {
 
     setIsLoading(true);
 
-    const { error, response } = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
@@ -114,7 +111,6 @@ export const StripeCheckoutForm = () => {
           {isLoading ? <div className="spinner" id="spinner"></div> : `Deposit $${device * 200}`}
         </span>
       </button>
-      {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>
   );
