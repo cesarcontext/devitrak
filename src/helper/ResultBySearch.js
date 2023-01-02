@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../apis/devitrackApi";
@@ -9,7 +9,6 @@ export const ResultBySearch = ({ searchTerm }) => {
   const [stripeTransactions, setStripeTransactions] = useState([]);
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  let result;
   let auxParameter = "";
 
   const callApiStripeTransaction = async () => {
@@ -34,7 +33,7 @@ export const ResultBySearch = ({ searchTerm }) => {
       receiversList.map((item) => {
         for (let i = 0; i < item.device.length; i++) {
           if (
-            item.device[i].serialNumber == searchTerm &&
+            item.device[i].serialNumber === searchTerm &&
             item.device[i].status === true
           ) {
             return (auxParameter = item.paymentIntent);
