@@ -46,13 +46,11 @@ export const NotificationDisplay = () => {
     "🚀 ~ file: NotificationDisplay.js:45 ~ NotificationDisplay ~ hasNewNotification",
     hasNewNotification
   );
+  let notification;
   if (listOfNotifications !== []) {
-    const notification = new Notification(
-      `${listOfNotifications.at(-1)?.title}`,
-      {
-        tag: setListOfNotifications.at(-1).body,
-      }
-    );
+    notification = new Notification(`${listOfNotifications.at(-1)?.title}`, {
+      tag: setListOfNotifications.at(-1).body,
+    });
   }
 
   return <>{hasNewNotification && notification} </>;
