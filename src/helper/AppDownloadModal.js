@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 
-export function AppDownloadModal() {
+export function AppDownloadModal({onDownload, onClose}) {
   const [showModal, setShowModal] = useState(false);
   const userAgent = navigator.userAgent;
 
@@ -29,20 +29,7 @@ export function AppDownloadModal() {
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
-            <button onClick={(event) => {
-              window.addEventListener("beforeinstallprompt", () => {
-                event.preventDefault();
-                const promptEvent = event;
-                promptEvent.prompt();
-                promptEvent.userChoice.then((choiceResult) => {
-                  if (choiceResult.outcome === "accepted") {
-                    console.log("App was installed");
-                  } else {
-                    console.log("App was not installed");
-                  }
-                });
-              });
-            }} className="btn btn-create">
+            <button onClick={onDownload} className="btn btn-create">
               DownLoad App
             </button>{" "}
           </Modal.Footer>
@@ -74,3 +61,19 @@ export function AppDownloadModal() {
     </>
   );
 }
+/**
+ * (event) => {
+              window.addEventListener("beforeinstallprompt", () => {
+                event.preventDefault();
+                const promptEvent = event;
+                promptEvent.prompt();
+                promptEvent.userChoice.then((choiceResult) => {
+                  if (choiceResult.outcome === "accepted") {
+                    console.log("App was installed");
+                  } else {
+                    console.log("App was not installed");
+                  }
+                });
+              });
+            }}
+ */
