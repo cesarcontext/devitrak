@@ -4,7 +4,6 @@ import { Modal } from "react-bootstrap";
 
 export function AppDownloadModal() {
   const [showModal, setShowModal] = useState(false);
-  const [isPwaInstalled, setIsPwaInstalled] = useState(false);
   const userAgent = navigator.userAgent;
 
   const handleClose = () => setShowModal(false);
@@ -14,25 +13,20 @@ export function AppDownloadModal() {
     }, 2000);
   }, []);
 
-  const handleDownloadApp = async () => {
-    window.addEventListener("beforeinstallprompt", (event) => {
-      console.log(
-        "🚀 ~ file: AppDownloadModal.js:17 ~ window.addEventListener ~ event",
-        event
-      );
-
-      event.preventDefault();
-      const promptEvent = event;
-      promptEvent.prompt();
-      promptEvent.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("App was installed");
-        } else {
-          console.log("App was not installed");
-        }
-      });
-    });
-  };
+  // const handleDownloadApp = async (event) => {
+  //   window.addEventListener("beforeinstallprompt", (event) => {
+  //     event.preventDefault();
+  //     const promptEvent = event;
+  //     promptEvent.prompt();
+  //     promptEvent.userChoice.then((choiceResult) => {
+  //       if (choiceResult.outcome === "accepted") {
+  //         console.log("App was installed");
+  //       } else {
+  //         console.log("App was not installed");
+  //       }
+  //     });
+  //   });
+  // };
   return (
     <>
       {userAgent.indexOf("Android") !== -1 ? (
@@ -49,7 +43,20 @@ export function AppDownloadModal() {
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
-            <button onClick={handleDownloadApp} className="btn btn-create">
+            <button onClick={() => {
+              window.addEventListener("beforeinstallprompt", (event) => {
+                event.preventDefault();
+                const promptEvent = event;
+                promptEvent.prompt();
+                promptEvent.userChoice.then((choiceResult) => {
+                  if (choiceResult.outcome === "accepted") {
+                    console.log("App was installed");
+                  } else {
+                    console.log("App was not installed");
+                  }
+                });
+              });
+            }} className="btn btn-create">
               DownLoad App
             </button>{" "}
           </Modal.Footer>
