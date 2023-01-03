@@ -18,7 +18,6 @@ export const AdminRoutes = () => {
   const adminToken = localStorage.getItem("admin-token");
   return (
     <div>
-
       <Routes>
         {status === "authenticated" && adminToken ? (
           <>
@@ -51,11 +50,15 @@ export const AdminRoutes = () => {
           </>
         )}
       </Routes>
-      {window.location.pathname === "/admin/settings" ||
-        window.location.pathname === "/admin/attendees" ||
-        (window.location.pathname === "/admin/device-database" && (
-          <TriggerNotification />
-        ))}
+      {window.location.pathname === "/admin/settings" && (
+        <TriggerNotification />
+      )}
+      {window.location.pathname === "/admin/attendees" && (
+        <TriggerNotification />
+      )}
+      {window.location.pathname === "/admin/device-database" && (
+        <TriggerNotification />
+      )}
     </div>
   );
 };
