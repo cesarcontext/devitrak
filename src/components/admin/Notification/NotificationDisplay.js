@@ -3,40 +3,52 @@ import React from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { NotificationBody } from "../../ui/NotificationBody";
 
 export const NotificationDisplay = () => {
-  let listOfNotifications = [];
-
-  let getCurrentNotification = async () => {
-    const response = await devitrackApi.get("/notification/notifications");
-    return (listOfNotifications = response.data.message);
-  };
+  const [listOfNotifications, setListOfNotifications] = useState([]);
   let checking = false;
+  console.log(
+    "🚀 ~ file: NotificationDisplay.js:14 ~ NotificationDisplay ~ checking",
+    checking
+  );
   let notificationRef = useRef();
+  console.log(
+    "🚀 ~ file: NotificationDisplay.js:15 ~ NotificationDisplay ~ notificationRef",
+    notificationRef
+  );
 
   if (
     notificationRef.current &&
-    listOfNotifications.at(-1) !== notificationRef.current
+    listOfNotifications.at(-1) === notificationRef.current
   ) {
-    checking = true;
+    checking = false;
   }
 
   let useHasNewNotification = () => {
     useInterval(async () => {
-      let notification = await getCurrentNotification();
+      const response = await devitrackApi.get("/notification/notifications");
+      if (response) return setListOfNotifications(response.data.message);
     }, 5_000);
 
+    if (listOfNotifications.at(-1) !== notificationRef.current) {
+      checking = true;
+      notificationRef.current = listOfNotifications.at(-1);
+    }
     return checking;
   };
 
   let hasNewNotification = useHasNewNotification();
-
-  return (
-    <>
-      {hasNewNotification && (
-        <NotificationBody message={`${listOfNotifications.at(-1)}`} />
-      )}{" "}
-    </>
+  console.log(
+    "🚀 ~ file: NotificationDisplay.js:45 ~ NotificationDisplay ~ hasNewNotification",
+    hasNewNotification
   );
+
+  const notification = new Notification(`${listOfNotifications.at(-1).title}`, {
+    tag: setListOfNotifications.at(-1).body,
+  });
+  return <>{hasNewNotification && notification} </>;
 };
