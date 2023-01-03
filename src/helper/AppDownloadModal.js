@@ -46,11 +46,13 @@ async function checkPermission() {
             click the "Add to Home Screen" button in your browser's menu.
             <br />
             <br />
-            {checkPermission()}
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-delete" onClick={handleClose}>
               Close
+            </button>
+            <button className="btn btn-delete" onClick={checkPermission}>
+              Request Permission
             </button>
           </Modal.Footer>
         </Modal>
