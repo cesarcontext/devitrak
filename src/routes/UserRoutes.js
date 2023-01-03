@@ -40,7 +40,7 @@ export const UserRoutes = () => {
   }
   return (
     <div>
-      <NotificationDisplay />
+      {Notification.permission === "granted" && <NotificationDisplay />}
       <Routes>
         <Route path="/" element={<Home />} />
         {response !== false ? (
