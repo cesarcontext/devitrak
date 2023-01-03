@@ -28,6 +28,9 @@ export const Authenticate = () => {
           .then(() => {
             rightDoneMessage(`Successfully authenticated`);
             navigate(0); //navigate to 0 to refrese page
+            window.location.assign(
+              `https://devitrackapp.itmastersltd.com/checkout`
+            );
             dispatch(blockLinks("auto"));
           });
       }
