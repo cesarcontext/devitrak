@@ -13,20 +13,6 @@ export function AppDownloadModal() {
     }, 2000);
   }, []);
 
-  // const handleDownloadApp = async (event) => {
-  //   window.addEventListener("beforeinstallprompt", (event) => {
-  //     event.preventDefault();
-  //     const promptEvent = event;
-  //     promptEvent.prompt();
-  //     promptEvent.userChoice.then((choiceResult) => {
-  //       if (choiceResult.outcome === "accepted") {
-  //         console.log("App was installed");
-  //       } else {
-  //         console.log("App was not installed");
-  //       }
-  //     });
-  //   });
-  // };
   return (
     <>
       {userAgent.indexOf("Android") !== -1 ? (
@@ -43,8 +29,8 @@ export function AppDownloadModal() {
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
-            <button onClick={() => {
-              window.addEventListener("beforeinstallprompt", (event) => {
+            <button onClick={(event) => {
+              window.addEventListener("beforeinstallprompt", () => {
                 event.preventDefault();
                 const promptEvent = event;
                 promptEvent.prompt();
