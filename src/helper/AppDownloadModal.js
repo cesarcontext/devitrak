@@ -51,7 +51,7 @@ async function checkPermission() {
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
-            <button className="btn btn-delete" onClick={checkPermission}>
+            <button className="btn btn-delete" onClick={()=> checkPermission()}>
               Request Permission
             </button>
           </Modal.Footer>
