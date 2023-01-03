@@ -19,21 +19,15 @@ export function AppDownloadModal({ onDownload, onClose }) {
     const permission = await Notification.requestPermission();
     // Permission granted
     if (permission === "granted") {
-      return true;
+      return setHasPermission(true);
     } else {
       // Permission denied
-      return false;
+      return setHasPermission(false);
     }
   } catch (error) {
     console.error(error);
   }
 }
-
-async function checkPermission() {
-  const permission = await requestNotificationPermission();
-  setHasPermission(permission);
-}
-
 
   return (
     <>
@@ -51,7 +45,7 @@ async function checkPermission() {
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
-            <button className="btn btn-delete" onClick={()=> checkPermission()}>
+            <button className="btn btn-delete" onClick={()=> requestNotificationPermission()}>
               Request Permission
             </button>
           </Modal.Footer>
