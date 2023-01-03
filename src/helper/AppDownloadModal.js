@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 
 export function AppDownloadModal() {
   const [showModal, setShowModal] = useState(false);
+  const [isPwaInstalled, setIsPwaInstalled] = useState(false);
   const userAgent = navigator.userAgent;
 
   const handleClose = () => setShowModal(false);
@@ -40,18 +41,17 @@ export function AppDownloadModal() {
             <Modal.Title>App Download</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            The app is now available for download on Android. Click
-            the links below to download the app.
+            The app is now available for download on Android. Click the links
+            below to download the app.
             <br />
-            <br />
-            <button onClick={handleDownloadApp} className="btn btn-create">
-              DownLoad App
-            </button>
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-delete" onClick={handleClose}>
               Close
             </button>
+            <button onClick={handleDownloadApp} className="btn btn-create">
+              DownLoad App
+            </button>{" "}
           </Modal.Footer>
         </Modal>
       ) : (
@@ -68,9 +68,6 @@ export function AppDownloadModal() {
             click the "Add to Home Screen" button in your browser's menu.
             <br />
             <br />
-            {/* <button onClick={handleDownloadApp} className="btn btn-create">
-              DownLoad App
-            </button> */}
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-delete" onClick={handleClose}>
