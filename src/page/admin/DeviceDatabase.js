@@ -24,11 +24,7 @@ export const DeviceDatabase = () => {
               value={searchTerm}
               placeholder="Search"
             />
-            <i
-              onClick={() => setSearchTerm("")}
-              id="icon-delete-searchTerm"
-              className="bi bi-x"
-            />
+            {searchTerm !== "" && <i onClick={() => setSearchTerm("")} id="icon-delete-searchTerm" className="bi bi-x"/>}
           </div>
         </div>
         <ReceiverStock searchTerm={searchTerm} />
