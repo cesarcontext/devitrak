@@ -35,27 +35,20 @@ export const AdminRoutes = () => {
               element={<ArticleContentCreation />}
             />
             <Route path="/profile" element={<Profile />} />
-            <Route
-              path="/*"
-              element={<Navigate to="/" replace />}
-            />
+            <Route path="/*" element={<Navigate to="/" replace />} />
           </>
         ) : (
           <>
             <Route path="/login" element={<LoginRegisterAdmin />} />
-            <Route
-              path="/*"
-              element={<Navigate to="/login" replace />}
-            />
+            <Route path="/*" element={<Navigate to="/login" replace />} />
           </>
         )}
       </Routes>
-      {window.location.pathname === "/settings" && (
-        <TriggerNotification />
-      )}
-      {window.location.pathname === "/attendees" && window.location.pathname !== "/attendees/receiver_assignation" && (
-        <TriggerNotification />
-      )}
+      {window.location.pathname === "/settings" && <TriggerNotification />}
+      {window.location.pathname === "/attendees" &&
+        window.location.pathname !== "/attendees/receiver_assignation" && (
+          <TriggerNotification />
+        )}
       {window.location.pathname === "/device-database" && (
         <TriggerNotification />
       )}
