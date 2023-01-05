@@ -12,46 +12,46 @@ export const Navbar = () => {
   return (
     <nav className="navbar-admin">
       {" "}
-      <NavLink to="/admin">
+      <NavLink to="/">
         <div className="logo-main">
           <h4>Devitrack</h4>
         </div>
       </NavLink>
       <div className="body-central">
-        {/* <NavLink to="/admin/events">
-          <div className={`${pathname === "/admin/events" ? "active-tab-admin-navbar" : ""} nav-item`}>
+        {/* <NavLink to="/events">
+          <div className={`${pathname === "/events" ? "active-tab-admin-navbar" : ""} nav-item`}>
             <h4>Events</h4>
           </div>
         </NavLink> */}
-        <NavLink to="/admin/device-database">
+        <NavLink to="/device-database">
           <div
             className={`${
-              pathname === "/admin/device-database" ? "active-tab-admin-navbar" : ""
+              pathname === "/device-database" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Device Database</h4>
           </div>
         </NavLink>
-        <NavLink to="/admin/attendees">
+        <NavLink to="/attendees">
           <div
             className={`${
-              pathname === "/admin/device-attendees" ? "active-tab-admin-navbar" : ""
+              pathname === "/device-attendees" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Users</h4>
           </div>
         </NavLink>
-        {/* <NavLink to="/admin/articles">
-          <div className={`${pathname === "/admin/articles" ? "active-tab-admin-navbar" : ""} `}>
+        {/* <NavLink to="/articles">
+          <div className={`${pathname === "/articles" ? "active-tab-admin-navbar" : ""} `}>
             <h4>
               Articles
             </h4>
           </div>
         </NavLink> */}
-        <NavLink to="/admin/settings">
+        <NavLink to="/settings">
           <div
             className={`${
-              pathname === "/admin/settings" ? "active-tab-admin-navbar" : ""
+              pathname === "/settings" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Settings</h4>
@@ -59,10 +59,10 @@ export const Navbar = () => {
         </NavLink>
       </div>
       <div className="profile-section-nav">
-        <NavLink to="/admin/profile">
+        <NavLink to="/profile">
           <div
             className={`${
-              pathname === "/admin/profile" ? "active-tab-admin-navbar" : ""
+              pathname === "/profile" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>{user.name}</h4>

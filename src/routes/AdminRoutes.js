@@ -21,42 +21,42 @@ export const AdminRoutes = () => {
       <Routes>
         {status === "authenticated" && adminToken ? (
           <>
-            <Route path="/admin" element={<Admin />}></Route>
-            <Route path="/admin/device-database" element={<DeviceDatabase />} />
-            <Route path="/admin/articles" element={<Articles />} />
-            <Route path="/admin/settings" element={<Settings />} />
-            <Route path="/admin/attendees" element={<Attendees />} />
+            <Route path="/" element={<Admin />}></Route>
+            <Route path="/device-database" element={<DeviceDatabase />} />
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/attendees" element={<Attendees />} />
             <Route
-              path="/admin/attendees/receiver_assignation"
+              path="/attendees/receiver_assignation"
               element={<ReceiversDetailsAssignation />}
             />
             <Route
-              path="/admin/create-article"
+              path="/create-article"
               element={<ArticleContentCreation />}
             />
-            <Route path="/admin/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile />} />
             <Route
-              path="/admin/*"
-              element={<Navigate to="/admin/" replace />}
+              path="/*"
+              element={<Navigate to="/" replace />}
             />
           </>
         ) : (
           <>
-            <Route path="/admin/login" element={<LoginRegisterAdmin />} />
+            <Route path="/login" element={<LoginRegisterAdmin />} />
             <Route
-              path="/admin/*"
-              element={<Navigate to="/admin/login" replace />}
+              path="/*"
+              element={<Navigate to="/login" replace />}
             />
           </>
         )}
       </Routes>
-      {window.location.pathname === "/admin/settings" && (
+      {window.location.pathname === "/settings" && (
         <TriggerNotification />
       )}
-      {window.location.pathname === "/admin/attendees" && (
+      {window.location.pathname === "/attendees" && window.location.pathname !== "/attendees/receiver_assignation" && (
         <TriggerNotification />
       )}
-      {window.location.pathname === "/admin/device-database" && (
+      {window.location.pathname === "/device-database" && (
         <TriggerNotification />
       )}
     </div>
