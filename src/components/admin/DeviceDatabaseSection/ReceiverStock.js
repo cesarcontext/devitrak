@@ -238,9 +238,9 @@ export const ReceiverStock = ({ searchTerm }) => {
         </div>
       </div>
       <div className="d-none">
-        {loadingDownload === true ? (
+        {loadingDownload === true && (
           <UserTable headers={headers} listOfReceiver={listOfReceiver} />
-        ) : null}
+        )}
       </div>
     </div>
   );
