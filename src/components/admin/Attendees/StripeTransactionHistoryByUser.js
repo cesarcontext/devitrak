@@ -96,7 +96,7 @@ export const StripeTransactionHistoryByUser = ({
                   <td>{transaction.device}</td>
                   <td>${amount}</td>
                   <td>
-                    <NavLink to="/admin/attendees/receiver_assignation">
+                    <NavLink to="/attendees/receiver_assignation">
                       <button
                         className="btn btn-detail"
                         onClick={async () => {
