@@ -2,6 +2,7 @@
   .trigger-notification {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
+    border-radius: 6px;
     transition: none;
     font-family: "Open-sans", sans-serif;
     width: 5vw;
@@ -14,6 +15,7 @@
   .trigger-notification {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
+    border-radius: 6px;
     transition: none;
     font-family: "Open-sans", sans-serif;
     width: 6vw;
@@ -26,6 +28,7 @@
   .trigger-notification {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
+    border-radius: 6px;
     transition: none;
     font-family: "Open-sans", sans-serif;
     width: 8vw;
@@ -39,6 +42,7 @@
   .trigger-notification {
     color: var(--bs-body-bg);
     background-color: var(--main-colorsbluetiful);
+    border-radius: 6px;
     transition: none;
     font-family: "Open-sans", sans-serif;
     width: 11vw;
