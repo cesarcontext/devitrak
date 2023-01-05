@@ -1,25 +1,12 @@
 import axios from "axios";
 
+const api = process.env.REACT_APP_DEVITRACK_API
 export const devitrackApi = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api",
-});
-
-export const devitrackApiPayment = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/creditCard",
-});
-
-//TODO: config interceptors
-devitrackApiPayment.interceptors.request.use((config) => {
-  if (localStorage.getItem("token")) {
-    config.headers = {
-      "x-token": localStorage.getItem("token"),
-    };
-  }
-  return config
+  baseURL:api,
 });
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/admin"
+  baseURL: `${api}/admin`
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
@@ -31,22 +18,8 @@ devitrackApiAdmin.interceptors.request.use((config) => {
   return config
 });
 
-export const devitrackApiStripe = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/stripe"
-})
-
-//TODO: config interceptors
-devitrackApiStripe.interceptors.request.use((config) => {
-  if (localStorage.getItem("token")) {
-    config.headers = {
-      "x-token": localStorage.getItem("token"),
-    };
-  }
-  return config
-});
-
 export const devitrackApiArticle = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/article"
+  baseURL: `${api}/article`
 })
 
 //TODO: config interceptors
