@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const response = false
+const response = true
 
 const privacyPolicyUserResponseSlice = createSlice({
   name: "privacyPolicyUserResponse",
