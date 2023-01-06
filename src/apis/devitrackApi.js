@@ -1,25 +1,11 @@
 import axios from "axios";
 
 export const devitrackApi = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api",
-});
-
-export const devitrackApiPayment = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/creditCard",
-});
-
-//TODO: config interceptors
-devitrackApiPayment.interceptors.request.use((config) => {
-  if (localStorage.getItem("token")) {
-    config.headers = {
-      "x-token": localStorage.getItem("token"),
-    };
-  }
-  return config
+  baseURL: process.env.REACT_APP_URL,
 });
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/admin"
+  baseURL: `${process.env.REACT_APP_URL}/admin`
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
@@ -32,7 +18,7 @@ devitrackApiAdmin.interceptors.request.use((config) => {
 });
 
 export const devitrackApiStripe = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/stripe"
+  baseURL: `${process.env.REACT_APP_URL}/stripe`
 })
 
 //TODO: config interceptors
@@ -46,7 +32,7 @@ devitrackApiStripe.interceptors.request.use((config) => {
 });
 
 export const devitrackApiArticle = axios.create({
-  baseURL: "https://devitrackdb.itmastersltd.com/api/article"
+  baseURL: `${process.env.REACT_APP_URL}/article`
 })
 
 //TODO: config interceptors
