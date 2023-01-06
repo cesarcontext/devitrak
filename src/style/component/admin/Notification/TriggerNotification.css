@@ -1,53 +1,72 @@
 @media only screen and (min-width: 2560px) {
-  .trigger-notification {
-    color: var(--bs-body-bg);
-    background-color: var(--main-colorsbluetiful);
-    border-radius: 6px;
-    transition: none;
-    font-family: "Open-sans", sans-serif;
-    width: 5vw;
+  .container-icon-notification {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0px;
+    border-radius: 50%;
     position: absolute;
-    top: 22vh;
-    right: 1vw;
+    z-index: 5;
+    bottom: 5vh;
+    width: 5vw;
+    height: 5vh;
+    margin-left: 90vw;
+  }
+  .trigger-notification {
+    font-size: 45px;
   }
 }
 @media only screen and (min-width: 1441px) and (max-width: 2559px) {
-  .trigger-notification {
-    color: var(--bs-body-bg);
-    background-color: var(--main-colorsbluetiful);
-    border-radius: 6px;
-    transition: none;
-    font-family: "Open-sans", sans-serif;
-    width: 6vw;
+  .container-icon-notification {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0px;
+    border-radius: 50%;
     position: absolute;
-    top: 22vh;
-    right: 1vw;
+    z-index: 5;
+    bottom: 5vh;
+    width: 5vw;
+    height: 5vh;
+    margin-left: 90vw;
+  }
+  .trigger-notification {
+    font-size: 45px;
   }
 }
 @media only screen and (min-width: 1025px) and (max-width: 1440px) {
-  .trigger-notification {
-    color: var(--bs-body-bg);
-    background-color: var(--main-colorsbluetiful);
-    border-radius: 6px;
-    transition: none;
-    font-family: "Open-sans", sans-serif;
-    width: 8vw;
+  .container-icon-notification {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0px;
+    border-radius: 50%;
     position: absolute;
-    top: 22vh;
-    right: 1vw;
-    padding: 2px;
+    z-index: 5;
+    bottom: 5vh;
+    width: 5vw;
+    height: 5vh;
+    margin-left: 90vw;
+  }
+  .trigger-notification {
+    font-size: 45px;
   }
 }
 @media only screen and (max-width: 1024px) {
-  .trigger-notification {
-    color: var(--bs-body-bg);
-    background-color: var(--main-colorsbluetiful);
-    border-radius: 6px;
-    transition: none;
-    font-family: "Open-sans", sans-serif;
-    width: 11vw;
+  .container-icon-notification {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0px;
+    border-radius: 50%;
     position: absolute;
-    top: 22vh;
-    right: 1vw;
+    z-index: 5;
+    bottom: 5vh;
+    width: 5vw;
+    height: 5vh;
+    margin-left: 95vw;
+  }
+  .trigger-notification {
+    font-size: 45px;
   }
 }
