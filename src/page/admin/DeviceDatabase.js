@@ -7,7 +7,6 @@ import "../../style/component/admin/DeviceDatabase.css";
 
 export const DeviceDatabase = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
   return (
     <div>
       <Navbar />
