@@ -1,8 +1,7 @@
 import React from "react";
 
-export const UserTable = ({ headers, listOfReceiver }) => {
-
-    const max = 2^53
+export const UserTable = ({ headers, data }) => {
+  console.log("🚀 ~ file: UserTable.js:4 ~ UserTable ~ data", data)
   return (
     <div>
       <table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -13,17 +12,20 @@ export const UserTable = ({ headers, listOfReceiver }) => {
             })}
           </tr>
         </thead>
-        {listOfReceiver.map(({id, device, status, activity, comment, index}) => (
-          <tbody key={index}>
-            <tr key={id * Math.floor(Math.random() * max)}>
-              <td>{index + 1}</td>
-              <td>{device}</td>
-              <td>{status}</td>
-              <td>{activity}</td>
-              <td>{comment}</td>
-            </tr>
-          </tbody>
-        ))}
+        {data?.map(
+          ({ id, device, status, activity, comment, user, index }) => (
+            <tbody key={index}>
+              <tr key={id}>
+                <td>{index + 1}</td>
+                <td>{device}</td>
+                <td>{status}</td>
+                <td>{activity}</td>
+                <td>{comment}</td>
+                <td>{user}</td>
+              </tr>
+            </tbody>
+          )
+        )}
       </table>
     </div>
   );
