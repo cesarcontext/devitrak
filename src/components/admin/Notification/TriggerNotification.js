@@ -4,20 +4,24 @@ import { NotificationDisplay } from "./NotificationDisplay";
 import { SendNotification } from "./SendNotification";
 
 export const TriggerNotification = () => {
-  const [displayNotification, setDisplayNotification] = useState(false)
+  const [displayNotification, setDisplayNotification] = useState(false);
 
   const handleNotification = async () => {
     setDisplayNotification(!displayNotification);
   };
   return (
-    <div>
+    <div className="container-icon-notification">
       {" "}
-      <button onClick={handleNotification} className="trigger-notification">
-        Notification
-      </button>
+      <i
+        onClick={handleNotification}
+        className="bi bi-info-circle trigger-notification"
+      />
       <div className="d-none">
         <NotificationDisplay />
-        <SendNotification displayNotification={displayNotification} setDisplayNotification={setDisplayNotification} />
+        <SendNotification
+          displayNotification={displayNotification}
+          setDisplayNotification={setDisplayNotification}
+        />
       </div>
     </div>
   );
