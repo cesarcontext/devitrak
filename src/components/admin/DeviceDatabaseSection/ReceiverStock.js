@@ -3,12 +3,17 @@ import { CSVLink } from "react-csv";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { UserTable } from "../../../helper/UserTable";
 import { DeviceUsersHistory } from "./DeviceUsersHistory";
-import "../../../style/component/admin/DeviceDatabase.css";
 import { useInterval } from "interval-hooks";
 import ReactPaginate from "react-paginate";
+import "../../../style/component/admin/DeviceDatabase.css";
 
 export const ReceiverStock = ({ searchTerm }) => {
+  const [dispatch, setDispatch] = useState(false);
+  const [userDataMerged, setUserDataMerged] = useState([]);
   const [listOfReceiver, setListOfReceiver] = useState([]);
+  const [listOfReceiverAssigned, setListOfReceiverAssigned] = useState([]);
+  const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] =
+    useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const [receiverId, setReceiverId] = useState(null);
@@ -22,18 +27,64 @@ export const ReceiverStock = ({ searchTerm }) => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
     if (response) {
       setListOfReceiver(response.data.receiversInventory);
-      setLoading(true);
+    }
+  };
+  const callApiListOfReceiverAssigned = async () => {
+    const response = await devitrackApi.get("/receiver/receiver-assigned-list");
+    if (response) {
+      setListOfReceiverAssigned(response.data.listOfReceivers);
+    }
+  };
+  const callApiReceierReturnedByIssue = async () => {
+    const response = await devitrackApi.get(
+      "/receiver/list-receiver-returned-issue"
+    );
+    if (response) {
+      setListReceiverReturnedByIssue(response.data.record);
     }
   };
   useEffect(() => {
     const controller = new AbortController();
     callApi();
+    callApiListOfReceiverAssigned();
+    callApiReceierReturnedByIssue();
     getReceiverData();
     return () => {
       controller.abort();
     };
   }, [listOfReceiver.length, loading]);
 
+  useEffect(() => {
+    {
+      dispatch && mergingData();
+    }
+    setLoading(true);
+  }, [dispatch]);
+
+  const mergingData = async () => {
+    let usersPerDevice = [];
+    for (let node of listOfReceiver) {
+      for (let data of listOfReceiverAssigned) {
+        data.device.map((item, index) => {
+          if (item.serialNumber === node.device) {
+            usersPerDevice.push({
+              ...node,
+              user: data.user,
+            });
+          }
+        });
+      }
+    }
+    setUserDataMerged(usersPerDevice);
+  };
+  useInterval(() => {
+    setDispatch(!dispatch);
+  }, 3_00);
+
+  let totalDataMergedToExcel = userDataMerged.concat(
+    listReceiverReturnedByIssue
+  );
+  console.log("🚀 ~ file: ReceiverStock.js:68 ~ ReceiverStock ~ totalDataMergedToExcel", totalDataMergedToExcel)
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % listOfReceiver.length;
     setItemOffset(newOffset);
@@ -64,6 +115,7 @@ export const ReceiverStock = ({ searchTerm }) => {
     { label: "status", key: "status" },
     { label: "Activity", key: "activity" },
     { label: "Comment", key: "comment" },
+    { label: "User", key: "user" },
   ];
 
   const fileName = "receiver-inventory";
@@ -126,7 +178,7 @@ export const ReceiverStock = ({ searchTerm }) => {
                               setReceiverDetail(receiver.device);
                             }}
                           >
-                            Detail
+                            Details <i className="bi bi-caret-right" />{" "}
                           </button>
                         </td>
                       </tr>
@@ -148,7 +200,7 @@ export const ReceiverStock = ({ searchTerm }) => {
                               setReceiverDetail(receiver.device);
                             }}
                           >
-                            Detail
+                            Details <i className="bi bi-caret-right" />{" "}
                           </button>
                         </td>
                       </tr>
@@ -180,7 +232,7 @@ export const ReceiverStock = ({ searchTerm }) => {
             >
               <CSVLink
                 headers={headers}
-                data={listOfReceiver}
+                data={totalDataMergedToExcel}
                 filename={fileName}
                 style={{ textDecoration: "none", color: "#fff" }}
               >
@@ -237,11 +289,11 @@ export const ReceiverStock = ({ searchTerm }) => {
           />{" "}
         </div>
       </div>
-      <div className="d-none">
+      {/* <div className="d-none">
         {loadingDownload === true && (
-          <UserTable headers={headers} listOfReceiver={listOfReceiver} />
+          <UserTable headers={headers} data={totalDataMergedToExcel} />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
