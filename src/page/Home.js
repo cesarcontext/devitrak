@@ -1,7 +1,7 @@
 import React,{ useEffect, useState} from "react";
 import { Navbar } from "../components/ui/Navbar";
 import { ContactInfo } from "../components/contact/ContactInfo";
-import { UserConsentPrivacyPolicyModal } from "../components/ui/UserConsentPrivacyPolicyModal";
+// import { UserConsentPrivacyPolicyModal } from "../components/ui/UserConsentPrivacyPolicyModal";
 import { AppDownloadModal } from "../helper/AppDownloadModal";
 
 export const Home = () => { 
@@ -15,7 +15,7 @@ export const Home = () => {
       {isPwaInstalled === false && <AppDownloadModal />}
       <Navbar />
       <ContactInfo />
-      <UserConsentPrivacyPolicyModal />
+      {/* <UserConsentPrivacyPolicyModal /> */}
     </div>
   );
 };
