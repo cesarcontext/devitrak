@@ -85,6 +85,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                         <td>
                           <button
                             className="btn btn-detail"
+                            style={{width:"100%"}}
                             onClick={() => setSendObjectIdUser(user.id)}
                           >
                             Details <i className="bi bi-caret-right" />{" "}
@@ -108,6 +109,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           <td>
                             <button
                               className="btn btn-detail"
+                              style={{width:"100%"}}
                               onClick={() => setSendObjectIdUser(user.id)}
                             >
                               Details <i className="bi bi-caret-right" />{" "}
@@ -198,12 +200,14 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           <div className="buttons-edit-permission">
                             <button
                               className="btn btn-delete"
+                              style={{width:"90%"}}
                               onClick={handleEditAdminPermission}
                             >
                               Cancel
                             </button>
                             <button
                               className="btn btn-create"
+                              style={{width:"90%"}}
                               onClick={() =>
                                 updatePermission(permissionUpdated)
                               }
@@ -237,6 +241,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
           <div>
             <button
               className="btn btn-delete"
+              style={{width:"100%"}}
               onClick={() => {
                 Swal.fire({
                   title: "Are you sure?",
