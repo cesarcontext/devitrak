@@ -2,8 +2,7 @@ import React from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { StripeCheckoutForm } from "./StripeCheckForm";
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
-console.log("🚀 ~ file: StripeCheckoutElement.js:6 ~ stripePromise", stripePromise)
+const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
 
 export const StripeCheckoutElement = ({ clientSecret }) => {
   const appearance = {
