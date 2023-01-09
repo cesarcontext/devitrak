@@ -18,11 +18,15 @@ export const Navbar = () => {
         </div>
       </NavLink>
       <div className="body-central">
-        {/* <NavLink to="/events">
-          <div className={`${pathname === "/events" ? "active-tab-admin-navbar" : ""} nav-item`}>
-            <h4>Events</h4>
+        <NavLink to="/home">
+          <div
+            className={`${
+              pathname === "/home" ? "active-tab-admin-navbar" : ""
+            } option-item`}
+          >
+            <h4>Home</h4>
           </div>
-        </NavLink> */}
+        </NavLink>
         <NavLink to="/device-database">
           <div
             className={`${
@@ -32,6 +36,7 @@ export const Navbar = () => {
             <h4>Device Database</h4>
           </div>
         </NavLink>
+
         <NavLink to="/attendees">
           <div
             className={`${
@@ -41,13 +46,6 @@ export const Navbar = () => {
             <h4>Users</h4>
           </div>
         </NavLink>
-        {/* <NavLink to="/articles">
-          <div className={`${pathname === "/articles" ? "active-tab-admin-navbar" : ""} `}>
-            <h4>
-              Articles
-            </h4>
-          </div>
-        </NavLink> */}
         <NavLink to="/settings">
           <div
             className={`${
@@ -60,12 +58,8 @@ export const Navbar = () => {
       </div>
       <div className="profile-section-nav">
         <NavLink to="/profile">
-          <div
-            className={`${
-              pathname === "/profile" ? "active-tab-admin-navbar" : ""
-            } option-item`}
-          >
-            <h4>{user.name}</h4>
+          <div className={`option-item`}>
+            <h4 style={{ paddingRight: "10px" }}>{user.name}</h4>
           </div>
         </NavLink>
         <button
