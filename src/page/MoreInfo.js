@@ -72,40 +72,6 @@ export const MoreInfo = () => {
             </div>
           </Link>
         </div>
-        <div className="container-link-info">
-          <Link to="/">
-            <div>
-              <div className="container-title-icon-more-info">
-                <h6>Lorem ipsum dolor sit amet</h6>
-
-                <i className="bi bi-arrow-right-circle"></i>
-              </div>
-              <div className="container-text-body">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-            </div>
-          </Link>
-        </div>
-        <div className="container-link-info">
-          <Link to="/">
-            <div>
-              <div className="container-title-icon-more-info">
-                <h6>Lorem ipsum dolor sit amet</h6>
-
-                <i className="bi bi-arrow-right-circle"></i>
-              </div>
-              <div className="container-text-body">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-            </div>
-          </Link>
-        </div>
         <div
           style={{
             color: "transparent",
