@@ -140,10 +140,10 @@
     margin-bottom: 5%;
   }
   .request-more-devices-button p {
-    font-size: 12px;
+    font-size: var(--font-size-xs2);
     margin: 0 auto;
-    padding-left: 60px;
-    padding-right: 60px;
+    padding-left: 35px;
+    padding-right: 35px;
   }
 
   .request-device-help-links-body {
