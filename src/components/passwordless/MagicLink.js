@@ -1,4 +1,5 @@
 import { useStytch } from "@stytch/stytch-react";
+import Swal from "sweetalert2";
 import { rightDoneMessage } from "../../helper/swalFireMessage";
 import "../../style/component/passwrodless/MagicLink.css";
 
@@ -16,7 +17,7 @@ export const MagicLink = (magicLinkParam) => {
       title: "",
       width: 600,
       padding: "3em",
-      text: `${str}`,
+      text: `An email has been sent to ${emailString}`,
       icon: "success",
       imageUrl: "https://imgpile.com/images/dhfGjS.png",
       imageWidth: 400,
