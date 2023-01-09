@@ -82,10 +82,14 @@ export const SendNotification = ({
   }, []);
 
   const handleNotification = async () => {
-    await devitrackApi.post("/notification/new-message", {
+    const response = await devitrackApi.post("/notification/new-message", {
         title: title,
         body: body
     })
+    if(response){
+      alert("Notification sent!")
+    }
+    closeModal()
   };
 
   return (
