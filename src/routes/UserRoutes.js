@@ -19,7 +19,6 @@ import { QRCodeConfirmation } from "../page/QRCodeConfirmation";
 import { RequestDevices } from "../page/RequestDevices";
 import { RequestSupportDuringTheEvent } from "../page/moreInfo/RequestSupportDuringTheEvent";
 import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
-import { NotificationDisplay } from "../components/admin/Notification/NotificationDisplay";
 
 export const UserRoutes = () => {
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
@@ -40,7 +39,6 @@ export const UserRoutes = () => {
   }
   return (
     <div>
-      {Notification.permission === "granted" && <NotificationDisplay />}
       <Routes>
         <Route path="/" element={<Home />} />
         {response !== false ? (
