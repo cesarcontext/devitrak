@@ -95,14 +95,14 @@ export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
                         <option value="Corporate">Corporate</option>
                       </select>{" "}
                       <button
-                        style={{ width: "fit-content" }}
+                        style={{ width: "100%" }}
                         className="btn btn-delete"
                         onClick={() => setShowOptionToUpdate(false)}
                       >
                         Cancel
                       </button>
                       <button
-                        style={{ width: "fit-content" }}
+                        style={{ width: "100%" }}
                         className="btn btn-create"
                         onClick={handleEditCategory}
                       >
