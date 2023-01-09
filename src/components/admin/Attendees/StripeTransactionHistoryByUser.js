@@ -17,7 +17,6 @@ export const StripeTransactionHistoryByUser = ({
   
 }) => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  const [paymentIntentId, setSendPaymentIntentId] = useState("");
   const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -99,8 +98,8 @@ export const StripeTransactionHistoryByUser = ({
                     <NavLink to="/attendees/receiver_assignation">
                       <button
                         className="btn btn-detail"
-                        onClick={async () => {
-                          setSendPaymentIntentId(transaction.paymentIntent);
+                        style={{width:"100%"}}
+                        onClick={() => {
                           dispatch(
                             onAddPaymentIntentSelected(
                               transaction.paymentIntent
