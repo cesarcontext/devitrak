@@ -2,14 +2,13 @@ import React from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { StripeCheckoutForm } from "./StripeCheckForm";
-const stripePromise = loadStripe(
-  "pk_test_51LkbrKA4UM3TTNMjsa6TvhL78emkZK3YyHWYsE9n95zfrDNFNPcCQAwZz4ZK4XHyODZimzeU7I1PEfK9OcYJLb8N0010TL3oW6"
-);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+console.log("🚀 ~ file: StripeCheckoutElement.js:6 ~ stripePromise", stripePromise)
 
 export const StripeCheckoutElement = ({ clientSecret }) => {
   const appearance = {
     theme: "flat",
-    labels: 'floating',
+    labels: "floating",
     variables: {
       fontFamily: "var(--font-family--open_sans)",
       fontLineHeight: "1.5",
