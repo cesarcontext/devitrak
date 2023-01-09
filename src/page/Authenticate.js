@@ -36,24 +36,3 @@ export const Authenticate = () => {
     </>
   );
 };
-
-/**
- *   useEffect(() => {
-    if (session) {
-      navigate("/checkout");
-      dispatch(blockLinks("auto"));
-    } else {
-      const token = new URLSearchParams(window.location.search).get("token");
-      client.magicLinks
-        .authenticate(token, {
-          session_duration_minutes: 15,
-        })
-        .then(() => {
-          rightDoneMessage(`Successfully authenticated`);
-          navigate(0); //navigate to 0 to refrese page
-          dispatch(blockLinks("auto"));
-        });
-    }
-  }, [client, session]);
-
- */
