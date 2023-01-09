@@ -10,7 +10,6 @@ import { StytchProvider, initStytch } from "@stytch/stytch-react";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import "./index.css";
-import { AppDownloadModal } from "./helper/AppDownloadModal";
 
 const stytch = initStytch(
   "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"
@@ -37,14 +36,7 @@ root.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.register({
-  onUpdate: () => {
-    <AppDownloadModal />
-  },
-  onSuccess:() => {
-    <AppDownloadModal />
-  }
-});
+serviceWorkerRegistration.register();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
