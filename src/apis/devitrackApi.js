@@ -5,7 +5,7 @@ export const devitrackApi = axios.create({
 });
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: `${process.env.REACT_APP_URL}/admin`
+  baseURL: `https://devitrackdb.itmastersltd.com/api/admin`
 })
 
 devitrackApiAdmin.interceptors.request.use((config) => {
@@ -18,7 +18,7 @@ devitrackApiAdmin.interceptors.request.use((config) => {
 });
 
 export const devitrackApiStripe = axios.create({
-  baseURL: `${process.env.REACT_APP_URL}/stripe`
+  baseURL: `https://devitrackdb.itmastersltd.com/api/stripe`
 })
 
 //TODO: config interceptors
@@ -32,7 +32,7 @@ devitrackApiStripe.interceptors.request.use((config) => {
 });
 
 export const devitrackApiArticle = axios.create({
-  baseURL: `${process.env.REACT_APP_URL}/article`
+  baseURL: `https://devitrackdb.itmastersltd.com/api/article`
 })
 
 //TODO: config interceptors
