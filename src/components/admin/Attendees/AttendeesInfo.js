@@ -13,8 +13,7 @@ export const AttendeesInfo = () => {
   const [users, setUsers] = useState([]);
   const [userDetail, setUserDetail] = useState(null);
   const [
-    createTransactionForNoRegularUser,
-    setCreateTransactionForNoRegularUser,
+    createTransactionForNoRegularUser
   ] = useState(false);
   const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
@@ -78,6 +77,9 @@ export const AttendeesInfo = () => {
                     <td>{user.email}</td>
                     <td>
                       <button
+                      style={{
+                        width:"100%"
+                      }}
                         className="btn btn-detail"
                         onClick={() => {
                           setSendObjectIdUser(user.id);
