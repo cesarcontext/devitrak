@@ -22,7 +22,7 @@ export const DetailSelectedUserFOrAssignReceiver = () => {
       >
         <div className="detail-assignment-user-section">
           <div className="detail-user-info-assignment-section">
-            <NavLink to="/admin/attendees">
+            <NavLink to="/attendees">
               <button
                 className="btn btn-delete"
                 onClick={cleanUpPaymentIntentDetailSelect}
