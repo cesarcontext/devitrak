@@ -24,32 +24,16 @@ export const Profile = () => {
           {/* <h2>Profile</h2> */}
         </div>
         <div className="profile-info-detail">
-          <div>
+          <div className="image-container">
             <img
               style={{
                 borderRadius: "50%",
                 objectPosition: "center",
                 objectFit: "fill",
               }}
-              src="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
-              alt="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
+              src={require("../../icons/placeholder image.webp")}
             />
             <div>
-              <button
-              className=""
-                style={{
-                  backgroundColor: "transparent",
-                  border: "transparent",
-                  boxShadow: "none",
-                  color: "#212529",
-                }}
-              >
-                {" "}
-                {/* <input type="file" onChange={handleChange} /> */}
-                <strong>
-                  CHANGE PICTURE <i className="bi bi-pencil" />{" "}
-                </strong>
-              </button>
             </div>
           </div>
           <div className="personal-info-box">
