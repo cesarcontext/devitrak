@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { DetailSelectedUserFOrAssignReceiver } from "./DetailSelectedUserFOrAssignReceiver";
@@ -361,7 +361,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                           setReceiverNumberAssgined(event.target.value)
                         }
                       />
-                      <button className="btn btn-create" onClick={addReceiver}>
+                      <button className="btn btn-create" style={{width:"100%"}} onClick={addReceiver}>
                         Add receiver
                       </button>
                     </>
@@ -414,6 +414,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                   <td>
                                     <button
                                       className="btn btn-create"
+                                      style={{width:"100%"}}
                                       onClick={() =>
                                         replaceFunctionTrigger(
                                           result,
@@ -428,6 +429,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     {result.status !== false ? (
                                       <button
                                         className="btn btn-delete"
+                                        style={{width:"100%"}}
                                         onClick={() =>
                                           handleReturnDevice(
                                             result,
@@ -440,6 +442,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     ) : (
                                       <button
                                         className="btn btn-create"
+                                        style={{width:"100%"}}
                                         onClick={() =>
                                           handleAssignDevice(
                                             result,
@@ -474,6 +477,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     <td>
                                       <button
                                         className="btn btn-create"
+                                        style={{width:"100%"}}
                                         onClick={() =>
                                           replaceFunctionTrigger(
                                             receiver,
@@ -488,6 +492,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                       {receiver.status !== false ? (
                                         <button
                                           className="btn btn-delete"
+                                          style={{width:"100%"}}
                                           onClick={() =>
                                             handleReturnDevice(receiver, index)
                                           }
@@ -497,6 +502,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                       ) : (
                                         <button
                                           className="btn btn-create"
+                                          style={{width:"100%"}}
                                           onClick={() =>
                                             handleAssignDevice(receiver, index)
                                           }
@@ -535,6 +541,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                 <td>
                                   <button
                                     className="btn btn-delete"
+                                    style={{width:"100%"}}
                                     onClick={() =>
                                       removeReceiverBeforeSavedData(index)
                                     }
