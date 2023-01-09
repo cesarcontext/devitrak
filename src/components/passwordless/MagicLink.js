@@ -12,7 +12,27 @@ export const MagicLink = (magicLinkParam) => {
   );
   const handleLogin = async () => {
     await client.magicLinks.email.loginOrCreate(emailToPass);
-    rightDoneMessage(`An email has been sent to ${emailString}`);
+    Swal.fire({
+      title: "",
+      width: 600,
+      padding: "3em",
+      text: `${str}`,
+      icon: "success",
+      imageUrl: "https://imgpile.com/images/dhfGjS.png",
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: "user aware",
+      color: "#rgb(30, 115, 190)",
+      background: "#fff",
+      confirmButtonColor: "rgb(30, 115, 190)",
+      backdrop: `
+          rgb(30, 115, 190)
+            url("../image/logo.jpg")
+            left top
+            no-repeat
+          `,
+    });
+    // rightDoneMessage(`An email has been sent to ${emailString}`);
   };
   return (
     <div className="email-sent-message-magic-link">
@@ -21,16 +41,6 @@ export const MagicLink = (magicLinkParam) => {
         system. Please click this link to log in through your email inbox{" "}
         <i className="bi bi-chevron-right" />
       </p>
-      <div>
-        <p>
-          Please, sometimes for security set up of the device, it should need to
-          redirect to default browser.
-        </p>
-        <img
-          src={require("../../image/screen-alert-magic-link.png")}
-          alt="screen alert"
-        />
-      </div>
     </div>
   );
 };
