@@ -76,10 +76,8 @@
     width: fit-content;
   }
   #icon-delete-searchTerm {
-    /* display: block;
     position: absolute;
     right: 37vw;
-    top: 22%; */
     font-size: var(--font-size-xl2);
   }
 }
@@ -161,10 +159,8 @@
     width: fit-content;
   }
   #icon-delete-searchTerm {
-    /* display: block;
     position: absolute;
-    right: 36.5vw;
-    top: 22.5%; */
+    right: 37vw;
     font-size: var(--font-size-xl2);
   }
 }
@@ -245,10 +241,8 @@
     width: fit-content;
   }
   #icon-delete-searchTerm {
-    /* display: block;
     position: absolute;
     right: 30vw;
-    top: 22%; */
     font-size: var(--font-size-xl2);
   }
 }
