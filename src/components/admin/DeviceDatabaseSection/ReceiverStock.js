@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { UserTable } from "../../../helper/UserTable";
 import { DeviceUsersHistory } from "./DeviceUsersHistory";
 import { useInterval } from "interval-hooks";
 import ReactPaginate from "react-paginate";
@@ -55,8 +54,8 @@ export const ReceiverStock = ({ searchTerm }) => {
   }, [listOfReceiver.length, loading]);
 
   useEffect(() => {
-    {
-      dispatch && mergingData();
+    if (dispatch === true) {
+      mergingData();
     }
     setLoading(true);
   }, [dispatch]);
@@ -84,7 +83,10 @@ export const ReceiverStock = ({ searchTerm }) => {
   let totalDataMergedToExcel = userDataMerged.concat(
     listReceiverReturnedByIssue
   );
-  console.log("🚀 ~ file: ReceiverStock.js:68 ~ ReceiverStock ~ totalDataMergedToExcel", totalDataMergedToExcel)
+  console.log(
+    "🚀 ~ file: ReceiverStock.js:68 ~ ReceiverStock ~ totalDataMergedToExcel",
+    totalDataMergedToExcel
+  );
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % listOfReceiver.length;
     setItemOffset(newOffset);
@@ -156,23 +158,24 @@ export const ReceiverStock = ({ searchTerm }) => {
             </thead>
             {searchTerm === ""
               ? currentItemsRendered?.map((receiver, index) => {
-                let background;
-                if( index === 0){
-                  background = "#ffff"
-                }
-                if(index % 2 === 0){
-                  background = "#F1F6F9"
-                } 
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
 
                   return (
                     <tbody key={receiver.id}>
-                     <tr style={{background:`${background}`}}>
+                      <tr style={{ background: `${background}` }}>
                         <th scope="row">{index + 1}</th>
                         <td>{receiver.device}</td>
                         <td>{receiver.activity}</td>
                         <td>
                           <button
                             className="btn btn-detail"
+                            style={{ width: "100%" }}
                             onClick={() => {
                               setReceiverId(receiver.id);
                               setReceiverDetail(receiver.device);
@@ -195,6 +198,7 @@ export const ReceiverStock = ({ searchTerm }) => {
                         <td>
                           <button
                             className="btn btn-detail"
+                            style={{ width: "100%" }}
                             onClick={() => {
                               setReceiverId(receiver.id);
                               setReceiverDetail(receiver.device);
@@ -289,11 +293,6 @@ export const ReceiverStock = ({ searchTerm }) => {
           />{" "}
         </div>
       </div>
-      {/* <div className="d-none">
-        {loadingDownload === true && (
-          <UserTable headers={headers} data={totalDataMergedToExcel} />
-        )}
-      </div> */}
     </div>
   );
 };
