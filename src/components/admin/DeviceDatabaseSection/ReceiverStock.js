@@ -20,7 +20,7 @@ export const ReceiverStock = ({ searchTerm }) => {
   const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
 
   const callApi = async () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -83,10 +83,7 @@ export const ReceiverStock = ({ searchTerm }) => {
   let totalDataMergedToExcel = userDataMerged.concat(
     listReceiverReturnedByIssue
   );
-  console.log(
-    "🚀 ~ file: ReceiverStock.js:68 ~ ReceiverStock ~ totalDataMergedToExcel",
-    totalDataMergedToExcel
-  );
+
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % listOfReceiver.length;
     setItemOffset(newOffset);
@@ -227,22 +224,24 @@ export const ReceiverStock = ({ searchTerm }) => {
               nextLinkClassName="page-num"
               activeLinkClassName="tab-active"
             />
-            <button
-              style={{ width: "12vw", padding: "2px" }}
-              variant="contained"
-              color="primary"
-              className="export-btn btn-delete"
-              onClick={() => setLoadingDownload(false)}
-            >
+
+            <p className="export-btn" onClick={() => setLoadingDownload(false)}>
+              {" "}
               <CSVLink
                 headers={headers}
                 data={totalDataMergedToExcel}
                 filename={fileName}
-                style={{ textDecoration: "none", color: "#fff" }}
+                // style={{ textDecoration: "none", color: "#fff" }}
               >
-                {loadingDownload ? "Loading csv..." : "Export Data"}
-              </CSVLink>
-            </button>
+                {loadingDownload ? (
+                  "Loading csv..."
+                ) : (
+                  <p>
+                    IMPORT FROM SPREADSHEET <i className="bi bi-plus-circle" />
+                  </p>
+                )}{" "}
+              </CSVLink>{" "}
+            </p>
           </div>
         </div>
       </div>
@@ -263,7 +262,7 @@ export const ReceiverStock = ({ searchTerm }) => {
                   conditionReturned = receiver.device;
                 }
                 return (
-                  <div key={receiver.id}>
+                  <div className="table-detail" key={receiver.id}>
                     <div>
                       <strong>Device: </strong>
                       {receiver.device}
