@@ -1,3 +1,7 @@
+:root{
+  --main-new-staff-member: #15AAF5;
+  --main-delete-staff-member: #C02B0A;
+}
 @media only screen and (min-width:1025px) {
   .container-setting-detail {
     display: flex;
@@ -34,6 +38,21 @@
     align-items: center;
     text-align: left;
   }
+  .create-new-user{
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-m2);
+    color: var(--main-new-staff-member);
+    cursor: pointer;
+  }
+  .staff-detail {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 17vw;
+    height: 50vh;
+  }
   .staff-roles {
     display: flex;
     justify-content: space-between;
@@ -60,6 +79,7 @@
     text-align: justify;
   }
   .container-admin-user-details {
+    height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -112,6 +132,12 @@
     text-align: center;
     border-radius: 10%;
   }
+  .delete-staff-member{
+    color: var(--main-delete-staff-member);
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    line-height: 22px;
+  }
 }
 
 @media only screen and (min-width:769px) and (max-width:1024px) {
@@ -149,6 +175,21 @@
     align-items: center;
     text-align: left;
   }
+  .staff-detail {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 17vw;
+    height: 50vh;
+  }
+  .create-new-user{
+    font-weight: 700;
+    font-style: normal;
+    font-size: var(--font-size-l2);
+    color: var(--main-new-staff-member);
+    cursor: pointer;
+  }
   .staff-roles {
     display: flex;
     justify-content: space-between;
@@ -175,6 +216,7 @@
     text-align: justify;
   }
   .container-admin-user-details {
+    height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -223,6 +265,12 @@
     width: fit-content;
     text-align: center;
     border-radius: 10%;
+  }
+  .delete-staff-member{
+    color: var(--main-delete-staff-member);
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    line-height: 22px;
   }
 }
 @media only screen and (max-width: 768px) {
@@ -258,6 +306,7 @@
     flex-direction: column;
     text-align: left;
     width: 17vw;
+    height: 50vh;
   }
   .container-section-pagination-button {
     width: 100%;
@@ -266,6 +315,13 @@
     justify-content: space-between;
     align-items: center;
     text-align: left;
+  }
+    .create-new-user{
+      font-weight: 700;
+      font-style: normal;
+      font-size: var(--font-size-l2);
+    color: var(--main-new-staff-member);
+    cursor: pointer;
   }
   .staff-roles {
     display: flex;
@@ -293,6 +349,7 @@
     text-align: justify;
   }
   .container-admin-user-details {
+    height: 50vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -341,5 +398,11 @@
     width: fit-content;
     text-align: center;
     border-radius: 10%;
+  }
+  .delete-staff-member{
+    color: var(--main-delete-staff-member);
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    line-height: 22px;
   }
 }

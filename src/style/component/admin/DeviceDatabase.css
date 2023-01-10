@@ -42,6 +42,7 @@
     height: 300px;
   }
 
+
   .container-footer-stock {
     width: 100%;
     padding: 25px;
@@ -58,6 +59,16 @@
     text-align: left;
     width: 17vw;
     margin-bottom: 2vh;
+    height: 21vh;
+  }
+    .table-detail{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 18vh;
+    width: 17vw;
   }
   .detail-history-container {
     padding: 5px;
@@ -74,6 +85,13 @@
   }
   .table-device-user-history {
     width: fit-content;
+  }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: #15aaf5;
   }
   #icon-delete-searchTerm {
     position: absolute;
@@ -142,6 +160,15 @@
     width: 17vw;
     margin-bottom: 2vh;
   }
+  .table-detail{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 18vh;
+    width: 17vw;
+  }
   .detail-history-container {
     padding: 5px;
     display: flex;
@@ -157,6 +184,13 @@
   }
   .table-device-user-history {
     width: fit-content;
+  }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: #15aaf5;
   }
   #icon-delete-searchTerm {
     position: absolute;
@@ -239,6 +273,13 @@
   }
   .table-device-user-history {
     width: fit-content;
+  }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: #15aaf5;
   }
   #icon-delete-searchTerm {
     position: absolute;
