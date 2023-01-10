@@ -47,7 +47,7 @@ export const AttendeesInfo = () => {
   return (
     <div className="container-attendees">
       <div className="container-attendees-info">
-        <div>
+        <div style={{textAlign:"left"}}>
           <h2>Users</h2>
         </div>
         <div className="container-attendees-info-table">
@@ -58,7 +58,7 @@ export const AttendeesInfo = () => {
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
-                <th scope="col">details</th>
+                <th scope="col">Details</th>
               </tr>
             </thead>
             {currentItemsRendered?.map((user, item) => {                  
@@ -111,12 +111,12 @@ export const AttendeesInfo = () => {
             />
             {user.role === "Administrator" ? (
               <div>
-                <button
-                  className="btn btn-create"
+                <p
+                  className="create-new-user"
                   onClick={() => setCreateUserButton(true)}
                 >
-                  Create user
-                </button>
+                  CREATE NEW USER <i className="bi bi-plus-circle"/>
+                </p>
               </div>
             ) : null}
           </div>
