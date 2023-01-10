@@ -9,6 +9,7 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    padding-bottom: 7vh;
   }
   .container-schedule-event-title {
     display: flex;
