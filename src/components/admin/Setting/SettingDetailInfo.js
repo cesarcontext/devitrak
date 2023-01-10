@@ -54,7 +54,13 @@ export const SettingDetailInfo = ({ searchTerm }) => {
   return (
     <div className="container-setting-detail">
       <div className="container-company-staff">
-        <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+          }}
+        >
           <h2>Company Staff</h2>
         </div>
         <div>
@@ -69,30 +75,34 @@ export const SettingDetailInfo = ({ searchTerm }) => {
             </thead>
             {searchTerm.length < 2
               ? currentItemsRendered?.map((user, index) => {
-                  let background;
-                  if (index === 0) {
-                    background = "#ffff";
-                  }
-                  if (index % 2 === 0) {
-                    background = "#F1F6F9";
-                  }
+                  // let background;
+                  // if (index === 0) {
+                  //   background = "#ffff";
+                  // }
+                  // if (index % 2 === 0) {
+                  //   background = "#F1F6F9";
+                  // }
                   return (
-                    <tbody key={user.id}>
-                      <tr style={{ background: `${background}` }}>
-                        <td>{user.name}</td>
-                        <td>{user.role}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <button
-                            className="btn btn-detail"
-                            style={{width:"100%"}}
-                            onClick={() => setSendObjectIdUser(user.id)}
-                          >
-                            Details <i className="bi bi-caret-right" />{" "}
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <>
+                      <tbody key={user.id}>
+                        <tr
+                        // style={{ background: `${background}` }}
+                        >
+                          <td>{user.name}</td>
+                          <td>{user.role}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <button
+                              className="btn btn-detail"
+                              style={{ width: "100%" }}
+                              onClick={() => setSendObjectIdUser(user.id)}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </>
                   );
                 })
               : adminUser
@@ -105,11 +115,11 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                         <tr>
                           <td>{user.name}</td>
                           <td>{user.role}</td>
-                          <td>{user.email}</td>
+                          <td style={{ color: "#15AAF5" }}>{user.email}</td>
                           <td>
                             <button
                               className="btn btn-detail"
-                              style={{width:"100%"}}
+                              style={{ width: "100%" }}
                               onClick={() => setSendObjectIdUser(user.id)}
                             >
                               Details <i className="bi bi-caret-right" />{" "}
@@ -121,6 +131,13 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                   })}
           </table>
           <div className="container-section-pagination-button">
+            <div className="create-new-user">
+              {user.role === "Administrator" ? (
+                <p className="" onClick={() => setModalState(true)}>
+                  CREATE NEW STAFF MEMBER <i className="bi bi-plus-circle" />
+                </p>
+              ) : null}
+            </div>{" "}
             <ReactPaginate
               breakLabel="..."
               nextLabel="next >"
@@ -135,16 +152,6 @@ export const SettingDetailInfo = ({ searchTerm }) => {
               nextLinkClassName="page-num"
               activeLinkClassName="tab-active"
             />
-            <div>
-              {user.role === "Administrator" ? (
-                <button
-                  className="btn btn-create"
-                  onClick={() => setModalState(true)}
-                >
-                  Create new user
-                </button>
-              ) : null}
-            </div>
           </div>
         </div>
       </div>
@@ -200,14 +207,14 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                           <div className="buttons-edit-permission">
                             <button
                               className="btn btn-delete"
-                              style={{width:"90%"}}
+                              style={{ width: "90%" }}
                               onClick={handleEditAdminPermission}
                             >
                               Cancel
                             </button>
                             <button
                               className="btn btn-create"
-                              style={{width:"90%"}}
+                              style={{ width: "90%" }}
                               onClick={() =>
                                 updatePermission(permissionUpdated)
                               }
@@ -218,65 +225,75 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                         ) : null}
                       </div>
                     </div>
-                  </div>
-                  <div className="container-admin-user-details-card">
-                    <h5>CONTACT INFO</h5>
-                    <div style={{ textAlign: "left" }}>
-                      <label>Phone: </label>{" "}
-                      <span>
-                        &nbsp;
-                        {!user.phoneNumber ? "XXX-XXX-XXXX" : user.phoneNumber}
-                      </span>
-                      <br />
-                      <label>Email :</label> <span>&nbsp;{user.email}</span>
+                    <div className="container-admin-user-details-card">
+                      <h5>CONTACT INFO</h5>
+                      <div style={{ textAlign: "left" }}>
+                        <label>Phone: </label>{" "}
+                        <span>
+                          &nbsp;
+                          {user.phone ? user.phone : "XXX-XXX-XXXX"}
+                        </span>
+                        <br />
+                        <label>Email :</label> <span>&nbsp;{user.email}</span>
+                      </div>
                     </div>
+                  </div>
+
+                  <div>
+                    {sendObjectIdUser !== undefined &&
+                    user.role === "Administrator" ? (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <p
+                          className="delete-staff-member"
+                          onClick={() => {
+                            Swal.fire({
+                              title: "Are you sure?",
+                              text: "This data will be deleted permantly",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Delete data",
+                              backdrop: "rgba(0,0,123,0.4)",
+                            })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  devitrackApiAdmin.delete(
+                                    `/${sendObjectIdUser}`
+                                  );
+                                  Swal.fire(
+                                    "User data deleted",
+                                    "This user was deleted",
+                                    "success"
+                                  );
+                                }
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                                Swal.fire(
+                                  "Something went wrong",
+                                  "Please, try again later",
+                                  "error"
+                                );
+                              });
+                          }}
+                        >
+                          DELETE <i className="bi bi-trash3" />
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               );
             }
           })}
         </div>
-        {/* </div> */}
-        {sendObjectIdUser !== undefined && user.role === "Administrator" ? (
-          <div>
-            <button
-              className="btn btn-delete"
-              style={{width:"100%"}}
-              onClick={() => {
-                Swal.fire({
-                  title: "Are you sure?",
-                  text: "This data will be deleted permantly",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Delete data",
-                  backdrop: "rgba(0,0,123,0.4)",
-                })
-                  .then((result) => {
-                    if (result.isConfirmed) {
-                      devitrackApiAdmin.delete(`/${sendObjectIdUser}`);
-                      Swal.fire(
-                        "User data deleted",
-                        "This user was deleted",
-                        "success"
-                      );
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                    Swal.fire(
-                      "Something went wrong",
-                      "Please, try again later",
-                      "error"
-                    );
-                  });
-              }}
-            >
-              Delete
-            </button>
-          </div>
-        ) : null}
       </div>
       <ModalAdminNewUser
         modalState={modalState}
