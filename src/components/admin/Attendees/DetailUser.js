@@ -24,7 +24,7 @@ export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
       if (response) {
         alert("User category updated");
         setShowOptionToUpdate(false);
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error) {
       console.log(
@@ -38,95 +38,84 @@ export const DetailUser = ({ sendObjectIdUser, userDetail }) => {
   return (
     <div>
       <div className="container-attendees-info-detail">
-        <div>
+        <div style={{ textAlign: "left" }}>
           <h2>Details</h2>
         </div>
         <div className="container-user-info-detail">
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <div key={userDetail?.id}>
-                <div>
-                  <strong>Fullname:</strong>{" "}
-                  {`${userDetail?.name}, ${userDetail?.lastName}`}
-                </div>
-                <div>
-                  <strong>Email: </strong>
-                  {userDetail?.email}
-                </div>
-                <div>
-                  <strong>Phone: </strong>
-                  {userDetail?.phoneNumber}
-                </div>
-                <div style={{ display: "flex" }}>
-                  <strong>Category: </strong>
-                  {user.role === "Administrator" ? (
-                    <p
-                      style={{
-                        cursor: "pointer",
-                        textDecorationLine: "underline",
-                        textDecorationColor: "var(--main-bluetiful)",
-                      }}
-                      onClick={() => setShowOptionToUpdate(true)}
-                    >
-                      &nbsp;{userDetail?.category}
-                    </p>
-                  ) : (
-                    `${userDetail?.category}`
-                  )}
-                </div>
-                <div>
-                  {showOptionToUpdate !== false ? (
-                    <div>
-                      <select
-                        name="newCategory"
-                        onChange={(event) => setNewCategory(event.target.value)}
-                      >
-                        <option></option>
-                        <option value="Regular">Regular</option>
-                        <option value="Corporate">Corporate</option>
-                      </select>{" "}
-                      <button
-                        style={{ width: "100%" }}
-                        className="btn btn-delete"
-                        onClick={() => setShowOptionToUpdate(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        style={{ width: "100%" }}
-                        className="btn btn-create"
-                        onClick={handleEditCategory}
-                      >
-                        Update
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
+          <div className="container-details-button" key={userDetail?.id}>
+            <div className="user-details-breadown">
+              <p>
+                <strong>Fullname:</strong>{" "}
+                {`${userDetail?.name}, ${userDetail?.lastName}`}
+              </p>
+              <p>
+                <strong>Email: </strong> {userDetail?.email}
+              </p>
+              <p>
+                <strong>Phone: </strong> {userDetail?.phoneNumber}
+              </p>
+            </div>
+
+            <div style={{ display: "flex" }}>
+              <strong>Category: </strong>
+              {user.role === "Administrator" ? (
+                <p
+                  style={{
+                    cursor: "pointer",
+                    textDecorationLine: "underline",
+                    textDecorationColor: "var(--main-bluetiful)",
+                  }}
+                  onClick={() => setShowOptionToUpdate(true)}
+                >
+                  &nbsp;{userDetail?.category}
+                </p>
+              ) : (
+                `${userDetail?.category}`
+              )}
             </div>
             <div>
-              {user.role === "Administrator" ? (
-                userDetail?.id === sendObjectIdUser ? (
-                  <button
-                    className="btn btn-create"
-                    onClick={() => {
-                      setCreateTransactionForNoRegularUser(true);
-                    }}
+              {showOptionToUpdate !== false ? (
+                <div style={{gap:"5px"}}>
+                  <select
+                    name="newCategory"
+                    onChange={(event) => setNewCategory(event.target.value)}
                   >
-                    Create Transaction
+                    <option></option>
+                    <option value="Regular">Regular</option>
+                    <option value="Corporate">Corporate</option>
+                  </select>{" "}
+                  <button
+                    style={{ width: "fit-content" }}
+                    className="btn btn-delete"
+                    onClick={() => setShowOptionToUpdate(false)}
+                  >
+                    Cancel
                   </button>
-                ) : null
+                  <button
+                    style={{ width: "fit-content" }}
+                    className="btn btn-create"
+                    onClick={handleEditCategory}
+                  >
+                    Update
+                  </button>
+                </div>
               ) : null}
             </div>
+          </div>
+
+          <div className="container-create-transaction-button">
+            {user.role === "Administrator" ? (
+              userDetail?.id === sendObjectIdUser ? (
+                <p
+                  className=""
+                  onClick={() => {
+                    setCreateTransactionForNoRegularUser(true);
+                  }}
+                >
+                  NEW TRANSACTION <i className="bi bi-plus-circle" />
+                </p>
+              ) : null
+            ) : null}
           </div>
         </div>
         <div className="container-attendes-stripe-transaction-info">
