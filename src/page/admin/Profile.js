@@ -5,59 +5,67 @@ import "../../style/pages/admin/profile.css";
 
 export const Profile = () => {
   const { user } = useAdminStore();
-  const {startEditAdminUser} = useAdminStore()
+  const { startEditAdminUser } = useAdminStore();
   const [buttonEditProfile, setButtonEditProfile] = useState(false);
   const [email, setEmail] = useState("");
-  const [fullname, setFullname] = useState("")
+  const [phone, setPhone] = useState("");
+  const [question, setQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
+  const [fullname, setFullname] = useState("");
 
   const handleEditInfoSubmitted = async (event) => {
     event.preventDefault();
-    await startEditAdminUser({email, fullname});
+    await startEditAdminUser({
+      email,
+      fullname,
+      phone,
+      question,
+      securityAnswer,
+    });
     setButtonEditProfile(!buttonEditProfile);
+    setEmail("");
+    setPhone("");
+    setQuestion("");
+    setSecurityAnswer("");
   };
-
+  
   return (
     <div>
       <Navbar />
       <div className="profile-admin-container">
-        <div>
-          {/* <h2>Profile</h2> */}
-        </div>
+        <div></div>
         <div className="profile-info-detail">
-          <div className="image-container">
-            <img
-              style={{
-                borderRadius: "50%",
-                objectPosition: "center",
-                objectFit: "fill",
-              }}
-              src={require("../../icons/placeholder image.webp")}
-            />
-            <div>
-            </div>
-          </div>
           <div className="personal-info-box">
             {buttonEditProfile === false ? (
               <>
-                <div className="personal-info-detail">
+                <div className="info-detail">
                   <strong>YOUR INFORMATION</strong>
-                  <h6>Name</h6>
-                  <span>{user.name}</span>
-                  <br />
-                  <h6>Role</h6>
-                  <span>{user.role}</span>
+                  <br/>
+                  <h6>
+                    Name: <span>{user.name}</span>
+                  </h6>
+
+                  <h6>
+                    Role: <span>{user.role}</span>
+                  </h6>
                 </div>
-                <div className="personal-info-detail">
+                <div className="info-detail">
                   <strong>CONTACT DETAILS</strong>
-                  <h6>Email</h6>
-                  <span>{user.email}</span>
+                  <br/>
+                  <h6>
+                    Phone: <span>{user.phone}</span>
+                  </h6>
+                  <h6>
+                    Email: <span>{user.email}</span>
+                  </h6>
                 </div>
               </>
             ) : (
               <>
-                <div className="personal-info-detail">
+                <div className="info-detail">
                   <strong>YOUR INFORMATION</strong>
-                  <h6>Name</h6>
+                  <br/>
+                  <h6>Name: </h6>
                   <span>
                     <input
                       style={{
@@ -72,25 +80,88 @@ export const Profile = () => {
                     />
                   </span>
                   <br />
-                  <h6>Role</h6>
-                  <span>{user.role}</span>
+                  <h6>
+                    Role: <span>{user.role}</span>
+                  </h6>
                 </div>
-                <div className="personal-info-detail">
+                <div className="info-detail">
                   <strong>CONTACT DETAILS</strong>
-                  <h6>Email</h6>
-                  <span>
-                    <input
-                      style={{
-                        width: "100%",
-                      }}
-                      placeholder="Email"
-                      id="email"
-                      onChange={(event) => setEmail(event.target.value)}
-                      type="text"
-                      name="email"
-                      value={email}
-                    />
-                  </span>
+                  <br/>
+                  <div>
+                    <h6>Phone: </h6>
+                    <span>
+                      <input
+                        placeholder="Phone"
+                        id="phone"
+                        onChange={(event) => setPhone(event.target.value)}
+                        type="text"
+                        name="phone"
+                        value={phone}
+                      />
+                    </span>
+                  </div>
+                  <div>
+                    <h6>Email: </h6>
+                    <span>
+                      <input
+                        placeholder="Email"
+                        id="email"
+                        onChange={(event) => setEmail(event.target.value)}
+                        type="text"
+                        name="email"
+                        value={email}
+                      />
+                    </span>
+                  </div>
+                  <div>
+                    <h6>Security Question: </h6>
+                    <select
+                      value={question}
+                      name="question"
+                      onChange={(event) => setQuestion(event.target.value)}
+                    >
+                      <option defaultValue="">Choose your question</option>
+                      <option value="What was the make of your first car?">
+                        What was the make of your first car?
+                      </option>
+                      <option value="In what city were you born?">
+                        In what city were you born?
+                      </option>
+                      <option value="What is the name of your favorite pet?">
+                        What is the name of your favorite pet?
+                      </option>
+                      <option value="What is your mother's maiden name?">
+                        What is your mother's maiden name?
+                      </option>
+                      <option value="What high school did you attend?">
+                        What high school did you attend?
+                      </option>
+                      <option value="What was your favorite food as a child?">
+                        What was your favorite food as a child?
+                      </option>
+                      <option value="Where did you meet your spouse?">
+                        Where did you meet your spouse?
+                      </option>
+                      <option value="What year was your father (or mother) born?">
+                        What year was your father (or mother) born?
+                      </option>
+                    </select>
+                  </div>
+                  <div>
+                    {" "}
+                    {question !== "" && (
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Provide an answer"
+                        name="securityAnswer"
+                        value={securityAnswer}
+                        onChange={(event) =>
+                          setSecurityAnswer(event.target.value)
+                        }
+                      />
+                    )}
+                  </div>
                 </div>
               </>
             )}
@@ -98,58 +169,28 @@ export const Profile = () => {
             <div>
               {buttonEditProfile === false ? (
                 <>
-                  <button
+                  <p
+                    className="link-edit-profile"
                     onClick={() => setButtonEditProfile(!buttonEditProfile)}
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "transparent",
-                      boxShadow: "none",
-                      color: "#212529",
-                    }}
                   >
-                    <strong>
-                      EDIT PERFIL <i className="bi bi-pencil" />{" "}
-                    </strong>
-                  </button>
+                    EDIT PERFIL <i className="bi bi-pencil" />{" "}
+                  </p>
                 </>
               ) : (
                 <>
-                  <div style={{ display: "flex" }}>
-                    <button
+                  <div className="container-buttons-edit">
+                    <p
                       onClick={() => setButtonEditProfile(false)}
-                      style={{
-                        backgroundColor: "transparent",
-                        border: "transparent",
-                        boxShadow: "none",
-                        color: "#212529",
-                        width: "45%",
-                      }}
+                      className="btn btn-delete"
                     >
-                      <strong>
-                        <h3>
-                          <i className="bi bi-x-square" />
-                        </h3>{" "}
-                      </strong>
-                    </button>
-                    <button
+                      <i className="bi bi-x-square" />
+                    </p>{" "}
+                    <p
                       onClick={handleEditInfoSubmitted}
-                      style={{
-                        backgroundColor: "transparent",
-                        border: "transparent",
-                        boxShadow: "none",
-                        color: "#212529",
-                        width: "80%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
+                      className="btn btn-create"
                     >
-                      <strong>
-                        <h3>
-                          <i className="bi bi-save" />
-                        </h3>{" "}
-                      </strong>
-                    </button>
+                      <i className="bi bi-save" />
+                    </p>{" "}
                   </div>
                 </>
               )}
