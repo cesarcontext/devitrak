@@ -4,7 +4,6 @@ import { Modal } from "react-bootstrap";
 
 export function AppDownloadModal() {
   const [showModal, setShowModal] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null)
   const handleClose = () => setShowModal(false);
   useEffect(() => {
     if (Notification.permission === "default") {
@@ -18,10 +17,8 @@ export function AppDownloadModal() {
     try {
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        setHasPermission(true);
         setShowModal(false);
       } else {
-        setHasPermission(false);
         setShowModal(false);
       }
     } catch (error) {
