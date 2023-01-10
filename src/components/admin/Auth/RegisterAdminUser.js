@@ -37,6 +37,7 @@ export const RegisterAdminUser = () => {
         name: registerName,
         email: registerEmail,
         password: registerPassword,
+        phone:"000-000-0000",
         question: registerSecretQuestion,
         answer: registerSecretAnswer.toLowerCase().trim(),
       });
