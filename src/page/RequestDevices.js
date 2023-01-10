@@ -24,7 +24,7 @@ export const RequestDevices = () => {
             <p>
               {TotalOrder().device} {TotalOrder().device > 1 ? "Devices" : "Devices"}
             </p>
-            <p>${TotalOrder().order} deposit</p>
+            <p>${TotalOrder().device * 200} deposit</p>
           </div>
         </div>
         <div className="view-more-details-acount">
