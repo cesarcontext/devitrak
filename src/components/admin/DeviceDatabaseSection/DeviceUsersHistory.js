@@ -7,7 +7,6 @@ export const DeviceUsersHistory = ({
   receiverDetail,
   conditionReturned,
 }) => {
-
   const [listOfReceiverAssigned, setListOfReceiverAssigned] = useState([]);
   const [usersPerDevice, setUsersPerDevice] = useState([]);
   const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] =
@@ -21,13 +20,13 @@ export const DeviceUsersHistory = ({
 
   const checkingUsersInHistory = async () => {
     const usersPerDevice = [];
-    listOfReceiverAssigned?.map((data) => {
+    for (let data of listOfReceiverAssigned) {
       data.device.map((device) => {
         if (device.serialNumber === receiverDetail) {
           usersPerDevice.unshift(data.user);
         }
       });
-    });
+    }
     setUsersPerDevice(usersPerDevice);
   };
 
@@ -62,25 +61,22 @@ export const DeviceUsersHistory = ({
       <table className="table table-device-user-history">
         <thead>
           <tr>
-            <th>#</th>
             <th scope="col">User</th>
           </tr>
         </thead>
         <tbody>
           {conditionReturned === null
-            ? usersPerDevice?.map((user, index) => {
+            ? usersPerDevice?.map((user) => {
                 return (
                   <tr>
-                    <td>{index + 1}</td>
                     <td scope="col">{user}</td>
                   </tr>
                 );
               })
-            : listReceiverReturnedByIssue?.map((receiver, index) => {
+            : listReceiverReturnedByIssue?.map((receiver) => {
                 if (conditionReturned === receiver.device) {
                   return (
                     <tr>
-                      <td>{index + 1}</td>
                       <td scope="col">{receiver.user}</td>
                     </tr>
                   );
