@@ -18,18 +18,17 @@ export const Checkout = () => {
 
   const userEmail = users.email;
 
-  const callStripeCustomerFind = async () => {
-    const response = await devitrackApiStripe.get("/customers", {
-      email: users.email,
-    });
-    if (response) {
-      return setCustomerStripeId(response.data.customer);
-    }
-  };
-
   useEffect(() => {
-    callStripeCustomerFind();
-  }, [users.id, device]);
+    const callStripeCustomerFind = async () => {
+      const response = await devitrackApiStripe.get("/customers", {
+        email: users.email,
+      });
+      if (response) {
+        return setCustomerStripeId(response.data.customer);
+      }
+    };
+    return ()=> callStripeCustomerFind();
+  }, [users.id, device]); // eslint-disable-next-line
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
