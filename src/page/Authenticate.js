@@ -19,7 +19,7 @@ export const Authenticate = () => {
       const token = new URLSearchParams(window.location.search).get("token");
       client.magicLinks
         .authenticate(token, {
-          session_duration_minutes: 15,
+          session_duration_minutes: 180,
         })
         .then(() => {
           rightDoneMessage(`Successfully authenticated`);
