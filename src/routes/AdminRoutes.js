@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router";
 import { useSelector } from "react-redux";
 import { Admin } from "../page/admin/Admin";
 import { ArticleContentCreation } from "../components/admin/Articles/ArticleContentCreation";
-import { Articles } from "../page/admin/Articles";
+import { Events } from "../page/admin/Events";
 import { Attendees } from "../page/admin/Attendees";
 import { DeviceDatabase } from "../page/admin/DeviceDatabase";
 import { LoginRegisterAdmin } from "../page/admin/LoginAdmin";
@@ -23,7 +23,7 @@ export const AdminRoutes = () => {
           <>
             <Route path="/" element={<Admin />}></Route>
             <Route path="/device-database" element={<DeviceDatabase />} />
-            <Route path="/articles" element={<Articles />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/attendees" element={<Attendees />} />
             <Route
