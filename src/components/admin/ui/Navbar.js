@@ -46,13 +46,13 @@ export const Navbar = () => {
         </div>
       </NavLink>
       <div className="body-central">
-        <NavLink to="/home">
+        <NavLink to="/events">
           <div
             className={`${
-              pathname === "/home" ? "active-tab-admin-navbar" : ""
+              pathname === "/events" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
-            <h4>Home</h4>
+            <h4>Events</h4>
           </div>
         </NavLink>
         <NavLink to="/device-database">
