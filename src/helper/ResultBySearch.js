@@ -36,22 +36,30 @@ export const ResultBySearch = ({ searchTerm }) => {
       for (let data of receiversList) {
         for (let i = 0; i < data.device.length; i++) {
           if (data.device[i].serialNumber === searchTerm) {
-            return (auxParameter = data.paymentIntent);
+            for (let transaction of stripeTransactions) {
+              if (data.paymentIntent === transaction.paymentIntent) {
+                dispatch(onAddPaymentIntentSelected(transaction.paymentIntent));
+                dispatch(onAddPaymentIntentDetailSelected(transaction));
+                navigate("/attendees/receiver_assignation");
+              } else {
+                <h4>NO DATA FOUND</h4>;
+              }
+            }
           }
         }
       }
     }
-    if (auxParameter !== "") {
-      for (let data of stripeTransactions) {
-        if (auxParameter === data.paymentIntent) {
-          dispatch(onAddPaymentIntentSelected(data.paymentIntent));
-          dispatch(onAddPaymentIntentDetailSelected(data));
-          navigate("/attendees/receiver_assignation");
-        } else {
-          <h4>NO DATA FOUND</h4>;
-        }
-      }
-    }
+    // if (auxParameter !== "") {
+    //   for (let data of stripeTransactions) {
+    //     if (auxParameter === data.paymentIntent) {
+    //       dispatch(onAddPaymentIntentSelected(data.paymentIntent));
+    //       dispatch(onAddPaymentIntentDetailSelected(data));
+    //       navigate("/attendees/receiver_assignation");
+    //     } else {
+    //       <h4>NO DATA FOUND</h4>;
+    //     }
+    //   }
+    // }
     if (searchTerm[0].match(/[a-zA-Z]/)) {
       for (let data of stripeTransactions) {
         if (searchTerm === data.paymentIntent) {
