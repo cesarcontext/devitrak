@@ -19,7 +19,7 @@
     display: flex;
     column-gap: 2%;
     margin: 2vh auto;
-    height: 55vh;
+    height: 100vh;
   }
   .container-stock-device-list {
     width: 40vw;
@@ -39,7 +39,7 @@
   }
 
   .container-device-info-table {
-    height: 300px;
+    height: 85vh;
   }
 
   .container-footer-stock {
@@ -58,6 +58,16 @@
     text-align: left;
     width: 17vw;
     margin-bottom: 2vh;
+    height: 21vh;
+  }
+    .table-detail{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 18vh;
+    width: 17vw;
   }
   .detail-history-container {
     padding: 5px;
@@ -75,11 +85,17 @@
   .table-device-user-history {
     width: fit-content;
   }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--main-colorslobster);
+    width: fit-content;
+  }
   #icon-delete-searchTerm {
-    display: block;
     position: absolute;
     right: 37vw;
-    top: 22%;
     font-size: var(--font-size-xl2);
   }
 }
@@ -100,18 +116,18 @@
     color: var(--black);
   }
   .container-stock-device {
-    width: 70vw;
+    width: 84vw;
     display: flex;
     column-gap: 2%;
     margin: 2vh auto;
-    height: 60vh;
+    height: 100vh;
   }
   .container-stock-device-list {
-    width: 40vw;
+    width: 56vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
-    min-height: 55vh;
+    min-height: 100vh;
     background-color: #fff;
   }
   .container-stock-device-details {
@@ -124,7 +140,7 @@
   }
 
   .container-device-info-table {
-    height: 300px;
+    height: 82vh;
   }
 
   .container-footer-stock {
@@ -144,6 +160,15 @@
     width: 17vw;
     margin-bottom: 2vh;
   }
+  .table-detail{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 18vh;
+    width: 17vw;
+  }
   .detail-history-container {
     padding: 5px;
     display: flex;
@@ -160,11 +185,17 @@
   .table-device-user-history {
     width: fit-content;
   }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--main-colorslobster);
+    width: fit-content;
+  }
   #icon-delete-searchTerm {
-    display: block;
     position: absolute;
-    right: 36.5vw;
-    top: 22.5%;
+    right: 37vw;
     font-size: var(--font-size-xl2);
   }
 }
@@ -185,19 +216,19 @@
     color: var(--black);
   }
   .container-stock-device {
-    width: 95vw;
+    width: 100vw;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     margin: 2% auto;
-    height: 70vh;
+    height: 110vh;
   }
   .container-stock-device-list {
-    width: 50vw;
+    width: 62vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
-    min-height: 70vh;
+    min-height: 100vh;
     background-color: #fff;
   }
   .container-stock-device-details {
@@ -210,7 +241,7 @@
   }
 
   .container-device-info-table {
-    height: 300px;
+    height: 100vh;
   }
   .container-footer-stock {
     width: 100%;
@@ -244,11 +275,17 @@
   .table-device-user-history {
     width: fit-content;
   }
+  .export-btn {
+    padding-top: 25px;
+    font-size: var(--font-size-m2);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--main-colorslobster);
+    width: fit-content;
+  }
   #icon-delete-searchTerm {
-    display: block;
     position: absolute;
     right: 30vw;
-    top: 22%;
     font-size: var(--font-size-xl2);
   }
 }

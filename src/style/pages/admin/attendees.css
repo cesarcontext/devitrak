@@ -132,9 +132,7 @@
   }
   .search-input-field {
     width: 40vw;
-    height: 5vh;
     border-radius: 0px;
-    margin: 2px auto;
     padding-left: 15px;
   }
   .search-button {
@@ -207,7 +205,7 @@
     justify-content: center;
     align-items: center;
     margin: 2% auto;
-    width: 50%;
+    width: 70%;
   }
 
   .receivers-input {

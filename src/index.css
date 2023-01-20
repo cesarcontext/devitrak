@@ -27,6 +27,7 @@
   --graphic-status-missed: #00a1e4;
   --graphic-status-hardware: #ebebeb;
   --graphic-status-other: #89fc00;
+  --main-navbar-color: #1E73BE;
 
   --font-size-xs: 8px;
   --font-size-s: 10px;
@@ -54,21 +55,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-
-/* input {
-  width: 35%;
-  height: 4vh;
-  border-radius: 0px;
-  margin: 2px auto;
-  padding-left: 15px;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
-} */
 
 .btn {
   color: var(--bs-body-bg);

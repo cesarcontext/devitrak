@@ -7,13 +7,14 @@
     height: 50vh;
   }
   .container-attendees-info {
-    width: 30vw;
+    width: 35vw;
     height: 60vh;
     border: solid 1px #212529;
     border-radius: 15px;
-    padding: 20px;
+    padding: 30px;
     background-color: #ffff;
     margin-left: 15vw;
+    overflow: auto;
   }
   .container-attendees-info-detail {
     width: 30vw;
@@ -25,9 +26,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
   }
-  .container-stripe-transaction-per-user{
+  .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
     width: 97vw;
     margin: 1% auto;
@@ -54,8 +54,25 @@
     align-items: center;
     text-align: left;
   }
+  .user-details-breakdown {
+    width: 100%;
+  }
+  .container-create-transaction-button p{
+    color: #15aaf5;
+    font-size: var(--font-size-m2);
+    font-weight: 500;
+    font-style: normal;
+  }
+  .container-create-transaction-button {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+  }
 }
-@media only screen and (min-width: 1025px) and (max-width:1440px) {
+@media only screen and (min-width: 1025px) and (max-width: 1440px) {
   .container-attendees {
     width: 98vw;
     display: flex;
@@ -71,6 +88,7 @@
     padding: 20px;
     background-color: #ffff;
     margin-left: 10vw;
+    overflow: auto;
   }
   .container-attendees-info-detail {
     width: 40vw;
@@ -82,9 +100,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
   }
-  .container-stripe-transaction-per-user{
+  .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
     width: 97vw;
     margin: 1% auto;
@@ -105,71 +122,35 @@
   }
   .container-user-info-detail {
     width: 100%;
-    padding: 20px;
+    padding: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-align: left;
+    height: 25vh;
   }
-}
-/* @media only screen and (max-width: 1024px) {
-  .container-attendees {
-    width: 98vw;
-    display: flex;
-    column-gap: 2%;
-    margin: 2% auto;
-    height: 50vh;
+  .container-details-button {
+    width: 25vw;
   }
-  .container-attendees-info {
-    width: 36vw;
-    height: 70vh;
-    border: solid 1px #212529;
-    border-radius: 15px;
-    padding: 20px;
-    background-color: #ffff;
-    margin-left: 10vw;
+  .user-details-breakdown {
+    width: 100%;
   }
-  .container-attendees-info-detail {
-    width: 29vw;
-    height: 55vh;
-    border: solid 1px #212529;
-    border-radius: 15px;
-    padding: 20px;
-    background-color: #ffff;
+  .container-create-transaction-button p{
+    color: #15aaf5;
+    font-size: var(--font-size-m2);
+    font-weight: 500;
+    font-style: normal;
+  }
+  .container-create-transaction-button {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     align-items: center;
+    height: 100%;
   }
-  .container-stripe-transaction-per-user{
-    background: var(--main-colorswhite);
-    width: 97vw;
-    margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
-    border-radius: 15px;
-    padding: 15px;
-  }
-
-  .container-attendees-info-table {
-    height: 300px;
-  }
-  .container-attendes-stripe-transaction-info {
-    width: 100%;
-  }
-  .stripetransaction-detail-info {
-    width: 100%;
-  }
-  .container-user-info-detail {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
-} */
-@media only screen and (min-width:769px) and (max-width:1024px) {
+}
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
   .container-attendees {
     width: 98vw;
     display: flex;
@@ -181,11 +162,12 @@
   }
   .container-attendees-info {
     width: 70vw;
-    height: 80vh;
+    height: 45vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
     background-color: #ffff;
+    overflow: auto;
   }
   .container-attendees-info-detail {
     width: 70vw;
@@ -197,9 +179,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center;
   }
-  .container-stripe-transaction-per-user{
+  .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
     width: 97vw;
     margin: 1% auto;
@@ -225,5 +206,22 @@
     justify-content: space-between;
     align-items: center;
     text-align: left;
+  }
+  .user-details-breakdown {
+    width: 100%;
+  }
+  .container-create-transaction-button p{
+    color: #15aaf5;
+    font-size: var(--font-size-m2);
+    font-weight: 500;
+    font-style: normal;
+  }
+  .container-create-transaction-button {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
   }
 }
