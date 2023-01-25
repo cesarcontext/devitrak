@@ -21,32 +21,26 @@ export const RequestSupportDuringTheEvent = () => {
         </div>
         <div className="container-info-cards">
           <div className="container-info-cards-body">
-            <h5 className="card-title">How to request support</h5>
+            <h5 className="card-title">How to request receivers</h5>
             <div className="card-body">
               <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
-              </p>
-            </div>
-          </div>
-          <div className="container-info-cards-body">
-            <div className="card-body">
-              <h5 className="card-title">Card title</h5>
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
-              </p>
-            </div>
-          </div>
-          <div className="container-info-cards-body">
-            <div className="card-body">
-              <h5 className="card-title">Card title</h5>
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
+                Scan QR code from poster, which will take you to the page:
+                https://app.devitrak.net/
+                <br />
+                Fill out your contact information, payment information, and
+                number of devices needed.
+                <br />
+                You will get an email confirmation once the deposit transaction
+                has gone through.
+                <br />
+                Go to towards the ContextGlobal staff, which will now provide
+                you with the number of devices requested.
+                <br />
+                <strong>
+                  Replacing damaged device, please take the device to context
+                  global desk and provide the reason of why the device needs to
+                  be replaced.
+                </strong>
               </p>
             </div>
           </div>

@@ -5,7 +5,6 @@ import { NavbarBottom } from "../../components/ui/NavbarBottom";
 import { Navbar } from "../../components/ui/Navbar";
 import "../../style/pages/moreInfo/HowToReturnTheDevices.css";
 
-
 export const HowToReturnTheDevices = () => {
   return (
     <div className="general-container">
@@ -23,32 +22,19 @@ export const HowToReturnTheDevices = () => {
         </div>
         <div className="container-info-cards">
           <div className="container-info-cards-body">
-            <h5 className="card-title">How to return the receiver</h5>
+            <h5 className="card-title">How to return receivers</h5>
             <div className="card-body">
               <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
-              </p>
-            </div>
-          </div>
-          <div className="container-info-cards-body">
-            <div className="card-body">
-              <h5 className="card-title">Card title</h5>
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
-              </p>
-            </div>
-          </div>
-          <div className="container-info-cards-body">
-            <div className="card-body">
-              <h5 className="card-title">Card title</h5>
-              <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.Some quick example text to build
-                on the card title and make up the bulk of the card's content.
+                When the conference is finished you must go back to
+                ContextGlobal desk and return all devices.
+                <br />
+                The deposit will be released after all devices are returned.
+                <br />
+                If you have not returned all devices after 1hr of the conference
+                finishing, our staff will attempt to contact you. If we cannot
+                contact you after 48 hours, we will charge the credit card on
+                file for the missing devices.
+                <br />{" "}
               </p>
             </div>
           </div>
@@ -60,7 +46,7 @@ export const HowToReturnTheDevices = () => {
             </div>
             <div className="help-links-body">
               <Link to="/more_info/request_support_during_event">
-                <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
+                <span>HOW TO REQUEST RECEIVERS</span>
               </Link>
             </div>
             <div className="help-links-body">

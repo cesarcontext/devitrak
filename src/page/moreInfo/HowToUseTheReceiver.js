@@ -96,7 +96,7 @@ export const HowToUseTheReceiver = () => {
             </div>
             <div className="help-links-body">
               <Link to="/more_info/request_support_during_event">
-                <span>HOW TO REQUEST SUPPORT DURING THE EVENT</span>
+                <span>HOW TO REQUEST RECEIVERS</span>
               </Link>
             </div>
             <div className="help-links-body">
