@@ -30,21 +30,27 @@ export const QRCodeConfirmation = () => {
       .then((response) => response.data)
       .then((data) => setStripeTransactions(data.stripeTransactions));
   };
+  const confirmPaymentIntent = async () => {
+    try {
+      const response = await devitrackApi.get(
+        `/stripe/payment_intents/${payment_intent}`
+      );
+      if (response) {
+        saveStripeTransaction({ payment_intent, clientSecret, device });
+        dispatch(onAddNewPaymentIntent(response.data));
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: QRCodeConfirmation.js:43 ~ confirmPaymentIntent ~ error",
+        error
+      );
+    }
+  };
 
   useEffect(() => {
-    saveStripeTransaction({ payment_intent, clientSecret, device });
-    const callApiPaymenTIntent = async () => {
-      const response = await devitrackApiStripe.get("/payment-intents");
-      if (response) {
-        for (let data of response.data.paymentIntents.data) {
-          if (data.id === payment_intent) {
-            dispatch(onAddNewPaymentIntent(data));
-          }
-        }
-      }
-    };
-    callApiPaymenTIntent();
+    confirmPaymentIntent();
   }, [payment_intent]);
+  
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
