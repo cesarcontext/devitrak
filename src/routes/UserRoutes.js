@@ -1,16 +1,16 @@
 import React from "react";
 import { Routes, Route } from "react-router";
-import { Authenticate } from "../page/Authenticate";
-import { Checkout } from "../page/Checkout";
-import { EventScheduled } from "../page/EventScheduled";
-import { Home } from "../page/Home";
-import { HowToReturnTheDevices } from "../page/moreInfo/HowToReturnTheDevices";
-import { HowToUseTheReceiver } from "../page/moreInfo/HowToUseTheReceiver";
-import { MoreInfo } from "../page/MoreInfo";
-import { MyProfile } from "../page/MyProfile";
-import { QRCodeConfirmation } from "../page/QRCodeConfirmation";
-import { RequestDevices } from "../page/RequestDevices";
-import { RequestSupportDuringTheEvent } from "../page/moreInfo/RequestSupportDuringTheEvent";
+import { Authenticate } from "../page/user/Authenticate";
+import { Checkout } from "../page/user/Checkout";
+import { EventScheduled } from "../page/user/EventScheduled";
+import { Home } from "../page/user/Home";
+import { HowToReturnTheDevices } from "../page/user/moreInfo/HowToReturnTheDevices";
+import { HowToUseTheReceiver } from "../page/user/moreInfo/HowToUseTheReceiver";
+import { MoreInfo } from "../page/user/MoreInfo";
+import { MyProfile } from "../page/user/MyProfile";
+import { QRCodeConfirmation } from "../page/user/QRCodeConfirmation";
+import { RequestDevices } from "../page/user/RequestDevices";
+import { RequestSupportDuringTheEvent } from "../page/user/moreInfo/RequestSupportDuringTheEvent";
 import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
 
 export const UserRoutes = () => {
