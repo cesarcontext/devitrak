@@ -48,10 +48,9 @@
     width: 100%;
   }
   .container-stripe-transaction-per-user {
-    width: 70vw;
-    margin: 0 auto;
-    margin-bottom: 2%;
-    border: solid 2px #212529;
+    width: 80vw;
+    margin: 2vh auto;
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }

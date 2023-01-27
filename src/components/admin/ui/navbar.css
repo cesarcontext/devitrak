@@ -33,7 +33,7 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width:35vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
@@ -43,7 +43,7 @@
     justify-content: space-around;
     align-items: center;
     padding: 5px;
-    width: 5vw;
+    width: 8vw;
   }
   .active-tab-admin-navbar {
     transform: rotateY(360deg);
@@ -85,11 +85,10 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 30vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
   .profile-section-nav {
     display: flex;
     justify-content: space-around;
@@ -138,11 +137,10 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 50vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
   .profile-section-nav {
     display: flex;
     justify-content: space-around;
