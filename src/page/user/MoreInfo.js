@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "../components/ui/Navbar";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
-import "../style/pages/moreInfo/MoreInfo.css";
+import { Navbar } from "../../components/ui/Navbar";
+import { NavbarBottom } from "../../components/ui/NavbarBottom";
+import "../../style/pages/moreInfo/MoreInfo.css";
 export const MoreInfo = () => {
   return (
     <div className="general-container">
@@ -25,7 +25,7 @@ export const MoreInfo = () => {
           <Link to="how_to_use_the_receiver">
             <div>
               <div className="container-title-icon-more-info">
-                <h6>How to use the recierver</h6>
+                <h6>How to use the receivers</h6>
 
                 <i className="bi bi-arrow-right-circle"></i>
               </div>
@@ -42,14 +42,15 @@ export const MoreInfo = () => {
           <Link to="how_to_return_the_devices">
             <div>
               <div className="container-title-icon-more-info">
-                <h6>How to return the devices</h6>
+                <h6>How to request receivers</h6>
 
                 <i className="bi bi-arrow-right-circle"></i>
               </div>
               <div className="container-text-body">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Scan QR code from poster, which will take you to the page:
+                  https://app.devitrak.net/. Fill out your contact information,
+                  payment information, and number of devices needed.
                 </p>
               </div>
             </div>
@@ -59,14 +60,15 @@ export const MoreInfo = () => {
           <Link to="request_support_during_event">
             <div>
               <div className="container-title-icon-more-info">
-                <h6>Request support during event</h6>
+                <h6>How to return receivers</h6>
 
                 <i className="bi bi-arrow-right-circle"></i>
               </div>
               <div className="container-text-body">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  When the conference is finished you must go back to
+                  ContextGlobal desk and return all devices. The deposit will be
+                  released after all devices are returned.
                 </p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Navbar } from '../components/ui/Navbar'
-import { NavbarBottom } from '../components/ui/NavbarBottom'
+import { Navbar } from '../../components/ui/Navbar'
+import { NavbarBottom } from '../../components/ui/NavbarBottom'
 
 export const DeclineTerms = () => {
   return (

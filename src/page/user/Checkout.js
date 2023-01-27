@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
-import { Navbar } from "../components/ui/Navbar";
-import { useStripeHook } from "../hooks/useStripeHook";
-import { useDeviceCount } from "../hooks/useDeviceCountStore";
-import { Devices } from "../components/device/Devices";
-import { devitrackApiStripe } from "../apis/devitrackApi";
+import { NavbarBottom } from "../../components/ui/NavbarBottom";
+import { StripeCheckoutElement } from "../../components/stripe/StripeCheckoutElement";
+import { Navbar } from "../../components/ui/Navbar";
+import { useStripeHook } from "../../hooks/useStripeHook";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import { Devices } from "../../components/device/Devices";
+import { devitrackApiStripe } from "../../apis/devitrackApi";
 import { useSelector } from "react-redux";
-import "../style/pages/Checkout.css";
+import "../../style/pages/Checkout.css";
 
 export const Checkout = () => {
   const [customerStripeId, setCustomerStripeId] = useState([]);
@@ -46,18 +46,7 @@ export const Checkout = () => {
       <Navbar />
       <div className="container-checkout">
         {!clientSecret ? <Devices /> : ""}
-        {device > 5 ? (
-          <div
-            style={{
-              width: " 80vw",
-              paddingTop: "5vh",
-            }}
-          >
-            <p>
-              <span>For more than 5 devices, please contact to the staff.</span>
-            </p>
-          </div>
-        ) : device > 0 ? (
+        {device > 0 ? (
           <div className={`button-wrapper d-${visibleButton}`}>
             <button className="btn" onClick={handleOnSubmit}>
               Submit

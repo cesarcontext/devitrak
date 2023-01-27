@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { NavbarBottom } from "../../components/ui/NavbarBottom";
-import { Navbar } from "../../components/ui/Navbar";
+import { NavbarBottom } from "../../../components/ui/NavbarBottom";
+import { Navbar } from "../../../components/ui/Navbar";
 
 export const RequestSupportDuringTheEvent = () => {
   return (

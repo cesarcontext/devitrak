@@ -2,8 +2,8 @@ import { useStytch, useStytchSession } from "@stytch/stytch-react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { rightDoneMessage } from "../helper/swalFireMessage";
-import { blockLinks } from "../store/slices/uiSlice";
+import { rightDoneMessage } from "../../helper/swalFireMessage";
+import { blockLinks } from "../../store/slices/uiSlice";
 
 export const Authenticate = () => {
   const client = useStytch();
@@ -19,7 +19,7 @@ export const Authenticate = () => {
       const token = new URLSearchParams(window.location.search).get("token");
       client.magicLinks
         .authenticate(token, {
-          session_duration_minutes: 180,
+          session_duration_minutes: 10080,
         })
         .then(() => {
           rightDoneMessage(`Successfully authenticated`);

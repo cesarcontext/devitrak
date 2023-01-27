@@ -1,7 +1,7 @@
 import React from "react";
-import { Navbar } from "../components/ui/Navbar";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
-import "../style/pages/EventScheduled.css";
+import { Navbar } from "../../components/ui/Navbar";
+import { NavbarBottom } from "../../components/ui/NavbarBottom";
+import "../../style/pages/EventScheduled.css";
 export const EventScheduled = () => {
   return (
     <div className="general-container">
@@ -17,7 +17,7 @@ export const EventScheduled = () => {
         </div>
         <div className="container-schedule-event-img">
           <img
-            src={require("../image/buildingDistribution.PNG")}
+            src={require("../../image/buildingDistribution.PNG")}
             alt="event-scheduled"
           />
         </div>

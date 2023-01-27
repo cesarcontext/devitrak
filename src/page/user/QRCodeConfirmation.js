@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
-import { Navbar } from "../components/ui/Navbar";
-import { NavbarBottom } from "../components/ui/NavbarBottom";
-import { useDeviceCount } from "../hooks/useDeviceCountStore";
-import { useStripeHook } from "../hooks/useStripeHook";
-import { onAddNewPaymentIntent } from "../store/slices/stripeSlice";
-import "../style/pages/QRCodeConfirmation.css";
+import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
+import { Navbar } from "../../components/ui/Navbar";
+import { NavbarBottom } from "../../components/ui/NavbarBottom";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import { useStripeHook } from "../../hooks/useStripeHook";
+import { onAddNewPaymentIntent } from "../../store/slices/stripeSlice";
+import "../../style/pages/QRCodeConfirmation.css";
 
 export const QRCodeConfirmation = () => {
   const [stripeTransactions, setStripeTransactions] = useState([]);

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { NavbarBottom } from "../../components/ui/NavbarBottom";
-import { Navbar } from "../../components/ui/Navbar";
-import "../../style/pages/moreInfo/HowToUseTheReceiver.css";
+import { NavbarBottom } from "../../../components/ui/NavbarBottom";
+import { Navbar } from "../../../components/ui/Navbar";
+import "../../../style/pages/moreInfo/HowToUseTheReceiver.css";
 export const HowToUseTheReceiver = () => {
   return (
     <div className="general-container">

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { NavbarBottom } from "../../components/ui/NavbarBottom";
-import { Navbar } from "../../components/ui/Navbar";
-import "../../style/pages/moreInfo/HowToReturnTheDevices.css";
+import { NavbarBottom } from "../../../components/ui/NavbarBottom";
+import { Navbar } from "../../../components/ui/Navbar";
+import "../../../style/pages/moreInfo/HowToReturnTheDevices.css";
 
 export const HowToReturnTheDevices = () => {
   return (
