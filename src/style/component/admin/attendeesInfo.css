@@ -29,10 +29,10 @@
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
@@ -108,10 +108,10 @@
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
@@ -187,10 +187,10 @@
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
