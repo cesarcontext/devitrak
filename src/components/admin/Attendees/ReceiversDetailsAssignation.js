@@ -30,6 +30,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
+  const [dispatchBatch, setDispatchBatch] = useState(false);
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
   const inputReference = useRef();
   const [batchDevice, setBatchDevice] = useState("");
@@ -142,6 +143,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       rightDoneMessage(
         `Receivers were assigned to payment intent successfully`
       );
+      window.location.reload();
     } catch (error) {
       console.log(error);
       swalErrorMessage(error);
@@ -331,17 +333,58 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   filter();
   let errorMessageForBatch = null;
   const returnDeviceAsBatch = async () => {
-    for (let data of paymentIntentReceiversAssigned) {
-      for (let device of data.device) {
-        if (device.serialNumber === batchDevice && device.status === true) {
-          console.log(device);
-        } else {
-          errorMessageForBatch = "Device does not belong to this batch";
-          setBatchDevice("");
-        }
+    let receiverInPoolId;
+    let index;
+    for (let i = 0; i < paymentIntentReceiversAssigned[0].device.length; i++) {
+      if (
+        paymentIntentReceiversAssigned[0].device[i].serialNumber === batchDevice
+      ) {
+        index = i;
+      } else {
+        errorMessageForBatch = "Device not found in transaction selected";
       }
     }
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === batchDevice) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
+    const objectToReturn = {
+      serialNumber: batchDevice,
+      status: false,
+    };
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      if (response) {
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "Stored",
+            comment: "No comment",
+          }
+        );
+        setLoading(true);
+      }
+    } catch (error) {
+      swalErrorMessage(error);
+    }
   };
+
   if (batchDevice.length > 5) {
     returnDeviceAsBatch();
     setBatchDevice("");
@@ -582,19 +625,32 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
           <button
             className="btn btn-delete"
-            style={{ width: "25%", margin: "2% auto", padding: "15px" }}
+            style={{ width: "fit-content", margin: "1% auto", padding: "5px" }}
             onClick={returnAllReceiversAtOnce}
           >
-            Return all
+            RETURN ALL
           </button>
         ) : null
       ) : null}
-      <input
-        name="batchDevice"
-        value={batchDevice}
-        onChange={(event) => setBatchDevice(event.target.value)}
-        placeholder="Scan device here to return it"
-      />
+      {}
+      {paymentIntentReceiversAssigned?.length > 0 ? (
+        paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+          dispatchBatch === false ? (
+            <button onClick={() => setDispatchBatch(true)}>RETURN BATCH</button>
+          ) : (
+            <>
+              <input
+                name="batchDevice"
+                value={batchDevice}
+                onChange={(event) => setBatchDevice(event.target.value)}
+                placeholder="Scan device here to return it"
+              />
+              <button onClick={() => setDispatchBatch(false)}>DONE</button>
+            </>
+          )
+        ) : null
+      ) : null}
+
       {errorMessageForBatch !== null && <strong>{errorMessageForBatch}</strong>}
       {receiverObjectToReplace !== null && (
         <ModalReplaceReceiver
