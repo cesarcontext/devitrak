@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { DetailSelectedUserFOrAssignReceiver } from "./DetailSelectedUserFOrAssignReceiver";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
-import { Navbar } from "../ui/Navbar";
-import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import {
@@ -14,6 +12,7 @@ import {
   swalErrorMessage,
 } from "../../../helper/swalFireMessage";
 import "../../../style/component/admin/receiversDetailsAssignation.css";
+import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 
 export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -33,6 +32,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
   const inputReference = useRef();
+  const [batchDevice, setBatchDevice] = useState("");
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -79,14 +79,16 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         );
       }
     }
-    const replacementList = [...receiversAssigned, receiverObject];
+    const replacementList = [receiverObject, ...receiversAssigned];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
       setReceiversAssigned(replacementList);
       setReceiverNumberAssgined("");
       inputReference.current.focus();
     }
   };
-
+  if (receiverObject.serialNumber.length === 6) {
+    addReceiver();
+  }
   let receiversAssignedListCopy;
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
@@ -306,7 +308,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       });
       setReplaceReceiverIndex(index);
       setReplaceStatus(true);
-      setSearchTermField("")
+      setSearchTermField("");
     } catch (error) {
       swalErrorMessage(error);
     }
@@ -314,8 +316,8 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
 
   let filteredResult = [];
   const filter = async () => {
-    const devicesInPaymentIntent = paymentIntentReceiversAssigned.at(-1).device;
-    for (let i = 0; i < devicesInPaymentIntent.length; i++) {
+    const devicesInPaymentIntent = paymentIntentReceiversAssigned?.device;
+    for (let i = 0; i < devicesInPaymentIntent?.length; i++) {
       if (searchTermField === devicesInPaymentIntent[i].serialNumber) {
         return (filteredResult = [
           {
@@ -327,17 +329,27 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
   filter();
-
+  let errorMessageForBatch = null;
+  const returnDeviceAsBatch = async () => {
+    for (let data of paymentIntentReceiversAssigned) {
+      for (let device of data.device) {
+        if (device.serialNumber === batchDevice && device.status === true) {
+          console.log(device);
+        } else {
+          errorMessageForBatch = "Device does not belong to this batch";
+          setBatchDevice("");
+        }
+      }
+    }
+  };
+  if (batchDevice.length > 5) {
+    returnDeviceAsBatch();
+    setBatchDevice("");
+  }
   return (
     <div>
       <div>
-        <Navbar />
-      </div>
-      <div>
-        <DetailSelectedUserFOrAssignReceiver />
-      </div>
-      <div>
-        <PaymentIntentTemplate />
+        {!paymentIntentReceiversAssigned ? "" : <PaymentIntentTemplate />}
       </div>
       <div>
         <div>
@@ -361,7 +373,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                           setReceiverNumberAssgined(event.target.value)
                         }
                       />
-                      <button className="btn btn-create" onClick={addReceiver}>
+                      <button
+                        className="btn btn-create"
+                        style={{ width: "fit-content" }}
+                        onClick={addReceiver}
+                      >
                         Add receiver
                       </button>
                     </>
@@ -409,7 +425,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                   <td>
                                     {result.status !== false
                                       ? "ACTIVATED"
-                                      : "INACTIVATED"}
+                                      : "RETURNED"}
                                   </td>
                                   <td>
                                     <button
@@ -469,7 +485,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     <td>
                                       {receiver.status !== false
                                         ? "ACTIVATED"
-                                        : "INACTIVATED"}
+                                        : "RETURNED"}
                                     </td>
                                     <td>
                                       <button
@@ -510,17 +526,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                               );
                             })
                       : receiversAssigned?.map((item, index) => {
-                        let background;
-                        if( index === 0){
-                          background = "#ffff"
-                        }
-                        if(index % 2 === 0){
-                          background = "#F1F6F9"
-                        }   
                           return (
-                            <tbody key={index + item}>
-                              <tr style={{background:`${background}`}}>
-                                <th scope="row">{index + 1}</th>
+                            <tbody key={item + 1}>
+                              <tr>
+                                <th scope="row">
+                                  {receiversAssigned.length - index}
+                                </th>
                                 <td>{item.serialNumber}</td>
                                 <td>
                                   <span>Receiver</span>
@@ -529,7 +540,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                   <span>
                                     {item.status === true
                                       ? "ACTIVATED"
-                                      : "INACTIVATED"}
+                                      : "RETURNED"}
                                   </span>
                                 </td>
                                 <td>
@@ -578,6 +589,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           </button>
         ) : null
       ) : null}
+      <input
+        name="batchDevice"
+        value={batchDevice}
+        onChange={(event) => setBatchDevice(event.target.value)}
+        placeholder="Scan device here to return it"
+      />
+      {errorMessageForBatch !== null && <strong>{errorMessageForBatch}</strong>}
       {receiverObjectToReplace !== null && (
         <ModalReplaceReceiver
           paymentIntentDetailSelected={paymentIntentDetailSelected}
