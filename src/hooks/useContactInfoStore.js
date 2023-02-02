@@ -8,7 +8,10 @@ import {
   onUpdateContact,
   onCheckContact,
 } from "../store/slices/contactInfoSlice";
-
+/**
+ * useContectInfoStore - component where all custom hooks for user are located
+ * @returns {string|function|boolean|Object}
+ */
 export const useContactInfoStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,6 +23,16 @@ export const useContactInfoStore = () => {
   const [token, setToken] = useState("");
   const [emailUserRegistered, setEmailUserRegistered] = useState("");
 
+  /**
+   * startSavingContactInfo - funtion to fetch user info and create it in the database
+   * @param {String} name
+   * @param {String} lastname
+   * @param {String} email
+   * @param {Number} phoneNumber
+   * @param {String} category
+   * @param {String} privacyPolicy
+   * @returns {Promise}
+   */
   const startSavingContactInfo = async ({
     name,
     lastName,
@@ -37,6 +50,15 @@ export const useContactInfoStore = () => {
         category,
         privacyPolicy,
       });
+
+      /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
+
       if (data) {
         localStorage.setItem("uid", data.uid);
         localStorage.setItem("token", data.token);
@@ -65,26 +87,15 @@ export const useContactInfoStore = () => {
       navigate("/");
     }
   };
-  const startShowingData = () => {
-    try {
-      const { data } = devitrackApi.get(`/auth/${users.uid}`);
-      dispatch(
-        onAddNewContact({
-          name: data.name,
-          lastName: data.lastName,
-          email: data.email,
-          phoneNumber: data.phone,
-          category: data.category,
-          id: data.uid,
-        })
-      );
-      localStorage.setItem("uid", data.uid);
-      localStorage.setItem("token", data.token);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
+  /**
+   * startUpdatingContactInfo - funtion to fetch new user info and update user detail in database
+   * @param {String} name
+   * @param {String} lastname
+   * @param {Number} phoneNumber
+   * @param {String} email
+   * @returns {Promise}
+   */
   const startUpdatingContactInfo = async ({
     name,
     lastName,
@@ -93,6 +104,15 @@ export const useContactInfoStore = () => {
   }) => {
     try {
       const userUID = localStorage.getItem("uid");
+
+      /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
+
       const { data } = await devitrackApi.put(`/auth/${userUID}`, {
         name,
         lastName,
@@ -117,11 +137,25 @@ export const useContactInfoStore = () => {
     }
   };
 
+  /**
+   * startCheckingUser - funtion to check if email user exists in database or not
+   * @param {String} userInfoEmailCheck
+   * @returns {Promise}
+   */
   const startCheckingUser = async (userInfoEmailCheck) => {
     try {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,
       });
+
+
+       /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response / grant permission to user
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
       if (data.ok === true) {
         localStorage.setItem("uid", data.user.id);
         localStorage.setItem("token", data.token);
@@ -173,7 +207,6 @@ export const useContactInfoStore = () => {
     //* Methods
     startSavingContactInfo,
     startUpdatingContactInfo,
-    startShowingData,
     startCheckingUser,
   };
 };
