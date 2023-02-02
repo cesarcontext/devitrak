@@ -7,13 +7,38 @@ import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
 import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
+import { useNavigate } from "react-router-dom";
 
+
+/**
+ * ContactInfo - 
+ * @description component to collect user info 
+ * @component
+ * @returns {HTMLBodyElement}
+ */
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
     useContactInfoStore();
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
+
+  /**
+   * form to create user
+   * @typedef {{Object}} User - form to create an user
+   * @property {string} email - user email
+   * @property {string} [groupName] - name of the group of the user (optional)
+   * @property {string} last name - user last name
+   * @property {string} name - user name
+   * @property {number} phone number - user phone number
+   * @property {string} category - user category already defined
+   * @property {string} privacyPolicy privacy policy response  - user response pre defined
+   *
+   */
+
+  /**
+   * @type {User}
+   */
   const initalFormValues = {
     email: "",
     groupName: "",
@@ -24,6 +49,7 @@ export const ContactInfo = () => {
     privacyPolicy: response,
   };
   const [formValues, setFormValues] = useState(initalFormValues);
+  const navigate = useNavigate();
 
   const onInputCHange = ({ target }) => {
     setFormValues({
@@ -31,17 +57,33 @@ export const ContactInfo = () => {
       [target.name]: target.value,
     });
   };
+
   useEffect(() => {
     startCheckingUser(formValues.email);
   }, [formValues.email]);
-  
+/**
+ * validationName - useMemo
+ * @callback validationName - the callback that handles the response.
+ * @returns {String} 
+ */
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
   }, [formValues.name]);
+/**
+ * validationLastName - useMemo
+ * @callback validationLastName - the callback that handles the response.
+ * @returns {String} 
+ */
 
   const validationLastName = useMemo(() => {
     return formValues.lastName.length > 0 ? "" : "is-invalid";
   }, [formValues.lastName]);
+
+  /**
+ * validationEmail - useMemo
+ * @callback validationEmail - the callback that handles the response.
+ * @returns {String} 
+ */
 
   const validationEmail = useMemo(() => {
     return formValues.email.length > 3 &&
@@ -54,12 +96,29 @@ export const ContactInfo = () => {
       : "is-invalid";
   }, [formValues.email]);
 
+  /**
+ * validationPhoneNumber - useMemo
+ * @callback validationPhoneNumber - the callback that handles the response.
+ * @returns {String} 
+ */
+
   const validationPhoneNumber = useMemo(() => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
+  /**
+   * magicLinkParam - to import user email value to component
+   * @type {String} 
+   */
   const magicLinkParam = formValues.email;
 
+
+  /**
+   * handleOnSubmit
+   * 
+   * @param {Object} event - initialForm
+   * @returns {void}
+   */
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
@@ -76,15 +135,23 @@ export const ContactInfo = () => {
       return swalErrorMessage("Phone number must be provided");
     }
 
+/**
+ * hooks imported to pass values needed to create user in database
+ */
     await startSavingContactInfo({
       ...formValues,
       privacyPolicy: true,
     });
+
+    /**
+ * hooks imported to pass values needed to create customer in stripe
+ */
     await stripeCustomer(formValues);
+    navigate("/checkout");
   };
 
   if (users.status === true) {
-    dispatch(blockLinks("none"));
+    dispatch(blockLinks("auto"));
   } else {
     dispatch(blockLinks("auto"));
   }
@@ -96,7 +163,15 @@ export const ContactInfo = () => {
           <div className="row">
             <form>
               <div className="container-input">
-                <p className="paragraph">ENTER YOUR CONTACT INFORMATION</p>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <p className="paragraph">ENTER YOUR CONTACT INFORMATION</p>
+                  <p style={{ fontSize: "12px" }}>
+                    If you have already made an order and need to request more
+                    devices, just enter your email address in the field below
+                    and click on the link that will appear to make the new
+                    request with your current account.
+                  </p>
+                </div>
                 <div className="form-outline">
                   <input
                     type="email"
@@ -163,7 +238,7 @@ export const ContactInfo = () => {
                     type="tel"
                     id="phoneNumber"
                     className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                    placeholder="Phone number"
+                    placeholder="Phone number | example: 100000000 or 5500000000000"
                     onChange={onInputCHange}
                     name="phoneNumber"
                     value={formValues.phoneNumber}
