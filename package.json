@@ -61,7 +61,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "doc":"jsdoc -c jsdoc.json"
   },
   "eslintConfig": {
     "extends": [
@@ -82,10 +83,12 @@
     ]
   },
   "devDependencies": {
+    "@babel/cli": "^7.20.7",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "https-browserify": "^1.0.0",
+    "jsdoc": "^4.0.0",
     "os-browserify": "^0.3.0",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",
