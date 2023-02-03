@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { DetailSelectedUserFOrAssignReceiver } from "./DetailSelectedUserFOrAssignReceiver";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
 import { useAdminStore } from "../../../hooks/useAdminStore";
@@ -105,6 +104,18 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       listOfDeviceInPool[i].id
     );
   }
+  const whatsappNotice = async ({ bodyMessage, to, alertMessage }) => {
+    const whatsappNotification = devitrackApi.post(
+      "/twilio/send-whatsapp-notification",
+      {
+        body: bodyMessage,
+        to: to,
+      }
+    );
+    if (whatsappNotification) {
+      alert(alertMessage);
+    }
+  };
   const handleDataSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
@@ -139,6 +150,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
         setSaveButtonDisplay(true);
+        whatsappNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "device"
+          } are assigned to your account. Please keep in mind to return them all when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
       }
       rightDoneMessage(
         `Receivers were assigned to payment intent successfully`
@@ -186,6 +204,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           }
         );
         setLoading(true);
+        whatsappNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed that ${receiver.serialNumber} device was returned`,
+        });
         rightDoneMessage("Receiver returned");
       }
     } catch (error) {
@@ -290,6 +313,15 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
             "All receivers were returned successfully!",
             "success"
           );
+          whatsappNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
         }
       });
     } catch (error) {
@@ -337,11 +369,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     let index;
     for (let i = 0; i < paymentIntentReceiversAssigned[0].device.length; i++) {
       if (
-        paymentIntentReceiversAssigned[0].device[i].serialNumber === batchDevice
+        paymentIntentReceiversAssigned[0].device[i].serialNumber ===
+          batchDevice &&
+        paymentIntentReceiversAssigned[0].device[i].status === true
       ) {
         index = i;
-      } else {
-        errorMessageForBatch = "Device not found in transaction selected";
       }
     }
     listOfDeviceInPool?.map((item) => {
@@ -378,7 +410,6 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
             comment: "No comment",
           }
         );
-        setLoading(true);
       }
     } catch (error) {
       swalErrorMessage(error);
@@ -621,35 +652,72 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           )}
         </div>
       </div>
-      {paymentIntentReceiversAssigned?.length > 0 ? (
-        paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
-          <button
-            className="btn btn-delete"
-            style={{ width: "fit-content", margin: "1% auto", padding: "5px" }}
-            onClick={returnAllReceiversAtOnce}
-          >
-            RETURN ALL
-          </button>
-        ) : null
-      ) : null}
-      {}
-      {paymentIntentReceiversAssigned?.length > 0 ? (
-        paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
-          dispatchBatch === false ? (
-            <button onClick={() => setDispatchBatch(true)}>RETURN BATCH</button>
-          ) : (
-            <>
-              <input
-                name="batchDevice"
-                value={batchDevice}
-                onChange={(event) => setBatchDevice(event.target.value)}
-                placeholder="Scan device here to return it"
-              />
-              <button onClick={() => setDispatchBatch(false)}>DONE</button>
-            </>
-          )
-        ) : null
-      ) : null}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "80vw",
+        }}
+      >
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            <button
+              className="btn btn-delete"
+              style={{
+                width: "fit-content",
+                margin: "1% auto",
+                padding: "5px",
+              }}
+              onClick={returnAllReceiversAtOnce}
+            >
+              RETURN ALL
+            </button>
+          ) : null
+        ) : null}
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            dispatchBatch === false ? (
+              <button
+                className="btn btn-delete"
+                style={{
+                  width: "fit-content",
+                  margin: "1% auto",
+                  padding: "5px",
+                }}
+                onClick={() => setDispatchBatch(true)}
+              >
+                RETURN BATCH
+              </button>
+            ) : (
+              <>
+                <input
+                  name="batchDevice"
+                  value={batchDevice}
+                  onChange={(event) => setBatchDevice(event.target.value)}
+                  placeholder="Scan device here to return it"
+                />
+                {errorMessageForBatch !== null && (
+                  <div style={{ border: "solid 1px #212529" }}>
+                    <p>{errorMessageForBatch}</p>
+                  </div>
+                )}
+                <button
+                  className="btn btn-create"
+                  style={{
+                    width: "fit-content",
+                    margin: "1% auto",
+                    padding: "5px",
+                  }}
+                  onClick={() => setDispatchBatch(false)}
+                >
+                  DONE
+                </button>
+              </>
+            )
+          ) : null
+        ) : null}
+      </div>
 
       {errorMessageForBatch !== null && <strong>{errorMessageForBatch}</strong>}
       {receiverObjectToReplace !== null && (
