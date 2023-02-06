@@ -12,6 +12,7 @@ import {
 } from "../../../helper/swalFireMessage";
 import "../../../style/component/admin/receiversDetailsAssignation.css";
 import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
+import { SMSNotice, whatsappNotice } from "../../../helper/Notifications";
 
 export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
@@ -30,6 +31,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
   const [dispatchBatch, setDispatchBatch] = useState(false);
+  const [dispatchChange, setDispatchChange] = useState(false)
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
   const inputReference = useRef();
   const [batchDevice, setBatchDevice] = useState("");
@@ -52,6 +54,8 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     loading,
     fetchedData,
     replaceStatus,
+    batchDevice,
+    dispatchChange
   ]);
 
   useEffect(() => {
@@ -62,7 +66,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     return () => {
       controller.abort();
     };
-  }, [paymentIntentToCheck, loading, fetchedData, replaceStatus]);
+  }, [paymentIntentToCheck, loading, fetchedData, replaceStatus, batchDevice, dispatchChange]);
 
   const addReceiver = async () => {
     if (receiverObject.serialNumber.length < 1) {
@@ -104,18 +108,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       listOfDeviceInPool[i].id
     );
   }
-  const whatsappNotice = async ({ bodyMessage, to, alertMessage }) => {
-    const whatsappNotification = devitrackApi.post(
-      "/twilio/send-whatsapp-notification",
-      {
-        body: bodyMessage,
-        to: to,
-      }
-    );
-    if (whatsappNotification) {
-      alert(alertMessage);
-    }
-  };
+
   const handleDataSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
@@ -151,6 +144,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         setLoading(!loading);
         setSaveButtonDisplay(true);
         whatsappNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "device"
+          } are assigned to your account. Please keep in mind to return them all when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
+        SMSNotice({
           bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
             paymentIntentDetailSelected.device > 1 ? "devices" : "device"
           } are assigned to your account. Please keep in mind to return them all when the event finishes. Enjoy the event!`,
@@ -207,7 +207,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         whatsappNotice({
           bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
           to: `${paymentIntentDetailSelected.user.phoneNumber}`,
-          alertMessage: `User was noticed that ${receiver.serialNumber} device was returned`,
+          alertMessage: `The user was noticed via WhatsApp that device #${receiver.serialNumber} was returned`,
+        });
+        SMSNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `The user was noticed via SMS that device #${receiver.serialNumber} was returned`,
         });
         rightDoneMessage("Receiver returned");
       }
@@ -322,6 +327,15 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
               replacementList.length > 1 ? "devices were" : "device was"
             } returned`,
           });
+          SMSNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
         }
       });
     } catch (error) {
@@ -410,6 +424,23 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
             comment: "No comment",
           }
         );
+        let timerInterval;
+        Swal.fire({
+          title: "",
+          html: `Device ${objectToReturn.serialNumber} was returned`,
+          timer: 10,
+          timerProgressBar: false,
+          didOpen: () => {
+            timerInterval = setInterval(() => {
+              b.textContent = Swal.getTimerLeft();
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+            setDispatchChange(!dispatchChange)
+
+          },
+        })
       }
     } catch (error) {
       swalErrorMessage(error);
