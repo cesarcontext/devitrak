@@ -1,15 +1,18 @@
 import { useInterval } from "interval-hooks";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
+import { SMSNotice, whatsappNotice } from "../../helper/Notifications";
 import "../../style/component/ui/ReturnDeviceAlert.css";
 
 export const ReturnDeviceAlert = () => {
   const { users } = useSelector((state) => state.contactInfo);
+
   const [language, setLanguage] = useState(false);
   const [poolReceivers, setPoolReceivers] = useState([]);
   const [remainingDays, setRemainingDays] = useState(0);
   const [remainingHours, setRemainingHours] = useState(0);
+  const notificationSent = useRef(0);
 
   const checkActivatedReceivers = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
@@ -27,13 +30,35 @@ export const ReturnDeviceAlert = () => {
   }, []);
 
   useInterval(() => {
-    const dueDate = new Date("2023-01-17 16:59:59");
+    const dueDate = new Date("2023-02-07 17:13:00");
     const currentDate = new Date();
     const timeDifference = dueDate.getTime() - currentDate.getTime();
+    console.log("🚀 ~ file: ReturnDeviceAlert.js:36 ~ useInterval ~ timeDifference", timeDifference)
     const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
+    if (notificationSent.current < 1) {
+      if (timeDifference < 0 && timeDifference > -500) {
+        return (
+          <>
+            {whatsappNotice({
+              bodyMessage:
+                "This is a friendly reminder about to return your device(s)",
+              to: `${users.phoneNumber}`,
+              alertMessage: `A whatsapp notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
+            })}
+            {SMSNotice({
+              bodyMessage:
+                "This is a friendly reminder about to return your device(s)",
+              to: `${users.phoneNumber}`,
+              alertMessage: `A SMS notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
+            })}
+            {notificationSent.current = 1}
+          </>
+        );
+      }
+    }
     setRemainingDays(days);
     setRemainingHours(hours);
   }, 1_000);
