@@ -13,16 +13,17 @@ import {
   onAddPaymentIntentSelected,
   onCheckReceiverPaymentIntent,
 } from "../../../store/slices/stripeSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { ModalNotification } from "../ui/ModalNotification";
 
 export const DetailUser = () => {
   const [showOptionToUpdate, setShowOptionToUpdate] = useState(false);
   const [createTransactionPaid, setCreateTransactionPaid] = useState(false);
+  const [notificationActivation, setNotificationActivation] = useState(false);
   const [userData, setUserData] = useState([]);
   const [userDetail, setUserDetail] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { user } = useAdminStore();
   const [
     createTransactionForNoRegularUser,
@@ -31,6 +32,7 @@ export const DetailUser = () => {
   const user_url = window.location.pathname.split("/").at(-1);
   const user_detail_id = user_url.split(":").at(-1);
   const adminUser = user;
+  let userDetailSelected = null;
   const callUserApi = async () => {
     const response = await devitrackApi.get("/auth/users");
     if (response) {
@@ -97,6 +99,7 @@ export const DetailUser = () => {
           <div className="container-details-button" key={userDetail?.id}>
             {userDetail?.map((user) => {
               if (user.id === user_detail_id) {
+                userDetailSelected = user;
                 return (
                   <>
                     <div className="user-details-breadown">
@@ -188,37 +191,19 @@ export const DetailUser = () => {
                       >
                         NEW PAID TRANSACTION <i className="bi bi-plus-circle" />
                       </p>
+                      <p
+                        className=""
+                        onClick={() => {
+                          setNotificationActivation(true);
+                          setUserData(userDetail);
+                        }}
+                      >
+                        NOTIFICATION <i className="bi bi-plus-circle" />
+                      </p>
                     </>
                   );
                 }
               })}
-            {/* {user.role === "Administrator" ? (
-              userData?.id === user_detail_id ? (
-                <>
-                  {userData?.email && (
-                    <p
-                      className=""
-                      onClick={() => {
-                        setCreateTransactionForNoRegularUser(true);
-                      }}
-                    >
-                      NEW TRANSACTION <i className="bi bi-plus-circle" />
-                    </p>
-                  )}
-                  {userData?.email && (
-                    <p
-                      className=""
-                      onClick={() => {
-                        setCreateTransactionPaid(true);
-                        setUserData(userDetail);
-                      }}
-                    >
-                      NEW PAID TRANSACTION <i className="bi bi-plus-circle" />
-                    </p>
-                  )}
-                </>
-              ) : null
-            ) : null} */}
           </div>
         </div>{" "}
         <div className="container-attendes-stripe-transaction-info">
@@ -241,7 +226,6 @@ export const DetailUser = () => {
       </div>
       <div>
         <StripeTransactionHistoryByUser />
-        {/* <PaymentIntentTemplate /> */}
         <ReceiversDetailsAssignation />
       </div>
       <ModalCreateTransactionForNoRegularUser
@@ -256,6 +240,11 @@ export const DetailUser = () => {
         setCreateTransactionPaid={setCreateTransactionPaid}
         userData={userData}
         setUserData={setUserData}
+      />
+      <ModalNotification
+        notificationActivation={notificationActivation}
+        setNotificationActivation={setNotificationActivation}
+        userDetailSelected={userDetailSelected}
       />
     </div>
   );
