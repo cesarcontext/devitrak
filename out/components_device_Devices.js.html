@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/device/Devices.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,48 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/device/Devices.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import { useDeviceCount } from "../../hooks/useDeviceCountStore";
+import "../../style/component/device/Device.css";
 
+/**
+ * @description function to display options to increase/decrease number of device and display number of devices
+ * @returns funtion
+ */
 
-    <h3> </h3>
+export const Devices = () => {
+  const { device, handleDecreaseDevice, handleIncreaseDevice } =
+    useDeviceCount();
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+  return (
+    &lt;div className="device-selection">
+      &lt;p>HOW MANY RECEIVERS DO YOU NEED?&lt;/p>
+      &lt;div className="button-selection">
+        &lt;button id="button-less" onClick={handleDecreaseDevice}>
+          -
+        &lt;/button>
+        &lt;div className="device-selection-display">
+          &lt;p id="number-device-displayed">{device}&lt;/p>
+        &lt;/div>
+        &lt;button id="button-plus" onClick={handleIncreaseDevice}>
+          +
+        &lt;/button>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

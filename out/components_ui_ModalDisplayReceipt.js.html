@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/ui/ModalDisplayReceipt.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,65 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/ui/ModalDisplayReceipt.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import { Link } from "react-router-dom";
 
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+/**
+ * ModalDisplayReceipt - modal display to notify user about where to find all receipt
+ * @component
+ * @param {boolean} setDisplayModalReceipt 
+ * @returns {HTMLBodyElement}
+ */
+export const ModalDisplayReceipt = ({setDisplayModalReceipt}) => {
+  return (
+    &lt;div
+      style={{
+        zIndex: "5",
+        borderRadius: "15px",
+        color: "#fff",
+        padding: "60px",
+        backgroundColor: "var(--bs-red)",
+        boxShadow: "-1px 1px 3px",
+        position:"absolute",
+        top:"20%",
+        left:"0%",
+        transform:"translate(0, 0)",
+        height:"55vh",
+        transition:"ease-in-out .5s"
+      }}
+    >
+      &lt;span style={{ display: "flex" }}>
+        &lt;p onClick={() => setDisplayModalReceipt(false)}>CLOSE &amp;nbsp;&lt;/p>
+        &lt;i className="bi bi-x-circle" />
+      &lt;/span>
+      &lt;span>
+        &lt;Link to="/receipt">
+          &lt;p
+            style={{
+              color: "#fff",
+              padding: "15px",
+            }}
+          >
+            You can clik this link to view all your payment receipts
+          &lt;/p>
+        &lt;/Link>
+      &lt;/span>
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
 
 
 
