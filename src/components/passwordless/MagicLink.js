@@ -1,45 +1,26 @@
-import { useStytch } from "@stytch/stytch-react";
-import Swal from "sweetalert2";
-// import { rightDoneMessage } from "../../helper/swalFireMessage";
+//@ts-check
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../../style/component/passwrodless/MagicLink.css";
 
-export const MagicLink = (magicLinkParam) => {
-  const client = useStytch();
+export const MagicLink = () => {
+  /**
+   * @description navigate - useNavigate function imported from react-router-dom library
+   */
+  const navigate = useNavigate();
 
-  const emailUserToPassToMagicLink = Object.values(magicLinkParam);
-  let emailToPass;
-  const emailString = emailUserToPassToMagicLink.map(
-    (item) => (emailToPass = item)
-  );
+  /**
+   * @description function to take user once it is confirmed in database to check out page
+   * @returns {Promise<void>}
+   */
   const handleLogin = async () => {
-    await client.magicLinks.email.loginOrCreate(emailToPass);
-    Swal.fire({
-      title: "",
-      width: 600,
-      padding: "3em",
-      text: `An email has been sent to ${emailString}. Please, redirect to default browser.`,
-      icon: "success",
-      imageUrl: "https://imgpile.com/i/dCnfrx",
-      imageWidth: 200,
-      imageHeight: 400,
-      imageAlt: "user aware",
-      color: "#rgb(30, 115, 190)",
-      background: "#fff",
-      confirmButtonColor: "rgb(30, 115, 190)",
-      backdrop: `
-          rgb(30, 115, 190)
-            url("../image/logo.jpg")
-            left top
-            no-repeat
-          `,
-    });
-    // rightDoneMessage(`An email has been sent to ${emailString}`);
+    navigate("/select_event");
   };
   return (
     <div className="email-sent-message-magic-link">
       <p onClick={handleLogin}>
         <i className="bi bi-exclamation-diamond" /> Your email is already in the
-        system. Please click this link to log in through your email inbox{" "}
+        system. Please click this link to go to check out section.{" "}
         <i className="bi bi-chevron-right" />
       </p>
     </div>
