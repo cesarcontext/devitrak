@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/admin/DeviceDatabaseSection/ReceiverStock.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/admin/DeviceDatabaseSection/ReceiverStock.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
+import { devitrackApi } from "../../../apis/devitrackApi";
+import { DeviceUsersHistory } from "./DeviceUsersHistory";
+import { useInterval } from "interval-hooks";
+import "../../../style/component/admin/DeviceDatabase.css";
+
+/**
+
+@typedef {Object} ReceiverStockProps
+@property {string} searchTerm - the search term used to filter the list of receivers
+*/
+/**
+
+Component for displaying the list of available receivers.
+@param {ReceiverStockProps} props - Component props
+@returns {JSX.Element}
+*/
+export const ReceiverStock = ({ searchTerm }) => {
+  const [dispatch, setDispatch] = useState(false);
+  const [userDataMerged, setUserDataMerged] = useState([]);
+  const [listOfReceiver, setListOfReceiver] = useState([]);
+  const [listOfReceiverAssigned, setListOfReceiverAssigned] = useState([]);
+  const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] =
+    useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
+  const [receiverId, setReceiverId] = useState(null);
+  const [receiverDetail, setReceiverDetail] = useState("");
+  const [sortUp, setSortUp] = useState(true);
+  const [sortActivity, setSortActivity] = useState(null);
+
+  /**
+   * Calls the API to get the list of receivers.
+   * @async
+   * @function
+   * @returns {Promise&lt;void>} Returns a promise that resolves with no value when the list of receivers is set.
+   */
+  const callApi = async () => {
+    const response = await devitrackApi.get("/receiver/receiver-pool-list");
+    if (response) {
+      setListOfReceiver(response.data.receiversInventory);
+    }
+  };
+
+  /**
+   * Calls the API to get the list of assigned receivers.
+   * @async
+   * @function
+   * @returns {Promise&lt;void>} Returns a promise that resolves with no value when the list of assigned receivers is set.
+   */
+  const callApiListOfReceiverAssigned = async () => {
+    const response = await devitrackApi.get("/receiver/receiver-assigned-list");
+    if (response) {
+      setListOfReceiverAssigned(response.data.listOfReceivers);
+    }
+  };
+
+  /**
+   * Calls the API to get the list of receivers returned by issue.
+   * @async
+   * @function
+   * @returns {Promise&lt;void>} Returns a promise that resolves with no value when the list of receivers returned by issue is set.
+   */
+  const callApiReceierReturnedByIssue = async () => {
+    const response = await devitrackApi.get(
+      "/receiver/list-receiver-returned-issue"
+    );
+    if (response) {
+      setListReceiverReturnedByIssue(response.data.record);
+    }
+  };
+
+  /**
+
+Runs on initial mount and when the dependencies change. It initializes an AbortController to abort a fetch
+request when the component unmounts. Calls multiple API functions to set state data for the component.
+@function
+@returns {undefined}
+*/
+  useEffect(() => {
+    const controller = new AbortController();
+    callApi();
+    callApiListOfReceiverAssigned();
+    callApiReceierReturnedByIssue();
+    getReceiverData();
+    return () => {
+      controller.abort();
+    };
+  }, [listOfReceiver.length, loading]);
+
+  /**
+
+Runs when dispatch changes. Calls the mergingData function and sets loading to true.
+@function
+@returns {undefined}
+*/
+  useEffect(() => {
+    if (dispatch === true) {
+      mergingData();
+    }
+    setLoading(true);
+  }, [dispatch]);
+
+  /**
+
+Merges data from listOfReceiver and listOfReceiverAssigned and sets the result to userDataMerged.
+@async
+@function mergingData
+*/
+  const mergingData = async () => {
+    let usersPerDevice = [];
+    for (let node of listOfReceiver) {
+      for (let data of listOfReceiverAssigned) {
+        data.device.map((item, index) => {
+          if (item.serialNumber === node.device) {
+            usersPerDevice.push({
+              ...node,
+              user: data.user,
+            });
+          }
+        });
+      }
+    }
+    setUserDataMerged(usersPerDevice);
+  };
+
+  /**
+
+Sets up an interval for calling setDispatch(!dispatch) every 3 seconds.
+@function useInterval
+@param {function} callback - The function to be called at each interval.
+@param {number} delay - The delay between each interval in milliseconds.
+*/
+  useInterval(() => {
+    setDispatch(!dispatch);
+  }, 3_00);
+
+  let totalDataMergedToExcel = userDataMerged.concat(
+    listReceiverReturnedByIssue
+  );
+
+  /**
+
+Retrieves the list of all receivers from the backend API
+and sets the listOfReceiver state with the response.
+@async
+@function getReceiverData
+@returns {Promise&lt;void>}
+*/
+  const getReceiverData = async () => {
+    setLoadingDownload(true);
+    try {
+      const response = await devitrackApi.get("/receiver/receiver-pool-list");
+      if (response) {
+        setListOfReceiver(response.data.receiversInventory);
+        setLoadingDownload(false);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      setLoading(false);
+    }
+  };
+
+  const headers = [
+    { label: "Device", key: "device" },
+    { label: "status", key: "status" },
+    { label: "Activity", key: "activity" },
+    { label: "Comment", key: "comment" },
+    { label: "User", key: "user" },
+  ];
+
+  const fileName = "receiver-inventory";
+  let conditionReturned = null;
+  let currentActivity = null;
+
+  let filteredResult = [];
+
+  /**
+
+Filter the list of receivers based on the search term
+@async
+@function filter
+@returns {Promise&lt;Array>} An array of objects representing the filtered receivers
+*/
+  const filter = async () => {
+    for (let i = 0; i &lt; listOfReceiver.length; i++) {
+      if (searchTerm === listOfReceiver[i].device) {
+        return (filteredResult = [
+          {
+            ...listOfReceiver[i],
+            index: i,
+          },
+        ]);
+      }
+    }
+  };
+  filter();
+
+  return (
+    &lt;div className="container-stock-device">
+      &lt;div className="container-stock-device-list">
+        &lt;div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          &lt;h2>Stock&lt;/h2>
+          &lt;p className="export-btn" onClick={() => setLoadingDownload(false)}>
+            {" "}
+            &lt;CSVLink
+              headers={headers}
+              data={totalDataMergedToExcel}
+              filename={fileName}
+            >
+              {loadingDownload ? (
+                "Loading csv..."
+              ) : (
+                &lt;p>
+                  IMPORT DATA &lt;i className="bi bi-plus-circle" />
+                &lt;/p>
+              )}{" "}
+            &lt;/CSVLink>{" "}
+          &lt;/p>
+        &lt;/div>
+        &lt;div
+          style={{ overflow: "auto" }}
+          className="container-device-info-table"
+        >
+          &lt;table className="table">
+            &lt;caption>&lt;/caption>
+            &lt;thead
+              style={{
+                position: "sticky",
+                top: "0",
+                background: "white",
+              }}
+            >
+              &lt;tr>
+                &lt;th scope="col">
+                  DEVICE S/N{" "}
+                  {sortUp === true ? (
+                    &lt;i
+                      onClick={() => {
+                        setSortUp(!sortUp);
+                        setSortActivity(null);
+                      }}
+                      className="bi bi-sort-down"
+                    />
+                  ) : (
+                    &lt;i
+                      onClick={() => {
+                        setSortUp(!sortUp);
+                        setSortActivity(null);
+                      }}
+                      className="bi bi-sort-up"
+                    />
+                  )}
+                &lt;/th>
+                &lt;th scope="col">ACTIVITY &lt;/th>
+                &lt;th scope="col">DETAIL&lt;/th>
+              &lt;/tr>
+            &lt;/thead>
+            {searchTerm === "" &amp;&amp;
+              sortUp === true &amp;&amp;
+              listOfReceiver
+                ?.sort((a, b) => a.device.localeCompare(b.device))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    &lt;tbody key={receiver.id}>
+                      &lt;tr style={{ background: `${background}` }}>
+                        &lt;td>{receiver.device}&lt;/td>
+                        &lt;td>{receiver.activity}&lt;/td>
+                        &lt;td>
+                          &lt;button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail &lt;i className="bi bi-caret-right" />{" "}
+                          &lt;/button>
+                        &lt;/td>
+                      &lt;/tr>
+                    &lt;/tbody>
+                  );
+                })}
+
+            {searchTerm === "" &amp;&amp;
+              sortUp === false &amp;&amp;
+              listOfReceiver
+                ?.sort((a, b) => b.device.localeCompare(a.device))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    &lt;tbody key={receiver.id}>
+                      &lt;tr style={{ background: `${background}` }}>
+                        &lt;td>{receiver.device}&lt;/td>
+                        &lt;td>{receiver.activity}&lt;/td>
+                        &lt;td>
+                          &lt;button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail &lt;i className="bi bi-caret-right" />{" "}
+                          &lt;/button>
+                        &lt;/td>
+                      &lt;/tr>
+                    &lt;/tbody>
+                  );
+                })}
+            {searchTerm === "" &amp;&amp;
+              sortUp === null &amp;&amp;
+              sortActivity === true &amp;&amp;
+              listOfReceiver
+                ?.sort((a, b) => a.activity.localeCompare(b.activity))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    &lt;tbody key={receiver.id}>
+                      &lt;tr style={{ background: `${background}` }}>
+                        &lt;td>{receiver.device}&lt;/td>
+                        &lt;td>{receiver.activity}&lt;/td>
+                        &lt;td>
+                          &lt;button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail &lt;i className="bi bi-caret-right" />{" "}
+                          &lt;/button>
+                        &lt;/td>
+                      &lt;/tr>
+                    &lt;/tbody>
+                  );
+                })}
+
+            {searchTerm !== "" &amp;&amp;
+              filteredResult.map((receiver) => {
+                return (
+                  &lt;tbody key={receiver.id}>
+                    &lt;tr>
+                      &lt;td>{receiver.device}&lt;/td>
+                      &lt;td>{receiver.activity}&lt;/td>
+                      &lt;td>
+                        &lt;button
+                          className="btn btn-detail"
+                          style={{ width: "100%" }}
+                          onClick={() => {
+                            setReceiverId(receiver.id);
+                            setReceiverDetail(receiver.device);
+                          }}
+                        >
+                          Detail &lt;i className="bi bi-caret-right" />{" "}
+                        &lt;/button>
+                      &lt;/td>
+                    &lt;/tr>
+                  &lt;/tbody>
+                );
+              })}
+          &lt;/table>
+        &lt;/div>
+      &lt;/div>
+
+      &lt;div className="container-stock-device-details">
+        &lt;div>
+          &lt;h2>Details&lt;/h2>
+        &lt;/div>
+        &lt;div className="detail-history-container">
+          {" "}
+          &lt;div className="device-detail-section">
+            {listOfReceiver?.map((receiver, index) => {
+              if (receiver.id === receiverId) {
+                if (
+                  receiver.activity === "Stored" &amp;&amp;
+                  receiver.status !== "Operational"
+                ) {
+                  conditionReturned = receiver.device;
+                }
+                currentActivity = receiver.activity;
+                return (
+                  &lt;div>
+                    &lt;div className="table-detail" key={receiver.id}>
+                      &lt;div>
+                        &lt;strong>Device: &lt;/strong>
+                        {receiver.device}
+                      &lt;/div>
+                      &lt;div>
+                        &lt;strong>Activity: &lt;/strong>
+                        {receiver.activity}
+                      &lt;/div>
+                      &lt;div>
+                        &lt;strong>Status: &lt;/strong>
+                        {receiver.status}
+                      &lt;/div>
+                      &lt;div>
+                        &lt;strong>Comment: &lt;/strong>
+                        {receiver.comment}
+                      &lt;/div>
+                    &lt;/div>
+                  &lt;/div>
+                );
+              }
+            })}
+          &lt;/div>
+          &lt;DeviceUsersHistory
+            currentActivity={currentActivity}
+            receiverId={receiverId}
+            receiverDetail={receiverDetail}
+            listOfReceiver={listOfReceiver}
+            conditionReturned={conditionReturned}
+          />{" "}
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_contentInfoSlice.html">store/contentInfoSlice</a></li><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Feb 15 2023 17:28:34 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

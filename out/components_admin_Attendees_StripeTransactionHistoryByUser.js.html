@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/stripe/StripeCheckoutElement.js</title>
+    <title>JSDoc: Source: components/admin/Attendees/StripeTransactionHistoryByUser.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/stripe/StripeCheckoutElement.js</h1>
+    <h1 class="page-title">Source: components/admin/Attendees/StripeTransactionHistoryByUser.js</h1>
 
     
 
@@ -26,91 +26,119 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { StripeCheckoutForm } from "./StripeCheckForm";
+            <pre class="prettyprint source linenums"><code>import { abort } from "process";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { devitrackApi } from "../../../apis/devitrackApi";
+import {
+  onAddPaymentIntentDetailSelected,
+  onAddPaymentIntentSelected,
+} from "../../../store/slices/stripeSlice";
+import "../../../style/component/admin/stripeTransactionHistoryByUser.css";
+import "../../../style/component/ui/paginate.css";
 
 /**
- * @description StripePromise - promise to load stripe
- * @component
- * @type {Promise}
- */
-const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
 
-/**
- * 
- * @param {String} clientSecret -secret client generate from server 
- * @returns {HTMLBodyElement}
- */
-export const StripeCheckoutElement = ({ clientSecret }) => {
+Displays the Stripe transaction history of a specific user.
+@function
+@returns {JSX.Element} - Rendered component.
+*/
+export const StripeTransactionHistoryByUser = () => {
+  const [stripeTransactions, setStripeTransactions] = useState();
+  const user_url = window.location.pathname.split("/").at(-1);
+  const user_detail_id = user_url.split(":").at(-1);
+
+  const dispatch = useDispatch();
+
   /**
-   * @description style and rules for check out element where credit card info will be collected
-   * @type {Object} 
-   * @property {String} theme - theme of the checkout element
-   * @property {String} labels - attribute for lables in the inputs of the checkout element
-   * @property {Object} variables - variables of css for teh entires elements
-   * @property {Object} rules - variables of css applied based on criterios
-   */
-  const appearance = {
-    theme: "flat",
-    labels: "floating",
-    variables: {
-      fontFamily: "var(--font-family--open_sans)",
-      fontLineHeight: "1.5",
-      borderRadius: "5px",
-      colorBackground: "#ffffff",
-      colorPrimaryText: "#00000",
-    },
-    rules: {
-      ".Block": {
-        backgroundColor: "var(--colorBackground)",
-        boxShadow: "none",
-        padding: "12px",
-      },
-      ".Input": {
-        padding: "12px",
-      },
-      ".Input:disabled, .Input--invalid:disabled": {
-        color: "var(--main-colorsaluminium)",
-      },
-      ".Tab": {
-        padding: "10px 12px 8px 12px",
-        border: "none",
-      },
-      ".Tab:hover": {
-        border: "none",
-        boxShadow:
-          "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
-        border: "var(--black)",
-        backgroundColor: "#fff",
-        boxShadow:
-          "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Label": {
-        fontWeight: "500",
-      },
-    },
+
+Calls the API to retrieve the Stripe transaction history of all users.
+@async
+@function
+*/
+  const callApiStripeTransaction = async () => {
+    const response = await devitrackApi.get("/admin/users");
+    if (response) {
+      setStripeTransactions(response.data.stripeTransactions);
+    }
   };
+
   /**
-   * @description options - object to pass clientSecret and appearance
-   * @type {Object}
-   */
-  const options = {
-    clientSecret,
-    appearance,
+
+Calls the API to retrieve the Stripe transaction history of all users when
+the component is mounted.
+@effect
+@function
+*/
+  useEffect(() => {
+    const controller = new AbortController();
+    callApiStripeTransaction();
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  let userTransaction = [];
+
+  /**
+
+Retrieves and sets the Stripe transaction history for the current user.
+@async
+@function
+*/
+  const substractUserTransactionsOnly = async () => {
+    let index = 0;
+    if (stripeTransactions !== []) {
+      stripeTransactions?.map((transaction) => {
+        if (transaction.user?._id === user_detail_id) {
+          userTransaction.splice(index, 0, transaction);
+          index++;
+        }
+      });
+    }
   };
+  substractUserTransactionsOnly();
 
   return (
-    &lt;>
-      {clientSecret &amp;&amp; (
-        &lt;Elements options={options} stripe={stripePromise}>
-          &lt;StripeCheckoutForm />
-        &lt;/Elements>
-      )}
-    &lt;/>
+    &lt;div className="container-stripe-transaction">
+      &lt;div>
+        &lt;table className="table">
+          &lt;thead>
+            &lt;tr>
+              &lt;th scope="col">Payment Intent ID&lt;/th>
+              &lt;th scope="col">Device&lt;/th>
+              &lt;th scope="col">Deposit&lt;/th>
+              &lt;th scope="col">Details&lt;/th>
+            &lt;/tr>
+          &lt;/thead>
+          {userTransaction?.map((transaction) => {
+            const amount = transaction.device * 200;
+            return (
+              &lt;tbody key={transaction.id}>
+                &lt;tr>
+                  &lt;td>{transaction.paymentIntent.slice(0, 27)}&lt;/td>
+                  &lt;td>{transaction.device}&lt;/td>
+                  &lt;td>${amount}&lt;/td>
+                  &lt;td>
+                    &lt;button
+                      className="btn btn-detail"
+                      onClick={async () => {
+                        dispatch(
+                          onAddPaymentIntentSelected(transaction.paymentIntent)
+                        );
+                        dispatch(onAddPaymentIntentDetailSelected(transaction));
+                      }}
+                    >
+                      Details
+                    &lt;/button>
+                  &lt;/td>
+                &lt;/tr>
+              &lt;/tbody>
+            );
+          })}
+        &lt;/table>
+      &lt;/div>
+    &lt;/div>
   );
 };
 </code></pre>

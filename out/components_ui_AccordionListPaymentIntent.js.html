@@ -46,14 +46,9 @@ export const AccordionListPaymentIntent = () => {
    */
   const { users } = useSelector((state) => state.contactInfo);
   const [openAccordion, setOpenAccordion] = useState(false);
-  const [openAccordionDetail, setOpenAccordionDetail] = useState(false);
-  const [detailList, setDetailList] = useState([])
-  console.log(
-    "🚀 ~ file: AccordionListPaymentIntent.js:23 ~ AccordionListPaymentIntent ~ detailList",
-    detailList
-  );
+  const [openAccordionDetail, setOpenAccordionDetail] = useState(true);
+  const [detailList, setDetailList] = useState([]);
   const [receiverSavedData, setReceiverSavedData] = useState([]);
-  let listOfPaymentPerUser = [];
 
   /**
    * callSavedStripePaymentIntentApi - function to get data in data by GET method using axios and then save the response in variable
@@ -107,14 +102,17 @@ export const AccordionListPaymentIntent = () => {
    * @returns {Promise}
    */
   const renderPaymentIntentDetail = async () => {
+    let replacement = [];
     for (let index = 0; index &lt; paymentIntentsToBeRetrieved.length; index++) {
       const response = await devitrackApi.get(
         `/stripe/payment_intents/${paymentIntentsToBeRetrieved[index]}`
       );
-      setDetailList([response.data.paymentIntent, ...detailList])
+      if (response) {
+        replacement.push(response.data.paymentIntent);
+      }
+      setDetailList([replacement]);
     }
   };
-
   useEffect(() => {
     callSavedStripePaymentIntentApi();
     renderPaymentIntentDetail();
@@ -122,7 +120,6 @@ export const AccordionListPaymentIntent = () => {
     users.id,
     openAccordion,
     openAccordionDetail,
-    listOfPaymentPerUser.length,
   ]);
 
   /**
@@ -185,81 +182,7 @@ export const AccordionListPaymentIntent = () => {
         {openAccordion === true ? (
           &lt;div className="accordion-collapse collapse show">
             &lt;div className="accordion-body">
-              {" "}
-              {detailList?.map((item) => {
-                console.log(
-                  "🚀 ~ file: AccordionListPaymentIntent.js:164 ~ {detailList?.map ~ item",
-                  item
-                );
-
-                const device = item.amount / 20000;
-                return (
-                  &lt;div key={item.id}>
-                    &lt;div className="accordion-detail-title">
-                      &lt;div className="order-list">
-                        &lt;i className="bi bi-circle" />{" "}
-                        &lt;p
-                          onClick={() =>
-                            setOpenAccordionDetail(!openAccordionDetail)
-                          }
-                          className="accordion-header"
-                        >
-                          &lt;strong>Order: &lt;/strong> {item.id}{" "}
-                          &lt;i className="bi bi-chevron-down" />
-                        &lt;/p>
-                      &lt;/div>
-                      &lt;div className="accordion-body-detail">
-                        &lt;div className="">
-                          {checkPaymentIntentArray(item.id)}
-                        &lt;/div>
-                        &lt;div>
-                          &lt;span>
-                            Device ordered:&amp;nbsp;{" "}
-                            &lt;p>
-                              &lt;strong>{device}&lt;/strong>
-                            &lt;/p>
-                          &lt;/span>
-                          &lt;span>
-                            Pending return:&amp;nbsp;{" "}
-                            &lt;strong>
-                              &lt;Accordion item={item.id} />
-                            &lt;/strong>
-                          &lt;/span>
-                          {item.charges.data[0].outcome?.network_status ===
-                            "approved_by_network" &amp;&amp; (
-                            &lt;a
-                              style={{
-                                color: "var(--main-colorsbluetiful)",
-                                cursor: "pointer",
-                                textDecoration: "underline",
-                              }}
-                              href={`${item?.charges?.data[0].receipt_url}`}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              View receipt
-                            &lt;/a>
-                          )}
-                          {item?.failure_code !== null &amp;&amp; (
-                            &lt;div
-                              style={{
-                                color: "var(--main-colorsbluetiful)",
-                                cursor: "pointer",
-                                textDecoration: "underline",
-                              }}
-                            >
-                              &lt;p style={{ color: "red", fontSize: "12px" }}>
-                                {item?.outcome?.seller_message}
-                              &lt;/p>
-                            &lt;/div>
-                          )}
-                        &lt;/div>
-                      &lt;/div>
-                    &lt;/div>
-                  &lt;/div>
-                );
-              })}
-              {receiverSavedData?.map((item) => {
+            {receiverSavedData?.map((item) => {
                 if (item.paymentIntent.length &lt; 16) {
                   if (item.user.email === users.email) {
                     return (
@@ -307,6 +230,71 @@ export const AccordionListPaymentIntent = () => {
                 }
               })}
             &lt;/div>
+            &lt;div className="accordion-body">
+              {detailList[0]?.map((item) => {                
+                return (
+                  &lt;div key={item.id}>
+                    &lt;div className="accordion-detail-title">
+                      &lt;div className="order-list">
+                        &lt;i className="bi bi-circle" />{" "}
+                        &lt;p className="accordion-header"
+                        >
+                          &lt;strong>Order: &lt;/strong> {item.id}{" "}
+                          &lt;i className="bi bi-chevron-down" />
+                        &lt;/p>
+                      &lt;/div>
+                      &lt;div className="accordion-body-detail">
+                        &lt;div className="">
+                          {checkPaymentIntentArray(item.id)}
+                        &lt;/div>
+                        &lt;div>
+                          &lt;span>
+                            Device ordered:&amp;nbsp;{" "}
+                            &lt;p>
+                              &lt;strong>{item.amount / 20000}&lt;/strong>
+                            &lt;/p>
+                          &lt;/span>
+                          &lt;span>
+                            Pending return:&amp;nbsp;{" "}
+                            &lt;strong>
+                              &lt;Accordion item={item.id} />
+                            &lt;/strong>
+                          &lt;/span>
+                          {item.charges.data[0].outcome?.network_status ===
+                            "approved_by_network" &amp;&amp; (
+                            &lt;a
+                              style={{
+                                color: "var(--main-colorsbluetiful)",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                              href={`${item?.charges?.data[0].receipt_url}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              View receipt
+                            &lt;/a>
+                          )}
+                          {item?.failure_code !== null &amp;&amp; (
+                            &lt;div
+                              style={{
+                                color: "var(--main-colorsbluetiful)",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              &lt;p style={{ color: "red", fontSize: "12px" }}>
+                                {item?.outcome?.seller_message}
+                              &lt;/p>
+                            &lt;/div>
+                          )}
+                        &lt;/div>
+                      &lt;/div>
+                    &lt;/div>
+                  &lt;/div>
+                );
+              })}
+            &lt;/div>
           &lt;/div>
         ) : null}
       &lt;/div>
@@ -323,13 +311,13 @@ export const AccordionListPaymentIntent = () => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_contentInfoSlice.html">store/contentInfoSlice</a></li><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Feb 10 2023 15:56:08 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Feb 15 2023 17:28:34 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

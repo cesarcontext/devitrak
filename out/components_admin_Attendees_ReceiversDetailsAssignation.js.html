@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/admin/Attendees/ReceiversDetailsAssignation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/admin/Attendees/ReceiversDetailsAssignation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
+import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
+import { useAdminStore } from "../../../hooks/useAdminStore";
+import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
+import {
+  rightDoneMessage,
+  swalAlertMessage,
+  swalErrorMessage,
+} from "../../../helper/swalFireMessage";
+import "../../../style/component/admin/receiversDetailsAssignation.css";
+import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
+import { SMSNotice, whatsappNotice } from "../../../helper/Notifications";
+
+/**
+
+React component for assigning receivers to a payment intent.
+@function
+@name ReceiversDetailsAssignation
+@returns {JSX.Element} React component
+*/
+export const ReceiversDetailsAssignation = () => {
+  const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
+    useSelector((state) => state.stripe);
+  const dispatch = useDispatch();
+  const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
+  const [receiversAssigned, setReceiversAssigned] = useState([]);
+  /**
+
+State to store the fetched data
+@name fetchedData
+@type {Object|null}
+*/
+  const [fetchedData, setFetchedData] = useState(null);
+  /**
+
+State to indicate if the data is being loaded
+@name loading
+@type {Boolean}
+*/
+  const [loading, setLoading] = useState(true);
+  /**
+
+State to store the assigned receiver number
+@name receiverNumberAssgined
+@type {String}
+*/
+  const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
+  /**
+
+State to indicate whether to replace the existing receiver
+@name replaceStatus
+@type {Boolean}
+*/
+  const [replaceStatus, setReplaceStatus] = useState(false);
+  /**
+
+State to store the search term for filtering receivers
+@name searchTermField
+@type {String}
+*/
+  const [searchTermField, setSearchTermField] = useState("");
+  /**
+
+State to store the index of the receiver object to be replaced
+@name replaceReceiverIndex
+@type {Number|null}
+*/
+  const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
+  /**
+
+State to store the receiver object to be replaced
+@name receiverObjectToReplace
+@type {Object|null}
+*/
+  const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
+  /**
+
+State to store the list of devices in the pool
+@name listOfDeviceInPool
+@type {Array}
+*/
+  const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
+  /**
+
+State to store the receiver ID saved in the pool
+@name receiverIdSavedInPool
+@type {String}
+*/
+  const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
+  /**
+
+State to indicate whether to display the save button
+@name saveButtonDisplay
+@type {Boolean}
+*/
+  const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
+  /**
+
+State to indicate whether to dispatch the batch
+@name dispatchBatch
+@type {Boolean}
+*/
+  const [dispatchBatch, setDispatchBatch] = useState(false);
+  /**
+
+State to indicate whether to dispatch the change
+@name dispatchChange
+@type {Boolean}
+*/
+  const [dispatchChange, setDispatchChange] = useState(false);
+  const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
+  /**
+
+Reference to the input element for assigning receivers
+@name inputReference
+@type {Object}
+*/
+  const inputReference = useRef();
+  /**
+
+State to store the batch device
+@name batchDevice
+@type {String}
+*/
+  const [batchDevice, setBatchDevice] = useState("");
+  const receiverObject = {
+    serialNumber: receiverNumberAssgined,
+    status: true,
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    checkReceiversAssignedToPaymentIntent(paymentIntentToCheck);
+    if (paymentIntentReceiversAssigned !== []) {
+      setLoading(false);
+    }
+    return () => {
+      controller.abort();
+    };
+  }, [
+    paymentIntentDetailSelected.paymentIntent,
+    loading,
+    fetchedData,
+    replaceStatus,
+    batchDevice,
+    dispatchChange,
+  ]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    devitrackApi
+      .get("/receiver/receiver-pool-list")
+      .then((data) => setListOfDeviceInPool(data.data.receiversInventory));
+    return () => {
+      controller.abort();
+    };
+  }, [
+    paymentIntentToCheck,
+    loading,
+    fetchedData,
+    replaceStatus,
+    batchDevice,
+    dispatchChange,
+  ]);
+
+  /**
+
+Add a receiver object to the list of assigned receivers.
+@async
+@function addReceiver
+@returns {Promise&lt;void>} - A Promise that resolves with no value when the receiver is added successfully.
+*/
+  const addReceiver = async () => {
+    if (receiverObject.serialNumber.length &lt; 1) {
+      setReceiverNumberAssgined("");
+      inputReference.current.focus();
+      return swalAlertMessage(`Empty serial number is not valid`);
+    }
+    for (let i = 0; i &lt; receiversAssigned.length; i++) {
+      if (receiverObject.serialNumber === receiversAssigned[i].serialNumber) {
+        setReceiverNumberAssgined("");
+        inputReference.current.focus();
+        return swalAlertMessage(
+          `Serial #${receiversAssigned[i].serialNumber} is duplicated`
+        );
+      }
+    }
+    const replacementList = [receiverObject, ...receiversAssigned];
+    if (replacementList.length &lt;= paymentIntentDetailSelected.device) {
+      setReceiversAssigned(replacementList);
+      setReceiverNumberAssgined("");
+      inputReference.current.focus();
+    }
+  };
+
+  if (receiverObject.serialNumber.length === 6) {
+    addReceiver();
+  }
+  let receiversAssignedListCopy;
+
+  /**
+
+Removes a receiver from the array of assigned receivers before saved data, given its index.
+@async
+@function
+@param {number} index - The index of the receiver to be removed from the array.
+@returns {Promise&lt;void>} - A promise that resolves once the receiver is removed.
+*/
+  const removeReceiverBeforeSavedData = async (index) => {
+    const result = receiversAssigned.splice(index, 1);
+    if (result.length === 1) {
+      return setReceiverNumberAssgined([]);
+    }
+    setReceiversAssigned(result);
+  };
+  const objDeviceContainer = new Map();
+  for (let i = 0; i &lt; listOfDeviceInPool.length; i++) {
+    objDeviceContainer.set(
+      listOfDeviceInPool[i].device,
+      listOfDeviceInPool[i].id
+    );
+  }
+
+  /**
+   * Handles the submission of receiver assignation data and updates receiver information.
+   * @async
+   * @function
+   * @returns {Promise&lt;void>} - A promise that resolves once the data has been submitted and updated.
+   */
+  const handleDataSubmitted = async () => {
+    try {
+      const response = await devitrackApiAdmin.post("/receiver-assignation", {
+        paymentIntent: paymentIntentDetailSelected.paymentIntent,
+        device: receiversAssigned,
+        user: paymentIntentDetailSelected.user.email,
+        active: true,
+      });
+      if (response) {
+        receiversAssigned?.map((receiver) => {
+          if (objDeviceContainer.has(receiver.serialNumber)) {
+            devitrackApi.put(
+              `/receiver/receivers-pool-update/${objDeviceContainer.get(
+                receiver.serialNumber
+              )}`,
+              {
+                status: "Operational",
+                activity: "In-use",
+                comment: "No comment",
+              }
+            );
+          } else {
+            devitrackApi.post("/receiver/receivers-pool", {
+              device: receiver.serialNumber,
+              status: "Operational",
+              activity: "In-use",
+              comment: "No comment",
+            });
+          }
+        });
+        setFetchedData(response.data);
+        dispatch(onCheckReceiverPaymentIntent(fetchedData));
+        setLoading(!loading);
+        setSaveButtonDisplay(true);
+        whatsappNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
+        SMSNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
+      }
+      rightDoneMessage(
+        `Receivers were assigned to payment intent successfully`
+      );
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+      swalErrorMessage(error);
+    }
+  };
+  /**
+
+Handles the return of a device assigned to a payment intent
+@async
+@function
+@param {object} receiver - The receiver object to be returned
+@param {number} index - The index of the receiver object in the list of assigned receivers
+@returns {Promise&lt;void>}
+@throws {Error} If an error occurs while processing the request
+@example
+handleReturnDevice(receiver, index);
+*/
+  const handleReturnDevice = async (receiver, index) => {
+    let receiverInPoolId;
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
+    const objectToReturn = {
+      serialNumber: receiver.serialNumber,
+      status: false,
+    };
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      if (response) {
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "Stored",
+            comment: "No comment",
+          }
+        );
+        setLoading(true);
+        whatsappNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `The user was noticed via WhatsApp that device #${receiver.serialNumber} was returned`,
+        });
+        SMSNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `The user was noticed via SMS that device #${receiver.serialNumber} was returned`,
+        });
+        rightDoneMessage("Receiver returned");
+      }
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  /**
+
+Assigns a receiver device to a user and updates the devices' status and activity.
+@async
+@function handleAssignDevice
+@param {object} receiver - The receiver device to be assigned.
+@param {number} index - The index of the receiver in the list of assigned receivers.
+@throws {Error} Error message if there was a problem updating the receiver or receiver pool.
+@returns {void}
+*/
+  const handleAssignDevice = async (receiver, index) => {
+    let receiverInPoolId;
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
+    const objectToReturn = {
+      serialNumber: receiver.serialNumber,
+      status: true,
+    };
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      if (response) {
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "In-use",
+            comment: "No comment",
+          }
+        );
+        setLoading(true);
+        rightDoneMessage("Receiver assigned");
+      }
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  /**
+
+Asynchronously returns all the receivers that were assigned in a single operation.
+@async
+@function returnAllReceiversAtOnce
+@returns {Promise&lt;void>}
+@throws {Error} If there is an error while executing the function.
+*/
+  const returnAllReceiversAtOnce = async () => {
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    let replacementList = [];
+    receiversAssignedListCopy.map((item) => {
+      replacementList.push({
+        ...item,
+        status: false,
+      });
+    });
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You will return all receivers at once in system",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, return them!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const response = await devitrackApi.put(
+            `/receiver/receiver-update/${id}`,
+            {
+              id: id,
+              device: replacementList,
+            }
+          );
+          if (response) {
+            setLoading(true);
+            rightDoneMessage("Receivers returned");
+            receiversAssignedListCopy.map((item) => {
+              for (let i = 0; i &lt; listOfDeviceInPool.length; i++) {
+                if (item.serialNumber === listOfDeviceInPool[i].device) {
+                  devitrackApi.put(
+                    `/receiver/receivers-pool-update/${listOfDeviceInPool[i].id}`,
+                    {
+                      device: item.serialNumber,
+                      status: "Operational",
+                      activity: "Stored",
+                      comment: "No comment",
+                    }
+                  );
+                }
+              }
+            });
+          }
+          Swal.fire(
+            "Returned!",
+            "All receivers were returned successfully!",
+            "success"
+          );
+          whatsappNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
+          SMSNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
+        }
+      });
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  /**
+   *Triggers the replace receiver function.
+   *@param {object} receiver - The receiver object to be replaced.
+   *@param {number} index - The index of the receiver object in the list of receivers.
+   *@returns {void}
+   */
+  const replaceFunctionTrigger = (receiver, index) => {
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === receiver.serialNumber) {
+        setReceiverIdSavedInPool(item.id);
+      }
+    });
+    try {
+      /**
+       *The receiver object to be replaced.
+       *@type {object}
+       *@property {string} serialNumber - The serial number of the receiver.
+       *@property {boolean} status - The status of the receiver.
+       */
+
+      setReceiverObjectToReplace({
+        serialNumber: receiver.serialNumber,
+        status: receiver.status,
+      });
+      /**
+       * The index of the receiver object in the list of receivers.
+       *@type {number}
+       */
+      setReplaceReceiverIndex(index);
+      /**
+       * The status of the replace receiver function.
+       *@type {boolean}
+       */
+      setReplaceStatus(true);
+      /**
+       *The search term field for the replace receiver function.
+       *@type {string}
+       */
+      setSearchTermField("");
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  let filteredResult = [];
+  const filter = async () => {
+    const devicesInPaymentIntent = paymentIntentReceiversAssigned?.device;
+    for (let i = 0; i &lt; devicesInPaymentIntent?.length; i++) {
+      if (searchTermField === devicesInPaymentIntent[i].serialNumber) {
+        return (filteredResult = [
+          {
+            ...devicesInPaymentIntent[i],
+            index: i,
+          },
+        ]);
+      }
+    }
+  };
+  filter();
+  let errorMessageForBatch = null;
+  const returnDeviceAsBatch = async () => {
+    let receiverInPoolId;
+    let index;
+    for (let i = 0; i &lt; paymentIntentReceiversAssigned[0].device.length; i++) {
+      if (
+        paymentIntentReceiversAssigned[0].device[i].serialNumber ===
+          batchDevice &amp;&amp;
+        paymentIntentReceiversAssigned[0].device[i].status === true
+      ) {
+        index = i;
+      }
+    }
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === batchDevice) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
+    const objectToReturn = {
+      serialNumber: batchDevice,
+      status: false,
+    };
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      if (response) {
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "Stored",
+            comment: "No comment",
+          }
+        );
+        // let timerInterval;
+        Swal.fire({
+          title: "",
+          html: `Device ${objectToReturn.serialNumber} was returned`,
+          timer: 10,
+          timerProgressBar: false,
+          preConfirm: () => {
+            setDispatchChange(!dispatchChange);
+          },
+        });
+      }
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  if (batchDevice.length > 5) {
+    returnDeviceAsBatch();
+    setBatchDevice("");
+  }
+
+  return (
+    &lt;div>
+      &lt;div>
+        {!paymentIntentReceiversAssigned ? "" : &lt;PaymentIntentTemplate />}
+      &lt;/div>
+      &lt;div>
+        &lt;div>
+          {loading !== true ? (
+            &lt;>
+              {/**Second condition to display add receiver function or search input field*/}
+              {paymentIntentReceiversAssigned?.length &lt; 1 ? (
+                &lt;div className="container-input-button">
+                  {/**Second condition to check if all receivers were assigned or not*/}
+                  {receiversAssigned.length !==
+                  paymentIntentDetailSelected.device ? (
+                    &lt;>
+                      &lt;input
+                        ref={inputReference}
+                        className="form-control"
+                        value={receiverNumberAssgined}
+                        name="receiverNumberAssgined"
+                        id="receiverNumberAssgined"
+                        type="text"
+                        onChange={(event) =>
+                          setReceiverNumberAssgined(event.target.value)
+                        }
+                      />
+                      &lt;button
+                        className="btn btn-create"
+                        style={{ width: "fit-content" }}
+                        onClick={addReceiver}
+                      >
+                        Add receiver
+                      &lt;/button>
+                    &lt;/>
+                  ) : (
+                    ""
+                  )}
+                &lt;/div>
+              ) : (
+                &lt;div>
+                  &lt;input
+                    name="searchTermField"
+                    value={searchTermField}
+                    onChange={(event) => setSearchTermField(event.target.value)}
+                    placeholder="Search receiver"
+                  />
+                &lt;/div>
+              )}
+              &lt;div>
+                &lt;div
+                  style={{
+                    width: "60%",
+                    margin: "0 auto",
+                  }}
+                >
+                  &lt;table className="table">
+                    &lt;thead>
+                      &lt;tr>
+                        &lt;th scope="col">#&lt;/th>
+                        &lt;th scope="col">Serial Number&lt;/th>
+                        &lt;th scope="col">Type&lt;/th>
+                        &lt;th scope="col">Status&lt;/th>
+                      &lt;/tr>
+                    &lt;/thead>
+                    {paymentIntentReceiversAssigned?.length > 0
+                      ? searchTermField !== ""
+                        ? filteredResult?.map((result) => {
+                            return (
+                              &lt;tbody key={result.index + 1}>
+                                &lt;tr>
+                                  &lt;th scope="row">{result.index + 1}&lt;/th>
+                                  &lt;td>{result.serialNumber}&lt;/td>
+                                  &lt;td>
+                                    &lt;span>Receiver&lt;/span>
+                                  &lt;/td>
+                                  &lt;td>
+                                    {result.status !== false
+                                      ? "ACTIVATED"
+                                      : "RETURNED"}
+                                  &lt;/td>
+                                  &lt;td>
+                                    &lt;button
+                                      className="btn btn-create"
+                                      onClick={() =>
+                                        replaceFunctionTrigger(
+                                          result,
+                                          result.index
+                                        )
+                                      }
+                                    >
+                                      Replace
+                                    &lt;/button>
+                                  &lt;/td>
+                                  &lt;td>
+                                    {result.status !== false ? (
+                                      &lt;button
+                                        className="btn btn-delete"
+                                        onClick={() =>
+                                          handleReturnDevice(
+                                            result,
+                                            result.index
+                                          )
+                                        }
+                                      >
+                                        Return
+                                      &lt;/button>
+                                    ) : (
+                                      &lt;button
+                                        className="btn btn-create"
+                                        onClick={() =>
+                                          handleAssignDevice(
+                                            result,
+                                            result.index
+                                          )
+                                        }
+                                      >
+                                        Assign
+                                      &lt;/button>
+                                    )}
+                                  &lt;/td>
+                                &lt;/tr>
+                              &lt;/tbody>
+                            );
+                          })
+                        : paymentIntentReceiversAssigned
+                            ?.at(-1)
+                            .device?.map((receiver, index) => {
+                              return (
+                                &lt;tbody key={index + 1}>
+                                  &lt;tr>
+                                    &lt;th scope="row">{index + 1}&lt;/th>
+                                    &lt;td>{receiver.serialNumber}&lt;/td>
+                                    &lt;td>
+                                      &lt;span>Receiver&lt;/span>
+                                    &lt;/td>
+                                    &lt;td>
+                                      {receiver.status !== false
+                                        ? "ACTIVATED"
+                                        : "RETURNED"}
+                                    &lt;/td>
+                                    &lt;td>
+                                      &lt;button
+                                        className="btn btn-create"
+                                        onClick={() =>
+                                          replaceFunctionTrigger(
+                                            receiver,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        Replace
+                                      &lt;/button>
+                                    &lt;/td>
+                                    &lt;td>
+                                      {receiver.status !== false ? (
+                                        &lt;button
+                                          className="btn btn-delete"
+                                          onClick={() =>
+                                            handleReturnDevice(receiver, index)
+                                          }
+                                        >
+                                          Return
+                                        &lt;/button>
+                                      ) : (
+                                        &lt;button
+                                          className="btn btn-create"
+                                          onClick={() =>
+                                            handleAssignDevice(receiver, index)
+                                          }
+                                        >
+                                          Assign
+                                        &lt;/button>
+                                      )}
+                                    &lt;/td>
+                                  &lt;/tr>
+                                &lt;/tbody>
+                              );
+                            })
+                      : receiversAssigned?.map((item, index) => {
+                          return (
+                            &lt;tbody key={item + 1}>
+                              &lt;tr>
+                                &lt;th scope="row">
+                                  {receiversAssigned.length - index}
+                                &lt;/th>
+                                &lt;td>{item.serialNumber}&lt;/td>
+                                &lt;td>
+                                  &lt;span>Receiver&lt;/span>
+                                &lt;/td>
+                                &lt;td>
+                                  &lt;span>
+                                    {item.status === true
+                                      ? "ACTIVATED"
+                                      : "RETURNED"}
+                                  &lt;/span>
+                                &lt;/td>
+                                &lt;td>
+                                  &lt;button
+                                    className="btn btn-delete"
+                                    onClick={() =>
+                                      removeReceiverBeforeSavedData(index)
+                                    }
+                                  >
+                                    Remove Receiver
+                                  &lt;/button>
+                                &lt;/td>
+                              &lt;/tr>
+                            &lt;/tbody>
+                          );
+                        })}
+                  &lt;/table>
+                &lt;/div>
+              &lt;/div>
+              &lt;div style={{ width: "20%", margin: "0 auto" }}>
+                {receiversAssigned?.length ===
+                  paymentIntentDetailSelected.device &amp;&amp; (
+                  &lt;button
+                    className="btn btn-create"
+                    disabled={saveButtonDisplay}
+                    onClick={handleDataSubmitted}
+                  >
+                    Save
+                  &lt;/button>
+                )}
+              &lt;/div>
+            &lt;/>
+          ) : (
+            &lt;h6>Loading...&lt;/h6>
+          )}
+        &lt;/div>
+      &lt;/div>
+      &lt;div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "80vw",
+        }}
+      >
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            &lt;button
+              className="btn btn-delete"
+              style={{
+                width: "fit-content",
+                margin: "1% auto",
+                padding: "5px",
+              }}
+              onClick={returnAllReceiversAtOnce}
+            >
+              RETURN ALL
+            &lt;/button>
+          ) : null
+        ) : null}
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            dispatchBatch === false ? (
+              &lt;button
+                className="btn btn-delete"
+                style={{
+                  width: "fit-content",
+                  margin: "1% auto",
+                  padding: "5px",
+                }}
+                onClick={() => setDispatchBatch(true)}
+              >
+                RETURN BATCH
+              &lt;/button>
+            ) : (
+              &lt;>
+                &lt;input
+                  name="batchDevice"
+                  value={batchDevice}
+                  onChange={(event) => setBatchDevice(event.target.value)}
+                  placeholder="Scan device here to return it"
+                />
+                {errorMessageForBatch !== null &amp;&amp; (
+                  &lt;div style={{ border: "solid 1px #212529" }}>
+                    &lt;p>{errorMessageForBatch}&lt;/p>
+                  &lt;/div>
+                )}
+                &lt;button
+                  className="btn btn-create"
+                  style={{
+                    width: "fit-content",
+                    margin: "1% auto",
+                    padding: "5px",
+                  }}
+                  onClick={() => {
+                    setDispatchBatch(false);
+                    window.location.reload();
+                  }}
+                >
+                  DONE
+                &lt;/button>
+              &lt;/>
+            )
+          ) : null
+        ) : null}
+      &lt;/div>
+
+      {errorMessageForBatch !== null &amp;&amp; &lt;strong>{errorMessageForBatch}&lt;/strong>}
+      {receiverObjectToReplace !== null &amp;&amp; (
+        &lt;ModalReplaceReceiver
+          paymentIntentDetailSelected={paymentIntentDetailSelected}
+          receiverIdSavedInPool={receiverIdSavedInPool}
+          listOfDeviceInPool={listOfDeviceInPool}
+          setLoading={setLoading}
+          receiverObjectToReplace={receiverObjectToReplace}
+          replaceReceiverIndex={replaceReceiverIndex}
+          paymentIntentReceiversAssigned={paymentIntentReceiversAssigned}
+          replaceStatus={replaceStatus}
+          setReplaceStatus={setReplaceStatus}
+        />
+      )}
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_contentInfoSlice.html">store/contentInfoSlice</a></li><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Feb 15 2023 17:28:34 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

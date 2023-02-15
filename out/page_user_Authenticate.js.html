@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/stripe/StripeCheckoutElement.js</title>
+    <title>JSDoc: Source: page/user/Authenticate.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/stripe/StripeCheckoutElement.js</h1>
+    <h1 class="page-title">Source: page/user/Authenticate.js</h1>
 
     
 
@@ -26,90 +26,51 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { StripeCheckoutForm } from "./StripeCheckForm";
+            <pre class="prettyprint source linenums"><code>import { useStytch, useStytchSession } from "@stytch/stytch-react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { rightDoneMessage } from "../../helper/swalFireMessage";
+import { blockLinks } from "../../store/slices/uiSlice";
+
 
 /**
- * @description StripePromise - promise to load stripe
- * @component
- * @type {Promise}
+ * @function
+ * @returns {JSX.Element} The component's UI
  */
-const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
+export const Authenticate = () => {
+  const client = useStytch();
+  const session = useStytchSession();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-/**
- * 
- * @param {String} clientSecret -secret client generate from server 
- * @returns {HTMLBodyElement}
- */
-export const StripeCheckoutElement = ({ clientSecret }) => {
   /**
-   * @description style and rules for check out element where credit card info will be collected
-   * @type {Object} 
-   * @property {String} theme - theme of the checkout element
-   * @property {String} labels - attribute for lables in the inputs of the checkout element
-   * @property {Object} variables - variables of css for teh entires elements
-   * @property {Object} rules - variables of css applied based on criterios
+   * Handles authentication based on whether a session exists or not
+   *@function
+   *@returns {void}
    */
-  const appearance = {
-    theme: "flat",
-    labels: "floating",
-    variables: {
-      fontFamily: "var(--font-family--open_sans)",
-      fontLineHeight: "1.5",
-      borderRadius: "5px",
-      colorBackground: "#ffffff",
-      colorPrimaryText: "#00000",
-    },
-    rules: {
-      ".Block": {
-        backgroundColor: "var(--colorBackground)",
-        boxShadow: "none",
-        padding: "12px",
-      },
-      ".Input": {
-        padding: "12px",
-      },
-      ".Input:disabled, .Input--invalid:disabled": {
-        color: "var(--main-colorsaluminium)",
-      },
-      ".Tab": {
-        padding: "10px 12px 8px 12px",
-        border: "none",
-      },
-      ".Tab:hover": {
-        border: "none",
-        boxShadow:
-          "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
-        border: "var(--black)",
-        backgroundColor: "#fff",
-        boxShadow:
-          "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Label": {
-        fontWeight: "500",
-      },
-    },
-  };
-  /**
-   * @description options - object to pass clientSecret and appearance
-   * @type {Object}
-   */
-  const options = {
-    clientSecret,
-    appearance,
-  };
+  useEffect(() => {
+    if (session) {
+      navigate("/checkout");
+      dispatch(blockLinks("auto"));
+    } else {
+      const token = new URLSearchParams(window.location.search).get("token");
+      client.magicLinks
+        .authenticate(token, {
+          session_duration_minutes: 10080,
+        })
+        .then(() => {
+          rightDoneMessage(`Successfully authenticated`);
+          navigate(0); //navigate to 0 to refrese page
+          dispatch(blockLinks("auto"));
+        });
+    }
+  }, [client, session]);
 
   return (
     &lt;>
-      {clientSecret &amp;&amp; (
-        &lt;Elements options={options} stripe={stripePromise}>
-          &lt;StripeCheckoutForm />
-        &lt;/Elements>
-      )}
+      &lt;h1>Loading...&lt;/h1>
+      &lt;p>Please wait until your session is loaded&lt;/p>
     &lt;/>
   );
 };

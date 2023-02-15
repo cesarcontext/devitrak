@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: page/user/MyProfile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: page/user/MyProfile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useMemo, useEffect } from "react";
+import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useStytchSession, useStytch } from "@stytch/stytch-react";
+import { ContactInfoProfile } from "../../components/contact/ContactInfoProfile";
+import { Navbar } from "../../components/ui/Navbar";
+import { NavbarBottom } from "../../components/ui/NavbarBottom";
+import { onAddNewContact } from "../../store/slices/contactInfoSlice";
+import { onUserPrivacyPolicyResponse } from "../../store/slices/privacyPolicyUserResponseSlice";
+import { reset } from "../../store/slices/deviceSlice";
+import { ReturnDeviceAlert } from "../../components/ui/ReturnDeviceAlert";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
+import "../../style/pages/myProfile.css";
+import "../../style/component/ui/NavbarBottom.css";
+import { ModalDisplayReceipt } from "../../components/ui/ModalDisplayReceipt";
+
+/**
+
+This component represents the user's profile page and allows the user to update their contact information.
+@component
+@return {JSX.Element} Returns the JSX code which represents the user's profile page.
+*/
+const initalFormValues = {
+  groupName: "",
+  name: "",
+  lastName: "",
+  email: "",
+  phoneNumber: "",
+};
+
+/**
+
+The MyProfile component
+@component
+@return {JSX.Element} Returns the JSX code which represents the user's profile page.
+*/
+export const MyProfile = () => {
+  const { startUpdatingContactInfo } = useContactInfoStore();
+  const [showInfo, setShowInfo] = useState(false);
+  const [formValues, setFormValues] = useState(initalFormValues);
+  const [displayModalReceipt, setDisplayModalReceipt] = useState(false);
+  const [buttonState, setButtonState] = useState(true);
+  const tokenVerification = localStorage.getItem("token");
+  const { users } = useSelector((state) => state.contactInfo);
+  const client = useStytch();
+  const session = useStytchSession();
+  const newUser = users.email;
+  const dispatch = useDispatch();
+
+  /**
+
+Handles changes in the input fields and updates the formValues state
+@function
+@param {Event} event The event that triggered the function call
+*/
+  const onInputCHange = ({ target }) => {
+    setFormValues({
+      ...formValues,
+      [target.name]: target.value,
+    });
+  };
+
+  /**
+
+Handles the show/hide contact information button
+@function
+*/
+  const handleButtonState = () => {
+    setShowInfo(!showInfo);
+  };
+  useEffect(() => {
+    if (tokenVerification) {
+      return setButtonState(false);
+    }
+  }, [tokenVerification]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      return setDisplayModalReceipt(true);
+    }, 2000);
+  }, []);
+
+  /**
+
+Validates the group name input field and returns the appropriate CSS class
+@function
+@return {string} Returns an empty string if the group name input field is valid, "is-invalid" if it is invalid
+*/
+  const validationGroupName = useMemo(() => {
+    return formValues.groupName.length > 2 ? "" : "is-invalid";
+  }, [formValues.groupName]);
+
+  /**
+
+Validates the name input field and returns the appropriate CSS class
+@function
+@return {string} Returns an empty string if the name input field is valid, "is-invalid" if it is invalid
+*/
+  const validationName = useMemo(() => {
+    return formValues.name.length > 0 ? "" : "is-invalid";
+  }, [formValues.name]);
+
+  /**
+
+Validates the last name input field and returns the appropriate CSS class
+@function
+@return {string} Returns an empty string if the last name input field is valid, "is-invalid" if it is invalid
+*/
+  const validationLastName = useMemo(() => {
+    return formValues.lastName.length > 0 ? "" : "is-invalid";
+  }, [formValues.lastName]);
+
+  /**
+
+Validates the email input field and returns the appropriate CSS class
+@function
+@return {string} Returns an empty string if the email input field is valid, "is-invalid" if it is invalid
+*/
+  const validationEmail = useMemo(() => {
+    return formValues.email.length > 3 &amp;&amp;
+      formValues.email
+        .toLowerCase()
+        .match(
+          /^(([^&lt;>()[\]\\.,;:\s@"]+(\.[^&lt;>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ? ""
+      : "is-invalid";
+  }, [formValues.email]);
+
+  /**
+
+Validates a phone number by checking if it has at least 5 digits.
+@function
+@name validationPhoneNumber
+@param {Object} formValues - An object containing the form values, including the phone number.
+@returns {string} Returns an empty string if the phone number has at least 5 digits or "is-invalid" otherwise.
+*/
+  const validationPhoneNumber = useMemo(() => {
+    return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
+  }, [formValues.phoneNumber]);
+
+  /**
+
+Handles the edit of the contact information.
+@function
+@name handleEditContactInfo
+@param {Object} event - The event object.
+@returns {Promise&lt;void>} Returns a Promise that resolves when the contact information has been updated and the state has been changed.
+*/
+  const handleEditContactInfo = async (event) => {
+    event.preventDefault();
+
+    if (validationGroupName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Group Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationLastName === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Last name must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationEmail === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Email must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    if (validationPhoneNumber === "is-invalid") {
+      return Swal.fire({
+        title: "",
+        text: "Phone number must be provided",
+        icon: "error",
+        confirmButtonColor: "rgb(30, 115, 190)",
+      });
+    }
+    await startUpdatingContactInfo(formValues);
+    setShowInfo(!showInfo);
+  };
+
+  /**
+
+Handles the logout of the user.
+@function
+@name handleLogout
+@returns {Promise&lt;void>} Returns a Promise that resolves when the user's session has been revoked and the state has been reset.
+*/
+  const handleLogout = async () => {
+    if (session) {
+      await client.session.revoke();
+    }
+    Swal.fire({
+      title: `Your session is finished`,
+      confirmButtonColor: "rgb(30, 115, 190)",
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+    });
+    dispatch(
+      onAddNewContact({
+        id: "",
+        groupName: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        status: "",
+      })
+    );
+    dispatch(onUserPrivacyPolicyResponse(false));
+    dispatch(reset());
+  };
+
+  return (
+    &lt;div className="general-container">
+      &lt;Navbar />
+      {users.email !== "" ? (
+        &lt;div className="container-my-profile-info">
+          &lt;div>
+            &lt;h3>Account&lt;/h3>
+          &lt;/div>
+          &lt;div className="container-box-user-info-detail">
+            &lt;div style={{ width: "100%", display: "flex" }}>
+              &lt;div className="box-user-detail-buttons">
+                {users.id !== "" ? (
+                  showInfo !== true ? (
+                    &lt;>
+                      &lt;p
+                        disabled={buttonState}
+                        id="box-user-detail-edit-button"
+                        onClick={handleButtonState}
+                      >
+                        &lt;h5>
+                          Edit{" "}
+                          &lt;svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="15"
+                            height="15"
+                            fill="currentColor"
+                            className="bi bi-pencil"
+                            viewBox="0 0 16 16"
+                          >
+                            &lt;path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                          &lt;/svg>
+                        &lt;/h5>
+                      &lt;/p>
+
+                      &lt;Link to="/">
+                        &lt;div className="btn-logout-section">
+                          {(session &amp;&amp; (
+                            &lt;button
+                              style={{
+                                width: "45px",
+                                height: "45px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "50%",
+                                fontSize: "10px",
+                                color: "#fff",
+                                backgroundColor: "var(--main-colorslobster)",
+                              }}
+                              // className="btn-logout"
+                              onClick={handleLogout}
+                            >
+                              &lt;span>Logout&lt;/span>
+                            &lt;/button>
+                          )) ||
+                            (newUser &amp;&amp; (
+                              &lt;button
+                                style={{
+                                  width: "45px",
+                                  height: "45px",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                  borderRadius: "50%",
+                                  fontSize: "10px",
+                                  color: "#fff",
+                                  backgroundColor: "var(--main-colorslobster)",
+                                }}
+                                // className="btn-logout"
+                                onClick={handleLogout}
+                              >
+                                &lt;span>Logout&lt;/span>
+                              &lt;/button>
+                            ))}
+                        &lt;/div>
+                      &lt;/Link>
+                    &lt;/>
+                  ) : (
+                    &lt;div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      &lt;div className="col">
+                        &lt;p
+                          className="col"
+                          id="box-user-detail-cancel-button"
+                          onClick={handleButtonState}
+                        >
+                          &lt;h5>
+                            CANCEL{" "}
+                            &lt;svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              &lt;path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M17 5V4C17 2.89543 16.1046 2 15 2H9C7.89543 2 7 2.89543 7 4V5H4C3.44772 5 3 5.44772 3 6C3 6.55228 3.44772 7 4 7H5V18C5 19.6569 6.34315 21 8 21H16C17.6569 21 19 19.6569 19 18V7H20C20.5523 7 21 6.55228 21 6C21 5.44772 20.5523 5 20 5H17ZM15 4H9V5H15V4ZM17 7H7V18C7 18.5523 7.44772 19 8 19H16C16.5523 19 17 18.5523 17 18V7Z"
+                                fill="currentColor"
+                              />
+                              &lt;path d="M9 9H11V17H9V9Z" fill="currentColor" />
+                              &lt;path d="M13 9H15V17H13V9Z" fill="currentColor" />
+                            &lt;/svg>
+                          &lt;/h5>
+                        &lt;/p>
+                      &lt;/div>
+                      &lt;div className="col">
+                        &lt;p
+                          className="col"
+                          id="box-user-detail-save-button"
+                          onClick={handleEditContactInfo}
+                        >
+                          &lt;h5>
+                            SAVE{" "}
+                            &lt;svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="15"
+                              height="15"
+                              fill="currentColor"
+                              className="bi bi-save"
+                              viewBox="0 0 16 16"
+                            >
+                              &lt;path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                            &lt;/svg>
+                          &lt;/h5>
+                        &lt;/p>
+                      &lt;/div>
+                    &lt;/div>
+                  )
+                ) : null}
+              &lt;/div>
+            &lt;/div>
+            &lt;div>
+              &lt;h5>Your information&lt;/h5>
+            &lt;/div>
+            {showInfo !== true ? (
+              &lt;div>
+                &lt;ContactInfoProfile />
+              &lt;/div>
+            ) : (
+              &lt;div className="box-user-edit-info">
+                &lt;>
+                  &lt;input
+                    type="text"
+                    className={`form-control ${validationGroupName}  form-control-lg`}
+                    id="groupName"
+                    placeholder="Group name"
+                    onChange={onInputCHange}
+                    name="groupName"
+                    value={formValues.groupName}
+                    minLength={3}
+                  />
+                  &lt;input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formValues.name}
+                    className={`form-control ${validationName} form-control-lg`}
+                    placeholder="name"
+                    onChange={onInputCHange}
+                    minLength={1}
+                  />
+                  &lt;input
+                    type="text"
+                    id="lastName"
+                    className={`form-control ${validationLastName} form-control-lg`}
+                    placeholder="Last name"
+                    onChange={onInputCHange}
+                    name="lastName"
+                    value={formValues.lastName}
+                    minLength={1}
+                  />
+                  &lt;input
+                    type="email"
+                    id="emailAddress"
+                    className={`form-control ${validationEmail} form-control-lg`}
+                    placeholder="Email"
+                    onChange={onInputCHange}
+                    name="email"
+                    value={formValues.email}
+                    minLength={4}
+                  />
+                  &lt;input
+                    type="tel"
+                    id="phoneNumber"
+                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                    placeholder="Phone number"
+                    onChange={onInputCHange}
+                    name="phoneNumber"
+                    value={formValues.phoneNumber}
+                    maxLength={15}
+                    minLength={5}
+                  />
+                &lt;/>
+              &lt;/div>
+            )}
+          &lt;/div>
+          &lt;div className="container-device-alert">
+            &lt;ReturnDeviceAlert />
+          &lt;/div>
+          &lt;div style={{ transition: "ease-in-out .5s" }}>
+            {displayModalReceipt &amp;&amp; (
+              &lt;p>{ModalDisplayReceipt({ setDisplayModalReceipt })}&lt;/p>
+            )}
+          &lt;/div>
+        &lt;/div>
+      ) : (
+        &lt;>
+          &lt;div
+            style={{
+              width: "80%",
+              border: "solid 1px #212529",
+              margin: "0 auto",
+              backgroundColor: "white",
+              borderRadius: "15px",
+              marginTop: "5vh",
+            }}
+          >
+            &lt;h4>You are logout.&lt;/h4>
+            &lt;Link to="/">
+              &lt;span>Please click this link to start your log in process&lt;/span>{" "}
+            &lt;/Link>
+          &lt;/div>
+        &lt;/>
+      )}
+      &lt;NavbarBottom />
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_contentInfoSlice.html">store/contentInfoSlice</a></li><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Feb 15 2023 17:28:34 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

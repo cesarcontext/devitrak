@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/stripe/StripeCheckoutElement.js</title>
+    <title>JSDoc: Source: components/admin/Auth/LoginAdminUser.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/stripe/StripeCheckoutElement.js</h1>
+    <h1 class="page-title">Source: components/admin/Auth/LoginAdminUser.js</h1>
 
     
 
@@ -26,91 +26,106 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import React from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { StripeCheckoutForm } from "./StripeCheckForm";
+            <pre class="prettyprint source linenums"><code>import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { useAdminStore } from "../../../hooks/useAdminStore";
+import { useForm } from "../../../hooks/useForm";
+import { ModalUpdatePassword } from "../ui/ModalUpdatePassword";
+import "../../../style/pages/admin/login.css";
+const loginFormFields = {
+  loginEmail: "",
+  loginPassword: "",
+};
 
 /**
- * @description StripePromise - promise to load stripe
- * @component
- * @type {Promise}
- */
-const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
 
-/**
- * 
- * @param {String} clientSecret -secret client generate from server 
- * @returns {HTMLBodyElement}
- */
-export const StripeCheckoutElement = ({ clientSecret }) => {
+Displays the login form for an admin user.
+@function
+@returns {JSX.Element} - Rendered component.
+*/
+export const LoginAdminUser = () => {
+  const { startLogin, errorMessage } = useAdminStore();
+  const [updatePasswordModalState, setUpdatePasswordModalState] =
+    useState(false);
+
+  const {
+    loginEmail,
+    loginPassword,
+    onInputCHange: onloginInputChange,
+  } = useForm(loginFormFields);
+
   /**
-   * @description style and rules for check out element where credit card info will be collected
-   * @type {Object} 
-   * @property {String} theme - theme of the checkout element
-   * @property {String} labels - attribute for lables in the inputs of the checkout element
-   * @property {Object} variables - variables of css for teh entires elements
-   * @property {Object} rules - variables of css applied based on criterios
-   */
-  const appearance = {
-    theme: "flat",
-    labels: "floating",
-    variables: {
-      fontFamily: "var(--font-family--open_sans)",
-      fontLineHeight: "1.5",
-      borderRadius: "5px",
-      colorBackground: "#ffffff",
-      colorPrimaryText: "#00000",
-    },
-    rules: {
-      ".Block": {
-        backgroundColor: "var(--colorBackground)",
-        boxShadow: "none",
-        padding: "12px",
-      },
-      ".Input": {
-        padding: "12px",
-      },
-      ".Input:disabled, .Input--invalid:disabled": {
-        color: "var(--main-colorsaluminium)",
-      },
-      ".Tab": {
-        padding: "10px 12px 8px 12px",
-        border: "none",
-      },
-      ".Tab:hover": {
-        border: "none",
-        boxShadow:
-          "0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Tab--selected, .Tab--selected:focus, .Tab--selected:hover": {
-        border: "var(--black)",
-        backgroundColor: "#fff",
-        boxShadow:
-          "0 0 0 1.5px var(--colorPrimaryText), 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 7px rgba(18, 42, 66, 0.04)",
-      },
-      ".Label": {
-        fontWeight: "500",
-      },
-    },
+
+Initiates the login process for the admin user.
+@function
+@param {Object} event - The event object.
+*/
+  const onSubmitLogin = (event) => {
+    event.preventDefault();
+
+    startLogin({ email: loginEmail, password: loginPassword });
   };
+
   /**
-   * @description options - object to pass clientSecret and appearance
-   * @type {Object}
-   */
-  const options = {
-    clientSecret,
-    appearance,
+
+Displays an error message if the login fails.
+@effect
+@function
+*/
+  useEffect(() => {
+    if (errorMessage !== undefined) {
+      Swal.fire("Incorrect credentials", errorMessage, "error");
+    }
+  }, [errorMessage]);
+
+  /**
+
+Sets the update password modal state to true.
+@async
+@function
+*/
+  const updatePasswordFunction = async () => {
+    setUpdatePasswordModalState(true);
   };
 
   return (
-    &lt;>
-      {clientSecret &amp;&amp; (
-        &lt;Elements options={options} stripe={stripePromise}>
-          &lt;StripeCheckoutForm />
-        &lt;/Elements>
-      )}
-    &lt;/>
+    &lt;div className="container login-container">
+      &lt;div className="col-md-6 login-form-1">
+        &lt;h3>Sign In&lt;/h3>
+        &lt;form onSubmit={onSubmitLogin}>
+          &lt;div className="form-group mb-2">
+            &lt;input
+              type="text"
+              className="form-control"
+              placeholder="Email"
+              name="loginEmail"
+              value={loginEmail}
+              onChange={onloginInputChange}
+            />
+          &lt;/div>
+          &lt;div className="form-group mb-2">
+            &lt;input
+              type="password"
+              className="form-control"
+              placeholder="Password"
+              name="loginPassword"
+              value={loginPassword}
+              onChange={onloginInputChange}
+            />
+          &lt;/div>
+          &lt;div className="d-grid gap-2">
+            &lt;input type="submit" className="btnSubmit" value="Login" />
+          &lt;/div>
+          &lt;p className="forgot-link" onClick={updatePasswordFunction}>
+            Forgot the password? Click here!
+          &lt;/p>
+        &lt;/form>
+      &lt;/div>
+      &lt;ModalUpdatePassword
+        updatePasswordModalState={updatePasswordModalState}
+        setUpdatePasswordModalState={setUpdatePasswordModalState}
+      />
+    &lt;/div>
   );
 };
 </code></pre>
