@@ -13,13 +13,16 @@ npm install
 # Running
 To start the app, run the following command:
 
-npm start
+npm start 
+<br/>
 This will start the development server and launch the app in your default browser.
 
 # Building
 To build the app for production, run the following command:
 
 npm run build
+
+
 This will create a production-ready build of the app in the build directory.
 
 # Running Tests
@@ -31,6 +34,8 @@ npm test
 The code in this repository is documented using JSDoc. To generate the documentation, run the following command:
 
 npm run doc
+
+
 This will generate the documentation in the out directory.
 
 # Dependencies
