@@ -1,4 +1,4 @@
-# Devitrack App
+# Devitrak App
 This is a Progressive Web App (PWA) built using React that offers the service of tracking and inventory of devices, such as interpretation devices, and more. It includes the frontend part of the user interface and the admin dashboard interface. This app integrates with Stripe to collect payments related to the devices if needed.
 
 # Getting Started
