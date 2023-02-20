@@ -6,12 +6,27 @@ import {
 } from "@stripe/react-stripe-js";
 import "./checkoutStyles.css";
 
-export const StripeCheckoutFormAdmin = ({device, userData}) => {
+/**
+ * StripeCheckoutFormAdmin -
+ * @param {string} total -  amount to be charged passed from ModalPaidTransaction in admin page
+ * @component
+ * @returns {HTMLBodyElement}
+ */
+export const StripeCheckoutFormAdmin = ({ total }) => {
   const stripe = useStripe();
   const elements = useElements();
-
+   /**
+   * message to display based on promise response
+   * @type {String}
+   */
   const [message, setMessage] = useState(null);
+    /**
+   * @description to dispatch action is loading or not
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(false);
+  
+  const myUrl = window.location.origin;
 
   useEffect(() => {
     if (!stripe) {
@@ -43,7 +58,6 @@ export const StripeCheckoutFormAdmin = ({device, userData}) => {
       }
     });
   }, [stripe]);
-  const myUrl = window.location.origin;
 
   const iFrameStyle = {
     base: {
@@ -80,9 +94,10 @@ export const StripeCheckoutFormAdmin = ({device, userData}) => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: myUrl + `/admin/transaction-confirmed`,
+        return_url: myUrl + `/admin/payment-confirmed`,
       },
     });
+
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
     // your `return_url`. For some payment methods like iDEAL, your customer will
@@ -106,7 +121,11 @@ export const StripeCheckoutFormAdmin = ({device, userData}) => {
         id="submit"
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : `Authorize $${device * 200}`}
+          {isLoading ? (
+            <div className="spinner" id="spinner"></div>
+          ) : (
+            `Authorize $${total}`
+          )}
         </span>
       </button>
       {message && <div id="payment-message">{message}</div>}

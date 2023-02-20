@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
@@ -5,7 +6,7 @@ import { NavbarBottom } from "../ui/NavbarBottom";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
-import { blockLinks } from "../../store/slices/uiSlice";
+// import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
 import { useNavigate } from "react-router-dom";
 
@@ -19,25 +20,26 @@ import { useNavigate } from "react-router-dom";
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
     useContactInfoStore();
+
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
 
   /**
    * form to create user
-   * @typedef {{Object}} User - form to create an user
+   * @typedef {Object} initialForm - form to create an user
    * @property {string} email - user email
    * @property {string} [groupName] - name of the group of the user (optional)
-   * @property {string} last name - user last name
+   * @property {string} lastName name - user last name
    * @property {string} name - user name
-   * @property {number} phone number - user phone number
+   * @property {string} phoneNumber number - user phone number
    * @property {string} category - user category already defined
-   * @property {string} privacyPolicy privacy policy response  - user response pre defined
+   * @property {boolean} privacyPolicy privacy policy response  - user response pre defined
    *
    */
 
   /**
-   * @type {User}
+   * @type {initialForm}
    */
   const initalFormValues = {
     email: "",
@@ -106,19 +108,9 @@ export const ContactInfo = () => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
-  /**
-   * magicLinkParam - to import user email value to component
-   * @type {String} 
-   */
   const magicLinkParam = formValues.email;
 
 
-  /**
-   * handleOnSubmit
-   * 
-   * @param {Object} event - initialForm
-   * @returns {void}
-   */
   const handleOnSubmit = async (event) => {
     event.preventDefault();
 
@@ -150,12 +142,12 @@ export const ContactInfo = () => {
     navigate("/checkout");
   };
 
-  if (users.status === true) {
-    dispatch(blockLinks("auto"));
-  } else {
-    dispatch(blockLinks("auto"));
-  }
-
+  // if (users.status === true) {
+  //   dispatch(blockLinks("auto"));
+  // } else {
+  //   dispatch(blockLinks("auto"));
+  // }
+  
   return (
     <>
       <div className="container-contact-info mt-4">
@@ -187,6 +179,9 @@ export const ContactInfo = () => {
               </div>
               {users.status === true ? (
                 <div>
+                  {/**
+                   * @type {IntrinsicAttributes}
+                   */}
                   <MagicLink magicLinkParam={magicLinkParam} />
                 </div>
               ) : null}

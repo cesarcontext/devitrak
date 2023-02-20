@@ -4,7 +4,22 @@ import { Elements } from "@stripe/react-stripe-js";
 import { StripeCheckoutFormAdmin } from "./StripeCheckoutFormAdmin";
 const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
 
-export const StripeCheckoutElementAdmin = ({ clientSecret, device }) => {
+/**
+ * @description StripeChecoutElementAdmin - Elements display after verify a valid clientSecret
+ * @param {String} clientSecret -
+ * @param {String} total - amount imported and passed to checkout element to be displayed in submit button
+ * @returns {HTMLBodyElement}
+ */
+export const StripeCheckoutElementAdmin = ({ clientSecret, total }) => {
+
+    /**
+   * @description style and rules for check out element where credit card info will be collected
+   * @type {Object} 
+   * @property {String} theme - theme of the checkout element
+   * @property {String} labels - attribute for lables in the inputs of the checkout element
+   * @property {Object} variables - variables of css for teh entires elements
+   * @property {Object} rules - variables of css applied based on criterios
+   */
   const appearance = {
     theme: "flat",
     labels: "floating",
@@ -56,7 +71,7 @@ export const StripeCheckoutElementAdmin = ({ clientSecret, device }) => {
     <>
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <StripeCheckoutFormAdmin device={device} />
+          <StripeCheckoutFormAdmin total={total} />
         </Elements>
       )}
     </>

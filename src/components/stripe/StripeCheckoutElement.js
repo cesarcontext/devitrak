@@ -2,9 +2,28 @@ import React from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { StripeCheckoutForm } from "./StripeCheckForm";
+
+/**
+ * @description StripePromise - promise to load stripe
+ * @component
+ * @type {Promise}
+ */
 const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
 
+/**
+ * 
+ * @param {String} clientSecret -secret client generate from server 
+ * @returns {HTMLBodyElement}
+ */
 export const StripeCheckoutElement = ({ clientSecret }) => {
+  /**
+   * @description style and rules for check out element where credit card info will be collected
+   * @type {Object} 
+   * @property {String} theme - theme of the checkout element
+   * @property {String} labels - attribute for lables in the inputs of the checkout element
+   * @property {Object} variables - variables of css for teh entires elements
+   * @property {Object} rules - variables of css applied based on criterios
+   */
   const appearance = {
     theme: "flat",
     labels: "floating",
@@ -47,6 +66,10 @@ export const StripeCheckoutElement = ({ clientSecret }) => {
       },
     },
   };
+  /**
+   * @description options - object to pass clientSecret and appearance
+   * @type {Object}
+   */
   const options = {
     clientSecret,
     appearance,

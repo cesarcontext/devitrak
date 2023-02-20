@@ -6,16 +6,11 @@ import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
 
 /**
- * AccordionListPaymentIntent
- * @component
- * @description accordion with the list of receipt detail for user
- */
+
+AccordionListPaymentIntent - A component that renders a list of payment intents
+@returns {JSX.Element} React component
+*/
 export const AccordionListPaymentIntent = () => {
-  /**
-   *  users detail info
-   * @type {Object}
-   * @module store/slice
-   */
   const { users } = useSelector((state) => state.contactInfo);
   const [openAccordion, setOpenAccordion] = useState(false);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(true);
@@ -23,9 +18,12 @@ export const AccordionListPaymentIntent = () => {
   const [receiverSavedData, setReceiverSavedData] = useState([]);
 
   /**
-   * callSavedStripePaymentIntentApi - function to get data in data by GET method using axios and then save the response in variable
-   * @returns {Array}
-   */
+
+Fetches saved Stripe payment intent data from the API
+@async
+@function
+@returns {Promise<void>} A Promise that resolves when the data is fetched and saved to state
+*/
   const callSavedStripePaymentIntentApi = async () => {
     let result;
     const response = await devitrackApi.get("/admin/users");
@@ -35,44 +33,40 @@ export const AccordionListPaymentIntent = () => {
     return setReceiverSavedData(result);
   };
 
-  /**
-   * paymentIntentsToBeRetrieved - check if payment intent is longer than 17 digits to save then in a specific variable. Knowing those are the one generated from user side
-   * @type {Array}
-   */
   let paymentIntentsToBeRetrieved = [];
-
-  /**
-   * index - to insert data in array by splice method
-   * @type {Number}
-   */
   let index = 0;
-
-  /**
-   * noDeletedAccount-  set up to no delete account and instead to insert data in array to display/iterate later
-   * @type {Number}
-   */
   const noDeletedAccount = 0;
 
-  /**
-   * iterate data and then compare data with current user to sort and insert specific data belongs to user to display later
-   * @returns {Array}
-   */
-  for (let data of receiverSavedData) {
-    if (data?.user?.email === users?.email) {
-      if (data.paymentIntent.length > 15) {
-        paymentIntentsToBeRetrieved.splice(
-          index,
-          noDeletedAccount,
-          data.paymentIntent
-        );
+/**
+
+Sorts the saved Stripe payment intent data and inserts it into an array
+@function
+@returns {void}
+*/
+  const sortAndInsertData = () => {
+    for (let data of receiverSavedData) {
+      if (data?.user?.email === users?.email) {
+        if (data.paymentIntent.length > 15) {
+          paymentIntentsToBeRetrieved.splice(
+            index,
+            noDeletedAccount,
+            data.paymentIntent
+          );
+        }
       }
     }
+  };
+  if (receiverSavedData.length > 0) {
+    sortAndInsertData();
   }
+
   /**
-   * renderPaymentIntentDetail
-   * @description after sort and insert data belongs to current user, data is checked in stripe to confirm the saved payment intent was generated in stripe and then display qr code for further action
-   * @returns {Promise}
-   */
+
+Renders the payment intent details and sets the state with the data
+@async
+@function
+@returns {Promise<void>} A Promise that resolves when the payment intent details are fetched and rendered
+*/
   const renderPaymentIntentDetail = async () => {
     let replacement = [];
     for (let index = 0; index < paymentIntentsToBeRetrieved.length; index++) {
@@ -88,18 +82,15 @@ export const AccordionListPaymentIntent = () => {
   useEffect(() => {
     callSavedStripePaymentIntentApi();
     renderPaymentIntentDetail();
-  }, [
-    users.id,
-    openAccordion,
-    openAccordionDetail,
-  ]);
+  }, [users.id, openAccordion, openAccordionDetail]);
 
   /**
-   * checkPaymentIntentArray
-   * @description check if param is undefined to display generic qr code, ad if it is valid, generate a valid qr code
-   * @param {string} info
-   * @returns {HTMLBodyElement} qr code
-   */
+
+Checks if the payment intent array contains data and returns a QR code with the payment intent information, or a placeholder if it's undefined
+@function
+@param {string} info - Payment intent information to be encoded in the QR code
+@returns {JSX.Element} React component with a QR code or a placeholder
+*/
   const checkPaymentIntentArray = (info) => {
     if (info === undefined) {
       return (
@@ -154,7 +145,7 @@ export const AccordionListPaymentIntent = () => {
         {openAccordion === true ? (
           <div className="accordion-collapse collapse show">
             <div className="accordion-body">
-            {receiverSavedData?.map((item) => {
+              {receiverSavedData?.map((item) => {
                 if (item.paymentIntent.length < 16) {
                   if (item.user.email === users.email) {
                     return (
@@ -203,14 +194,13 @@ export const AccordionListPaymentIntent = () => {
               })}
             </div>
             <div className="accordion-body">
-              {detailList[0]?.map((item) => {                
+              {detailList[0]?.map((item) => {
                 return (
                   <div key={item.id}>
                     <div className="accordion-detail-title">
                       <div className="order-list">
                         <i className="bi bi-circle" />{" "}
-                        <p className="accordion-header"
-                        >
+                        <p className="accordion-header">
                           <strong>Order: </strong> {item.id}{" "}
                           <i className="bi bi-chevron-down" />
                         </p>

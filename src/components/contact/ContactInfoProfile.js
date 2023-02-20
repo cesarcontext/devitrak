@@ -2,7 +2,16 @@ import React from "react";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import "../../style/component/contact/ContactInfoProfile.css";
 
+/**
+ * ContactInfoProfile - Component to display all user info in profile 
+ * @component
+ * @returns {void}
+ */
 export const ContactInfoProfile = () => {
+  /**
+   * users - imported form custom hook which it is 
+   * @type {Object}
+   */
   const { users } = useContactInfoStore();
   return (
     <div className="container-user-info-detail-fetched" key={users.email}>

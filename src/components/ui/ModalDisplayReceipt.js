@@ -1,6 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+
+/**
+ * ModalDisplayReceipt - modal display to notify user about where to find all receipt
+ * @component
+ * @param {boolean} setDisplayModalReceipt - state to display/close modal imported frommy profile user page
+ * @returns {HTMLBodyElement}
+ */
 export const ModalDisplayReceipt = ({setDisplayModalReceipt}) => {
   return (
     <div
@@ -15,7 +22,6 @@ export const ModalDisplayReceipt = ({setDisplayModalReceipt}) => {
         top:"20%",
         left:"0%",
         transform:"translate(0, 0)",
-        height:"55vh",
         transition:"ease-in-out .5s"
       }}
     >

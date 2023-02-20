@@ -7,12 +7,25 @@ import {
 import "./checkoutStyles.css";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 
+/**
+ * StripeCheckoutForm - element to be displayed once paymentIntent is retrieve to collect credit card info
+ * @component
+ * @returns {HTMLBodyElement}
+ */
 export const StripeCheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { device } = useDeviceCount()
 
+  /**
+   * message to display based on promise response
+   * @type {String}
+   */
   const [message, setMessage] = useState(null);
+  /**
+   * @description to dispatch action is loading or not
+   * @type {boolean}
+   */
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -28,6 +41,11 @@ export const StripeCheckoutForm = () => {
       return;
     }
 
+    /**
+     * promise to retrieve paymentIntent generated
+     * @param {String}
+     * @returns {Promise}
+     */
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
         case "succeeded":
@@ -45,6 +63,7 @@ export const StripeCheckoutForm = () => {
       }
     });
   }, [stripe]);
+
   const myUrl = window.location.origin;
 
   const iFrameStyle = {

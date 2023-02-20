@@ -2,6 +2,11 @@ import React from "react";
 import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 import "../../style/component/device/Device.css";
 
+/**
+ * @description function to display options to increase/decrease number of device and display number of devices
+ * @returns funtion
+ */
+
 export const Devices = () => {
   const { device, handleDecreaseDevice, handleIncreaseDevice } =
     useDeviceCount();
