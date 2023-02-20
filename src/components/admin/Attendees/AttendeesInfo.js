@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
-import { ModalCreateUser } from "../ui/ModalCreateUser";
-import { Link } from "react-router-dom";
 
-export const AttendeesInfo = ({ searchTerm }) => {
+/**
+
+AttendeesInfo Component - Displays attendees information
+@return {JSX.Element}
+*/
+export const AttendeesInfo = () => {
   const { user } = useAdminStore();
   const [users, setUsers] = useState([]);
-  const [userDetail, setUserDetail] = useState(null);
+  const [ , setUserDetail] = useState(null);
   const [createTransactionForNoRegularUser] = useState(false);
-  const [sendObjectIdUser, setSendObjectIdUser] = useState();
+  const [ , setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
   const [ascense, setAscense] = useState(true);
 
+  /**
+
+Fetches user data from devitrack API
+@returns {Promise<void>}
+*/
   const callApiUser = async () => {
     const response = await devitrackApi.get("/auth/users");
     if (response) {

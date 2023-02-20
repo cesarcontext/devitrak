@@ -1,8 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import "../../../style/component/admin/receiversDetailsAssignation.css";
-import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
+// import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 
+
+/**
+
+Component to display payment information for assigned payment receivers
+@return {JSX.Element} The DetailSelectedUserFOrAssignReceiver component
+*/
 export const DetailSelectedUserFOrAssignReceiver = () => {
   const { paymentIntentReceiversAssigned } = useSelector(
     (state) => state.stripe
@@ -10,7 +16,7 @@ export const DetailSelectedUserFOrAssignReceiver = () => {
 
   return (
     <>
-      {paymentIntentReceiversAssigned?.map((user, index) => {
+      {paymentIntentReceiversAssigned?.map((user) => {
         let totalPending = {};
 
         for (let data of user.device) {

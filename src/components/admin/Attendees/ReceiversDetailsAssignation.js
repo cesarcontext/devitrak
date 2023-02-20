@@ -14,26 +14,117 @@ import "../../../style/component/admin/receiversDetailsAssignation.css";
 import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 import { SMSNotice, whatsappNotice } from "../../../helper/Notifications";
 
-export const ReceiversDetailsAssignation = ({ searchTerm }) => {
+/**
+
+React component for assigning receivers to a payment intent.
+@function
+@name ReceiversDetailsAssignation
+@returns {JSX.Element} React component
+*/
+export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
   const dispatch = useDispatch();
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
   const [receiversAssigned, setReceiversAssigned] = useState([]);
+  /**
+
+State to store the fetched data
+@name fetchedData
+@type {Object|null}
+*/
   const [fetchedData, setFetchedData] = useState(null);
+  /**
+
+State to indicate if the data is being loaded
+@name loading
+@type {Boolean}
+*/
   const [loading, setLoading] = useState(true);
+  /**
+
+State to store the assigned receiver number
+@name receiverNumberAssgined
+@type {String}
+*/
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
+  /**
+
+State to indicate whether to replace the existing receiver
+@name replaceStatus
+@type {Boolean}
+*/
   const [replaceStatus, setReplaceStatus] = useState(false);
+  /**
+
+State to store the search term for filtering receivers
+@name searchTermField
+@type {String}
+*/
   const [searchTermField, setSearchTermField] = useState("");
+  /**
+
+State to store the index of the receiver object to be replaced
+@name replaceReceiverIndex
+@type {Number|null}
+*/
   const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
+  /**
+
+State to store the receiver object to be replaced
+@name receiverObjectToReplace
+@type {Object|null}
+*/
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
+  /**
+
+State to store the list of devices in the pool
+@name listOfDeviceInPool
+@type {Array}
+*/
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
+  /**
+
+State to store the receiver ID saved in the pool
+@name receiverIdSavedInPool
+@type {String}
+*/
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
+  /**
+
+State to indicate whether to display the save button
+@name saveButtonDisplay
+@type {Boolean}
+*/
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
+  /**
+
+State to indicate whether to dispatch the batch
+@name dispatchBatch
+@type {Boolean}
+*/
   const [dispatchBatch, setDispatchBatch] = useState(false);
-  const [dispatchChange, setDispatchChange] = useState(false)
+  /**
+
+State to indicate whether to dispatch the change
+@name dispatchChange
+@type {Boolean}
+*/
+  const [dispatchChange, setDispatchChange] = useState(false);
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
+  /**
+
+Reference to the input element for assigning receivers
+@name inputReference
+@type {Object}
+*/
   const inputReference = useRef();
+  /**
+
+State to store the batch device
+@name batchDevice
+@type {String}
+*/
   const [batchDevice, setBatchDevice] = useState("");
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
@@ -55,7 +146,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     fetchedData,
     replaceStatus,
     batchDevice,
-    dispatchChange
+    dispatchChange,
   ]);
 
   useEffect(() => {
@@ -66,8 +157,22 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     return () => {
       controller.abort();
     };
-  }, [paymentIntentToCheck, loading, fetchedData, replaceStatus, batchDevice, dispatchChange]);
+  }, [
+    paymentIntentToCheck,
+    loading,
+    fetchedData,
+    replaceStatus,
+    batchDevice,
+    dispatchChange,
+  ]);
 
+  /**
+
+Add a receiver object to the list of assigned receivers.
+@async
+@function addReceiver
+@returns {Promise<void>} - A Promise that resolves with no value when the receiver is added successfully.
+*/
   const addReceiver = async () => {
     if (receiverObject.serialNumber.length < 1) {
       setReceiverNumberAssgined("");
@@ -90,10 +195,20 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       inputReference.current.focus();
     }
   };
+
   if (receiverObject.serialNumber.length === 6) {
     addReceiver();
   }
   let receiversAssignedListCopy;
+
+  /**
+
+Removes a receiver from the array of assigned receivers before saved data, given its index.
+@async
+@function
+@param {number} index - The index of the receiver to be removed from the array.
+@returns {Promise<void>} - A promise that resolves once the receiver is removed.
+*/
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
     if (result.length === 1) {
@@ -109,6 +224,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     );
   }
 
+  /**
+   * Handles the submission of receiver assignation data and updates receiver information.
+   * @async
+   * @function
+   * @returns {Promise<void>} - A promise that resolves once the data has been submitted and updated.
+   */
   const handleDataSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
@@ -145,15 +266,23 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         setSaveButtonDisplay(true);
         whatsappNotice({
           bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
-            paymentIntentDetailSelected.device > 1 ? "devices" : "device"
-          } are assigned to your account. Please keep in mind to return them all when the event finishes. Enjoy the event!`,
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
           to: `${paymentIntentDetailSelected.user.phoneNumber}`,
           alertMessage: `User was noticed about the action taken in the account`,
         });
         SMSNotice({
           bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
-            paymentIntentDetailSelected.device > 1 ? "devices" : "device"
-          } are assigned to your account. Please keep in mind to return them all when the event finishes. Enjoy the event!`,
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
           to: `${paymentIntentDetailSelected.user.phoneNumber}`,
           alertMessage: `User was noticed about the action taken in the account`,
         });
@@ -167,6 +296,18 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       swalErrorMessage(error);
     }
   };
+  /**
+
+Handles the return of a device assigned to a payment intent
+@async
+@function
+@param {object} receiver - The receiver object to be returned
+@param {number} index - The index of the receiver object in the list of assigned receivers
+@returns {Promise<void>}
+@throws {Error} If an error occurs while processing the request
+@example
+handleReturnDevice(receiver, index);
+*/
   const handleReturnDevice = async (receiver, index) => {
     let receiverInPoolId;
     listOfDeviceInPool?.map((item) => {
@@ -220,6 +361,17 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       swalErrorMessage(error);
     }
   };
+
+  /**
+
+Assigns a receiver device to a user and updates the devices' status and activity.
+@async
+@function handleAssignDevice
+@param {object} receiver - The receiver device to be assigned.
+@param {number} index - The index of the receiver in the list of assigned receivers.
+@throws {Error} Error message if there was a problem updating the receiver or receiver pool.
+@returns {void}
+*/
   const handleAssignDevice = async (receiver, index) => {
     let receiverInPoolId;
     listOfDeviceInPool?.map((item) => {
@@ -264,6 +416,14 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
 
+  /**
+
+Asynchronously returns all the receivers that were assigned in a single operation.
+@async
+@function returnAllReceiversAtOnce
+@returns {Promise<void>}
+@throws {Error} If there is an error while executing the function.
+*/
   const returnAllReceiversAtOnce = async () => {
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
@@ -343,6 +503,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
 
+  /**
+   *Triggers the replace receiver function.
+   *@param {object} receiver - The receiver object to be replaced.
+   *@param {number} index - The index of the receiver object in the list of receivers.
+   *@returns {void}
+   */
   const replaceFunctionTrigger = (receiver, index) => {
     listOfDeviceInPool?.map((item) => {
       if (item.device === receiver.serialNumber) {
@@ -350,12 +516,31 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       }
     });
     try {
+      /**
+       *The receiver object to be replaced.
+       *@type {object}
+       *@property {string} serialNumber - The serial number of the receiver.
+       *@property {boolean} status - The status of the receiver.
+       */
+
       setReceiverObjectToReplace({
         serialNumber: receiver.serialNumber,
         status: receiver.status,
       });
+      /**
+       * The index of the receiver object in the list of receivers.
+       *@type {number}
+       */
       setReplaceReceiverIndex(index);
+      /**
+       * The status of the replace receiver function.
+       *@type {boolean}
+       */
       setReplaceStatus(true);
+      /**
+       *The search term field for the replace receiver function.
+       *@type {string}
+       */
       setSearchTermField("");
     } catch (error) {
       swalErrorMessage(error);
@@ -424,23 +609,16 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
             comment: "No comment",
           }
         );
-        let timerInterval;
+        // let timerInterval;
         Swal.fire({
           title: "",
           html: `Device ${objectToReturn.serialNumber} was returned`,
           timer: 10,
           timerProgressBar: false,
-          didOpen: () => {
-            timerInterval = setInterval(() => {
-              b.textContent = Swal.getTimerLeft();
-            }, 100);
+          preConfirm: () => {
+            setDispatchChange(!dispatchChange);
           },
-          willClose: () => {
-            clearInterval(timerInterval);
-            setDispatchChange(!dispatchChange)
-
-          },
-        })
+        });
       }
     } catch (error) {
       swalErrorMessage(error);
@@ -451,6 +629,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     returnDeviceAsBatch();
     setBatchDevice("");
   }
+
   return (
     <div>
       <div>
@@ -740,7 +919,10 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                     margin: "1% auto",
                     padding: "5px",
                   }}
-                  onClick={() => setDispatchBatch(false)}
+                  onClick={() => {
+                    setDispatchBatch(false);
+                    window.location.reload();
+                  }}
                 >
                   DONE
                 </button>

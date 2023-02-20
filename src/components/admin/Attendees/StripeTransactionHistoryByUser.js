@@ -1,8 +1,6 @@
-import { useInterval } from "interval-hooks";
+import { abort } from "process";
 import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
 import { useDispatch } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import {
   onAddPaymentIntentDetailSelected,
@@ -11,74 +9,72 @@ import {
 import "../../../style/component/admin/stripeTransactionHistoryByUser.css";
 import "../../../style/component/ui/paginate.css";
 
-export const StripeTransactionHistoryByUser = ({
-  sendObjectIdUser,
-  createTransactionForNoRegularUser,
-  
-}) => {
+/**
+
+Displays the Stripe transaction history of a specific user.
+@function
+@returns {JSX.Element} - Rendered component.
+*/
+export const StripeTransactionHistoryByUser = () => {
   const [stripeTransactions, setStripeTransactions] = useState();
-  const [paymentIntentId, setSendPaymentIntentId] = useState("");
-  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 2;
+  const user_url = window.location.pathname.split("/").at(-1);
+  const user_detail_id = user_url.split(":").at(-1);
 
   const dispatch = useDispatch();
 
+  /**
+
+Calls the API to retrieve the Stripe transaction history of all users.
+@async
+@function
+*/
   const callApiStripeTransaction = async () => {
     const response = await devitrackApi.get("/admin/users");
     if (response) {
       setStripeTransactions(response.data.stripeTransactions);
     }
   };
+
+  /**
+
+Calls the API to retrieve the Stripe transaction history of all users when
+the component is mounted.
+@effect
+@function
+*/
   useEffect(() => {
+    const controller = new AbortController();
     callApiStripeTransaction();
-  }, [sendObjectIdUser, createTransactionForNoRegularUser]);
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   let userTransaction = [];
+
+  /**
+
+Retrieves and sets the Stripe transaction history for the current user.
+@async
+@function
+*/
   const substractUserTransactionsOnly = async () => {
+    let index = 0;
     if (stripeTransactions !== []) {
-      stripeTransactions?.map((transaction, index) => {        
-        if (transaction.user?._id === sendObjectIdUser) {
-          return userTransaction.splice(index, 0, transaction);
+      stripeTransactions?.map((transaction) => {
+        if (transaction.user?._id === user_detail_id) {
+          userTransaction.splice(index, 0, transaction);
+          index++;
         }
       });
     }
   };
   substractUserTransactionsOnly();
 
-  useInterval(async () => {
-    const endOffset = itemOffset + itemsPerPage;
-    setCurrentItemsRendered(userTransaction.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(userTransaction.length / itemsPerPage));
-  }, 2_00);
-
-  const handlePageClick = (event) => {
-    const newOffset =
-      (event.selected * itemsPerPage) % stripeTransactions.length;
-    setItemOffset(newOffset);
-  };
-
   return (
     <div className="container-stripe-transaction">
       <div>
         <table className="table">
-          <caption>
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="next >"
-              onPageChange={handlePageClick}
-              pageRangeDisplayed={2}
-              pageCount={pageCount}
-              previousLabel="< previous"
-              renderOnZeroPageCount={null}
-              containerClassName="pagination"
-              pageLinkClassName="page-num"
-              previousLinkClassName="page-num"
-              nextLinkClassName="page-num"
-              activeLinkClassName="tab-active"
-            />
-          </caption>
           <thead>
             <tr>
               <th scope="col">Payment Intent ID</th>
@@ -87,7 +83,7 @@ export const StripeTransactionHistoryByUser = ({
               <th scope="col">Details</th>
             </tr>
           </thead>
-          {currentItemsRendered?.map((transaction) => {
+          {userTransaction?.map((transaction) => {
             const amount = transaction.device * 200;
             return (
               <tbody key={transaction.id}>
@@ -96,24 +92,17 @@ export const StripeTransactionHistoryByUser = ({
                   <td>{transaction.device}</td>
                   <td>${amount}</td>
                   <td>
-                    <NavLink to="/admin/attendees/receiver_assignation">
-                      <button
-                        className="btn btn-detail"
-                        onClick={async () => {
-                          setSendPaymentIntentId(transaction.paymentIntent);
-                          dispatch(
-                            onAddPaymentIntentSelected(
-                              transaction.paymentIntent
-                            )
-                          );
-                          dispatch(
-                            onAddPaymentIntentDetailSelected(transaction)
-                          );
-                        }}
-                      >
-                        Details
-                      </button>
-                    </NavLink>{" "}
+                    <button
+                      className="btn btn-detail"
+                      onClick={async () => {
+                        dispatch(
+                          onAddPaymentIntentSelected(transaction.paymentIntent)
+                        );
+                        dispatch(onAddPaymentIntentDetailSelected(transaction));
+                      }}
+                    >
+                      Details
+                    </button>
                   </td>
                 </tr>
               </tbody>

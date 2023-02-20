@@ -5,6 +5,12 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 import { whatsappNotice } from "../../../helper/Notifications";
 import "../../../style/pages/admin/attendees.css";
 
+/**
+ * Renders the PaymentIntentTemplate component.
+ *
+ * @function
+ * @returns {JSX.Element}
+ */
 export const PaymentIntentTemplate = () => {
   const [dataListed, setDataListed] = useState([]);
 
@@ -13,6 +19,14 @@ export const PaymentIntentTemplate = () => {
     paymentIntentReceiversAssigned,
   } = useSelector((state) => state.stripe);
 
+  
+  /**
+   * Calls the API to retrieve the payment intent with the specified ID.
+   *
+   * @async
+   * @function
+   * @returns {Promise<void>}
+   */
   const callApiPaymentIntent = async () => {
     const response = await devitrackApi.get(
       `/stripe/payment_intents/${paymentIntentSelected}`
@@ -28,6 +42,13 @@ export const PaymentIntentTemplate = () => {
 
   let totalPending = {};
   let totalDevice = "";
+
+    /**
+   * Calculates the total number of pending and completed devices for each user assigned to the payment intent.
+   *
+   * @function
+   * @returns {void}
+   */
   paymentIntentReceiversAssigned?.map((user, index) => {
     totalDevice = user.device.length;
     for (let data of user.device) {
