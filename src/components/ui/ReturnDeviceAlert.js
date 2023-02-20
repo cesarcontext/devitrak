@@ -1,23 +1,91 @@
 import { useInterval } from "interval-hooks";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
 import { SMSNotice, whatsappNotice } from "../../helper/Notifications";
 import "../../style/component/ui/ReturnDeviceAlert.css";
 
+
+/**
+
+Returns device alert component
+@function ReturnDeviceAlert
+@returns {JSX.Element} - Returns JSX.Element.
+*/
 export const ReturnDeviceAlert = () => {
+
+/**
+
+Users state structure set up in store.
+@name users
+@type {Object}
+@memberof ReturnDeviceAlert
+*/
   const { users } = useSelector((state) => state.contactInfo);
 
-  const [language, setLanguage] = useState(false);
-  const [poolReceivers, setPoolReceivers] = useState([]);
-  const [remainingDays, setRemainingDays] = useState(0);
-  const [remainingHours, setRemainingHours] = useState(0);
-  const notificationSent = useRef(0);
+/**
 
+Language state to display message in English/Portuguese.
+@name language
+@type {Boolean}
+@memberof ReturnDeviceAlert
+*/
+  const [language, setLanguage] = useState(false);
+
+  /**
+
+Pool of receivers state.
+@name poolReceivers
+@type {Array}
+@memberof ReturnDeviceAlert
+*/
+  const [poolReceivers, setPoolReceivers] = useState([]);
+
+  /**
+
+Remaining days state.
+@name remainingDays
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  const [remainingDays, setRemainingDays] = useState(0);
+
+  /**
+
+Remaining hours state.
+@name remainingHours
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  const [remainingHours, setRemainingHours] = useState(0);
+
+  /**
+
+Notifications state set to 0.
+@name notifications
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  localStorage.setItem("Notifications", 0);
+
+  /**
+   * notificationNotice
+   * @description value to condition he number of notification displyed
+   */
+  const notificationNotice = localStorage.getItem("Notifications");
+
+/**
+
+Function to call api and save response in a state.
+@async
+@function checkActivatedReceivers
+@memberof ReturnDeviceAlert
+@returns {Array} - new variable state from the reponse.
+*/
   const checkActivatedReceivers = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
     if (response) {
-      setPoolReceivers(response.data.listOfReceivers);
+      return setPoolReceivers(response.data.listOfReceivers);
     }
   };
 
@@ -29,22 +97,42 @@ export const ReturnDeviceAlert = () => {
     };
   }, []);
 
+/**
+
+Due date to compare and dispatch notifications.
+@name dueDate
+@type {Date}
+@memberof ReturnDeviceAlert
+*/
+  const dueDate = new Date("2023-02-10 10:43:00");
+
+/**
+
+Check every sec the current date/time and compare if dueDate falls into parameters to dispatch expected function as notifications.
+@name useInterval
+@type {Function}
+@memberof ReturnDeviceAlert
+*/
   useInterval(() => {
-    const dueDate = new Date("2023-02-07 17:13:00");
     const currentDate = new Date();
+    /**
+     * timeDifference
+     * @description difference between due date and current date
+     */
     const timeDifference = dueDate.getTime() - currentDate.getTime();
-    console.log("🚀 ~ file: ReturnDeviceAlert.js:36 ~ useInterval ~ timeDifference", timeDifference)
     const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
-    if (notificationSent.current < 1) {
-      if (timeDifference < 0 && timeDifference > -500) {
+    if (notificationNotice < 1) {
+      if (timeDifference < 0 && timeDifference > -1500) {
+        localStorage.setItem("Notifications", 1);
         return (
           <>
             {whatsappNotice({
-              bodyMessage:
-                "This is a friendly reminder about to return your device(s)",
+              bodyMessage: `This is a friendly reminder about to return your device(s).Please be noticed that after ${
+                dueDate.getHours() + 1
+              }pm, all devices not returned will be charged a late return fee.`,
               to: `${users.phoneNumber}`,
               alertMessage: `A whatsapp notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
             })}
@@ -54,7 +142,6 @@ export const ReturnDeviceAlert = () => {
               to: `${users.phoneNumber}`,
               alertMessage: `A SMS notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
             })}
-            {notificationSent.current = 1}
           </>
         );
       }
@@ -64,10 +151,19 @@ export const ReturnDeviceAlert = () => {
   }, 1_000);
 
   const listOfDevice = new Map();
+
+  /**
+   * selectDevicePerUser
+   * @description function to check all user transaction and set Map with actived receivers
+   * @returns {Object} listOfDevice - object created from Map method
+   */
   const selectDevicePerUser = async () => {
     poolReceivers?.map((transaction) => {
+      
       if (transaction.user === users.email) {
+        
         transaction.device.map((item) => {
+          
           if (item.status === true) {
             listOfDevice.set(item.serialNumber, item.status);
           }
@@ -77,8 +173,14 @@ export const ReturnDeviceAlert = () => {
     return listOfDevice;
   };
   selectDevicePerUser();
+
+  /**
+   * changeLanguage
+   * @description function to change language state between english and portuguese
+   * @returns {Boolean}
+   */
   const changeLanguage = () => {
-    setLanguage(!language);
+    return setLanguage(!language);
   };
   return (
     <div>
@@ -116,8 +218,12 @@ export const ReturnDeviceAlert = () => {
                       remaining{" "}
                     </span>
                     <br />
-                    Devices not returned on <strong>Jan 17th</strong> will be
-                    charged to your credit card on file.
+                    Devices not returned on{" "}
+                    <strong>
+                      {dueDate.getMonth() + 1}/{dueDate.getDate()}/
+                      {dueDate.getFullYear()}
+                    </strong>{" "}
+                    will be charged to your credit card on file.
                   </span>
                 </div>
               </div>
