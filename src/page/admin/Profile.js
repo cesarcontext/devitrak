@@ -1,178 +1,203 @@
-import React, { useState } from "react";
-import { Navbar } from "../../components/admin/ui/Navbar";
-import { useAdminStore } from "../../hooks/useAdminStore";
-import "../../style/pages/admin/profile.css";
+// import React, { useState } from "react";
+// import { Navbar } from "../../components/admin/ui/Navbar";
+// import { useAdminStore } from "../../hooks/useAdminStore";
+// import "../../style/pages/admin/profile.css";
 
-export const Profile = () => {
-  const { user } = useAdminStore();
-  const {startEditAdminUser} = useAdminStore()
-  const [buttonEditProfile, setButtonEditProfile] = useState(false);
-  const [email, setEmail] = useState("");
-  const [fullname, setFullname] = useState("")
+// export const Profile = () => {
+//   const { user } = useAdminStore();
+//   const { startEditAdminUser } = useAdminStore();
+//   const [buttonEditProfile, setButtonEditProfile] = useState(false);
+//   const [email, setEmail] = useState("");
+//   const [phone, setPhone] = useState("");
+//   const [question, setQuestion] = useState("");
+//   const [securityAnswer, setSecurityAnswer] = useState("");
+//   const [fullname, setFullname] = useState("");
 
-  const handleEditInfoSubmitted = async (event) => {
-    event.preventDefault();
-    await startEditAdminUser({email, fullname});
-    setButtonEditProfile(!buttonEditProfile);
-  };
+//   const handleEditInfoSubmitted = async (event) => {
+//     event.preventDefault();
+//     await startEditAdminUser({
+//       email,
+//       fullname,
+//       phone,
+//       question,
+//       securityAnswer,
+//     });
+//     setButtonEditProfile(!buttonEditProfile);
+//     setEmail("");
+//     setPhone("");
+//     setQuestion("");
+//     setSecurityAnswer("");
+//   };
+  
+//   return (
+//     <div>
+//       <Navbar />
+//       <div className="profile-admin-container">
+//         <div></div>
+//         <div className="profile-info-detail">
+//           <div className="personal-info-box">
+//             {buttonEditProfile === false ? (
+//               <>
+//                 <div className="info-detail">
+//                   <strong>YOUR INFORMATION</strong>
+//                   <br/>
+//                   <h6>
+//                     Name: <span>{user.name}</span>
+//                   </h6>
 
-  return (
-    <div>
-      <Navbar />
-      <div className="profile-admin-container">
-        <div>
-          {/* <h2>Profile</h2> */}
-        </div>
-        <div className="profile-info-detail">
-          <div>
-            <img
-              style={{
-                borderRadius: "50%",
-                objectPosition: "center",
-                objectFit: "fill",
-              }}
-              src="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
-              alt="https://imgs.search.brave.com/Jaq_bvSyZXetX2HgVL-G-9T_HNs1OWb7n-xXmooyEms/rs:fit:640:640:1/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8x/MC8wNS8yMi8zNy9i/bGFuay1wcm9maWxl/LXBpY3R1cmUtOTcz/NDYwXzY0MC5wbmc"
-            />
-            <div>
-              <button
-              className=""
-                style={{
-                  backgroundColor: "transparent",
-                  border: "transparent",
-                  boxShadow: "none",
-                  color: "#212529",
-                }}
-              >
-                {" "}
-                {/* <input type="file" onChange={handleChange} /> */}
-                <strong>
-                  CHANGE PICTURE <i className="bi bi-pencil" />{" "}
-                </strong>
-              </button>
-            </div>
-          </div>
-          <div className="personal-info-box">
-            {buttonEditProfile === false ? (
-              <>
-                <div className="personal-info-detail">
-                  <strong>YOUR INFORMATION</strong>
-                  <h6>Name</h6>
-                  <span>{user.name}</span>
-                  <br />
-                  <h6>Role</h6>
-                  <span>{user.role}</span>
-                </div>
-                <div className="personal-info-detail">
-                  <strong>CONTACT DETAILS</strong>
-                  <h6>Email</h6>
-                  <span>{user.email}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="personal-info-detail">
-                  <strong>YOUR INFORMATION</strong>
-                  <h6>Name</h6>
-                  <span>
-                    <input
-                      style={{
-                        width: "100%",
-                      }}
-                      placeholder="Fullname"
-                      id="fullname"
-                      onChange={(event) => setFullname(event.target.value)}
-                      type="text"
-                      name="fullname"
-                      value={fullname}
-                    />
-                  </span>
-                  <br />
-                  <h6>Role</h6>
-                  <span>{user.role}</span>
-                </div>
-                <div className="personal-info-detail">
-                  <strong>CONTACT DETAILS</strong>
-                  <h6>Email</h6>
-                  <span>
-                    <input
-                      style={{
-                        width: "100%",
-                      }}
-                      placeholder="Email"
-                      id="email"
-                      onChange={(event) => setEmail(event.target.value)}
-                      type="text"
-                      name="email"
-                      value={email}
-                    />
-                  </span>
-                </div>
-              </>
-            )}
+//                   <h6>
+//                     Role: <span>{user.role}</span>
+//                   </h6>
+//                 </div>
+//                 <div className="info-detail">
+//                   <strong>CONTACT DETAILS</strong>
+//                   <br/>
+//                   <h6>
+//                     Phone: <span>{user.phone}</span>
+//                   </h6>
+//                   <h6>
+//                     Email: <span>{user.email}</span>
+//                   </h6>
+//                 </div>
+//               </>
+//             ) : (
+//               <>
+//                 <div className="info-detail">
+//                   <strong>YOUR INFORMATION</strong>
+//                   <br/>
+//                   <h6>Name: </h6>
+//                   <span>
+//                     <input
+//                       style={{
+//                         width: "100%",
+//                       }}
+//                       placeholder="Fullname"
+//                       id="fullname"
+//                       onChange={(event) => setFullname(event.target.value)}
+//                       type="text"
+//                       name="fullname"
+//                       value={fullname}
+//                     />
+//                   </span>
+//                   <br />
+//                   <h6>
+//                     Role: <span>{user.role}</span>
+//                   </h6>
+//                 </div>
+//                 <div className="info-detail">
+//                   <strong>CONTACT DETAILS</strong>
+//                   <br/>
+//                   <div>
+//                     <h6>Phone: </h6>
+//                     <span>
+//                       <input
+//                         placeholder="Phone"
+//                         id="phone"
+//                         onChange={(event) => setPhone(event.target.value)}
+//                         type="text"
+//                         name="phone"
+//                         value={phone}
+//                       />
+//                     </span>
+//                   </div>
+//                   <div>
+//                     <h6>Email: </h6>
+//                     <span>
+//                       <input
+//                         placeholder="Email"
+//                         id="email"
+//                         onChange={(event) => setEmail(event.target.value)}
+//                         type="text"
+//                         name="email"
+//                         value={email}
+//                       />
+//                     </span>
+//                   </div>
+//                   <div>
+//                     <h6>Security Question: </h6>
+//                     <select
+//                       value={question}
+//                       name="question"
+//                       onChange={(event) => setQuestion(event.target.value)}
+//                     >
+//                       <option defaultValue="">Choose your question</option>
+//                       <option value="What was the make of your first car?">
+//                         What was the make of your first car?
+//                       </option>
+//                       <option value="In what city were you born?">
+//                         In what city were you born?
+//                       </option>
+//                       <option value="What is the name of your favorite pet?">
+//                         What is the name of your favorite pet?
+//                       </option>
+//                       <option value="What is your mother's maiden name?">
+//                         What is your mother's maiden name?
+//                       </option>
+//                       <option value="What high school did you attend?">
+//                         What high school did you attend?
+//                       </option>
+//                       <option value="What was your favorite food as a child?">
+//                         What was your favorite food as a child?
+//                       </option>
+//                       <option value="Where did you meet your spouse?">
+//                         Where did you meet your spouse?
+//                       </option>
+//                       <option value="What year was your father (or mother) born?">
+//                         What year was your father (or mother) born?
+//                       </option>
+//                     </select>
+//                   </div>
+//                   <div>
+//                     {" "}
+//                     {question !== "" && (
+//                       <input
+//                         type="text"
+//                         className="form-control"
+//                         placeholder="Provide an answer"
+//                         name="securityAnswer"
+//                         value={securityAnswer}
+//                         onChange={(event) =>
+//                           setSecurityAnswer(event.target.value)
+//                         }
+//                       />
+//                     )}
+//                   </div>
+//                 </div>
+//               </>
+//             )}
 
-            <div>
-              {buttonEditProfile === false ? (
-                <>
-                  <button
-                    onClick={() => setButtonEditProfile(!buttonEditProfile)}
-                    style={{
-                      backgroundColor: "transparent",
-                      border: "transparent",
-                      boxShadow: "none",
-                      color: "#212529",
-                    }}
-                  >
-                    <strong>
-                      EDIT PERFIL <i className="bi bi-pencil" />{" "}
-                    </strong>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div style={{ display: "flex" }}>
-                    <button
-                      onClick={() => setButtonEditProfile(false)}
-                      style={{
-                        backgroundColor: "transparent",
-                        border: "transparent",
-                        boxShadow: "none",
-                        color: "#212529",
-                        width: "45%",
-                      }}
-                    >
-                      <strong>
-                        <h3>
-                          <i className="bi bi-x-square" />
-                        </h3>{" "}
-                      </strong>
-                    </button>
-                    <button
-                      onClick={handleEditInfoSubmitted}
-                      style={{
-                        backgroundColor: "transparent",
-                        border: "transparent",
-                        boxShadow: "none",
-                        color: "#212529",
-                        width: "80%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <strong>
-                        <h3>
-                          <i className="bi bi-save" />
-                        </h3>{" "}
-                      </strong>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+//             <div>
+//               {buttonEditProfile === false ? (
+//                 <>
+//                   <p
+//                     className="link-edit-profile"
+//                     onClick={() => setButtonEditProfile(!buttonEditProfile)}
+//                   >
+//                     EDIT PERFIL <i className="bi bi-pencil" />{" "}
+//                   </p>
+//                 </>
+//               ) : (
+//                 <>
+//                   <div className="container-buttons-edit">
+//                     <p
+//                       onClick={() => setButtonEditProfile(false)}
+//                       className="btn btn-delete"
+//                     >
+//                       <i className="bi bi-x-square" />
+//                     </p>{" "}
+//                     <p
+//                       onClick={handleEditInfoSubmitted}
+//                       className="btn btn-create"
+//                     >
+//                       <i className="bi bi-save" />
+//                     </p>{" "}
+//                   </div>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
