@@ -19,7 +19,7 @@
     display: flex;
     column-gap: 2%;
     margin: 2vh auto;
-    height: 100vh;
+    height: 65vh;
   }
   .container-stock-device-list {
     width: 40vw;
@@ -39,7 +39,7 @@
   }
 
   .container-device-info-table {
-    height: 85vh;
+    height: 50vh;
   }
 
   .container-footer-stock {
@@ -120,14 +120,13 @@
     display: flex;
     column-gap: 2%;
     margin: 2vh auto;
-    height: 100vh;
   }
   .container-stock-device-list {
     width: 56vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
-    min-height: 100vh;
+    min-height: 75vh;
     background-color: #fff;
   }
   .container-stock-device-details {
@@ -140,7 +139,7 @@
   }
 
   .container-device-info-table {
-    height: 82vh;
+    height: 60vh;
   }
 
   .container-footer-stock {
