@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import "../../../style/component/admin/DeviceDatabase.css";
 
+/**
+ * A component that displays device users history for a given receiver.
+ * @param {Object} props - The component props.
+ * @param {string} props.receiverId - The id of the receiver.
+ * @param {string} props.receiverDetail - The detail of the receiver.
+ * @param {string} props.conditionReturned - The condition of the device returned.
+ * @returns {JSX.Element} React component with device users history.
+ */
 export const DeviceUsersHistory = ({
   receiverId,
   receiverDetail,
@@ -12,6 +20,10 @@ export const DeviceUsersHistory = ({
   const [usersPerDevice, setUsersPerDevice] = useState([]);
   const [listReceiverReturnedByIssue, setListReceiverReturnedByIssue] =
     useState([]);
+
+     /**
+   * Calls the API to get the list of receiver assigned.
+   */
   const callApiListOfReceiverAssigned = async () => {
     const response = await devitrackApi.get("/receiver/receiver-assigned-list");
     if (response) {
@@ -19,18 +31,24 @@ export const DeviceUsersHistory = ({
     }
   };
 
+   /**
+   * Checks users in the history and sets usersPerDevice state.
+   */
   const checkingUsersInHistory = async () => {
     const usersPerDevice = [];
     listOfReceiverAssigned?.map((data) => {
       data.device.map((device) => {
         if (device.serialNumber === receiverDetail) {
-          usersPerDevice.unshift(data.user);
+          usersPerDevice.unshift([{user: data.user, paymentIntent:data.paymentIntent}]);
         }
       });
     });
     setUsersPerDevice(usersPerDevice);
   };
 
+    /**
+   * Calls the API to get the list of receiver returned by issue.
+   */
   const callApiReceierReturnedByIssue = async () => {
     const response = await devitrackApi.get(
       "/receiver/list-receiver-returned-issue"
@@ -62,17 +80,16 @@ export const DeviceUsersHistory = ({
       <table className="table table-device-user-history">
         <thead>
           <tr>
-            <th>#</th>
             <th scope="col">User</th>
           </tr>
+          {/* <button>RETURN</button> */}
         </thead>
         <tbody>
           {conditionReturned === null
             ? usersPerDevice?.map((user, index) => {
                 return (
                   <tr>
-                    <td>{index + 1}</td>
-                    <td scope="col">{user}</td>
+                    <td scope="col">{user[index]?.user}</td>
                   </tr>
                 );
               })
@@ -80,7 +97,6 @@ export const DeviceUsersHistory = ({
                 if (conditionReturned === receiver.device) {
                   return (
                     <tr>
-                      <td>{index + 1}</td>
                       <td scope="col">{receiver.user}</td>
                     </tr>
                   );
