@@ -34,16 +34,11 @@ import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
 
 /**
- * AccordionListPaymentIntent
- * @component
- * @description accordion with the list of receipt detail for user
- */
+
+AccordionListPaymentIntent - A component that renders a list of payment intents
+@returns {JSX.Element} React component
+*/
 export const AccordionListPaymentIntent = () => {
-  /**
-   *  users detail info
-   * @type {Object}
-   * @module store/slice
-   */
   const { users } = useSelector((state) => state.contactInfo);
   const [openAccordion, setOpenAccordion] = useState(false);
   const [openAccordionDetail, setOpenAccordionDetail] = useState(true);
@@ -51,9 +46,12 @@ export const AccordionListPaymentIntent = () => {
   const [receiverSavedData, setReceiverSavedData] = useState([]);
 
   /**
-   * callSavedStripePaymentIntentApi - function to get data in data by GET method using axios and then save the response in variable
-   * @returns {Array}
-   */
+
+Fetches saved Stripe payment intent data from the API
+@async
+@function
+@returns {Promise&lt;void>} A Promise that resolves when the data is fetched and saved to state
+*/
   const callSavedStripePaymentIntentApi = async () => {
     let result;
     const response = await devitrackApi.get("/admin/users");
@@ -63,44 +61,40 @@ export const AccordionListPaymentIntent = () => {
     return setReceiverSavedData(result);
   };
 
-  /**
-   * paymentIntentsToBeRetrieved - check if payment intent is longer than 17 digits to save then in a specific variable. Knowing those are the one generated from user side
-   * @type {Array}
-   */
   let paymentIntentsToBeRetrieved = [];
-
-  /**
-   * index - to insert data in array by splice method
-   * @type {Number}
-   */
   let index = 0;
-
-  /**
-   * noDeletedAccount-  set up to no delete account and instead to insert data in array to display/iterate later
-   * @type {Number}
-   */
   const noDeletedAccount = 0;
 
-  /**
-   * iterate data and then compare data with current user to sort and insert specific data belongs to user to display later
-   * @returns {Array}
-   */
-  for (let data of receiverSavedData) {
-    if (data?.user?.email === users?.email) {
-      if (data.paymentIntent.length > 15) {
-        paymentIntentsToBeRetrieved.splice(
-          index,
-          noDeletedAccount,
-          data.paymentIntent
-        );
+/**
+
+Sorts the saved Stripe payment intent data and inserts it into an array
+@function
+@returns {void}
+*/
+  const sortAndInsertData = () => {
+    for (let data of receiverSavedData) {
+      if (data?.user?.email === users?.email) {
+        if (data.paymentIntent.length > 15) {
+          paymentIntentsToBeRetrieved.splice(
+            index,
+            noDeletedAccount,
+            data.paymentIntent
+          );
+        }
       }
     }
+  };
+  if (receiverSavedData.length > 0) {
+    sortAndInsertData();
   }
+
   /**
-   * renderPaymentIntentDetail
-   * @description after sort and insert data belongs to current user, data is checked in stripe to confirm the saved payment intent was generated in stripe and then display qr code for further action
-   * @returns {Promise}
-   */
+
+Renders the payment intent details and sets the state with the data
+@async
+@function
+@returns {Promise&lt;void>} A Promise that resolves when the payment intent details are fetched and rendered
+*/
   const renderPaymentIntentDetail = async () => {
     let replacement = [];
     for (let index = 0; index &lt; paymentIntentsToBeRetrieved.length; index++) {
@@ -116,18 +110,15 @@ export const AccordionListPaymentIntent = () => {
   useEffect(() => {
     callSavedStripePaymentIntentApi();
     renderPaymentIntentDetail();
-  }, [
-    users.id,
-    openAccordion,
-    openAccordionDetail,
-  ]);
+  }, [users.id, openAccordion, openAccordionDetail]);
 
   /**
-   * checkPaymentIntentArray
-   * @description check if param is undefined to display generic qr code, ad if it is valid, generate a valid qr code
-   * @param {string} info
-   * @returns {HTMLBodyElement} qr code
-   */
+
+Checks if the payment intent array contains data and returns a QR code with the payment intent information, or a placeholder if it's undefined
+@function
+@param {string} info - Payment intent information to be encoded in the QR code
+@returns {JSX.Element} React component with a QR code or a placeholder
+*/
   const checkPaymentIntentArray = (info) => {
     if (info === undefined) {
       return (
@@ -182,7 +173,7 @@ export const AccordionListPaymentIntent = () => {
         {openAccordion === true ? (
           &lt;div className="accordion-collapse collapse show">
             &lt;div className="accordion-body">
-            {receiverSavedData?.map((item) => {
+              {receiverSavedData?.map((item) => {
                 if (item.paymentIntent.length &lt; 16) {
                   if (item.user.email === users.email) {
                     return (
@@ -231,14 +222,13 @@ export const AccordionListPaymentIntent = () => {
               })}
             &lt;/div>
             &lt;div className="accordion-body">
-              {detailList[0]?.map((item) => {                
+              {detailList[0]?.map((item) => {
                 return (
                   &lt;div key={item.id}>
                     &lt;div className="accordion-detail-title">
                       &lt;div className="order-list">
                         &lt;i className="bi bi-circle" />{" "}
-                        &lt;p className="accordion-header"
-                        >
+                        &lt;p className="accordion-header">
                           &lt;strong>Order: &lt;/strong> {item.id}{" "}
                           &lt;i className="bi bi-chevron-down" />
                         &lt;/p>
@@ -311,13 +301,13 @@ export const AccordionListPaymentIntent = () => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-store_contentInfoSlice.html">store/contentInfoSlice</a></li><li><a href="module-store_slice.html">store/slice</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Feb 15 2023 17:28:34 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Fri Feb 17 2023 08:40:36 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
