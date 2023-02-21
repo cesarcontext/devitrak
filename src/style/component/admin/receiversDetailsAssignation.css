@@ -1,7 +1,7 @@
 @media only screen and (min-width:1441px){
   .container-payment-detail-assignment-section {
     background: var(--main-colorswhite);
-    width: 70vw;
+    width: 80vw;
     margin: 1% auto;
     margin-top: 2%;
     border: solid 2px var(--black);

@@ -7,17 +7,17 @@
     height: 50vh;
   }
   .container-attendees-info {
-    width: 30vw;
-    height: 60vh;
+    width: 70vw;
+    min-height: 65vh;
     border: solid 1px #212529;
     border-radius: 15px;
-    padding: 20px;
+    padding: 30px;
     background-color: #ffff;
-    margin-left: 15vw;
+    margin: 2vh auto;
+    overflow: auto;
   }
   .container-attendees-info-detail {
-    width: 30vw;
-    height: 60vh;
+    width: 80vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -25,19 +25,20 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    margin: 2vh auto;
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
 
   .container-attendees-info-table {
-    height: 300px;
+    height: 50vh;
   }
   .container-attendes-stripe-transaction-info {
     width: 100%;
@@ -53,10 +54,15 @@
     align-items: center;
     text-align: left;
   }
-  .user-details-breakdown {
-    width: 100%;
+  .user-details-breadown {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 50vw;
   }
-  .container-create-transaction-button p{
+  .container-create-transaction-button p {
     color: #15aaf5;
     font-size: var(--font-size-m2);
     font-weight: 500;
@@ -67,7 +73,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-end;
     height: 100%;
   }
 }
@@ -80,17 +86,17 @@
     height: 50vh;
   }
   .container-attendees-info {
-    width: 36vw;
-    height: 60vh;
+    width: 80vw;
+    min-height: 60vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
     background-color: #ffff;
-    margin-left: 10vw;
+    margin: 2vh auto;
+    overflow: auto;
   }
   .container-attendees-info-detail {
-    width: 40vw;
-    height: 60vh;
+    width: 80vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -98,13 +104,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    margin: 2vh auto;
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
@@ -133,7 +140,7 @@
   .user-details-breakdown {
     width: 100%;
   }
-  .container-create-transaction-button p{
+  .container-create-transaction-button p {
     color: #15aaf5;
     font-size: var(--font-size-m2);
     font-weight: 500;
@@ -159,16 +166,16 @@
     height: 50vh;
   }
   .container-attendees-info {
-    width: 70vw;
-    height: 45vh;
+    width: 90vw;
+    min-height: 60vh;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
     background-color: #ffff;
+    overflow: auto;
   }
   .container-attendees-info-detail {
-    width: 70vw;
-    height: 55vh;
+    width: 80vw;
     border: solid 1px #212529;
     border-radius: 15px;
     padding: 20px;
@@ -176,13 +183,14 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    margin: 2vh auto;
   }
   .container-stripe-transaction-per-user {
     background: var(--main-colorswhite);
-    width: 97vw;
+    width: 80vw;
     margin: 1% auto;
-    margin-top: 2%;
-    border: solid 2px var(--black);
+    /* margin-top: 2%; */
+    border: solid 1px #212529;
     border-radius: 15px;
     padding: 15px;
   }
@@ -207,7 +215,7 @@
   .user-details-breakdown {
     width: 100%;
   }
-  .container-create-transaction-button p{
+  .container-create-transaction-button p {
     color: #15aaf5;
     font-size: var(--font-size-m2);
     font-weight: 500;

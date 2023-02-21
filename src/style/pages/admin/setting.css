@@ -32,7 +32,6 @@
   }
   .container-section-pagination-button {
     width: 100%;
-    padding: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -169,7 +168,6 @@
 }
   .container-section-pagination-button {
     width: 100%;
-    padding: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -311,7 +309,7 @@
   .container-section-pagination-button {
     width: 100%;
     padding: 5px;
-    display: flex;
+    display: grid;
     justify-content: space-between;
     align-items: center;
     text-align: left;

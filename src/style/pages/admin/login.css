@@ -30,7 +30,8 @@
     color: #fff;
   }
   .login-container form {
-    padding: 10%;
+    padding-top: 5%;
+    padding-left: 10%;
   }
   .btnSubmit {
     border-radius: 1rem;
