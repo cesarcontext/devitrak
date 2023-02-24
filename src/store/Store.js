@@ -1,8 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import adminSlice from "./slices/adminSlice";
+import contactInfoSlice from "./slices/contactInfoSlice";
+import deviceSlice from "./slices/deviceSlice";
 import stripeSlice from "./slices/stripeSlice";
+import privacyPolicyUserResponseSlice from "./slices/privacyPolicyUserResponseSlice";
 import uiSlice from "./slices/uiSlice";
 import storage from "redux-persist/es/storage";
+import providerEventSlice from "./slices/providerEventSlice";
 import {
   persistReducer,
   FLUSH,
@@ -20,9 +24,13 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
+  device: deviceSlice,
+  contactInfo: contactInfoSlice,
   admin: adminSlice,
   stripe: stripeSlice,
-  ui: uiSlice
+  privacyPolicyUserResponse: privacyPolicyUserResponseSlice,
+  ui: uiSlice,
+  providerEvent: providerEventSlice
 });
 
 const persistedReducers = persistReducer(persistConfig, reducers);
