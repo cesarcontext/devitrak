@@ -10,12 +10,12 @@ Axios instance for accessing Devitrack API.
 import axios from "axios";
 
 export const devitrackApi = axios.create({
-  baseURL: 'https://db.devitrak.net/',
+  baseURL: process.env.REACT_APP_URL,
 });
 
 
 export const devitrackApiAdmin = axios.create({
-  baseURL: `https://db.devitrak.net/admin`
+  baseURL: `${process.env.REACT_APP_URL}/admin`
 })
 
 /**
@@ -35,7 +35,7 @@ devitrackApiAdmin.interceptors.request.use((config) => {
 });
 
 export const devitrackApiStripe = axios.create({
-  baseURL: `https://db.devitrak.net/stripe`
+  baseURL: `${process.env.REACT_APP_URL}/stripe`
 })
 
 /**
@@ -56,7 +56,7 @@ devitrackApiStripe.interceptors.request.use((config) => {
 });
 
 export const devitrackApiArticle = axios.create({
-  baseURL: `https://db.devitrak.net/article`
+  baseURL: `${process.env.REACT_APP_URL}/article`
 })
 /**
 
