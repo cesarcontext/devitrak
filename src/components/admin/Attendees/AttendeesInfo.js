@@ -92,33 +92,6 @@ Fetches user data from devitrack API
                 <th scope="col">Details</th>
               </tr>
             </thead>
-            {/* <Table
-              width={300}
-              height={300}
-              headerHeight={20}
-              rowHeight={30}
-              rowCount={users.length}
-              rowGetter={({ index }) => users[index]}
-            >
-              <Column label="Name" dataKey="name" width={100} />
-              <Column label="Email" dataKey="email" width={200} />
-              <Column label="Detail" width={200}>
-                <Link to={`/admin/attendee/:${users.id}`}>
-                  <button
-                    style={{
-                      width: "100%",
-                    }}
-                    className="btn btn-detail"
-                    onClick={() => {
-                      setSendObjectIdUser(users.id);
-                      setUserDetail(users);
-                    }}
-                  >
-                    Details <i className="bi bi-caret-right" />{" "}
-                  </button>
-                </Link>
-              </Column>
-            </Table> */}
             {ascendet === true &&
               users
                 ?.sort((a, b) => a.name.localeCompare(b.name))
