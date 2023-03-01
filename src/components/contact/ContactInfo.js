@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
@@ -6,7 +5,7 @@ import { NavbarBottom } from "../ui/NavbarBottom";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
-// import { blockLinks } from "../../store/slices/uiSlice";
+import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +19,11 @@ import { useNavigate } from "react-router-dom";
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
     useContactInfoStore();
-
+    const { provider } = useSelector(state => state.providerEvent)
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
+
 
   /**
    * form to create user
@@ -62,7 +62,7 @@ export const ContactInfo = () => {
 
   useEffect(() => {
     startCheckingUser(formValues.email);
-  }, [formValues.email]);
+  }, [formValues.email, startCheckingUser]);
 /**
  * validationName - useMemo
  * @callback validationName - the callback that handles the response.
@@ -139,15 +139,18 @@ export const ContactInfo = () => {
  * hooks imported to pass values needed to create customer in stripe
  */
     await stripeCustomer(formValues);
-    navigate("/checkout");
+    if(provider !== "Context Global") return navigate("/my_profile");
+    
+    return navigate("/checkout")
   };
 
-  // if (users.status === true) {
-  //   dispatch(blockLinks("auto"));
-  // } else {
-  //   dispatch(blockLinks("auto"));
-  // }
-  
+  if (users.status === true) {
+    dispatch(blockLinks("auto"));
+  } else {
+    dispatch(blockLinks("auto"));
+  }
+
+
   return (
     <>
       <div className="container-contact-info mt-4">

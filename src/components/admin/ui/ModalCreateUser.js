@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { useForm } from "../../../hooks/useForm";
+import { useStripeHook } from "../../../hooks/useStripeHook";
 import "../../../style/component/admin/ui/CreateUserModal.css";
 
 const initalFormValues = {
@@ -18,6 +20,8 @@ const initalFormValues = {
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 
 export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
+  const { stripeCustomer } = useStripeHook();
+  const navigate = useNavigate()
   const [screenSize, setScreenSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -49,35 +53,35 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
 
   const customeStyleBaseOnScreenSize = () => {
     let customStyles;
-    if(screenSize.width < 1201){
-      return customStyles = {
+    if (screenSize.width < 1201) {
+      return (customStyles = {
         content: {
           width: "50vw",
-          height: "45vh",
+          height: "55vh",
           top: "50%",
           left: "50%",
           right: "auto",
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
-        }
-      };
+        },
+      });
     } else {
-      return customStyles = {
+      return (customStyles = {
         content: {
           width: "20vw",
-          height: "45vh",
+          height: "55vh",
           top: "50%",
           left: "50%",
           right: "auto",
           bottom: "auto",
           marginRight: "-50%",
           transform: "translate(-50%, -50%)",
-        }
-      };
+        },
+      });
     }
-  }
-  customeStyleBaseOnScreenSize()
+  };
+  customeStyleBaseOnScreenSize();
 
   useEffect(() => {
     if (errorMessage !== undefined) {
@@ -155,7 +159,17 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
         privacyPolicy,
       });
       alert("New user created succesfully");
-      if (data) closeModal();
+      if (data) {
+        stripeCustomer({
+          name,
+          lastName,
+          email,
+          phoneNumber,
+        });
+        closeModal();
+        navigate(`/admin/attendee/${data.uid}`)
+        
+      }
     } catch (error) {
       console.log(
         "🚀 ~ file: ModalCreateUser.js ~ line 136 ~ onSubmitRegister ~ error",
@@ -243,6 +257,7 @@ export const ModalCreateUser = ({ createUserButton, setCreateUserButton }) => {
                 name="category"
                 onChange={onRegisterInputChange}
               >
+                <option defaultValue="">Select a category</option>
                 <option value="Regular">Regular</option>
                 <option value="Corporate">Corporate</option>
               </select>

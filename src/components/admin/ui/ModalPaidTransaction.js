@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { NoticeTransactionWentTrue } from "../../../page/admin/NoticeTransactionWentTrue";
+import { NoticePaymentTransactionConfirmed } from "../../../page/admin/NoticePaymentTransactionConfirmed";
 import { StripeCheckoutElementAdmin } from "../../stripe/StripeCheckoutElementAdmin";
 import "../../stripe/checkoutStyles.css";
 
@@ -21,52 +21,57 @@ let customStyles = {
 export const ModalPaidTransaction = ({
   createTransactionPaid,
   setCreateTransactionPaid,
-  userData,
+  userToDisplay,
 }) => {
-  const userEmail = userData.email;
   const [device, setDevice] = useState(0);
+  const [total, setTotal] = useState("");
   const [clientSecret, setClientSecret] = useState("");
-  const [customerStripeId, setCustomerStripeId] = useState([]);
-
+  const [customerStripeId, setCustomerStripeId] = useState("");
   const [displaySelection, setDisplaySelection] = useState(true);
+  // const [displayCheckoutElement, setDisplayCheckoutElement] = useState(false)
+  let stripeCustomerIdTouse = null;
+
   if (createTransactionPaid !== false) {
     Modal.setAppElement("#root");
   }
   function closeModal() {
     setCreateTransactionPaid(false);
   }
-
-  useEffect(() => {
-    const callStripeCustomerFind = async () => {
-      const response = await devitrackApi.get("/stripe/customers");
-      if (response) {
-        return setCustomerStripeId(response.data.customer);
-      }
-    };
-    return () => callStripeCustomerFind();
-  }, [userData.id, device]); // eslint-disable-next-line
-
-  let stripeId;
-
-  useEffect(() => {
-    for (let i = 0; i < customerStripeId.length; i++) {
-      if (customerStripeId[i].email === userEmail) {
-        console.log((stripeId = customerStripeId[i].id));
-      }
+  const callStripeCustomerFind = async () => {
+    const response = await devitrackApi.get("/stripe/customers");
+    if (response) {
+      return setCustomerStripeId(response.data.stripeCustomerSaved);
     }
-  }, [device]);
+  };
+  useEffect(() => {
+    callStripeCustomerFind();
+  }, []); // eslint-disable-next-line
 
   if (device < 0) {
     return setDevice(0);
   }
+  const stripeCustomersSaved = new Map();
+  if (customerStripeId.length > 0) {
+    for (let customer of customerStripeId) {
+      stripeCustomersSaved.set(customer.email, customer.stripeid);
+    }
+  }
+
   const handleSubmitDeviceSelection = async (event) => {
     event.preventDefault();
-
-    const response = await devitrackApi.post("/stripe/create-payment-intent", {
-      device: device,
-      customerId: stripeId,
-      customerEmail: userEmail,
-    });
+    if (stripeCustomersSaved.has(userToDisplay?.email)) {
+      return (stripeCustomerIdTouse = stripeCustomersSaved.get(
+        userToDisplay.email
+      ));
+    }
+    const response = await devitrackApi.post(
+      "/stripe/create-payment-intent-customized",
+      {
+        total: total,
+        customerId: stripeCustomerIdTouse,
+        customerEmail: userToDisplay.email,
+      }
+    );
     if (response) {
       setClientSecret(response.data.clientSecret);
       setDisplaySelection(false);
@@ -89,9 +94,9 @@ export const ModalPaidTransaction = ({
             margin: "2vh auto",
           }}
         >
-          <p className={`d-${
-              displaySelection === true ? "auto" : "none"
-            }`}>HOW MANY RECEIVERS DO YOU NEED?</p>
+          <p className={`d-${displaySelection === true ? "auto" : "none"}`}>
+            HOW MANY RECEIVERS DO YOU NEED?
+          </p>
           <div
             className={`button-selection d-${
               displaySelection === true ? "auto" : "none"
@@ -106,6 +111,27 @@ export const ModalPaidTransaction = ({
             <button id="button-plus" onClick={() => setDevice(device + 1)}>
               +
             </button>
+          </div>
+
+          <div
+            className={`button-selection d-${
+              displaySelection === true ? "auto" : "none"
+            }`}
+          >
+            <span>
+              AMOUNT TO CHARGE: <strong>$</strong>
+            </span>
+            <input
+              style={{
+                border: "transparent",
+                borderBottom: "solid 1px",
+                outline: "none",
+              }}
+              type="string"
+              name="total"
+              value={total}
+              onChange={(event) => setTotal(event.target.value)}
+            />
           </div>
           <div
             style={{ marginTop: "2vh" }}
@@ -126,14 +152,19 @@ export const ModalPaidTransaction = ({
               </button>
             )}
           </div>
-          <div className="stripe-wrapper-checkout">
+          <div className={`stripe-wrapper-checkout d-${
+              displaySelection === true ? "none" : "auto"
+            }`}>
             <StripeCheckoutElementAdmin
-              device={device}
               clientSecret={clientSecret}
+              total={total}
             />
           </div>
           <div className="d-none">
-            <NoticeTransactionWentTrue device={device} userData={userData} />
+            <NoticePaymentTransactionConfirmed
+              device={device}
+              userToDisplay={userToDisplay}
+            />
           </div>
         </div>
       </Modal>

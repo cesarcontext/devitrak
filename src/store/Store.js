@@ -3,8 +3,8 @@ import adminSlice from "./slices/adminSlice";
 import contactInfoSlice from "./slices/contactInfoSlice";
 import deviceSlice from "./slices/deviceSlice";
 import stripeSlice from "./slices/stripeSlice";
-// import privacyPolicyUserResponseSlice from "./slices/privacyPolicyUserResponseSlice";
-// import uiSlice from "./slices/uiSlice";
+import privacyPolicyUserResponseSlice from "./slices/privacyPolicyUserResponseSlice";
+import uiSlice from "./slices/uiSlice";
 import storage from "redux-persist/es/storage";
 import providerEventSlice from "./slices/providerEventSlice";
 import {
@@ -28,8 +28,8 @@ const reducers = combineReducers({
   contactInfo: contactInfoSlice,
   admin: adminSlice,
   stripe: stripeSlice,
-  // privacyPolicyUserResponse: privacyPolicyUserResponseSlice,
-  // ui: uiSlice,
+  privacyPolicyUserResponse: privacyPolicyUserResponseSlice,
+  ui: uiSlice,
   providerEvent: providerEventSlice
 });
 

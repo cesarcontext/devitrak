@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { Column, Table } from "react-virtualized";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
+import "react-virtualized/styles.css"; // only needs to be imported once
 
 /**
 
@@ -15,11 +16,11 @@ AttendeesInfo Component - Displays attendees information
 export const AttendeesInfo = () => {
   const { user } = useAdminStore();
   const [users, setUsers] = useState([]);
-  const [ , setUserDetail] = useState(null);
+  const [, setUserDetail] = useState(null);
   const [createTransactionForNoRegularUser] = useState(false);
-  const [ , setSendObjectIdUser] = useState();
+  const [, setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
-  const [ascense, setAscense] = useState(true);
+  const [ascendet, setAscendet] = useState(true);
 
   /**
 
@@ -77,14 +78,14 @@ Fetches user data from devitrack API
               <tr>
                 <th scope="col">
                   Name{" "}
-                  {ascense === true ? (
+                  {ascendet === true ? (
                     <i
-                      onClick={() => setAscense(!ascense)}
+                      onClick={() => setAscendet(!ascendet)}
                       className="bi bi-sort-down"
                     />
                   ) : (
                     <i
-                      onClick={() => setAscense(!ascense)}
+                      onClick={() => setAscendet(!ascendet)}
                       className="bi bi-sort-up"
                     />
                   )}
@@ -93,7 +94,34 @@ Fetches user data from devitrack API
                 <th scope="col">Details</th>
               </tr>
             </thead>
-            {ascense === true &&
+            {/* <Table
+              width={300}
+              height={300}
+              headerHeight={20}
+              rowHeight={30}
+              rowCount={users.length}
+              rowGetter={({ index }) => users[index]}
+            >
+              <Column label="Name" dataKey="name" width={100} />
+              <Column label="Email" dataKey="email" width={200} />
+              <Column label="Detail" width={200}>
+                <Link to={`/admin/attendee/:${users.id}`}>
+                  <button
+                    style={{
+                      width: "100%",
+                    }}
+                    className="btn btn-detail"
+                    onClick={() => {
+                      setSendObjectIdUser(users.id);
+                      setUserDetail(users);
+                    }}
+                  >
+                    Details <i className="bi bi-caret-right" />{" "}
+                  </button>
+                </Link>
+              </Column>
+            </Table> */}
+            {ascendet === true &&
               users
                 ?.sort((a, b) => a.name.localeCompare(b.name))
                 ?.map((user, item) => {
@@ -110,27 +138,26 @@ Fetches user data from devitrack API
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
-                        <Link to={`/admin/attendee/:${user.id}`}>
-                          <button
-                            style={{
-                              width: "100%",
-                            }}
-                            className="btn btn-detail"
-                            onClick={() => {
-                              setSendObjectIdUser(user.id);
-                              setUserDetail(user);
-                            }}
-                          >
-                            Details <i className="bi bi-caret-right" />{" "}
-                          </button>
+                          <Link to={`/admin/attendee/:${user.id}`}>
+                            <button
+                              style={{
+                                width: "100%",
+                              }}
+                              className="btn btn-detail"
+                              onClick={() => {
+                                setSendObjectIdUser(user.id);
+                                setUserDetail(user);
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
                           </Link>
                         </td>
                       </tr>
                     </tbody>
                   );
                 })}
-
-            {ascense === false &&
+            {ascendet === false &&
               users
                 ?.sort((a, b) => b.name.localeCompare(a.name))
                 ?.map((user, item) => {
@@ -148,19 +175,19 @@ Fetches user data from devitrack API
                         <td>{user.email}</td>
                         <td>
                           <Link to={`/admin/attendee/:${user.id}`}>
-                       <button
-                            style={{
-                              width: "100%",
-                            }}
-                            className="btn btn-detail"
-                            onClick={() => {
-                              setSendObjectIdUser(user.id);
-                              setUserDetail(user);
-                            }}
-                          >
-                            Details <i className="bi bi-caret-right" />{" "}
-                          </button>   </Link>
-                          
+                            <button
+                              style={{
+                                width: "100%",
+                              }}
+                              className="btn btn-detail"
+                              onClick={() => {
+                                setSendObjectIdUser(user.id);
+                                setUserDetail(user);
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>{" "}
+                          </Link>
                         </td>
                       </tr>
                     </tbody>

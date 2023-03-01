@@ -1,8 +1,6 @@
-import { useStytch } from "@stytch/stytch-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApiStripe, devitrackApi } from "../apis/devitrackApi";
-import { rightDoneMessage } from "../helper/swalFireMessage";
 import {
   onAddCustomer,
 } from "../store/slices/stripeSlice";
@@ -16,7 +14,6 @@ export const useStripeHook = () => {
   const [paymentIntentId, setPaymentIntentId] = useState(null);
   const [visibleButton, setVisibleButton] = useState("content");
   const [listAllPaymentIntent, setListAllPaymentIntent] = useState(null);
-  const client = useStytch();
 
   const stripeCustomer = async ({ name, lastName, email, phoneNumber }) => {
     const fullName = name + " " + lastName;
@@ -29,9 +26,7 @@ export const useStripeHook = () => {
       const data = await response.data;
       if (data) {
         dispatch(onAddCustomer(data));
-        dispatch(blockLinks("none"));
-        client.magicLinks.email.loginOrCreate(email);
-        rightDoneMessage(`An email has been sent to ${email}`);
+        dispatch(blockLinks("auto"));
       }
     } catch (error) {
       console.log(error);
@@ -61,12 +56,14 @@ export const useStripeHook = () => {
     payment_intent,
     clientSecret,
     device,
+    selectedEventByUser
   }) => {
     try {
       await devitrackApiStripe.post("/stripe-transaction", {
         paymentIntent: payment_intent,
         clientSecret,
         device,
+        eventSelected: selectedEventByUser
       });
     } catch (error) {
       console.log(error);

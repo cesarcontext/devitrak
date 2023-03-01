@@ -42,6 +42,8 @@ export const useAdminStore = () => {
           uid: data.uid,
           email: data.email,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
     } catch (error) {
@@ -74,6 +76,8 @@ export const useAdminStore = () => {
           uid: data.uid,
           email: data.email,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
       rightDoneMessage("Account has been created");
@@ -105,6 +109,8 @@ export const useAdminStore = () => {
           email: data.email,
           uid: data.uid,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
       rightDoneMessage("Email updated!");

@@ -12,14 +12,24 @@ import { QRCodeConfirmation } from "../page/user/QRCodeConfirmation";
 import { RequestDevices } from "../page/user/RequestDevices";
 import { RequestSupportDuringTheEvent } from "../page/user/moreInfo/RequestSupportDuringTheEvent";
 import { StripeCheckoutElement } from "../components/stripe/StripeCheckoutElement";
+import { Receipts } from "../page/user/Receipts";
+import { SelectEvent } from "../page/user/SelectEvent";
+import { useSelector } from "react-redux";
 
 export const UserRoutes = () => {
+  const { provider } = useSelector((state) => state.providerEvent);
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<SelectEvent />} />
         <>
-          <Route path="/checkout" element={<Checkout />} />
+          {provider === "Context Global" && (
+            <>
+              <Route path="/checkout" element={<Checkout />} />
+            </>
+          )}
+
+          <Route path="/home" element={<Home />} />
           <Route path="/confirmation" element={<QRCodeConfirmation />} />
           <Route path="/request_devices" element={<RequestDevices />} />
           <Route path="/more_info" element={<MoreInfo />}></Route>
@@ -40,6 +50,7 @@ export const UserRoutes = () => {
           />
           <Route path="/event_schedule" element={<EventScheduled />} />
           <Route path="/my_profile" element={<MyProfile />} />
+          <Route path="/receipt" element={<Receipts />} />
           <Route path="/stripe" element={<StripeCheckoutElement />} />
           <Route path="/authenticate" element={<Authenticate />} />
         </>

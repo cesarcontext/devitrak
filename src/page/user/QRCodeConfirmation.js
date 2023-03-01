@@ -1,7 +1,7 @@
 import { useInterval } from "interval-hooks";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { devitrackApi, devitrackApiStripe } from "../../apis/devitrackApi";
 import { Navbar } from "../../components/ui/Navbar";
@@ -13,6 +13,7 @@ import "../../style/pages/QRCodeConfirmation.css";
 
 export const QRCodeConfirmation = () => {
   const [stripeTransactions, setStripeTransactions] = useState([]);
+  const { users } = useSelector((state) => state.contactInfo);
   const { saveStripeTransaction } = useStripeHook();
   const { device } = useDeviceCount();
   const dispatch = useDispatch();
@@ -24,13 +25,7 @@ export const QRCodeConfirmation = () => {
     "payment_intent_client_secret"
   );
 
-  const callApiStripeTransaction = async () => {
-    await devitrackApi
-      .get("/admin/users")
-      .then((response) => response.data)
-      .then((data) => setStripeTransactions(data.stripeTransactions));
-  };
-  const confirmPaymentIntent = async () => {
+  const confirmPaymentIntent = useCallback(async () => {
     try {
       const response = await devitrackApi.get(
         `/stripe/payment_intents/${payment_intent}`
@@ -45,12 +40,21 @@ export const QRCodeConfirmation = () => {
         error
       );
     }
-  };
+  }, []);
 
   useEffect(() => {
-    confirmPaymentIntent();
+    const callApiStripeTransaction = async () => {
+      await devitrackApi
+        .get("/admin/users")
+        .then((response) => response.data)
+        .then((data) => setStripeTransactions(data.stripeTransactions));
+    };
+    return () => {
+      callApiStripeTransaction();
+      confirmPaymentIntent();
+    };
   }, [payment_intent]);
-  
+
   const QRCodeGenerated = (
     <QRCode
       fgColor="#000"
@@ -76,10 +80,21 @@ export const QRCodeConfirmation = () => {
   };
 
   useInterval(async () => {
-    await callApiStripeTransaction();
     await removeDuplicatesStripePaymentIntent();
   }, 1_00);
 
+  const stampTime = new Date();
+
+  const createTransacitonAudit = useCallback(async () => {
+    await devitrackApi.post("/transactionAuditLog/create-audit", {
+      transaction: payment_intent,
+      user: users.email,
+      actionTaken: "Payment transaction was created",
+      time: stampTime,
+    });
+  }, [payment_intent]);
+
+  createTransacitonAudit();
   return (
     <div className="general-container">
       <Navbar />

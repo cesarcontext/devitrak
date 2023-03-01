@@ -5,7 +5,6 @@ import { devitrackApi } from "../../apis/devitrackApi";
 import { SMSNotice, whatsappNotice } from "../../helper/Notifications";
 import "../../style/component/ui/ReturnDeviceAlert.css";
 
-
 /**
 
 Returns device alert component
@@ -13,8 +12,7 @@ Returns device alert component
 @returns {JSX.Element} - Returns JSX.Element.
 */
 export const ReturnDeviceAlert = () => {
-
-/**
+  /**
 
 Users state structure set up in store.
 @name users
@@ -23,7 +21,7 @@ Users state structure set up in store.
 */
   const { users } = useSelector((state) => state.contactInfo);
 
-/**
+  /**
 
 Language state to display message in English/Portuguese.
 @name language
@@ -74,7 +72,7 @@ Notifications state set to 0.
    */
   const notificationNotice = localStorage.getItem("Notifications");
 
-/**
+  /**
 
 Function to call api and save response in a state.
 @async
@@ -97,7 +95,7 @@ Function to call api and save response in a state.
     };
   }, []);
 
-/**
+  /**
 
 Due date to compare and dispatch notifications.
 @name dueDate
@@ -106,7 +104,7 @@ Due date to compare and dispatch notifications.
 */
   const dueDate = new Date("2023-02-10 10:43:00");
 
-/**
+  /**
 
 Check every sec the current date/time and compare if dueDate falls into parameters to dispatch expected function as notifications.
 @name useInterval
@@ -159,14 +157,22 @@ Check every sec the current date/time and compare if dueDate falls into paramete
    */
   const selectDevicePerUser = async () => {
     poolReceivers?.map((transaction) => {
-      
+      console.log(
+        "🚀 ~ file: ReturnDeviceAlert.js:162 ~ poolReceivers?.map ~ transaction:",
+        transaction
+      );
+
       if (transaction.user === users.email) {
-        
         transaction.device.map((item) => {
-          
+          console.log(
+            "🚀 ~ file: ReturnDeviceAlert.js:167 ~ transaction.device.map ~ item:",
+            item
+          );
+
           if (item.status === true) {
             listOfDevice.set(item.serialNumber, item.status);
           }
+          return null;
         });
       }
     });

@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useStytchSession, useStytch } from "@stytch/stytch-react";
 // import QRCode from "react-qr-code";
 
 import { AccordionListPaymentIntent } from "../../components/ui/AccordionListPaymentIntent";
@@ -32,8 +31,6 @@ export const MyProfile = () => {
   const [buttonState, setButtonState] = useState(true);
   const tokenVerification = localStorage.getItem("token");
   const { users } = useSelector((state) => state.contactInfo);
-  const client = useStytch();
-  const session = useStytchSession();
   const newUser = users.email;
   const dispatch = useDispatch();
 
@@ -128,9 +125,6 @@ export const MyProfile = () => {
     setShowInfo(!showInfo);
   };
   const handleLogout = async () => {
-    if (session) {
-      await client.session.revoke();
-    }
     Swal.fire({
       title: `Your session is finished`,
       confirmButtonColor: "rgb(30, 115, 190)",
@@ -191,44 +185,23 @@ export const MyProfile = () => {
 
                       <Link to="/">
                         <div className="btn-logout-section">
-                          {(session && (
-                            <button
-                              style={{
-                                width: "45px",
-                                height: "45px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "50%",
-                                fontSize: "10px",
-                                color: "#fff",
-                                backgroundColor: "var(--main-colorslobster)",
-                              }}
-                              // className="btn-logout"
-                              onClick={handleLogout}
-                            >
-                              <span>Logout</span>
-                            </button>
-                          )) ||
-                            (newUser && (
-                              <button
-                                style={{
-                                  width: "45px",
-                                  height: "45px",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  borderRadius: "50%",
-                                  fontSize: "10px",
-                                  color: "#fff",
-                                  backgroundColor: "var(--main-colorslobster)",
-                                }}
-                                // className="btn-logout"
-                                onClick={handleLogout}
-                              >
-                                <span>Logout</span>
-                              </button>
-                            ))}
+                          <button
+                            style={{
+                              width: "45px",
+                              height: "45px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "50%",
+                              fontSize: "10px",
+                              color: "#fff",
+                              backgroundColor: "var(--main-colorslobster)",
+                            }}
+                            // className="btn-logout"
+                            onClick={handleLogout}
+                          >
+                            <span>Logout</span>
+                          </button>
                         </div>
                       </Link>
                     </>
@@ -378,20 +351,21 @@ export const MyProfile = () => {
         </div>
       ) : (
         <>
-        <div style={{
-          width:"80%",
-          border:"solid 1px #212529",
-          margin:"0 auto",
-          backgroundColor:"white",
-          borderRadius:"15px",
-          marginTop:"5vh"
-        }}>
-           <h4>You are logout.</h4>
-          <Link to="/">
-            <span>Please click this link to start your log in process</span>{" "}
-          </Link>
-        </div>
-         
+          <div
+            style={{
+              width: "80%",
+              border: "solid 1px #212529",
+              margin: "0 auto",
+              backgroundColor: "white",
+              borderRadius: "15px",
+              marginTop: "5vh",
+            }}
+          >
+            <h4>You are logout.</h4>
+            <Link to="/">
+              <span>Please click this link to start your log in process</span>{" "}
+            </Link>
+          </div>
         </>
       )}
       <NavbarBottom />

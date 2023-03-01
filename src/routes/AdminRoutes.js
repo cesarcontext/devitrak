@@ -12,7 +12,7 @@ import { Profile } from "../page/admin/Profile";
 import { ReceiversDetailsAssignation } from "../components/admin/Attendees/ReceiversDetailsAssignation";
 import { Settings } from "../page/admin/Settings";
 import { Events } from "../page/admin/Events";
-import { NoticeTransactionWentTrue } from "../page/admin/NoticeTransactionWentTrue";
+import { NoticePaymentTransactionConfirmed } from "../page/admin/NoticePaymentTransactionConfirmed";
 import { DeviceInUse } from "../page/admin/DeviceInUse";
 import { DetailUser } from "../components/admin/Attendees/DetailUser";
 
@@ -50,8 +50,8 @@ export const AdminRoutes = () => {
               element={<Navigate to="/admin/events" replace />}
             />
             <Route
-              path="/admin/transaction-confirmed"
-              element={<NoticeTransactionWentTrue />}
+              path="/admin/payment-confirmed"
+              element={<NoticePaymentTransactionConfirmed />}
             />
           </>
         ) : (

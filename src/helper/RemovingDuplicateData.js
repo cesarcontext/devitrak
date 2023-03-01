@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useInterval } from "interval-hooks";
 import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
 
 export const RemovingDuplicateData = () => {

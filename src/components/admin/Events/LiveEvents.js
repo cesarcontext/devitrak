@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import "../../../style/component/admin/events/live-events.css"
+import { eventList } from "../../../json/eventList";
+import "../../../style/component/admin/events/live-events.css";
 
 export const LiveEvents = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
-
+  const currentDate = new Date();
   useEffect(() => {
     const callApi = async () => {
       const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -22,18 +23,33 @@ export const LiveEvents = () => {
       <h5>Live Events</h5>
       <table className="table">
         <thead>
-          <tr style={{borderBottom:"transparant", marginBottom:"5px"}}>
+          <tr style={{ borderBottom: "transparant", marginBottom: "5px" }}>
             <th scope="col">EVENT NAME</th>
             <th scope="col">EVENT LOCATION</th>
             <th scope="col">DEVICES AMOUNT</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>National Retail Conference</td>
-            <td>New York, New York</td>
-            <td>{listOfReceiver.length}</td>
-          </tr>
+          {eventList.map((location) => {
+            if (
+              location.scheduleBeging >= currentDate &&
+              location.scheduleEnd <= currentDate
+            ) {
+              return (
+                <tr
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  onClick
+                >
+                  <td>{location.name}</td>
+                  <td>{location.location}</td>
+                  <td>{listOfReceiver.length}</td>
+                </tr>
+              );
+            }
+            return null;
+          })}
         </tbody>
       </table>
     </div>

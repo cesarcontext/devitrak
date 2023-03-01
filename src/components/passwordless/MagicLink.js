@@ -1,9 +1,10 @@
-//@ts-check
 import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../../style/component/passwrodless/MagicLink.css";
 
 export const MagicLink = () => {
+  const { provider } = useSelector(state => state.providerEvent)
   /**
    * @description navigate - useNavigate function imported from react-router-dom library
    */
@@ -14,7 +15,9 @@ export const MagicLink = () => {
    * @returns {Promise<void>}
    */
   const handleLogin = async () => {
-    navigate("/select_event");
+    if(provider !== "Context Global") return navigate("/my_profile");
+    
+    return navigate("/checkout")
   };
   return (
     <div className="email-sent-message-magic-link">

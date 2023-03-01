@@ -143,6 +143,8 @@ export const useContactInfoStore = () => {
    * @returns {Promise}
    */
   const startCheckingUser = async (userInfoEmailCheck) => {
+    console.log("URL", devitrackApi)
+
     try {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,

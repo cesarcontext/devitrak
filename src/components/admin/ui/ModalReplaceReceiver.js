@@ -63,7 +63,7 @@ export const ModalReplaceReceiver = ({
       return setCustomStyles({
         content: {
           width: "50vw",
-          height: "25vh",
+          height: "30vh",
           top: "50%",
           left: "50%",
           right: "auto",
@@ -76,7 +76,7 @@ export const ModalReplaceReceiver = ({
       return setCustomStyles({
         content: {
           width: "30%",
-          height: "25vh",
+          height: "35vh",
           top: "50%",
           left: "50%",
           right: "auto",
@@ -208,7 +208,7 @@ export const ModalReplaceReceiver = ({
                 onChange={(event) => setSerialNumber(event.target.value)}
               />
             </div>
-            <div className="form-group mb-2">
+            {serialNumber !=="" && <div className="form-group mb-2">
               <select
                 name="reason"
                 onChange={(event) => setReason(event.target.value)}
@@ -218,6 +218,7 @@ export const ModalReplaceReceiver = ({
                 <option value="Network">Network</option>
                 <option value="Hardware">Hardware</option>
                 <option value="Damage">Damage</option>
+                <option value="Battery">Battery</option>
                 <option value="Other">Other</option>
               </select>
               {reason === "Other" ? (
@@ -234,7 +235,8 @@ export const ModalReplaceReceiver = ({
               ) : (
                 ""
               )}
-            </div>
+            </div>}
+
             <div
               style={{
                 width: "100%",

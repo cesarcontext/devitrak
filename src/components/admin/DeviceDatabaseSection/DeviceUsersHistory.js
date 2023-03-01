@@ -11,6 +11,8 @@ import "../../../style/component/admin/DeviceDatabase.css";
  * @returns {JSX.Element} React component with device users history.
  */
 export const DeviceUsersHistory = ({
+  // currentActivity,
+  // listOfReceiver,
   receiverId,
   receiverDetail,
   conditionReturned,
@@ -82,7 +84,7 @@ export const DeviceUsersHistory = ({
           <tr>
             <th scope="col">User</th>
           </tr>
-          {/* <button>RETURN</button> */}
+          <button>RETURN</button>
         </thead>
         <tbody>
           {conditionReturned === null

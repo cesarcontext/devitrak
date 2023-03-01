@@ -24,9 +24,20 @@ React component for assigning receivers to a payment intent.
 export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
+    const { user } = useSelector(state => state.admin)
   const dispatch = useDispatch();
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
   const [receiversAssigned, setReceiversAssigned] = useState([]);
+  const currentDate = new Date()
+
+  const stampDate = async(email, action, time) => {
+   await devitrackApi.post("/eventLog/feed-event-log", {
+      user: email,
+      actionTaken: action,
+      time: `${time}`,
+    });
+  }
+  const adminUserEmail = user.email
   /**
 
 State to store the fetched data
@@ -239,6 +250,12 @@ Removes a receiver from the array of assigned receivers before saved data, given
         active: true,
       });
       if (response) {
+        stampDate(adminUserEmail, `Receivers assigned: ${receiversAssigned}`, `${currentDate}`)
+        // devitrackApi.post("/eventLog/feed-event-log", {
+        //   user: user.email,
+        //   actionTaken: `Receivers assigned: ${receiversAssigned}`,
+        //   time: `${currentDate}`,
+        // });
         receiversAssigned?.map((receiver) => {
           if (objDeviceContainer.has(receiver.serialNumber)) {
             devitrackApi.put(
@@ -335,6 +352,13 @@ handleReturnDevice(receiver, index);
         }
       );
       if (response) {
+        stampDate(adminUserEmail, `Receiver returned: ${objectToReturn.serialNumber}`, `${currentDate}`)
+
+        // devitrackApi.post("/eventLog/feed-event-log", {
+        //   user: user.email,
+        //   actionTaken: `Receiver returned: ${objectToReturn.serialNumber}`,
+        //   time: `${currentDate}`,
+        // });
         devitrackApi.put(
           `/receiver/receivers-pool-update/${receiverInPoolId}`,
           {
@@ -399,6 +423,12 @@ Assigns a receiver device to a user and updates the devices' status and activity
         }
       );
       if (response) {
+        
+        devitrackApi.post("/eventLog/feed-event-log", {
+          user: user.email,
+          actionTaken: `Receiver assigned: ${objectToReturn.serialNumber}`,
+          time: `${currentDate}`,
+        });
         devitrackApi.put(
           `/receiver/receivers-pool-update/${receiverInPoolId}`,
           {
@@ -457,6 +487,13 @@ Asynchronously returns all the receivers that were assigned in a single operatio
           if (response) {
             setLoading(true);
             rightDoneMessage("Receivers returned");
+            stampDate(adminUserEmail, `Receivers returned by RETURN ALL option`, `${currentDate}`)
+
+            // devitrackApi.post("/eventLog/feed-event-log", {
+            //   user: user.email,
+            //   actionTaken: `Receivers returned by RETURN ALL option`,
+            //   time: `${currentDate}`,
+            // });
             receiversAssignedListCopy.map((item) => {
               for (let i = 0; i < listOfDeviceInPool.length; i++) {
                 if (item.serialNumber === listOfDeviceInPool[i].device) {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 import { devitrackApi } from "../../../apis/devitrackApi";
+import { SMSNotice, whatsappNotice } from "../../../helper/Notifications";
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 const customStyles = {
   content: {
@@ -16,7 +17,7 @@ const customStyles = {
 };
 
 export const ModalNotification = ({
-  userDetailSelected,
+  userToDisplay,
   notificationActivation,
   setNotificationActivation,
 }) => {
@@ -31,24 +32,30 @@ export const ModalNotification = ({
   const handleSubmitNotification = async (event) => {
     try {
       event.preventDefault();
-      let info = `${userDetailSelected?.phoneNumber}`;
-      const response = await devitrackApi.post(
-        "/twilio/send-whatsapp-notification",
-        {
-          body: message,
-          to: info,
-        }
-      );
-      if (response) {
-        setMessage("")
-        closeModal()
-      }
+      let info = `${userToDisplay?.phoneNumber}`;
+      // const response = await devitrackApi.post(
+      //   "/twilio/send-whatsapp-notification",
+      //   {
+      //     body: ,
+      //     to: info,
+      //   }
+      // );
+      // if (response) {
+      await whatsappNotice({
+        bodyMessage: message,
+        to: info,
+        alertMessage: `The notification was sent to ${info} successfully`,
+      });
+      await SMSNotice({
+        bodyMessage: message,
+        to: info,
+        alertMessage: `The notification was sent to ${info} successfully`,
+      });
+      setMessage("");
+      closeModal();
+      // }
     } catch (error) {
-      console.log(
-        "🚀 ~ file: ModalNotification.js:45 ~ handleSubmitNotification ~ error",
-        error
-      );
-      alert(error.response.data.msg)
+      alert(error.response.data.msg);
     }
   };
 
@@ -70,7 +77,7 @@ export const ModalNotification = ({
             justifyContent: "space-around",
           }}
         >
-          <strong>To: {userDetailSelected?.phoneNumber}</strong>
+          <strong>To: {userToDisplay?.phoneNumber}</strong>
 
           <textarea
             name="message"
