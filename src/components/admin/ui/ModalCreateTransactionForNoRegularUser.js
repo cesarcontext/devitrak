@@ -4,7 +4,19 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { swalErrorMessage } from "../../../helper/swalFireMessage";
 import { nanoid } from "@reduxjs/toolkit";
-
+import { useSelector } from "react-redux";
+const customStyles = {
+  content: {
+    width: "50vw",
+    minHeight: "20vh",
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
 export const ModalCreateTransactionForNoRegularUser = ({
   createTransactionForNoRegularUser,
   setCreateTransactionForNoRegularUser,
@@ -12,71 +24,41 @@ export const ModalCreateTransactionForNoRegularUser = ({
 }) => {
   const { errorMessage } = useAdminStore();
   const [receiversSelection, setReceiversSelection] = useState(0);
-  const [screenSize, setScreenSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const { user } = useSelector((state) => state.admin);
   if (createTransactionForNoRegularUser !== false) {
     Modal.setAppElement("#root");
   }
   function closeModal() {
     setCreateTransactionForNoRegularUser(false);
   }
-  const handleResize = () => {
-    setScreenSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
-
-  const customeStyleBaseOnScreenSize = () => {
-    let customStyles;
-    if (screenSize.width < 1201) {
-      return (customStyles = {
-        content: {
-          width: "50vw",
-          height: "15%",
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          bottom: "auto",
-          marginRight: "-50%",
-          transform: "translate(-50%, -50%)",
-        },
-      });
-    } else {
-      return (customStyles = {
-        content: {
-          width: "30%",
-          height: "15%",
-          top: "50%",
-          left: "50%",
-          right: "auto",
-          bottom: "auto",
-          marginRight: "-50%",
-          transform: "translate(-50%, -50%)",
-        },
-      });
-    }
-  };
-  customeStyleBaseOnScreenSize();
 
   useEffect(() => {
-    handleResize();
     if (errorMessage !== undefined) {
       swalErrorMessage(errorMessage);
     }
   }, [errorMessage]);
 
+  const stampTime = new Date();
+
+  const createTransacitonAudit = useCallback(async (id) => {
+    await devitrackApi.post("/transactionAuditLog/create-audit", {
+      transaction: id,
+      user: user.email,
+      actionTaken: `Transaction with not payment required was created`,
+      time: stampTime,
+    });
+  }, []);
+
   const onSubmitRegister = async (event) => {
     event.preventDefault();
     const id = nanoid(12);
     const max = 918273645;
+    const transactionGenerated = "pi_"+ id
     try {
       const { data } = await devitrackApi.post(
         "/stripe/stripe-transaction-no-regular-user",
         {
-          paymentIntent: "pi_" + id,
+          paymentIntent: transactionGenerated,
           clientSecret:
             receiversSelection +
             sendObjectIdUser +
@@ -85,7 +67,12 @@ export const ModalCreateTransactionForNoRegularUser = ({
           user: sendObjectIdUser,
         }
       );
-      if (data) closeModal();
+      if (data) {
+        createTransacitonAudit(transactionGenerated);
+        closeModal();
+        setReceiversSelection(0);
+        window.location.reload();
+      }
     } catch (error) {
       console.log(
         "🚀 ~ file: ModalCreateUser.js ~ line 136 ~ onSubmitRegister ~ error",
@@ -99,7 +86,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
       <Modal
         isOpen={createTransactionForNoRegularUser}
         onRequestClose={closeModal}
-        style={customeStyleBaseOnScreenSize()}
+        style={customStyles}
         shouldCloseOnOverlayClick={false}
       >
         <div>
@@ -125,7 +112,7 @@ export const ModalCreateTransactionForNoRegularUser = ({
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent:"space-around",
+                justifyContent: "space-around",
                 alignItems: "center",
                 width: "13vw",
               }}
@@ -137,13 +124,15 @@ export const ModalCreateTransactionForNoRegularUser = ({
               >
                 Cancel
               </button>
-              <button
-                className="btn btn-create"
-                style={{ width: "45%" }}
-                type="submit"
-              >
-                Register
-              </button>
+              {receiversSelection > 0 && (
+                <button
+                  className="btn btn-create"
+                  style={{ width: "45%" }}
+                  type="submit"
+                >
+                  Register
+                </button>
+              )}
             </div>
           </form>
         </div>
