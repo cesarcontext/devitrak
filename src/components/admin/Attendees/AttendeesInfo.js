@@ -171,6 +171,12 @@ Fetches user data from devitrack API
         createUserButton={createUserButton}
         setCreateUserButton={setCreateUserButton}
       />
+      {/* <div>
+        <DetailUser
+          sendObjectIdUser={sendObjectIdUser}
+          userDetail={userDetail}
+        />
+      </div> */}
     </div>
   );
 };

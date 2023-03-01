@@ -12,7 +12,11 @@ import { Profile } from "../page/admin/Profile";
 import { ReceiversDetailsAssignation } from "../components/admin/Attendees/ReceiversDetailsAssignation";
 import { Settings } from "../page/admin/Settings";
 import { Events } from "../page/admin/Events";
+<<<<<<< HEAD
 import { NoticePaymentTransactionConfirmed } from "../page/admin/NoticePaymentTransactionConfirmed";
+=======
+import { NoticeTransactionWentTrue } from "../page/admin/NoticeTransactionWentTrue";
+>>>>>>> origin
 import { DeviceInUse } from "../page/admin/DeviceInUse";
 import { DetailUser } from "../components/admin/Attendees/DetailUser";
 
