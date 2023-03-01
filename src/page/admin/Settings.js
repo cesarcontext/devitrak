@@ -20,7 +20,7 @@ export const Settings = () => {
                 value={searchTerm}
                 placeholder="Search"
               />
-              {searchTerm !== "" && <i onClick={() => setSearchTerm("")} id="icon-delete-searchTerm" className="bi bi-x"/>}
+              <i onClick={() => setSearchTerm("")} id="icon-delete-searchTerm" className="bi bi-x"/>
           </div>
         </div>
         <div>

@@ -12,14 +12,15 @@ export const Navbar = () => {
   return (
     <nav className="navbar-admin">
       {" "}
-      <NavLink to="/">
+      <NavLink to="/events">
         <div className="logo-main">
           <div className="logo-name-container">
-            <div className="logo-svg">
+             <h4>Devitrack&nbsp;</h4>
+             <div className="logo-svg">
               <svg
-                width="29"
-                height="13"
-                viewBox="0 0 29 13"
+                width="50"
+                height="20"
+                viewBox="0 0 20 15"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -41,7 +42,7 @@ export const Navbar = () => {
                 />
               </svg>
             </div>
-            <h4>Devitrack</h4>
+           
           </div>
         </div>
       </NavLink>
@@ -61,7 +62,7 @@ export const Navbar = () => {
               pathname === "/device-database" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
-            <h4>Device Database</h4>
+            <h4>Device</h4>
           </div>
         </NavLink>
 

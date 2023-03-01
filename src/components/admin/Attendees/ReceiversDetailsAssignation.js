@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { DetailSelectedUserFOrAssignReceiver } from "./DetailSelectedUserFOrAssignReceiver";
 import { devitrackApi, devitrackApiAdmin } from "../../../apis/devitrackApi";
 import { ModalReplaceReceiver } from "../ui/ModalReplaceReceiver";
-import { Navbar } from "../ui/Navbar";
-import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { onCheckReceiverPaymentIntent } from "../../../store/slices/stripeSlice";
 import {
@@ -14,25 +11,132 @@ import {
   swalErrorMessage,
 } from "../../../helper/swalFireMessage";
 import "../../../style/component/admin/receiversDetailsAssignation.css";
+import { PaymentIntentTemplate } from "./PaymentIntentTemplate";
+import { SMSNotice, whatsappNotice } from "../../../helper/Notifications";
 
-export const ReceiversDetailsAssignation = ({ searchTerm }) => {
+/**
+
+React component for assigning receivers to a payment intent.
+@function
+@name ReceiversDetailsAssignation
+@returns {JSX.Element} React component
+*/
+export const ReceiversDetailsAssignation = () => {
   const { paymentIntentDetailSelected, paymentIntentReceiversAssigned } =
     useSelector((state) => state.stripe);
+    const { user } = useSelector(state => state.admin)
   const dispatch = useDispatch();
   const { checkReceiversAssignedToPaymentIntent } = useAdminStore();
   const [receiversAssigned, setReceiversAssigned] = useState([]);
+  const currentDate = new Date()
+
+  const stampDate = async(email, action, time) => {
+   await devitrackApi.post("/eventLog/feed-event-log", {
+      user: email,
+      actionTaken: action,
+      time: `${time}`,
+    });
+  }
+  const adminUserEmail = user.email
+  /**
+
+State to store the fetched data
+@name fetchedData
+@type {Object|null}
+*/
   const [fetchedData, setFetchedData] = useState(null);
+  /**
+
+State to indicate if the data is being loaded
+@name loading
+@type {Boolean}
+*/
   const [loading, setLoading] = useState(true);
+  /**
+
+State to store the assigned receiver number
+@name receiverNumberAssgined
+@type {String}
+*/
   const [receiverNumberAssgined, setReceiverNumberAssgined] = useState("");
+  /**
+
+State to indicate whether to replace the existing receiver
+@name replaceStatus
+@type {Boolean}
+*/
   const [replaceStatus, setReplaceStatus] = useState(false);
+  /**
+
+State to store the search term for filtering receivers
+@name searchTermField
+@type {String}
+*/
   const [searchTermField, setSearchTermField] = useState("");
+  /**
+
+State to store the index of the receiver object to be replaced
+@name replaceReceiverIndex
+@type {Number|null}
+*/
   const [replaceReceiverIndex, setReplaceReceiverIndex] = useState();
+  /**
+
+State to store the receiver object to be replaced
+@name receiverObjectToReplace
+@type {Object|null}
+*/
   const [receiverObjectToReplace, setReceiverObjectToReplace] = useState(null);
+  /**
+
+State to store the list of devices in the pool
+@name listOfDeviceInPool
+@type {Array}
+*/
   const [listOfDeviceInPool, setListOfDeviceInPool] = useState([]);
+  /**
+
+State to store the receiver ID saved in the pool
+@name receiverIdSavedInPool
+@type {String}
+*/
   const [receiverIdSavedInPool, setReceiverIdSavedInPool] = useState("");
+  /**
+
+State to indicate whether to display the save button
+@name saveButtonDisplay
+@type {Boolean}
+*/
   const [saveButtonDisplay, setSaveButtonDisplay] = useState(false);
+  /**
+
+State to indicate whether to dispatch the batch
+@name dispatchBatch
+@type {Boolean}
+*/
+  const [dispatchBatch, setDispatchBatch] = useState(false);
+  /**
+
+State to indicate whether to dispatch the change
+@name dispatchChange
+@type {Boolean}
+*/
+  const [dispatchChange, setDispatchChange] = useState(false);
   const paymentIntentToCheck = paymentIntentDetailSelected.paymentIntent;
+  /**
+
+Reference to the input element for assigning receivers
+@name inputReference
+@type {Object}
+*/
   const inputReference = useRef();
+  /**
+
+State to store the batch device
+@name batchDevice
+@type {String}
+*/
+  const [batchDevice, setBatchDevice] = useState("");
   const receiverObject = {
     serialNumber: receiverNumberAssgined,
     status: true,
@@ -52,6 +156,8 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     loading,
     fetchedData,
     replaceStatus,
+    batchDevice,
+    dispatchChange,
   ]);
 
   useEffect(() => {
@@ -62,8 +168,22 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     return () => {
       controller.abort();
     };
-  }, [paymentIntentToCheck, loading, fetchedData, replaceStatus]);
+  }, [
+    paymentIntentToCheck,
+    loading,
+    fetchedData,
+    replaceStatus,
+    batchDevice,
+    dispatchChange,
+  ]);
 
+  /**
+
+Add a receiver object to the list of assigned receivers.
+@async
+@function addReceiver
+@returns {Promise<void>} - A Promise that resolves with no value when the receiver is added successfully.
+*/
   const addReceiver = async () => {
     if (receiverObject.serialNumber.length < 1) {
       setReceiverNumberAssgined("");
@@ -79,7 +199,7 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         );
       }
     }
-    const replacementList = [...receiversAssigned, receiverObject];
+    const replacementList = [receiverObject, ...receiversAssigned];
     if (replacementList.length <= paymentIntentDetailSelected.device) {
       setReceiversAssigned(replacementList);
       setReceiverNumberAssgined("");
@@ -87,7 +207,19 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
 
+  if (receiverObject.serialNumber.length === 6) {
+    addReceiver();
+  }
   let receiversAssignedListCopy;
+
+  /**
+
+Removes a receiver from the array of assigned receivers before saved data, given its index.
+@async
+@function
+@param {number} index - The index of the receiver to be removed from the array.
+@returns {Promise<void>} - A promise that resolves once the receiver is removed.
+*/
   const removeReceiverBeforeSavedData = async (index) => {
     const result = receiversAssigned.splice(index, 1);
     if (result.length === 1) {
@@ -102,6 +234,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       listOfDeviceInPool[i].id
     );
   }
+
+  /**
+   * Handles the submission of receiver assignation data and updates receiver information.
+   * @async
+   * @function
+   * @returns {Promise<void>} - A promise that resolves once the data has been submitted and updated.
+   */
   const handleDataSubmitted = async () => {
     try {
       const response = await devitrackApiAdmin.post("/receiver-assignation", {
@@ -111,6 +250,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         active: true,
       });
       if (response) {
+        stampDate(adminUserEmail, `Receivers assigned: ${receiversAssigned}`, `${currentDate}`)
+        // devitrackApi.post("/eventLog/feed-event-log", {
+        //   user: user.email,
+        //   actionTaken: `Receivers assigned: ${receiversAssigned}`,
+        //   time: `${currentDate}`,
+        // });
         receiversAssigned?.map((receiver) => {
           if (objDeviceContainer.has(receiver.serialNumber)) {
             devitrackApi.put(
@@ -136,15 +281,50 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         dispatch(onCheckReceiverPaymentIntent(fetchedData));
         setLoading(!loading);
         setSaveButtonDisplay(true);
+        whatsappNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
+        SMSNotice({
+          bodyMessage: `Your ${paymentIntentDetailSelected.device} ${
+            paymentIntentDetailSelected.device > 1
+              ? "devices was"
+              : "device were"
+          } assigned to your account. Please keep in mind to return the ${
+            paymentIntentDetailSelected.device > 1 ? "devices" : "devices"
+          } when the event finishes. Enjoy the event!`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `User was noticed about the action taken in the account`,
+        });
       }
       rightDoneMessage(
         `Receivers were assigned to payment intent successfully`
       );
+      window.location.reload();
     } catch (error) {
       console.log(error);
       swalErrorMessage(error);
     }
   };
+  /**
+
+Handles the return of a device assigned to a payment intent
+@async
+@function
+@param {object} receiver - The receiver object to be returned
+@param {number} index - The index of the receiver object in the list of assigned receivers
+@returns {Promise<void>}
+@throws {Error} If an error occurs while processing the request
+@example
+handleReturnDevice(receiver, index);
+*/
   const handleReturnDevice = async (receiver, index) => {
     let receiverInPoolId;
     listOfDeviceInPool?.map((item) => {
@@ -172,6 +352,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         }
       );
       if (response) {
+        stampDate(adminUserEmail, `Receiver returned: ${objectToReturn.serialNumber}`, `${currentDate}`)
+
+        // devitrackApi.post("/eventLog/feed-event-log", {
+        //   user: user.email,
+        //   actionTaken: `Receiver returned: ${objectToReturn.serialNumber}`,
+        //   time: `${currentDate}`,
+        // });
         devitrackApi.put(
           `/receiver/receivers-pool-update/${receiverInPoolId}`,
           {
@@ -182,12 +369,33 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           }
         );
         setLoading(true);
+        whatsappNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `The user was noticed via WhatsApp that device #${receiver.serialNumber} was returned`,
+        });
+        SMSNotice({
+          bodyMessage: `Your ${receiver.serialNumber} device was returned.`,
+          to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+          alertMessage: `The user was noticed via SMS that device #${receiver.serialNumber} was returned`,
+        });
         rightDoneMessage("Receiver returned");
       }
     } catch (error) {
       swalErrorMessage(error);
     }
   };
+
+  /**
+
+Assigns a receiver device to a user and updates the devices' status and activity.
+@async
+@function handleAssignDevice
+@param {object} receiver - The receiver device to be assigned.
+@param {number} index - The index of the receiver in the list of assigned receivers.
+@throws {Error} Error message if there was a problem updating the receiver or receiver pool.
+@returns {void}
+*/
   const handleAssignDevice = async (receiver, index) => {
     let receiverInPoolId;
     listOfDeviceInPool?.map((item) => {
@@ -215,6 +423,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
         }
       );
       if (response) {
+        
+        devitrackApi.post("/eventLog/feed-event-log", {
+          user: user.email,
+          actionTaken: `Receiver assigned: ${objectToReturn.serialNumber}`,
+          time: `${currentDate}`,
+        });
         devitrackApi.put(
           `/receiver/receivers-pool-update/${receiverInPoolId}`,
           {
@@ -232,6 +446,14 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
 
+  /**
+
+Asynchronously returns all the receivers that were assigned in a single operation.
+@async
+@function returnAllReceiversAtOnce
+@returns {Promise<void>}
+@throws {Error} If there is an error while executing the function.
+*/
   const returnAllReceiversAtOnce = async () => {
     paymentIntentReceiversAssigned?.map((item) => {
       return (receiversAssignedListCopy = item.device);
@@ -265,6 +487,13 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           if (response) {
             setLoading(true);
             rightDoneMessage("Receivers returned");
+            stampDate(adminUserEmail, `Receivers returned by RETURN ALL option`, `${currentDate}`)
+
+            // devitrackApi.post("/eventLog/feed-event-log", {
+            //   user: user.email,
+            //   actionTaken: `Receivers returned by RETURN ALL option`,
+            //   time: `${currentDate}`,
+            // });
             receiversAssignedListCopy.map((item) => {
               for (let i = 0; i < listOfDeviceInPool.length; i++) {
                 if (item.serialNumber === listOfDeviceInPool[i].device) {
@@ -286,6 +515,24 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
             "All receivers were returned successfully!",
             "success"
           );
+          whatsappNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
+          SMSNotice({
+            bodyMessage: `All your ${replacementList.length} ${
+              replacementList.length > 1 ? "devices" : "device"
+            } were returned`,
+            to: `${paymentIntentDetailSelected.user.phoneNumber}`,
+            alertMessage: `User was noticed that ${replacementList.length} ${
+              replacementList.length > 1 ? "devices were" : "device was"
+            } returned`,
+          });
         }
       });
     } catch (error) {
@@ -293,6 +540,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
 
+  /**
+   *Triggers the replace receiver function.
+   *@param {object} receiver - The receiver object to be replaced.
+   *@param {number} index - The index of the receiver object in the list of receivers.
+   *@returns {void}
+   */
   const replaceFunctionTrigger = (receiver, index) => {
     listOfDeviceInPool?.map((item) => {
       if (item.device === receiver.serialNumber) {
@@ -300,13 +553,32 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
       }
     });
     try {
+      /**
+       *The receiver object to be replaced.
+       *@type {object}
+       *@property {string} serialNumber - The serial number of the receiver.
+       *@property {boolean} status - The status of the receiver.
+       */
+
       setReceiverObjectToReplace({
         serialNumber: receiver.serialNumber,
         status: receiver.status,
       });
+      /**
+       * The index of the receiver object in the list of receivers.
+       *@type {number}
+       */
       setReplaceReceiverIndex(index);
+      /**
+       * The status of the replace receiver function.
+       *@type {boolean}
+       */
       setReplaceStatus(true);
-      setSearchTermField("")
+      /**
+       *The search term field for the replace receiver function.
+       *@type {string}
+       */
+      setSearchTermField("");
     } catch (error) {
       swalErrorMessage(error);
     }
@@ -314,8 +586,8 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
 
   let filteredResult = [];
   const filter = async () => {
-    const devicesInPaymentIntent = paymentIntentReceiversAssigned.at(-1).device;
-    for (let i = 0; i < devicesInPaymentIntent.length; i++) {
+    const devicesInPaymentIntent = paymentIntentReceiversAssigned?.device;
+    for (let i = 0; i < devicesInPaymentIntent?.length; i++) {
       if (searchTermField === devicesInPaymentIntent[i].serialNumber) {
         return (filteredResult = [
           {
@@ -327,17 +599,78 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
     }
   };
   filter();
+  let errorMessageForBatch = null;
+  const returnDeviceAsBatch = async () => {
+    let receiverInPoolId;
+    let index;
+    for (let i = 0; i < paymentIntentReceiversAssigned[0].device.length; i++) {
+      if (
+        paymentIntentReceiversAssigned[0].device[i].serialNumber ===
+          batchDevice &&
+        paymentIntentReceiversAssigned[0].device[i].status === true
+      ) {
+        index = i;
+      }
+    }
+    listOfDeviceInPool?.map((item) => {
+      if (item.device === batchDevice) {
+        return (receiverInPoolId = item.id);
+      }
+    });
+    paymentIntentReceiversAssigned?.map((item) => {
+      return (receiversAssignedListCopy = item.device);
+    });
+    const element_deleted = 1;
+    const objectToReturn = {
+      serialNumber: batchDevice,
+      status: false,
+    };
+    const replacementList = [...receiversAssignedListCopy];
+    replacementList.splice(index, element_deleted, objectToReturn);
+    try {
+      const id = paymentIntentReceiversAssigned.at(-1).id;
+      const response = await devitrackApi.put(
+        `/receiver/receiver-update/${id}`,
+        {
+          id: id,
+          device: replacementList,
+        }
+      );
+      if (response) {
+        devitrackApi.put(
+          `/receiver/receivers-pool-update/${receiverInPoolId}`,
+          {
+            device: objectToReturn.serialNumber,
+            status: "Operational",
+            activity: "Stored",
+            comment: "No comment",
+          }
+        );
+        // let timerInterval;
+        Swal.fire({
+          title: "",
+          html: `Device ${objectToReturn.serialNumber} was returned`,
+          timer: 10,
+          timerProgressBar: false,
+          preConfirm: () => {
+            setDispatchChange(!dispatchChange);
+          },
+        });
+      }
+    } catch (error) {
+      swalErrorMessage(error);
+    }
+  };
+
+  if (batchDevice.length > 5) {
+    returnDeviceAsBatch();
+    setBatchDevice("");
+  }
 
   return (
     <div>
       <div>
-        <Navbar />
-      </div>
-      <div>
-        <DetailSelectedUserFOrAssignReceiver />
-      </div>
-      <div>
-        <PaymentIntentTemplate />
+        {!paymentIntentReceiversAssigned ? "" : <PaymentIntentTemplate />}
       </div>
       <div>
         <div>
@@ -361,7 +694,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                           setReceiverNumberAssgined(event.target.value)
                         }
                       />
-                      <button className="btn btn-create" style={{width:"100%"}} onClick={addReceiver}>
+                      <button
+                        className="btn btn-create"
+                        style={{ width: "fit-content" }}
+                        onClick={addReceiver}
+                      >
                         Add receiver
                       </button>
                     </>
@@ -409,12 +746,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                   <td>
                                     {result.status !== false
                                       ? "ACTIVATED"
-                                      : "INACTIVATED"}
+                                      : "RETURNED"}
                                   </td>
                                   <td>
                                     <button
                                       className="btn btn-create"
-                                      style={{width:"100%"}}
                                       onClick={() =>
                                         replaceFunctionTrigger(
                                           result,
@@ -429,7 +765,6 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     {result.status !== false ? (
                                       <button
                                         className="btn btn-delete"
-                                        style={{width:"100%"}}
                                         onClick={() =>
                                           handleReturnDevice(
                                             result,
@@ -442,7 +777,6 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     ) : (
                                       <button
                                         className="btn btn-create"
-                                        style={{width:"100%"}}
                                         onClick={() =>
                                           handleAssignDevice(
                                             result,
@@ -472,12 +806,11 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                     <td>
                                       {receiver.status !== false
                                         ? "ACTIVATED"
-                                        : "INACTIVATED"}
+                                        : "RETURNED"}
                                     </td>
                                     <td>
                                       <button
                                         className="btn btn-create"
-                                        style={{width:"100%"}}
                                         onClick={() =>
                                           replaceFunctionTrigger(
                                             receiver,
@@ -492,7 +825,6 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                       {receiver.status !== false ? (
                                         <button
                                           className="btn btn-delete"
-                                          style={{width:"100%"}}
                                           onClick={() =>
                                             handleReturnDevice(receiver, index)
                                           }
@@ -502,7 +834,6 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                       ) : (
                                         <button
                                           className="btn btn-create"
-                                          style={{width:"100%"}}
                                           onClick={() =>
                                             handleAssignDevice(receiver, index)
                                           }
@@ -516,17 +847,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                               );
                             })
                       : receiversAssigned?.map((item, index) => {
-                        let background;
-                        if( index === 0){
-                          background = "#ffff"
-                        }
-                        if(index % 2 === 0){
-                          background = "#F1F6F9"
-                        }   
                           return (
-                            <tbody key={index + item}>
-                              <tr style={{background:`${background}`}}>
-                                <th scope="row">{index + 1}</th>
+                            <tbody key={item + 1}>
+                              <tr>
+                                <th scope="row">
+                                  {receiversAssigned.length - index}
+                                </th>
                                 <td>{item.serialNumber}</td>
                                 <td>
                                   <span>Receiver</span>
@@ -535,13 +861,12 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
                                   <span>
                                     {item.status === true
                                       ? "ACTIVATED"
-                                      : "INACTIVATED"}
+                                      : "RETURNED"}
                                   </span>
                                 </td>
                                 <td>
                                   <button
                                     className="btn btn-delete"
-                                    style={{width:"100%"}}
                                     onClick={() =>
                                       removeReceiverBeforeSavedData(index)
                                     }
@@ -574,17 +899,77 @@ export const ReceiversDetailsAssignation = ({ searchTerm }) => {
           )}
         </div>
       </div>
-      {paymentIntentReceiversAssigned?.length > 0 ? (
-        paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
-          <button
-            className="btn btn-delete"
-            style={{ width: "25%", margin: "2% auto", padding: "15px" }}
-            onClick={returnAllReceiversAtOnce}
-          >
-            Return all
-          </button>
-        ) : null
-      ) : null}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "80vw",
+        }}
+      >
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            <button
+              className="btn btn-delete"
+              style={{
+                width: "fit-content",
+                margin: "1% auto",
+                padding: "5px",
+              }}
+              onClick={returnAllReceiversAtOnce}
+            >
+              RETURN ALL
+            </button>
+          ) : null
+        ) : null}
+        {paymentIntentReceiversAssigned?.length > 0 ? (
+          paymentIntentReceiversAssigned?.at(-1).device?.length > 1 ? (
+            dispatchBatch === false ? (
+              <button
+                className="btn btn-delete"
+                style={{
+                  width: "fit-content",
+                  margin: "1% auto",
+                  padding: "5px",
+                }}
+                onClick={() => setDispatchBatch(true)}
+              >
+                RETURN BATCH
+              </button>
+            ) : (
+              <>
+                <input
+                  name="batchDevice"
+                  value={batchDevice}
+                  onChange={(event) => setBatchDevice(event.target.value)}
+                  placeholder="Scan device here to return it"
+                />
+                {errorMessageForBatch !== null && (
+                  <div style={{ border: "solid 1px #212529" }}>
+                    <p>{errorMessageForBatch}</p>
+                  </div>
+                )}
+                <button
+                  className="btn btn-create"
+                  style={{
+                    width: "fit-content",
+                    margin: "1% auto",
+                    padding: "5px",
+                  }}
+                  onClick={() => {
+                    setDispatchBatch(false);
+                    window.location.reload();
+                  }}
+                >
+                  DONE
+                </button>
+              </>
+            )
+          ) : null
+        ) : null}
+      </div>
+
+      {errorMessageForBatch !== null && <strong>{errorMessageForBatch}</strong>}
       {receiverObjectToReplace !== null && (
         <ModalReplaceReceiver
           paymentIntentDetailSelected={paymentIntentDetailSelected}

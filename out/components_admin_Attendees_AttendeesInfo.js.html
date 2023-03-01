@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/admin/Attendees/AttendeesInfo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/admin/Attendees/AttendeesInfo.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+import { devitrackApi } from "../../../apis/devitrackApi";
+import { useAdminStore } from "../../../hooks/useAdminStore";
+import { ModalCreateUser } from "../ui/ModalCreateUser";
+import "../../../style/component/admin/attendeesInfo.css";
+import "../../../style/component/ui/paginate.css";
+
+/**
+
+AttendeesInfo Component - Displays attendees information
+@return {JSX.Element}
+*/
+export const AttendeesInfo = () => {
+  const { user } = useAdminStore();
+  const [users, setUsers] = useState([]);
+  const [ , setUserDetail] = useState(null);
+  const [createTransactionForNoRegularUser] = useState(false);
+  const [ , setSendObjectIdUser] = useState();
+  const [createUserButton, setCreateUserButton] = useState(false);
+  const [ascense, setAscense] = useState(true);
+
+  /**
+
+Fetches user data from devitrack API
+@returns {Promise&lt;void>}
+*/
+  const callApiUser = async () => {
+    const response = await devitrackApi.get("/auth/users");
+    if (response) {
+      setUsers(response.data.users);
+    }
+  };
+
+  useEffect(() => {
+    callApiUser();
+  }, [createUserButton, createTransactionForNoRegularUser]);
+
+  return (
+    &lt;div className="container-attendees">
+      &lt;div className="container-attendees-info">
+        &lt;div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          &lt;h2>Users&lt;/h2>
+          {user.role === "Administrator" ? (
+            &lt;div>
+              &lt;p
+                className="create-new-user"
+                onClick={() => setCreateUserButton(true)}
+              >
+                CREATE NEW USER &lt;i className="bi bi-plus-circle" />
+              &lt;/p>
+            &lt;/div>
+          ) : null}
+          {/* &lt;/div> */}
+        &lt;/div>
+        &lt;div
+          style={{ overflow: "auto" }}
+          className="container-attendees-info-table"
+        >
+          &lt;table className="table">
+            &lt;caption>&lt;/caption>
+            &lt;thead
+              style={{
+                position: "sticky",
+                top: "0",
+                background: "white",
+              }}
+            >
+              &lt;tr>
+                &lt;th scope="col">
+                  Name{" "}
+                  {ascense === true ? (
+                    &lt;i
+                      onClick={() => setAscense(!ascense)}
+                      className="bi bi-sort-down"
+                    />
+                  ) : (
+                    &lt;i
+                      onClick={() => setAscense(!ascense)}
+                      className="bi bi-sort-up"
+                    />
+                  )}
+                &lt;/th>
+                &lt;th scope="col">Email &lt;/th>
+                &lt;th scope="col">Details&lt;/th>
+              &lt;/tr>
+            &lt;/thead>
+            {ascense === true &amp;&amp;
+              users
+                ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    background = "#ffff";
+                  }
+                  if (item % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+                  return (
+                    &lt;tbody key={user.id}>
+                      &lt;tr style={{ background: `${background}` }}>
+                        &lt;td>{user.name}&lt;/td>
+                        &lt;td>{user.email}&lt;/td>
+                        &lt;td>
+                        &lt;Link to={`/admin/attendee/:${user.id}`}>
+                          &lt;button
+                            style={{
+                              width: "100%",
+                            }}
+                            className="btn btn-detail"
+                            onClick={() => {
+                              setSendObjectIdUser(user.id);
+                              setUserDetail(user);
+                            }}
+                          >
+                            Details &lt;i className="bi bi-caret-right" />{" "}
+                          &lt;/button>
+                          &lt;/Link>
+                        &lt;/td>
+                      &lt;/tr>
+                    &lt;/tbody>
+                  );
+                })}
+
+            {ascense === false &amp;&amp;
+              users
+                ?.sort((a, b) => b.name.localeCompare(a.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    background = "#ffff";
+                  }
+                  if (item % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+                  return (
+                    &lt;tbody key={user.id}>
+                      &lt;tr style={{ background: `${background}` }}>
+                        &lt;td>{user.name}&lt;/td>
+                        &lt;td>{user.email}&lt;/td>
+                        &lt;td>
+                          &lt;Link to={`/admin/attendee/:${user.id}`}>
+                       &lt;button
+                            style={{
+                              width: "100%",
+                            }}
+                            className="btn btn-detail"
+                            onClick={() => {
+                              setSendObjectIdUser(user.id);
+                              setUserDetail(user);
+                            }}
+                          >
+                            Details &lt;i className="bi bi-caret-right" />{" "}
+                          &lt;/button>   &lt;/Link>
+                          
+                        &lt;/td>
+                      &lt;/tr>
+                    &lt;/tbody>
+                  );
+                })}
+          &lt;/table>
+        &lt;/div>
+      &lt;/div>
+      &lt;ModalCreateUser
+        createUserButton={createUserButton}
+        setCreateUserButton={setCreateUserButton}
+      />
+      {/* &lt;div>
+        &lt;DetailUser
+          sendObjectIdUser={sendObjectIdUser}
+          userDetail={userDetail}
+        />
+      &lt;/div> */}
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Feb 20 2023 14:08:28 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -6,10 +6,14 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./store/Store";
+// import { StytchProvider, initStytch } from "@stytch/stytch-react";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import "./index.css";
 
+// const stytch = initStytch(
+//   "public-token-live-f981e3ce-dd9e-4c5c-be70-06c566e87180"
+// );
 
 const persistor = persistStore(store);
 
@@ -17,11 +21,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
+      {/* <StytchProvider stytch={stytch}> */}
         <BrowserRouter>
           <PersistGate persistor={persistor}>
             <App />
           </PersistGate>
         </BrowserRouter>
+      {/* </StytchProvider> */}
     </React.StrictMode>
   </Provider>
 );

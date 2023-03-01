@@ -11,12 +11,26 @@ const colors = [
   "var(--graphic-status-hardware)",
   "var(--graphic-status-other)",
 ];
+
+/**
+
+Displays the data receivers status of the DeviTrack platform.
+@function
+@returns {JSX.Element} JSX component for displaying the data receivers status.
+*/
 export const DisplayDataReceiversStatus = () => {
   const { paymentIntentDetailSelected } = useSelector((state) => state.stripe);
 
   const [dataCalled, setDataCalled] = useState(null);
   const sortedData = {};
 
+  /**
+
+Calls the API to fetch the data receivers list and sets the response in the state.
+@async
+@function
+@returns {Promise<void>} Promise object that represents the completion of the API call.
+*/
   const callData = async () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
     if (response) {

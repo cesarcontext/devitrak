@@ -40,9 +40,10 @@ export const useAdminStore = () => {
         onLogin({
           name: data.name,
           uid: data.uid,
-          phone: data.phone,
           email: data.email,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
     } catch (error) {
@@ -55,7 +56,7 @@ export const useAdminStore = () => {
     }
   };
 
-  const startRegister = async ({ name, email, password, phone, question, answer }) => {
+  const startRegister = async ({ name, email, password, question, answer }) => {
     dispatch(onChecking());
     const role = "Editor";
     try {
@@ -63,7 +64,6 @@ export const useAdminStore = () => {
         name,
         email,
         password,
-        phone,
         question,
         answer,
         role,
@@ -75,8 +75,9 @@ export const useAdminStore = () => {
           name: data.name,
           uid: data.uid,
           email: data.email,
-          phone:data.phone,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
       rightDoneMessage("Account has been created");
@@ -94,23 +95,22 @@ export const useAdminStore = () => {
     }
   };
 
-  const startEditAdminUser = async ({ email, fullname, question, securityAnswer, phone }) => {
+  const startEditAdminUser = async ({ email, fullname }) => {
     const { uid } = user;
+    console.log("uid", uid);
     try {
       const { data } = await devitrackApiAdmin.put(`/profile/${uid}`, {
         email: email,
         name: fullname,
-        phone:phone,
-        question: question,
-        answer: securityAnswer,
       });
       dispatch(
         onLogin({
           name: data.name,
           email: data.email,
-          phone:data.phone,
           uid: data.uid,
           role: data.role,
+          affiliate: data.affiliate,
+          company: data.company
         })
       );
       rightDoneMessage("Email updated!");

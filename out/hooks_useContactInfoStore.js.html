@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: hooks/useContactInfoStore.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: hooks/useContactInfoStore.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { devitrackApi } from "../apis/devitrackApi";
+import { swalErrorMessage } from "../helper/swalFireMessage";
+import {
+  onAddNewContact,
+  onUpdateContact,
+  onCheckContact,
+} from "../store/slices/contactInfoSlice";
+/**
+ * useContectInfoStore - component where all custom hooks for user are located
+ * @returns {string|function|boolean|Object}
+ */
+export const useContactInfoStore = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { users } = useSelector((state) => state.contactInfo);
+  const [visible, setVisible] = useState("none");
+  const [visibleButton, setVisibleButton] = useState("content");
+  const [userCreatedDisabledInput, setUserCreatedDisabledInput] =
+    useState(false);
+  const [token, setToken] = useState("");
+  const [emailUserRegistered, setEmailUserRegistered] = useState("");
+
+  /**
+   * startSavingContactInfo - funtion to fetch user info and create it in the database
+   * @param {String} name
+   * @param {String} lastname
+   * @param {String} email
+   * @param {Number} phoneNumber
+   * @param {String} category
+   * @param {String} privacyPolicy
+   * @returns {Promise}
+   */
+  const startSavingContactInfo = async ({
+    name,
+    lastName,
+    email,
+    phoneNumber,
+    category,
+    privacyPolicy,
+  }) => {
+    try {
+      const { data } = await devitrackApi.post("/auth/new", {
+        name,
+        lastName,
+        email,
+        phoneNumber,
+        category,
+        privacyPolicy,
+      });
+
+      /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
+
+      if (data) {
+        localStorage.setItem("uid", data.uid);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("status", data.ok);
+        setVisible("content");
+        setVisibleButton("none");
+        setUserCreatedDisabledInput(true);
+        setToken(data.token);
+        setEmailUserRegistered(data.email);
+        dispatch(
+          onAddNewContact({
+            name: data.name,
+            lastName: data.lastName,
+            email: data.email,
+            phoneNumber: data.phone,
+            category: data.category,
+            id: data.uid,
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setToken("");
+      setEmailUserRegistered("");
+      swalErrorMessage(error.response.data.msg);
+      navigate("/");
+    }
+  };
+
+  /**
+   * startUpdatingContactInfo - funtion to fetch new user info and update user detail in database
+   * @param {String} name
+   * @param {String} lastname
+   * @param {Number} phoneNumber
+   * @param {String} email
+   * @returns {Promise}
+   */
+  const startUpdatingContactInfo = async ({
+    name,
+    lastName,
+    email,
+    phoneNumber,
+  }) => {
+    try {
+      const userUID = localStorage.getItem("uid");
+
+      /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
+
+      const { data } = await devitrackApi.put(`/auth/${userUID}`, {
+        name,
+        lastName,
+        email,
+        phoneNumber,
+      });
+      dispatch(
+        onUpdateContact({
+          name: data.name,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phone,
+          id: data.uid,
+        })
+      );
+      localStorage.setItem("uid", data.uid);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("status", data.ok);
+    } catch (error) {
+      console.log(error);
+      swalErrorMessage(`${error.response.data.msg}`);
+    }
+  };
+
+  /**
+   * startCheckingUser - funtion to check if email user exists in database or not
+   * @param {String} userInfoEmailCheck
+   * @returns {Promise}
+   */
+  const startCheckingUser = async (userInfoEmailCheck) => {
+    try {
+      const { data } = await devitrackApi.post("/auth/", {
+        userInfoEmailCheck,
+      });
+
+
+       /**
+       * Checks the data. Returns the data object if it was successfull.
+       * Otherwise it throws an error including the error message
+       * @description data - destructured from fetch response / grant permission to user
+       * @returns {Object} the data object
+       * @throws {String} the error message and return user to main page where form is displayed
+       */
+      if (data.ok === true) {
+        localStorage.setItem("uid", data.user.id);
+        localStorage.setItem("token", data.token);
+        setToken(data.token);
+        setEmailUserRegistered(data.user.email);
+        dispatch(
+          onCheckContact({
+            category: data.user.category,
+            email: data.user.email,
+            groupName: data.user.groupName,
+            id: data.id,
+            lastName: data.user.lastName,
+            name: data.user.name,
+            phoneNumber: data.user.phoneNumber,
+            status: data.ok,
+          })
+        );
+      } else {
+        localStorage.setItem("uid", JSON.stringify(""));
+        localStorage.setItem("token", "");
+        setToken("");
+        setEmailUserRegistered("");
+        dispatch(
+          onCheckContact({
+            groupName: "",
+            name: "",
+            lastName: "",
+            email: "",
+            phoneNumber: "",
+            id: "",
+            status: "",
+            permissionNotification: "",
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return {
+    //* Properties
+    users,
+    token,
+    visibleButton,
+    visible,
+    userCreatedDisabledInput,
+    emailUserRegistered,
+
+    //* Methods
+    startSavingContactInfo,
+    startUpdatingContactInfo,
+    startCheckingUser,
+  };
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Feb 20 2023 14:08:28 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

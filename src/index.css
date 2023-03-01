@@ -56,21 +56,6 @@ code {
     monospace;
 }
 
-/* input {
-  width: 35%;
-  height: 4vh;
-  border-radius: 0px;
-  margin: 2px auto;
-  padding-left: 15px;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
-} */
-
 .btn {
   color: var(--bs-body-bg);
   background-color: var(--bs-primary);

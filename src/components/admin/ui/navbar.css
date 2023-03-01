@@ -8,7 +8,7 @@
     border: solid 1px var(--black);
     background-color: var(--main-navbar-color);
   }
-  .logo-name-container{
+  .logo-name-container {
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -23,7 +23,12 @@
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
+  .logo-svg {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+  }
   .option-item h4 {
     color: var(--main-colorswhite);
     font-size: var(--font-size-l2);
@@ -33,7 +38,7 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width:35vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
@@ -43,7 +48,7 @@
     justify-content: space-around;
     align-items: center;
     padding: 5px;
-    width: 5vw;
+    width: 8vw;
   }
   .active-tab-admin-navbar {
     transform: rotateY(360deg);
@@ -60,7 +65,7 @@
     border: solid 1px var(--black);
     background-color: var(--main-navbar-color);
   }
-  .logo-name-container{
+  .logo-name-container {
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -75,7 +80,12 @@
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
+  .logo-svg {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+  }
   .option-item h4 {
     color: var(--main-colorswhite);
     font-size: var(--font-size-l2);
@@ -85,11 +95,10 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 30vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
   .profile-section-nav {
     display: flex;
     justify-content: space-around;
@@ -113,13 +122,13 @@
     border: solid 1px var(--black);
     background-color: var(--main-navbar-color);
   }
-  .logo-name-container{
+  .logo-name-container {
     width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
   }
-  
+
   .logo-main {
     display: flex;
     justify-content: center;
@@ -128,7 +137,12 @@
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
+  .logo-svg {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+  }
   .option-item h4 {
     color: var(--main-colorswhite);
     font-size: var(--font-size-l2);
@@ -138,11 +152,10 @@
     justify-content: space-between;
     align-items: center;
     height: 10vh;
-    width: 50vw;
+    width: 25vw;
     color: var(--main-colorswhite);
     text-decoration: none;
   }
-
   .profile-section-nav {
     display: flex;
     justify-content: space-around;

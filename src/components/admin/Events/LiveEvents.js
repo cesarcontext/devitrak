@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { devitrackApi } from "../../../apis/devitrackApi";
-import { eventList } from "../json/eventList";
+import { eventList } from "../../../json/eventList";
 import "../../../style/component/admin/events/live-events.css";
 
 export const LiveEvents = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
-
+  const currentDate = new Date();
   useEffect(() => {
     const callApi = async () => {
       const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -17,7 +17,6 @@ export const LiveEvents = () => {
       callApi();
     };
   }, []);
-  const currentDate = new Date();
 
   return (
     <div className="container-live-events">
@@ -32,21 +31,6 @@ export const LiveEvents = () => {
         </thead>
         <tbody>
           {eventList.map((location) => {
-            console.log(
-              "🚀 ~ file: LiveEvents.js:35 ~ {eventList.map ~ location:",
-              location
-            );
-            let checkArrayLength = new Map();
-            listOfReceiver.map((item) => {
-              console.log(
-                "🚀 ~ file: LiveEvents.js:38 ~ listOfReceiver.map ~ item:",
-                item
-              );
-              if (item.eventSelected === location.name) {
-                return checkArrayLength.set(item.device, item);
-              }
-              return null;
-            });
             if (
               location.scheduleBeging >= currentDate &&
               location.scheduleEnd <= currentDate
@@ -60,7 +44,7 @@ export const LiveEvents = () => {
                 >
                   <td>{location.name}</td>
                   <td>{location.location}</td>
-                  <td>{checkArrayLength.size}</td>
+                  <td>{listOfReceiver.length}</td>
                 </tr>
               );
             }

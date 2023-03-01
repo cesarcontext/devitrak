@@ -5,25 +5,63 @@ import Swal from "sweetalert2";
 import { ModalAdminNewUser } from "../ui/Modal";
 
 import "../../../style/pages/admin/setting.css";
-import ReactPaginate from "react-paginate";
-import { useInterval } from "interval-hooks";
-
+/**
+ * Renders the setting detail info component.
+ * @param {object} searchTerm - the search term for filtering results
+ * @returns {JSX.Element} - Returns the JSX element of the component.
+ */
 export const SettingDetailInfo = ({ searchTerm }) => {
+  /**
+   * Retrieves the user from the admin store.
+   * @type {object}
+   */
   const { user } = useAdminStore();
+  /**
+   * Retrieves the editAdminPermission from the admin store.
+   * @type {function}
+   */
   const { editAdminPermission } = useAdminStore();
+  /**
+   * Stores the admin user in the state.
+   * @type {array}
+   */
   const [adminUser, setAdminUser] = useState([]);
+  /**
+   * Stores the user object id in the state.
+   * @type {string}
+   */
   const [sendObjectIdUser, setSendObjectIdUser] = useState();
+  /**
+   * Stores the permission status in the state.
+   * @type {boolean}
+   */
   const [permissionStatus, setPermissionStatus] = useState(false);
+  /**
+   * Stores the permission updated in the state.
+   * @type {string}
+   */
   const [permissionUpdated, setPermissionUpdated] = useState("");
+  /**
+   * Reloads the list after a change has been made.
+   * @type {boolean}
+   */
   const [reloadListAfterChange, setReloadListAfterChange] = useState(false);
+  /**
+   * Stores the state of the modal.
+   * @type {boolean}
+   */
   const [modalState, setModalState] = useState(false);
-  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 4;
-
+  /**
+   * Stores the admin user role in the state.
+   * @type {string}
+   */
   const adminUserRole = user.role;
 
+  /**
+   * Retrieves the admin user list from the server.
+   * @type {function}
+   * @returns {void}
+   */
   useEffect(() => {
     devitrackApi
       .get("/staff/admin-users")
@@ -31,21 +69,21 @@ export const SettingDetailInfo = ({ searchTerm }) => {
       .then((data) => setAdminUser(data.adminUsers));
   }, [reloadListAfterChange, adminUser]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % adminUser.length;
-    setItemOffset(newOffset);
-  };
-
-  useInterval(async () => {
-    const endOffset = itemOffset + itemsPerPage;
-    setCurrentItemsRendered(adminUser.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(adminUser.length / itemsPerPage));
-  }, 2_00);
-
+  /**
+   * Toggles the permission status.
+   * @type {function}
+   * @returns {void}
+   */
   const handleEditAdminPermission = async () => {
     setPermissionStatus(!permissionStatus);
   };
 
+  /**
+   * Updates the admin permission.
+   * @type {function}
+   * @param {string} permissionUpdated - the updated permission status
+   * @returns {void}
+   */
   const updatePermission = async (permissionUpdated) => {
     await editAdminPermission({ role: permissionUpdated, sendObjectIdUser });
     await setPermissionStatus(!permissionStatus);
@@ -57,13 +95,21 @@ export const SettingDetailInfo = ({ searchTerm }) => {
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             alignItems: "center",
+            width: "100%",
           }}
         >
           <h2>Company Staff</h2>
+          <div className="create-new-user">
+            {user.role === "Administrator" ? (
+              <p className="" onClick={() => setModalState(true)}>
+                CREATE NEW STAFF MEMBER <i className="bi bi-plus-circle" />
+              </p>
+            ) : null}
+          </div>{" "}
         </div>
-        <div>
+        <div style={{ overflow: "auto" }}>
           <table className="table">
             <thead>
               <tr>
@@ -74,20 +120,18 @@ export const SettingDetailInfo = ({ searchTerm }) => {
               </tr>
             </thead>
             {searchTerm.length < 2
-              ? currentItemsRendered?.map((user, index) => {
-                  // let background;
-                  // if (index === 0) {
-                  //   background = "#ffff";
-                  // }
-                  // if (index % 2 === 0) {
-                  //   background = "#F1F6F9";
-                  // }
+              ? adminUser?.map((user, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
                   return (
                     <>
                       <tbody key={user.id}>
-                        <tr
-                        // style={{ background: `${background}` }}
-                        >
+                        <tr style={{ background: `${background}` }}>
                           <td>{user.name}</td>
                           <td>{user.role}</td>
                           <td>{user.email}</td>
@@ -130,29 +174,6 @@ export const SettingDetailInfo = ({ searchTerm }) => {
                     );
                   })}
           </table>
-          <div className="container-section-pagination-button">
-            <div className="create-new-user">
-              {user.role === "Administrator" ? (
-                <p className="" onClick={() => setModalState(true)}>
-                  CREATE NEW STAFF MEMBER <i className="bi bi-plus-circle" />
-                </p>
-              ) : null}
-            </div>{" "}
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="next >"
-              onPageChange={handlePageClick}
-              pageRangeDisplayed={2}
-              pageCount={pageCount}
-              previousLabel="< prev"
-              renderOnZeroPageCount={null}
-              containerClassName="pagination"
-              pageLinkClassName="page-num"
-              previousLinkClassName="page-num"
-              nextLinkClassName="page-num"
-              activeLinkClassName="tab-active"
-            />
-          </div>
         </div>
       </div>
       <div className="container-company-staff-detail">
@@ -241,7 +262,7 @@ export const SettingDetailInfo = ({ searchTerm }) => {
 
                   <div>
                     {sendObjectIdUser !== undefined &&
-                    user.role === "Administrator" ? (
+                    adminUserRole === "Administrator" ? (
                       <div
                         style={{
                           display: "flex",

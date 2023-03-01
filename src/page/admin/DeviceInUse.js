@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { CSVLink } from "react-csv";
 import { useInterval } from "interval-hooks";
 import ReactPaginate from "react-paginate";
-import "../../style/component/admin/DeviceDatabase.css";
 import { devitrackApi } from "../../apis/devitrackApi";
 import { DeviceUsersHistory } from "../../components/admin/DeviceDatabaseSection/DeviceUsersHistory";
 import { Navbar } from "../../components/admin/ui/Navbar";
+import "../../style/component/admin/DeviceDatabase.css";
 
 export const DeviceInUse = ({ searchTerm }) => {
   const [dispatch, setDispatch] = useState(false);
@@ -21,7 +21,7 @@ export const DeviceInUse = ({ searchTerm }) => {
   const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   const callApi = async () => {
     const response = await devitrackApi.get("/receiver/receiver-pool-list");
@@ -65,9 +65,9 @@ export const DeviceInUse = ({ searchTerm }) => {
     let usersPerDevice = [];
     for (let node of listOfReceiver) {
       for (let data of listOfReceiverAssigned) {
-        data.device.map((item, index) => {
+        return data.device.map((item, index) => {
           if (item.serialNumber === node.device) {
-            usersPerDevice.push({
+            return usersPerDevice.push({
               ...node,
               user: data.user,
               phone: data.phoneNumber,
@@ -122,9 +122,8 @@ export const DeviceInUse = ({ searchTerm }) => {
   const fileName = "receiver-inventory";
   let conditionReturned = null;
 
-  let filteredResult = [];
-
   const filter = async () => {
+    let filteredResult = [];
     for (let i = 0; i < listOfReceiver.length; i++) {
       if (searchTerm === listOfReceiver[i].device) {
         return (filteredResult = [
@@ -135,6 +134,7 @@ export const DeviceInUse = ({ searchTerm }) => {
         ]);
       }
     }
+    return filteredResult
   };
   filter();
 
@@ -170,7 +170,7 @@ export const DeviceInUse = ({ searchTerm }) => {
                     <tbody key={receiver.id}>
                       <tr
                       //  style={{ background: `${background}` }}
-                       >
+                      >
                         <td>{receiver.device}</td>
                         <td>{receiver.activity}</td>
                         <td>
@@ -206,22 +206,18 @@ export const DeviceInUse = ({ searchTerm }) => {
                 nextLinkClassName="page-num"
                 activeLinkClassName="tab-active"
               />
-              <button
-                style={{ width: "12vw", padding: "2px" }}
-                variant="contained"
-                color="primary"
-                className="export-btn btn-delete"
-                onClick={() => setLoadingDownload(false)}
-              >
+              <p variant="contained" onClick={() => setLoadingDownload(false)}>
                 <CSVLink
                   headers={headers}
                   data={totalDataMergedToExcel}
                   filename={fileName}
-                  style={{ textDecoration: "none", color: "#fff" }}
+                  className="export-btn"
+
+                  // style={{ textDecoration: "none", color: "#fff" }}
                 >
-                  {loadingDownload ? "Loading csv..." : "Export Data"}
+                  {loadingDownload ? "Loading csv..." : "EXPORT DATA"}
                 </CSVLink>
-              </button>
+              </p>
             </div>
           </div>
         </div>

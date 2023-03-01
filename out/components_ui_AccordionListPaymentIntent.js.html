@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ui/AccordionListPaymentIntent.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ui/AccordionListPaymentIntent.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
+import { useSelector } from "react-redux";
+import { devitrackApi } from "../../apis/devitrackApi";
+import { Accordion } from "./Accordion";
+import "../../style/component/ui/AccordionListPaymentIntent.css";
+
+/**
+
+AccordionListPaymentIntent - A component that renders a list of payment intents
+@returns {JSX.Element} React component
+*/
+export const AccordionListPaymentIntent = () => {
+  const { users } = useSelector((state) => state.contactInfo);
+  const [openAccordion, setOpenAccordion] = useState(false);
+  const [openAccordionDetail, setOpenAccordionDetail] = useState(true);
+  const [detailList, setDetailList] = useState([]);
+  const [receiverSavedData, setReceiverSavedData] = useState([]);
+
+  /**
+
+Fetches saved Stripe payment intent data from the API
+@async
+@function
+@returns {Promise&lt;void>} A Promise that resolves when the data is fetched and saved to state
+*/
+  const callSavedStripePaymentIntentApi = async () => {
+    let result;
+    const response = await devitrackApi.get("/admin/users");
+    if (response) {
+      result = response.data.stripeTransactions;
+    }
+    return setReceiverSavedData(result);
+  };
+
+  let paymentIntentsToBeRetrieved = [];
+  let index = 0;
+  const noDeletedAccount = 0;
+
+/**
+
+Sorts the saved Stripe payment intent data and inserts it into an array
+@function
+@returns {void}
+*/
+  const sortAndInsertData = () => {
+    for (let data of receiverSavedData) {
+      if (data?.user?.email === users?.email) {
+        if (data.paymentIntent.length > 15) {
+          paymentIntentsToBeRetrieved.splice(
+            index,
+            noDeletedAccount,
+            data.paymentIntent
+          );
+        }
+      }
+    }
+  };
+  if (receiverSavedData.length > 0) {
+    sortAndInsertData();
+  }
+
+  /**
+
+Renders the payment intent details and sets the state with the data
+@async
+@function
+@returns {Promise&lt;void>} A Promise that resolves when the payment intent details are fetched and rendered
+*/
+  const renderPaymentIntentDetail = async () => {
+    let replacement = [];
+    for (let index = 0; index &lt; paymentIntentsToBeRetrieved.length; index++) {
+      const response = await devitrackApi.get(
+        `/stripe/payment_intents/${paymentIntentsToBeRetrieved[index]}`
+      );
+      if (response) {
+        replacement.push(response.data.paymentIntent);
+      }
+      setDetailList([replacement]);
+    }
+  };
+  useEffect(() => {
+    callSavedStripePaymentIntentApi();
+    renderPaymentIntentDetail();
+  }, [users.id, openAccordion, openAccordionDetail]);
+
+  /**
+
+Checks if the payment intent array contains data and returns a QR code with the payment intent information, or a placeholder if it's undefined
+@function
+@param {string} info - Payment intent information to be encoded in the QR code
+@returns {JSX.Element} React component with a QR code or a placeholder
+*/
+  const checkPaymentIntentArray = (info) => {
+    if (info === undefined) {
+      return (
+        &lt;>
+          &lt;QRCode
+            fgColor="#000"
+            bgColor="#ffff"
+            level="Q"
+            size={150}
+            value="no value returned"
+          />
+        &lt;/>
+      );
+    }
+    return (
+      &lt;>
+        &lt;div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px",
+          }}
+        >
+          &lt;QRCode
+            fgColor="#000"
+            bgColor="#ffff"
+            level="Q"
+            size={100}
+            value={info}
+            style={{
+              margin: "0 auto",
+            }}
+          />
+        &lt;/div>
+      &lt;/>
+    );
+  };
+  return (
+    &lt;>
+      &lt;div className="accordion-List-payment">
+        &lt;h2 className="accordion-header">
+          &lt;p onClick={() => setOpenAccordion(!openAccordion)}>
+            YOUR ORDERS
+            {openAccordion !== false ? (
+              &lt;i className="bi bi-chevron-up" />
+            ) : (
+              &lt;i className="bi bi-chevron-down" />
+            )}
+          &lt;/p>
+        &lt;/h2>
+        {openAccordion === true ? (
+          &lt;div className="accordion-collapse collapse show">
+            &lt;div className="accordion-body">
+              {receiverSavedData?.map((item) => {
+                if (item.paymentIntent.length &lt; 16) {
+                  if (item.user.email === users.email) {
+                    return (
+                      &lt;div key={item.id}>
+                        &lt;div className="accordion-detail-title">
+                          &lt;div className="order-list">
+                            &lt;i className="bi bi-circle" />{" "}
+                            &lt;p className="accordion-header">
+                              &lt;strong>Order: &lt;/strong> {item.paymentIntent}{" "}
+                              &lt;i className="bi bi-chevron-down" />
+                            &lt;/p>
+                          &lt;/div>
+                          &lt;div className="accordion-body-detail">
+                            &lt;div className="">
+                              {checkPaymentIntentArray(item.paymentIntent)}
+                            &lt;/div>
+                            &lt;div>
+                              &lt;span>
+                                Device ordered:&amp;nbsp;{" "}
+                                &lt;p>
+                                  &lt;strong>{item.device}&lt;/strong>
+                                &lt;/p>
+                              &lt;/span>
+                              &lt;span>
+                                Pending return:&amp;nbsp;{" "}
+                                &lt;strong>
+                                  &lt;Accordion item={item.paymentIntent} />
+                                &lt;/strong>
+                              &lt;/span>
+                              &lt;span
+                                style={{
+                                  color: "var(--main-colorsbluetiful)",
+                                  cursor: "pointer",
+                                  textDecoration: "underline",
+                                }}
+                              >
+                                No deposit required
+                              &lt;/span>
+                            &lt;/div>
+                          &lt;/div>
+                        &lt;/div>
+                      &lt;/div>
+                    );
+                  }
+                }
+              })}
+            &lt;/div>
+            &lt;div className="accordion-body">
+              {detailList[0]?.map((item) => {
+                return (
+                  &lt;div key={item.id}>
+                    &lt;div className="accordion-detail-title">
+                      &lt;div className="order-list">
+                        &lt;i className="bi bi-circle" />{" "}
+                        &lt;p className="accordion-header">
+                          &lt;strong>Order: &lt;/strong> {item.id}{" "}
+                          &lt;i className="bi bi-chevron-down" />
+                        &lt;/p>
+                      &lt;/div>
+                      &lt;div className="accordion-body-detail">
+                        &lt;div className="">
+                          {checkPaymentIntentArray(item.id)}
+                        &lt;/div>
+                        &lt;div>
+                          &lt;span>
+                            Device ordered:&amp;nbsp;{" "}
+                            &lt;p>
+                              &lt;strong>{item.amount / 20000}&lt;/strong>
+                            &lt;/p>
+                          &lt;/span>
+                          &lt;span>
+                            Pending return:&amp;nbsp;{" "}
+                            &lt;strong>
+                              &lt;Accordion item={item.id} />
+                            &lt;/strong>
+                          &lt;/span>
+                          {item.charges.data[0].outcome?.network_status ===
+                            "approved_by_network" &amp;&amp; (
+                            &lt;a
+                              style={{
+                                color: "var(--main-colorsbluetiful)",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                              href={`${item?.charges?.data[0].receipt_url}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              View receipt
+                            &lt;/a>
+                          )}
+                          {item?.failure_code !== null &amp;&amp; (
+                            &lt;div
+                              style={{
+                                color: "var(--main-colorsbluetiful)",
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              &lt;p style={{ color: "red", fontSize: "12px" }}>
+                                {item?.outcome?.seller_message}
+                              &lt;/p>
+                            &lt;/div>
+                          )}
+                        &lt;/div>
+                      &lt;/div>
+                    &lt;/div>
+                  &lt;/div>
+                );
+              })}
+            &lt;/div>
+          &lt;/div>
+        ) : null}
+      &lt;/div>
+    &lt;/>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Feb 20 2023 14:08:28 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

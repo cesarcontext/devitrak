@@ -51,7 +51,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
       return (customStyles = {
         content: {
           width: "50vw",
-          height: "45vh",
+          height: "50vh",
           top: "50%",
           left: "50%",
           right: "auto",
@@ -64,7 +64,7 @@ export const ModalAdminNewUser = ({ modalState, setModalState }) => {
       return (customStyles = {
         content: {
           width: "25vw",
-          height: "55vh",
+          height: "60vh",
           top: "50%",
           left: "50%",
           right: "auto",

@@ -38,7 +38,7 @@ export const DeviceDatabase = () => {
       <div className="container-graphic">
         <div>
           <DisplayDataReceiversActivity />
-          <Link to="/device-database/device-in-use">
+          <Link to="/admin/device-database/device-in-use">
               <p>
                 LIST OF DEVICE IN-USE
               </p>

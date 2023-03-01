@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ui/ReturnDeviceAlert.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ui/ReturnDeviceAlert.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useInterval } from "interval-hooks";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { devitrackApi } from "../../apis/devitrackApi";
+import { SMSNotice, whatsappNotice } from "../../helper/Notifications";
+import "../../style/component/ui/ReturnDeviceAlert.css";
+
+
+/**
+
+Returns device alert component
+@function ReturnDeviceAlert
+@returns {JSX.Element} - Returns JSX.Element.
+*/
+export const ReturnDeviceAlert = () => {
+
+/**
+
+Users state structure set up in store.
+@name users
+@type {Object}
+@memberof ReturnDeviceAlert
+*/
+  const { users } = useSelector((state) => state.contactInfo);
+
+/**
+
+Language state to display message in English/Portuguese.
+@name language
+@type {Boolean}
+@memberof ReturnDeviceAlert
+*/
+  const [language, setLanguage] = useState(false);
+
+  /**
+
+Pool of receivers state.
+@name poolReceivers
+@type {Array}
+@memberof ReturnDeviceAlert
+*/
+  const [poolReceivers, setPoolReceivers] = useState([]);
+
+  /**
+
+Remaining days state.
+@name remainingDays
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  const [remainingDays, setRemainingDays] = useState(0);
+
+  /**
+
+Remaining hours state.
+@name remainingHours
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  const [remainingHours, setRemainingHours] = useState(0);
+
+  /**
+
+Notifications state set to 0.
+@name notifications
+@type {Number}
+@memberof ReturnDeviceAlert
+*/
+  localStorage.setItem("Notifications", 0);
+
+  /**
+   * notificationNotice
+   * @description value to condition he number of notification displyed
+   */
+  const notificationNotice = localStorage.getItem("Notifications");
+
+/**
+
+Function to call api and save response in a state.
+@async
+@function checkActivatedReceivers
+@memberof ReturnDeviceAlert
+@returns {Array} - new variable state from the reponse.
+*/
+  const checkActivatedReceivers = async () => {
+    const response = await devitrackApi.get("/receiver/receiver-assigned-list");
+    if (response) {
+      return setPoolReceivers(response.data.listOfReceivers);
+    }
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    checkActivatedReceivers();
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+/**
+
+Due date to compare and dispatch notifications.
+@name dueDate
+@type {Date}
+@memberof ReturnDeviceAlert
+*/
+  const dueDate = new Date("2023-02-10 10:43:00");
+
+/**
+
+Check every sec the current date/time and compare if dueDate falls into parameters to dispatch expected function as notifications.
+@name useInterval
+@type {Function}
+@memberof ReturnDeviceAlert
+*/
+  useInterval(() => {
+    const currentDate = new Date();
+    /**
+     * timeDifference
+     * @description difference between due date and current date
+     */
+    const timeDifference = dueDate.getTime() - currentDate.getTime();
+    const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    if (notificationNotice &lt; 1) {
+      if (timeDifference &lt; 0 &amp;&amp; timeDifference > -1500) {
+        localStorage.setItem("Notifications", 1);
+        return (
+          &lt;>
+            {whatsappNotice({
+              bodyMessage: `This is a friendly reminder about to return your device(s).Please be noticed that after ${
+                dueDate.getHours() + 1
+              }pm, all devices not returned will be charged a late return fee.`,
+              to: `${users.phoneNumber}`,
+              alertMessage: `A whatsapp notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
+            })}
+            {SMSNotice({
+              bodyMessage:
+                "This is a friendly reminder about to return your device(s)",
+              to: `${users.phoneNumber}`,
+              alertMessage: `A SMS notification has been sent to ${users.name}, phone # ${users.phoneNumber}`,
+            })}
+          &lt;/>
+        );
+      }
+    }
+    setRemainingDays(days);
+    setRemainingHours(hours);
+  }, 1_000);
+
+  const listOfDevice = new Map();
+
+  /**
+   * selectDevicePerUser
+   * @description function to check all user transaction and set Map with actived receivers
+   * @returns {Object} listOfDevice - object created from Map method
+   */
+  const selectDevicePerUser = async () => {
+    poolReceivers?.map((transaction) => {
+      
+      if (transaction.user === users.email) {
+        
+        transaction.device.map((item) => {
+          
+          if (item.status === true) {
+            listOfDevice.set(item.serialNumber, item.status);
+          }
+        });
+      }
+    });
+    return listOfDevice;
+  };
+  selectDevicePerUser();
+
+  /**
+   * changeLanguage
+   * @description function to change language state between english and portuguese
+   * @returns {Boolean}
+   */
+  const changeLanguage = () => {
+    return setLanguage(!language);
+  };
+  return (
+    &lt;div>
+      &lt;div className="container-alert-info">
+        {language === false ? (
+          listOfDevice.size > 0 ? (
+            &lt;div className="alert-message-loading-true">
+              &lt;div
+                className="alert alert-danger d-flex align-items-center"
+                role="alert"
+              >
+                {" "}
+                &lt;p onClick={changeLanguage}>
+                  {language === true ? "English" : "Portuguese"}
+                &lt;/p>{" "}
+                &lt;svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50"
+                  height="35"
+                  fill="currentColor"
+                  className="bi bi-exclamation-triangle"
+                  viewBox="0 0 16 16"
+                >
+                  &lt;path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z" />
+                  &lt;path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
+                &lt;/svg>
+                &lt;div>
+                  &lt;h4>
+                    You need to return {listOfDevice.size}{" "}
+                    {listOfDevice.size > 1 ? "devices" : "device"}
+                  &lt;/h4>
+                  &lt;span>
+                    &lt;span style={{ textDecoration: "underline" }}>
+                      You have {remainingDays} days and {remainingHours} hours
+                      remaining{" "}
+                    &lt;/span>
+                    &lt;br />
+                    Devices not returned on{" "}
+                    &lt;strong>
+                      {dueDate.getMonth() + 1}/{dueDate.getDate()}/
+                      {dueDate.getFullYear()}
+                    &lt;/strong>{" "}
+                    will be charged to your credit card on file.
+                  &lt;/span>
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
+          ) : (
+            &lt;div
+              className="alert alert-success d-flex align-items-center"
+              role="alert"
+            >
+              &lt;p onClick={changeLanguage}>
+                {language === true ? "English" : "Portuguese"}
+              &lt;/p>{" "}
+              &lt;svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="50"
+                height="35"
+                fill="currentColor"
+                className="bi bi-check-circle-fill"
+                viewBox="0 0 16 16"
+              >
+                &lt;path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+              &lt;/svg>
+              &lt;div>
+                &lt;h4>There is not pending devices.&lt;/h4>
+                &lt;span>You have returned all your devices.&lt;/span>
+              &lt;/div>
+            &lt;/div>
+          )
+        ) : listOfDevice.size > 0 ? (
+          &lt;div className="alert-message-loading-true">
+            &lt;div
+              className="alert alert-danger d-flex align-items-center"
+              role="alert"
+            >
+              &lt;p onClick={changeLanguage}>
+                {language === true ? "English" : "Portuguese"}
+              &lt;/p>{" "}
+              &lt;svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="50"
+                height="35"
+                fill="currentColor"
+                className="bi bi-exclamation-triangle"
+                viewBox="0 0 16 16"
+              >
+                &lt;path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z" />
+                &lt;path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z" />
+              &lt;/svg>
+              &lt;div>
+                &lt;h4>
+                  Você precisa voltar {listOfDevice.size}{" "}
+                  {listOfDevice.size > 1 ? "dispositivos" : "dispositivo"}
+                &lt;/h4>
+                &lt;span>
+                  &lt;span style={{ textDecoration: "underline" }}>
+                    você tem {remainingDays} dias e {remainingHours} horas
+                    restantes{" "}
+                  &lt;/span>
+                  &lt;br />
+                  Os dispositivos não devolvidos em{" "}
+                  &lt;strong>17 de Janeiro&lt;/strong> serão cobrados em seu cartão de
+                  crédito registrado.
+                &lt;/span>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+        ) : (
+          &lt;div
+            className="alert alert-success d-flex align-items-center"
+            role="alert"
+          >
+            {" "}
+            &lt;p onClick={changeLanguage}>
+              {language === true ? "English" : "Portuguese"}
+            &lt;/p>{" "}
+            &lt;svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="50"
+              height="35"
+              fill="currentColor"
+              className="bi bi-check-circle-fill"
+              viewBox="0 0 16 16"
+            >
+              &lt;path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+            &lt;/svg>
+            &lt;div>
+              &lt;h4>Não há dispositivos pendentes.&lt;/h4>
+              &lt;span>Você devolveu todos os seus dispositivos.&lt;/span>
+            &lt;/div>
+          &lt;/div>
+        )}
+      &lt;/div>
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#AccordionListPaymentIntent">AccordionListPaymentIntent</a></li><li><a href="global.html#AttendeesInfo">AttendeesInfo</a></li><li><a href="global.html#Authenticate">Authenticate</a></li><li><a href="global.html#Checkout">Checkout</a></li><li><a href="global.html#ContactInfo">ContactInfo</a></li><li><a href="global.html#ContactInfoProfile">ContactInfoProfile</a></li><li><a href="global.html#DetailSelectedUserFOrAssignReceiver">DetailSelectedUserFOrAssignReceiver</a></li><li><a href="global.html#DetailUser">DetailUser</a></li><li><a href="global.html#DeviceUsersHistory">DeviceUsersHistory</a></li><li><a href="global.html#Devices">Devices</a></li><li><a href="global.html#DisplayDataReceiversActivity">DisplayDataReceiversActivity</a></li><li><a href="global.html#DisplayDataReceiversStatus">DisplayDataReceiversStatus</a></li><li><a href="global.html#EventScheduled">EventScheduled</a></li><li><a href="global.html#Home">Home</a></li><li><a href="global.html#LoginAdminUser">LoginAdminUser</a></li><li><a href="global.html#ModalDisplayReceipt">ModalDisplayReceipt</a></li><li><a href="global.html#MyProfile">MyProfile</a></li><li><a href="global.html#PaymentIntentTemplate">PaymentIntentTemplate</a></li><li><a href="global.html#QRCodeConfirmation">QRCodeConfirmation</a></li><li><a href="global.html#ReceiverStock">ReceiverStock</a></li><li><a href="global.html#ReceiversDetailsAssignation">ReceiversDetailsAssignation</a></li><li><a href="global.html#RegisterAdminUser">RegisterAdminUser</a></li><li><a href="global.html#ReturnDeviceAlert">ReturnDeviceAlert</a></li><li><a href="global.html#SearchAttendeesByEmail">SearchAttendeesByEmail</a></li><li><a href="global.html#SettingDetailInfo">SettingDetailInfo</a></li><li><a href="global.html#StripeCheckoutElement">StripeCheckoutElement</a></li><li><a href="global.html#StripeCheckoutElementAdmin">StripeCheckoutElementAdmin</a></li><li><a href="global.html#StripeCheckoutForm">StripeCheckoutForm</a></li><li><a href="global.html#StripeCheckoutFormAdmin">StripeCheckoutFormAdmin</a></li><li><a href="global.html#StripeTransactionHistoryByUser">StripeTransactionHistoryByUser</a></li><li><a href="global.html#addReceiver">addReceiver</a></li><li><a href="global.html#batchDevice">batchDevice</a></li><li><a href="global.html#colors">colors</a></li><li><a href="global.html#dispatchBatch">dispatchBatch</a></li><li><a href="global.html#dispatchChange">dispatchChange</a></li><li><a href="global.html#fetchedData">fetchedData</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getReceiverData">getReceiverData</a></li><li><a href="global.html#handleAssignDevice">handleAssignDevice</a></li><li><a href="global.html#handleEditContactInfo">handleEditContactInfo</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#initalFormValues">initalFormValues</a></li><li><a href="global.html#inputReference">inputReference</a></li><li><a href="global.html#listOfDeviceInPool">listOfDeviceInPool</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#mergingData">mergingData</a></li><li><a href="global.html#receiverIdSavedInPool">receiverIdSavedInPool</a></li><li><a href="global.html#receiverNumberAssgined">receiverNumberAssgined</a></li><li><a href="global.html#receiverObjectToReplace">receiverObjectToReplace</a></li><li><a href="global.html#registerFormFields">registerFormFields</a></li><li><a href="global.html#replaceReceiverIndex">replaceReceiverIndex</a></li><li><a href="global.html#replaceStatus">replaceStatus</a></li><li><a href="global.html#returnAllReceiversAtOnce">returnAllReceiversAtOnce</a></li><li><a href="global.html#saveButtonDisplay">saveButtonDisplay</a></li><li><a href="global.html#searchTermField">searchTermField</a></li><li><a href="global.html#stripePromise">stripePromise</a></li><li><a href="global.html#useContactInfoStore">useContactInfoStore</a></li><li><a href="global.html#useInterval">useInterval</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Feb 20 2023 14:08:28 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

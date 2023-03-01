@@ -1,0 +1,340 @@
+.container-device-selection {
+  width: 85%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.device-selection {
+  width: 50%;
+  margin: 0 auto;
+}
+.device-selection h6 {
+  width: 40%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-overflow: left;
+}
+
+.button-selection {
+  width: 40vw;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.p-1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.show-amount-section {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 0%;
+  margin-left: 10%;
+}
+
+.show-amount-section strong {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media only screen and (min-width:481px) {
+  .container-device-selection {
+    width: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .device-selection {
+    width: 80vw;
+    display: flex;
+    align-items: center;
+  }
+  .device-selection p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .device-selection button {
+    width: 12vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    color: #000;
+  }
+  .button-selection {
+    position: relative;
+    left: 0%;
+    width: 20vw;
+  }
+  #button-plus {
+    border-right: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-left: none;
+  }
+  #button-less {
+    border-left: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-right: none;
+  }
+  #number-device-displayed {
+    border-top: solid 1px var(--main-colorsaluminium);
+    border-bottom: solid 1px var(--main-colorsaluminium);
+    font-size: 16px;
+    color: #892be27a;
+    background-color: #ffff;
+    width: 10vw;
+    height: 5vh;
+  }
+  .device-selection-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .show-amount-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+  }
+
+  #deposit-total {
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 24%;
+    right: 10%; */
+    font-weight: 600;
+  }
+  #amount-displayed{
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 26%;
+    right: 11%; */
+    font-weight: 600;
+  }
+  .container-devices-deposit-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+  }
+  .container-devices-deposit-display p {
+    margin: 0%;
+    font-weight: 600;
+  }
+}
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+  .container-device-selection {
+    width: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .device-selection {
+    width: 85vw;
+    display: flex;
+    align-items: center;
+  }
+  .device-selection p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .device-selection button {
+    width: 12vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    color: #000;
+  }
+  .button-selection {
+    width: 30vw;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+  #button-plus {
+    border-right: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-left: none;
+  }
+  #button-less {
+    border-left: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-right: none;
+  }
+  #number-device-displayed {
+    border-top: solid 1px var(--main-colorsaluminium);
+    border-bottom: solid 1px var(--main-colorsaluminium);
+    font-size: 16px;
+    color: #892be27a;
+    background-color: #ffff;
+    width: 10vw;
+    height: 5vh;
+  }
+  .device-selection-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .show-amount-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+  }
+
+  #deposit-total {
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 24%;
+    right: 10%; */
+    font-weight: 600;
+  }
+  #amount-displayed{
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 26%;
+    right: 11%; */
+    font-weight: 600;
+  }
+  .container-devices-deposit-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+  }
+  .container-devices-deposit-display p {
+    margin: 0%;
+    font-weight: 600;
+  }
+}
+@media only screen and (max-width: 319px) {
+  .container-device-selection {
+    width: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+  }
+  .device-selection {
+    width: 85vw;
+    display: flex;
+    align-items: center;
+  }
+  .device-selection p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: 500;
+    font-size: var(--font-size-xs2);
+    padding-right: 5px;
+  }
+  .device-selection button {
+    width: 12vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    color: #000;
+  }
+  .button-selection {
+    width: 30vw;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+  #button-plus {
+    border-right: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-left: none;
+  }
+  #button-less {
+    border-left: solid 1px var(--main-colorsaluminium);
+    border-radius: 0%;
+    border: var(--main-colorsaluminium) 1px solid;
+    border-right: none;
+  }
+  #number-device-displayed {
+    border-top: solid 1px var(--main-colorsaluminium);
+    border-bottom: solid 1px var(--main-colorsaluminium);
+    font-size: var(--font-size-m2);
+    color: #892be27a;
+    background-color: #ffff;
+    width: 10vw;
+    height: 5vh;
+  }
+  .device-selection-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .show-amount-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+  }
+
+  #deposit-total {
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 24%;
+    right: 10%; */
+    font-weight: 600;
+  }
+  #amount-displayed{
+    margin-top: 0%;
+    margin-bottom: 0%;
+    /* position: absolute;
+    top: 26%;
+    right: 11%; */
+    font-weight: 600;
+  }
+  .container-devices-deposit-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+  }
+  .container-devices-deposit-display p {
+    margin: 0%;
+    font-weight: 600;
+  }
+}

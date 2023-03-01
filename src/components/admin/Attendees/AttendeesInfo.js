@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate";
-import { useInterval } from "interval-hooks";
-import { DetailUser } from "./DetailUser";
+import { Link } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
+import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
-import { ModalCreateUser } from "../ui/ModalCreateUser";
 
+/**
+
+AttendeesInfo Component - Displays attendees information
+@return {JSX.Element}
+*/
 export const AttendeesInfo = () => {
   const { user } = useAdminStore();
   const [users, setUsers] = useState([]);
-  const [userDetail, setUserDetail] = useState(null);
-  const [
-    createTransactionForNoRegularUser
-  ] = useState(false);
-  const [currentItemsRendered, setCurrentItemsRendered] = useState([]);
-  const [sendObjectIdUser, setSendObjectIdUser] = useState();
+  const [, setUserDetail] = useState(null);
+  const [createTransactionForNoRegularUser] = useState(false);
+  const [, setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 4;
+  const [ascendet, setAscendet] = useState(true);
 
+  /**
+
+Fetches user data from devitrack API
+@returns {Promise<void>}
+*/
   const callApiUser = async () => {
     const response = await devitrackApi.get("/auth/users");
     if (response) {
@@ -33,96 +36,164 @@ export const AttendeesInfo = () => {
     callApiUser();
   }, [createUserButton, createTransactionForNoRegularUser]);
 
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % users.length;
-    setItemOffset(newOffset);
-  };
-
-  useInterval(async () => {
-    const endOffset = itemOffset + itemsPerPage;
-    setCurrentItemsRendered(users.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(users.length / itemsPerPage));
-  }, 2_00);
-
   return (
     <div className="container-attendees">
       <div className="container-attendees-info">
-        <div style={{textAlign:"left"}}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
           <h2>Users</h2>
+          {user.role === "Administrator" ? (
+            <div>
+              <p
+                className="create-new-user"
+                onClick={() => setCreateUserButton(true)}
+              >
+                CREATE NEW USER <i className="bi bi-plus-circle" />
+              </p>
+            </div>
+          ) : null}
+          {/* </div> */}
         </div>
-        <div className="container-attendees-info-table">
+        <div
+          style={{ overflow: "auto" }}
+          className="container-attendees-info-table"
+        >
           <table className="table">
             <caption></caption>
-            <thead>
+            <thead
+              style={{
+                position: "sticky",
+                top: "0",
+                background: "white",
+              }}
+            >
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
+                <th scope="col">
+                  Name{" "}
+                  {ascendet === true ? (
+                    <i
+                      onClick={() => setAscendet(!ascendet)}
+                      className="bi bi-sort-down"
+                    />
+                  ) : (
+                    <i
+                      onClick={() => setAscendet(!ascendet)}
+                      className="bi bi-sort-up"
+                    />
+                  )}
+                </th>
+                <th scope="col">Email </th>
                 <th scope="col">Details</th>
               </tr>
             </thead>
-            {currentItemsRendered?.map((user, item) => {                  
-              let background;
-              if( item === 0){
-                background = "#ffff"
-              }
-              if(item % 2 === 0){
-                background = "#F1F6F9"
-              }   
-              return (
-                <tbody key={user.id}>
-                   <tr style={{background:`${background}`}}>
-                    <th scope="row">{item + 1}</th>
-                    <td>{user.name}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      <button
-                      style={{
-                        width:"100%"
-                      }}
-                        className="btn btn-detail"
-                        onClick={() => {
-                          setSendObjectIdUser(user.id);
-                          setUserDetail(user);
-                        }}
-                      >
-                        Details <i className="bi bi-caret-right" />{" "}
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              );
-            })}
+            {/* <Table
+              width={300}
+              height={300}
+              headerHeight={20}
+              rowHeight={30}
+              rowCount={users.length}
+              rowGetter={({ index }) => users[index]}
+            >
+              <Column label="Name" dataKey="name" width={100} />
+              <Column label="Email" dataKey="email" width={200} />
+              <Column label="Detail" width={200}>
+                <Link to={`/admin/attendee/:${users.id}`}>
+                  <button
+                    style={{
+                      width: "100%",
+                    }}
+                    className="btn btn-detail"
+                    onClick={() => {
+                      setSendObjectIdUser(users.id);
+                      setUserDetail(users);
+                    }}
+                  >
+                    Details <i className="bi bi-caret-right" />{" "}
+                  </button>
+                </Link>
+              </Column>
+            </Table> */}
+            {ascendet === true &&
+              users
+                ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    background = "#ffff";
+                  }
+                  if (item % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+                  return (
+                    <tbody key={user.id}>
+                      <tr style={{ background: `${background}` }}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <Link to={`/attendee/:${user.id}`}>
+                            <button
+                              style={{
+                                width: "100%",
+                              }}
+                              className="btn btn-detail"
+                              onClick={() => {
+                                setSendObjectIdUser(user.id);
+                                setUserDetail(user);
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>
+                          </Link>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+            {ascendet === false &&
+              users
+                ?.sort((a, b) => b.name.localeCompare(a.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    background = "#ffff";
+                  }
+                  if (item % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+                  return (
+                    <tbody key={user.id}>
+                      <tr style={{ background: `${background}` }}>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <Link to={`/attendee/:${user.id}`}>
+                            <button
+                              style={{
+                                width: "100%",
+                              }}
+                              className="btn btn-detail"
+                              onClick={() => {
+                                setSendObjectIdUser(user.id);
+                                setUserDetail(user);
+                              }}
+                            >
+                              Details <i className="bi bi-caret-right" />{" "}
+                            </button>{" "}
+                          </Link>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
           </table>
-          <div className="container-section-pagination-button">
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="next >"
-              onPageChange={handlePageClick}
-              pageRangeDisplayed={2}
-              pageCount={pageCount}
-              previousLabel="< prev"
-              renderOnZeroPageCount={null}
-              containerClassName="pagination"
-              pageLinkClassName="page-num"
-              previousLinkClassName="page-num"
-              nextLinkClassName="page-num"
-              activeLinkClassName="tab-active"
-            />
-            {user.role === "Administrator" ? (
-              <div>
-                <p
-                  className="create-new-user"
-                  onClick={() => setCreateUserButton(true)}
-                >
-                  CREATE NEW USER <i className="bi bi-plus-circle"/>
-                </p>
-              </div>
-            ) : null}
-          </div>
         </div>
       </div>
-      <DetailUser sendObjectIdUser={sendObjectIdUser} userDetail={userDetail} />
       <ModalCreateUser
         createUserButton={createUserButton}
         setCreateUserButton={setCreateUserButton}
