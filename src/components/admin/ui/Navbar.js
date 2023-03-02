@@ -59,7 +59,7 @@ export const Navbar = () => {
         <NavLink to="/admin/device-database">
           <div
             className={`${
-              pathname === "/admin/device-database" ? "active-tab-admin-navbar" : ""
+              pathname === "/events" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Device</h4>
@@ -69,7 +69,17 @@ export const Navbar = () => {
         <NavLink to="/admin/attendees">
           <div
             className={`${
-              pathname === "/admin/device-attendees" ? "active-tab-admin-navbar" : ""
+              pathname === "/device-database" ? "active-tab-admin-navbar" : ""
+            } option-item`}
+          >
+            <h4>Device</h4>
+          </div>
+        </NavLink>
+
+        <NavLink to="/admin/attendees">
+          <div
+            className={`${
+              pathname === "/device-attendees" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Users</h4>
@@ -78,7 +88,7 @@ export const Navbar = () => {
         <NavLink to="/admin/settings">
           <div
             className={`${
-              pathname === "/admin/settings" ? "active-tab-admin-navbar" : ""
+              pathname === "/settings" ? "active-tab-admin-navbar" : ""
             } option-item`}
           >
             <h4>Settings</h4>
