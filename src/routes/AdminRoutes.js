@@ -24,7 +24,6 @@ export const AdminRoutes = () => {
       <Routes>
         {status === "authenticated" && adminToken ? (
           <>
-            {/* <Route path="/admin" element={<Admin />}></Route> */}
             <Route path="/admin/device-database" element={<DeviceDatabase />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/settings" element={<Settings />} />
