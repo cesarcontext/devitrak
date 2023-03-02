@@ -69,7 +69,7 @@ or when createTransactionForNoRegularUser is updated.
                         <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>
-                          <Link to={`/admin/attendee/${user.id}`}>
+                          <Link to={`/attendee/${user.id}`}>
                             <button
                               style={{
                                 width: "100%",
@@ -97,7 +97,7 @@ or when createTransactionForNoRegularUser is updated.
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>
-                        <Link to={`/admin/attendee/${user.id}`}>
+                        <Link to={`/attendee/${user.id}`}>
                           <button
                             style={{
                               width: "100%",

@@ -195,7 +195,7 @@ The function used to update user category and send PUT request to the API
           }}
         >
           <h2>Details</h2>
-          <Link to="/admin/attendees">
+          <Link to="/attendees">
             <button
               className="btn btn-delete"
               style={{ width: "fit-content" }}

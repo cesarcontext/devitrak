@@ -3,10 +3,6 @@ import { devitrackApi, devitrackApiStripe } from "../apis/devitrackApi";
 
 export const RemovingDuplicateData = () => {
   const [data, setData] = useState([]);
-  console.log(
-    "🚀 ~ file: RemovingDuplicateData.js ~ line 5 ~ RemovingDuplicateData ~ data",
-    data
-  );
   const callApiStripeTransaction = async () => {
     const response = await devitrackApi.get("/admin/users");
     if (response) {

@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:out/ContactInfo.js.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,25 +28,38 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import React, { useEffect, useMemo, useState } from "react";
+========
+
+import React, { useEffect, useMemo, useState } from "react";
+>>>>>>>> origin:src/components/contact/ContactInfo.js
 import { useDispatch, useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
 import { NavbarBottom } from "../ui/NavbarBottom";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
-import { blockLinks } from "../../store/slices/uiSlice";
+// import { blockLinks } from "../../store/slices/uiSlice";
 import "../../style/component/contact/contactInfo.css";
 import { useNavigate } from "react-router-dom";
 
+
+/**
+ * ContactInfo - 
+ * @description component to collect user info 
+ * @component
+ * @returns {HTMLBodyElement}
+ */
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
     useContactInfoStore();
+
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
   const dispatch = useDispatch();
 
   /**
    * form to create user
+<<<<<<<< HEAD:out/ContactInfo.js.html
    * @typedef {{Object}} User - form to create an user
    * @property {string} email - user email
    * @property {string} [groupName] - name of the group of the user (optional)
@@ -54,11 +68,25 @@ export const ContactInfo = () => {
    * @property {number} phone number - user phone number
    * @property {string} category - user category already defined
    * @property {string} privacyPolicy privacy policy response  - user response pre defined
+========
+   * @typedef {Object} initialForm - form to create an user
+   * @property {string} email - user email
+   * @property {string} [groupName] - name of the group of the user (optional)
+   * @property {string} lastName name - user last name
+   * @property {string} name - user name
+   * @property {string} phoneNumber number - user phone number
+   * @property {string} category - user category already defined
+   * @property {boolean} privacyPolicy privacy policy response  - user response pre defined
+>>>>>>>> origin:src/components/contact/ContactInfo.js
    *
    */
 
   /**
+<<<<<<<< HEAD:out/ContactInfo.js.html
    * @type {User}
+========
+   * @type {initialForm}
+>>>>>>>> origin:src/components/contact/ContactInfo.js
    */
   const initalFormValues = {
     email: "",
@@ -82,14 +110,33 @@ export const ContactInfo = () => {
   useEffect(() => {
     startCheckingUser(formValues.email);
   }, [formValues.email]);
+<<<<<<<< HEAD:out/ContactInfo.js.html
 
+========
+/**
+ * validationName - useMemo
+ * @callback validationName - the callback that handles the response.
+ * @returns {String} 
+ */
+>>>>>>>> origin:src/components/contact/ContactInfo.js
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
   }, [formValues.name]);
+/**
+ * validationLastName - useMemo
+ * @callback validationLastName - the callback that handles the response.
+ * @returns {String} 
+ */
 
   const validationLastName = useMemo(() => {
     return formValues.lastName.length > 0 ? "" : "is-invalid";
   }, [formValues.lastName]);
+
+  /**
+ * validationEmail - useMemo
+ * @callback validationEmail - the callback that handles the response.
+ * @returns {String} 
+ */
 
   const validationEmail = useMemo(() => {
     return formValues.email.length > 3 &amp;&amp;
@@ -102,11 +149,18 @@ export const ContactInfo = () => {
       : "is-invalid";
   }, [formValues.email]);
 
+  /**
+ * validationPhoneNumber - useMemo
+ * @callback validationPhoneNumber - the callback that handles the response.
+ * @returns {String} 
+ */
+
   const validationPhoneNumber = useMemo(() => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
   const magicLinkParam = formValues.email;
+
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
@@ -124,14 +178,22 @@ export const ContactInfo = () => {
       return swalErrorMessage("Phone number must be provided");
     }
 
+/**
+ * hooks imported to pass values needed to create user in database
+ */
     await startSavingContactInfo({
       ...formValues,
       privacyPolicy: true,
     });
+
+    /**
+ * hooks imported to pass values needed to create customer in stripe
+ */
     await stripeCustomer(formValues);
     navigate("/checkout");
   };
 
+<<<<<<<< HEAD:out/ContactInfo.js.html
   if (users.status === true) {
     dispatch(blockLinks("auto"));
   } else {
@@ -148,14 +210,39 @@ export const ContactInfo = () => {
                 &lt;div style={{ display: "flex", flexDirection: "column" }}>
                   &lt;p className="paragraph">ENTER YOUR CONTACT INFORMATION&lt;/p>
                   &lt;p style={{ fontSize: "12px" }}>
+========
+  // if (users.status === true) {
+  //   dispatch(blockLinks("auto"));
+  // } else {
+  //   dispatch(blockLinks("auto"));
+  // }
+  
+  return (
+    <>
+      <div className="container-contact-info mt-4">
+        <div>
+          <div className="row">
+            <form>
+              <div className="container-input">
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <p className="paragraph">ENTER YOUR CONTACT INFORMATION</p>
+                  <p style={{ fontSize: "12px" }}>
+>>>>>>>> origin:src/components/contact/ContactInfo.js
                     If you have already made an order and need to request more
                     devices, just enter your email address in the field below
                     and click on the link that will appear to make the new
                     request with your current account.
+<<<<<<<< HEAD:out/ContactInfo.js.html
                   &lt;/p>
                 &lt;/div>
                 &lt;div className="form-outline">
                   &lt;input
+========
+                  </p>
+                </div>
+                <div className="form-outline">
+                  <input
+>>>>>>>> origin:src/components/contact/ContactInfo.js
                     type="email"
                     id="emailAddress"
                     className={`form-control ${validationEmail} form-control-lg`}
@@ -168,9 +255,18 @@ export const ContactInfo = () => {
                 &lt;/div>
               &lt;/div>
               {users.status === true ? (
+<<<<<<<< HEAD:out/ContactInfo.js.html
                 &lt;div>
                   &lt;MagicLink magicLinkParam={magicLinkParam} />
                 &lt;/div>
+========
+                <div>
+                  {/**
+                   * @type {IntrinsicAttributes}
+                   */}
+                  <MagicLink magicLinkParam={magicLinkParam} />
+                </div>
+>>>>>>>> origin:src/components/contact/ContactInfo.js
               ) : null}
               &lt;div className="container-input">
                 &lt;div className="form-outline">
@@ -220,7 +316,11 @@ export const ContactInfo = () => {
                     type="tel"
                     id="phoneNumber"
                     className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+<<<<<<<< HEAD:out/ContactInfo.js.html
                     placeholder="Phone number exe: 100000000 or 5500000000000"
+========
+                    placeholder="Phone number | example: 100000000 or 5500000000000"
+>>>>>>>> origin:src/components/contact/ContactInfo.js
                     onChange={onInputCHange}
                     name="phoneNumber"
                     value={formValues.phoneNumber}
