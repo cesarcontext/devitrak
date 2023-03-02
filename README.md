@@ -1,57 +1,66 @@
-# Devitrak App
-This is a Progressive Web App (PWA) built using React that offers the service of tracking and inventory of devices, such as interpretation devices, and more. It includes the frontend part of the user interface and the admin dashboard interface. This app integrates with Stripe to collect payments related to the devices if needed.
-
-# Getting Started
-# Prerequisites
-To run this app, you need to have Node.js installed on your machine. You can download and install Node.js from here.
-
-# Installing
-To install the required dependencies for this app, run the following command:
-
-npm install
-
-# Running
-To start the app, run the following command:
-
-npm start 
-<br/>
-This will start the development server and launch the app in your default browser.
-
-# Building
-To build the app for production, run the following command:
-
-npm run build
+# Devitrak-App Admin Dashboard
 
 
-This will create a production-ready build of the app in the build directory.
+Welcome to the Devitrack-App Admin Dashboard! This is a Progressive Web App (PWA) built with React that allows admins to manage clients and their associated data, as well as perform various actions such as creating new clients, assigning receivers to clients, verifying payment transactions per client, collecting credit card information and generating payment tokens for deposits, and creating, editing, and deleting admin users based on permission.
 
-# Running Tests
-To run tests for the app, run the following command:
+The app uses various dependencies, including axios for making API requests, moment for formatting dates, react-bootstrap for UI components, react-modal for displaying modal windows, recharts for data visualization, and web-vitals for measuring web performance.
 
-npm test
+# Table of Contents
+
+1. Installation
+
+2. Usage
+
+3. Documentation
+
+4. Contributing
+
+# Installation
+
+To install and run the app locally, follow these steps:
+
+Clone the repository to your local machine:
+
+* git clone https://github.com/{YOUR_USERNAME}/devitrack-app.git
+
+Change to the app directory:
+
+* cd devitrack-app
+
+Install dependencies:
+
+* npm install
+
+# Usage
+
+To start the app, run:
+
+* npm start
+
+This will start the development server and open the app in your browser at http://localhost:3000.
 
 # Documentation
-The code in this repository is documented using JSDoc. To generate the documentation, run the following command:
 
-npm run doc
+This app uses JSDoc to generate documentation for the various functions and components. To generate the documentation, run:
 
+* npm run docs
 
-This will generate the documentation in the out directory.
+This will generate HTML documentation in the docs directory.
 
-# Dependencies
-This app uses a variety of third-party packages. The full list of dependencies is included in the package.json file. Some of the key dependencies are:
+# Contributing
 
-React: A JavaScript library for building user interfaces.
-Redux Toolkit: A package that makes it easier to manage state in Redux.
-Stripe: A platform that allows businesses to accept payments online.
-Bootstrap: A CSS framework for building responsive websites.
-Chart.js: A JavaScript library for creating charts.
-Axios: A package for making HTTP requests.
-Moment: A package for working with dates and times.
-React Router: A package for managing routes in a React app.
+If you'd like to contribute to the app, please follow these steps:
 
-# DevDependencies
-This app uses a variety of dev dependencies. The full list of dev dependencies is included in the package.json file. Some of the key dev dependencies are:
+Fork the repository and create a new branch:
 
-React App Rewired: A package that allows you to customize the Create React App configuration without ejecting.
-JSDoc: A tool for generating documentation from code comments.
+* git checkout -b feature/my-feature
+
+Make your changes and commit them:
+
+* git commit -m "Add my feature"
+
+Push your changes to your fork:
+
+* git push origin feature/my-feature
+
+Create a pull request on the original repository.
