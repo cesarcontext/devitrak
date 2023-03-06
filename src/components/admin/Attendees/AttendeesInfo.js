@@ -4,7 +4,6 @@ import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
-import "../../../style/component/ui/paginate.css";
 
 /**
 
@@ -171,12 +170,6 @@ Fetches user data from devitrack API
         createUserButton={createUserButton}
         setCreateUserButton={setCreateUserButton}
       />
-      {/* <div>
-        <DetailUser
-          sendObjectIdUser={sendObjectIdUser}
-          userDetail={userDetail}
-        />
-      </div> */}
     </div>
   );
 };
