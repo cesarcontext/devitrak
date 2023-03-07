@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { swalAlertMessage } from "../../../helper/swalFireMessage";
+import { onSelectEvent } from "../../../store/slices/eventSlice";
 import "../../../style/component/admin/events/live-events.css";
 
 export const EventCreater = () => {
@@ -12,14 +14,20 @@ export const EventCreater = () => {
   const [end, setEnd] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventLocation, setEventLocation] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
   const stampTime = new Date();
   const callApiEventList = useCallback(async () => {
     const response = await devitrackApi.get("/event/event-list");
     if (response) {
       setEventList(response.data.list);
     }
-  }, [updateList]);
+  }, []);
   callApiEventList();
+
+  useEffect(() => {
+    callApiEventList();
+  }, [updateList]);
 
   const handleSubmitEvent = async (event) => {
     event.preventDefault();
@@ -37,18 +45,23 @@ export const EventCreater = () => {
         company: user.company,
       });
       if (response) {
-        devitrackApi.post("/eventLog/feed-event-log", {
-          user: user.email,
-          actionTaken: "Event was created",
-          time: stampTime,
-        });
-        setBegin("");
-        setEnd("");
-        setEventName("");
-        setEventLocation("");
-        swalAlertMessage("Event was created succesfully");
-        setUpdateList(!updateList);
+        const updateListAfterSaveEvent = await devitrackApi.post(
+          "/eventLog/feed-event-log",
+          {
+            user: user.email,
+            actionTaken: "Event was created",
+            time: stampTime,
+          }
+        );
+        if (updateListAfterSaveEvent) {
+          return setUpdateList(!updateList);
+        }
       }
+      setBegin("");
+      setEnd("");
+      setEventName("");
+      setEventLocation("");
+      swalAlertMessage("Event was created succesfully");
     } catch (error) {
       console.log(
         "🚀 ~ file: EventCreater.js:18 ~ handleSubmitEvent ~ error:",
@@ -57,52 +70,78 @@ export const EventCreater = () => {
       alert("Something went wrong. Event was not created. Please try later");
     }
   };
+
+  const eventClicked = (eventName) => {
+    dispatch(onSelectEvent(eventName));
+    // navigate("/admin/attendees")
+  };
+
   return (
     <div className="container-live-events">
       <h5>CREATE NEW EVENT</h5>
       <div>
-        <form onSubmit={handleSubmitEvent}>
-          <label>Event Name</label>
-          <input
-            name="eventName"
-            value={eventName}
-            onChange={(event) => setEventName(event.target.value)}
-            placeholder="National Retail Conference"
-          />
-          <label>Event Location</label>
-          <input
-            name="eventLocation"
-            value={eventLocation}
-            onChange={(event) => setEventLocation(event.target.value)}
-            placeholder="New York, New York"
-          />
-          <label>Event Time Begin</label>
-          <input
-            name="begin"
-            value={begin}
-            onChange={(event) => setBegin(event.target.value)}
-            placeholder="01-15-2023 07:00:00"
-          />
-          <label>Event Time End</label>
-          <input
-            name="end"
-            value={end}
-            onChange={(event) => setEnd(event.target.value)}
-            placeholder="01-17-2023 16:00:00"
-          />
-          <button
-            type="submit"
-            className="btn btn-create"
-            style={{ width: "fit-content" }}
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            height: "100%",
+          }}
+          onSubmit={handleSubmitEvent}
+        >
+          <div>
+            <label>Event Name</label>
+            <input
+              name="eventName"
+              value={eventName}
+              onChange={(event) => setEventName(event.target.value)}
+              placeholder="National Retail Conference"
+            />
+            <label>Event Location</label>
+            <input
+              name="eventLocation"
+              value={eventLocation}
+              onChange={(event) => setEventLocation(event.target.value)}
+              placeholder="New York, New York"
+            />
+            <label>Event Time Begin</label>
+            <input
+              name="begin"
+              value={begin}
+              onChange={(event) => setBegin(event.target.value)}
+              placeholder="01-15-2023 07:00:00"
+            />
+            <label>Event Time End</label>
+            <input
+              name="end"
+              value={end}
+              onChange={(event) => setEnd(event.target.value)}
+              placeholder="01-17-2023 16:00:00"
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              width: "30vw",
+              paddingTop: "5px",
+            }}
           >
-            Submit
-          </button>
+            <button
+              type="submit"
+              className="btn btn-create"
+              style={{ width: "fit-content" }}
+            >
+              Submit
+            </button>
+          </div>
         </form>
       </div>
       <div>
         <br />
         <h2>List</h2>
-        <hr/>
+        <hr />
         <table>
           <thead>
             <tr>
@@ -117,7 +156,11 @@ export const EventCreater = () => {
               ({ id, eventName, location, dateBegin, dateEnd, company }) => {
                 if (company === user.company) {
                   return (
-                    <tr key={id}>
+                    <tr
+                      style={{ cursor: "pointer" }}
+                      onClick={() => eventClicked(eventName)}
+                      key={id}
+                    >
                       <td>{eventName}</td>
                       <td>{location}</td>
                       <td>{dateBegin}</td>
