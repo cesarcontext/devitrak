@@ -1,13 +1,16 @@
-import { func } from "prop-types";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { devitrackApi } from "../../../apis/devitrackApi";
+import { onSelectEvent } from "../../../store/slices/eventSlice";
 import "../../../style/component/admin/events/live-events.css";
 
 export const PastEvents = () => {
   const [listOfReceiver, setListOfReceiver] = useState([]);
   const [events, setEvents] = useState([]);
   const { user } = useSelector((state) => state.admin);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentDate = new Date();
   useEffect(() => {
     const callApi = async () => {
@@ -31,6 +34,10 @@ export const PastEvents = () => {
     callApiEvent();
   }, [events]);
 
+  const handleEventSelected = (location) => {
+    dispatch(onSelectEvent(location.eventName))
+    navigate("/admin/attendees")
+  };
   const sortArray = () => {
     let deviceSum = [];
     for (let location of events) {
@@ -61,11 +68,11 @@ export const PastEvents = () => {
             if (currentDate > check && location.company === user.company) {
               return (
                 <tr
-                key={location.id}
+                  key={location.id}
                   style={{
                     cursor: "pointer",
                   }}
-                  onClick
+                  onClick={async () => handleEventSelected(location)}
                 >
                   <td>{location.eventName}</td>
                   <td>{location.location}</td>
