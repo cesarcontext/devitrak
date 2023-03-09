@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Column, Table } from "react-virtualized";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FixedSizeList } from "react-window";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
 import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
-import "react-virtualized/styles.css"; // only needs to be imported once
+import "../../../style/component/admin/table.css";
+import { useSelector } from "react-redux";
+import { useBlockLayout, useSortBy, useTable } from "react-table";
 
 /**
 
@@ -15,28 +17,96 @@ AttendeesInfo Component - Displays attendees information
 */
 export const AttendeesInfo = () => {
   const { user } = useAdminStore();
+  const { choice } = useSelector((state) => state.event);
   const [users, setUsers] = useState([]);
-  const [, setUserDetail] = useState(null);
   const [createTransactionForNoRegularUser] = useState(false);
-  const [, setSendObjectIdUser] = useState();
   const [createUserButton, setCreateUserButton] = useState(false);
-  const [ascendet, setAscendet] = useState(true);
-
+  const navigate = useNavigate();
   /**
 
 Fetches user data from devitrack API
 @returns {Promise<void>}
 */
-  const callApiUser = async () => {
+  const callApiUser = useCallback(async () => {
     const response = await devitrackApi.get("/auth/users");
     if (response) {
       setUsers(response.data.users);
     }
-  };
+  }, [choice]);
 
   useEffect(() => {
     callApiUser();
-  }, [createUserButton, createTransactionForNoRegularUser]);
+  }, [createUserButton, createTransactionForNoRegularUser, choice]);
+
+  const data = useMemo(() => users, [users.length]);
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "First Name",
+        accessor: "name",
+      },
+      {
+        Header: "Last Name",
+        accessor: "lastName",
+      },
+      {
+        Header: "Email",
+        accessor: "email",
+      },
+      {
+        Header: "Detail",
+        accessor: "id",
+        Cell: (props) => (
+          <button
+            style={{ width: "fit-content" }}
+            className="btn btn-create"
+            onClick={() => handleShow(props)}
+          >
+            Detail
+          </button>
+        ),
+      },
+    ],
+    []
+  );
+
+  const handleShow = (cell) => {
+    return navigate(`/admin/attendee/:${cell?.row?.original.id}`);
+  };
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable(
+      {
+        data,
+        columns,
+      },
+      useSortBy,
+      useBlockLayout
+    );
+
+  const RenderRow = React.useCallback(
+    ({ index, style }) => {
+      const row = rows[index];
+      prepareRow(row);
+      return (
+        <div
+          {...row.getRowProps({
+            style,
+          })}
+          className="tr"
+        >
+          {row.cells.map((cell) => {
+            return (
+              <div {...cell.getCellProps()} className="td">
+                {cell.render("Cell")}
+              </div>
+            );
+          })}
+        </div>
+      );
+    },
+    [prepareRow, rows]
+  );
 
   return (
     <div className="container-attendees">
@@ -60,140 +130,44 @@ Fetches user data from devitrack API
               </p>
             </div>
           ) : null}
-          {/* </div> */}
         </div>
         <div
           style={{ overflow: "auto" }}
           className="container-attendees-info-table"
         >
-          <table className="table">
-            <caption></caption>
-            <thead
-              style={{
-                position: "sticky",
-                top: "0",
-                background: "white",
-              }}
-            >
-              <tr>
-                <th scope="col">
-                  Name{" "}
-                  {ascendet === true ? (
-                    <i
-                      onClick={() => setAscendet(!ascendet)}
-                      className="bi bi-sort-down"
-                    />
-                  ) : (
-                    <i
-                      onClick={() => setAscendet(!ascendet)}
-                      className="bi bi-sort-up"
-                    />
-                  )}
-                </th>
-                <th scope="col">Email </th>
-                <th scope="col">Details</th>
-              </tr>
-            </thead>
-            {/* <Table
-              width={300}
-              height={300}
-              headerHeight={20}
-              rowHeight={30}
-              rowCount={users.length}
-              rowGetter={({ index }) => users[index]}
-            >
-              <Column label="Name" dataKey="name" width={100} />
-              <Column label="Email" dataKey="email" width={200} />
-              <Column label="Detail" width={200}>
-                <Link to={`/admin/attendee/:${users.id}`}>
-                  <button
-                    style={{
-                      width: "100%",
-                    }}
-                    className="btn btn-detail"
-                    onClick={() => {
-                      setSendObjectIdUser(users.id);
-                      setUserDetail(users);
-                    }}
-                  >
-                    Details <i className="bi bi-caret-right" />{" "}
-                  </button>
-                </Link>
-              </Column>
-            </Table> */}
-            {ascendet === true &&
-              users
-                ?.sort((a, b) => a.name.localeCompare(b.name))
-                ?.map((user, item) => {
-                  let background;
-                  if (item === 0) {
-                    background = "#ffff";
-                  }
-                  if (item % 2 === 0) {
-                    background = "#F1F6F9";
-                  }
-                  return (
-                    <tbody key={user.id}>
-                      <tr style={{ background: `${background}` }}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <Link to={`/admin/attendee/:${user.id}`}>
-                            <button
-                              style={{
-                                width: "100%",
-                              }}
-                              className="btn btn-detail"
-                              onClick={() => {
-                                setSendObjectIdUser(user.id);
-                                setUserDetail(user);
-                              }}
-                            >
-                              Details <i className="bi bi-caret-right" />{" "}
-                            </button>
-                          </Link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-            {ascendet === false &&
-              users
-                ?.sort((a, b) => b.name.localeCompare(a.name))
-                ?.map((user, item) => {
-                  let background;
-                  if (item === 0) {
-                    background = "#ffff";
-                  }
-                  if (item % 2 === 0) {
-                    background = "#F1F6F9";
-                  }
-                  return (
-                    <tbody key={user.id}>
-                      <tr style={{ background: `${background}` }}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <Link to={`/admin/attendee/:${user.id}`}>
-                            <button
-                              style={{
-                                width: "100%",
-                              }}
-                              className="btn btn-detail"
-                              onClick={() => {
-                                setSendObjectIdUser(user.id);
-                                setUserDetail(user);
-                              }}
-                            >
-                              Details <i className="bi bi-caret-right" />{" "}
-                            </button>{" "}
-                          </Link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-          </table>
+          <div {...getTableProps()}
+          //  className="table-data"
+           >
+            <div>
+              {headerGroups.map((headerGroup) => (
+                <div {...headerGroup.getHeaderGroupProps()} 
+                // className="tr-data"
+                >
+                  {headerGroup.headers.map((column) => (
+                    <div
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      // className="th-data"
+                    >
+                      {column.render("Header")}
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? " 🔽"
+                            : " 🔼"
+                          : ""}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <div {...getTableBodyProps()}>
+              <FixedSizeList height={400} itemCount={rows.length} itemSize={35}>
+                {RenderRow}
+              </FixedSizeList>
+            </div>
+          </div>
         </div>
       </div>
       <ModalCreateUser
