@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {
+  useBlockLayout,
+  useResizeColumns,
+  useSortBy,
+  useTable,
+} from "react-table";
 import { FixedSizeList } from "react-window";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useAdminStore } from "../../../hooks/useAdminStore";
@@ -7,8 +14,6 @@ import { ModalCreateUser } from "../ui/ModalCreateUser";
 import "../../../style/component/admin/attendeesInfo.css";
 import "../../../style/component/ui/paginate.css";
 import "../../../style/component/admin/table.css";
-import { useSelector } from "react-redux";
-import { useBlockLayout, useSortBy, useTable } from "react-table";
 
 /**
 
@@ -22,44 +27,57 @@ export const AttendeesInfo = () => {
   const [createTransactionForNoRegularUser] = useState(false);
   const [createUserButton, setCreateUserButton] = useState(false);
   const navigate = useNavigate();
+
   /**
 
-Fetches user data from devitrack API
-@returns {Promise<void>}
-*/
-  const callApiUser = useCallback(async () => {
+  Fetches user data from devitrack API
+  @returns {Promise<void>}
+  */
+  const callApiUser =async () => {
     const response = await devitrackApi.get("/auth/users");
     if (response) {
       setUsers(response.data.users);
     }
-  }, [choice]);
+  }
 
   useEffect(() => {
     callApiUser();
   }, [createUserButton, createTransactionForNoRegularUser, choice]);
 
-  const data = useMemo(() => users, [users.length]);
-  const columns = React.useMemo(
+  let resultByChoice = []
+  if(users.length > 0){
+    for(let data of users){
+      if(data.eventSelected === choice){
+       resultByChoice.push(data)
+      }
+    }
+  }
+  const data = useMemo(() => resultByChoice, [users.length]);
+  const columns = useMemo(
     () => [
       {
         Header: "First Name",
         accessor: "name",
+        width: 310,
       },
       {
         Header: "Last Name",
         accessor: "lastName",
+        width: 310,
       },
       {
         Header: "Email",
         accessor: "email",
+        width: 310,
       },
       {
         Header: "Detail",
         accessor: "id",
+        width: 150,
         Cell: (props) => (
           <button
             style={{ width: "fit-content" }}
-            className="btn btn-create"
+            className="btn btn-detail"
             onClick={() => handleShow(props)}
           >
             Detail
@@ -81,11 +99,23 @@ Fetches user data from devitrack API
         columns,
       },
       useSortBy,
-      useBlockLayout
+      useBlockLayout,
+      useResizeColumns
     );
 
-  const RenderRow = React.useCallback(
+  const RenderRow = useCallback(
     ({ index, style }) => {
+      if (index % 2 === 0) {
+        style = {
+          ...style,
+          backgroundColor: "#ffff",
+        };
+      } else {
+        style = {
+          ...style,
+          backgroundColor: "#d7d7d700",
+        };
+      }
       const row = rows[index];
       prepareRow(row);
       return (
@@ -93,11 +123,13 @@ Fetches user data from devitrack API
           {...row.getRowProps({
             style,
           })}
-          className="tr"
         >
           {row.cells.map((cell) => {
             return (
-              <div {...cell.getCellProps()} className="td">
+              <div
+                {...cell.getCellProps()}
+                className="table-body-td-attendee-page"
+              >
                 {cell.render("Cell")}
               </div>
             );
@@ -135,25 +167,24 @@ Fetches user data from devitrack API
           style={{ overflow: "auto" }}
           className="container-attendees-info-table"
         >
-          <div {...getTableProps()}
-          //  className="table-data"
-           >
+          <div {...getTableProps()} className="table-data-attendees-page">
             <div>
               {headerGroups.map((headerGroup) => (
-                <div {...headerGroup.getHeaderGroupProps()} 
-                // className="tr-data"
+                <div
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="table-data-header-attendees-page"
                 >
                   {headerGroup.headers.map((column) => (
                     <div
                       {...column.getHeaderProps(column.getSortByToggleProps())}
-                      // className="th-data"
+                      className="table-data-th-attendees-page"
                     >
                       {column.render("Header")}
                       <span>
                         {column.isSorted
                           ? column.isSortedDesc
-                            ? " 🔽"
-                            : " 🔼"
+                            ? "🔽"
+                            : "🔼"
                           : ""}
                       </span>
                     </div>
@@ -162,10 +193,19 @@ Fetches user data from devitrack API
               ))}
             </div>
 
-            <div {...getTableBodyProps()}>
-              <FixedSizeList height={400} itemCount={rows.length} itemSize={35}>
-                {RenderRow}
-              </FixedSizeList>
+            <div
+              className="table-data-body-attendees-page"
+              {...getTableBodyProps()}
+            >
+              <div className="table-body-td-attendee-page">
+                <FixedSizeList
+                  height={400}
+                  itemCount={rows.length}
+                  itemSize={55}
+                >
+                  {RenderRow}
+                </FixedSizeList>
+              </div>
             </div>
           </div>
         </div>
