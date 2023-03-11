@@ -163,8 +163,8 @@ export const AttendeesInfo = () => {
             </div>
           ) : null}
         </div>
-        <div
-          style={{ overflow: "auto" }}
+        {resultByChoice.length > 0 ? <div
+          // style={{ overflow: "auto" }}
           className="container-attendees-info-table"
         >
           <div {...getTableProps()} className="table-data-attendees-page">
@@ -208,7 +208,10 @@ export const AttendeesInfo = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> :  <span>
+            NO DATA FOR THIS EVENT:{" "}
+            <p style={{ textDecoration: "underline" }}>{`${choice}`}</p>
+          </span>}
       </div>
       <ModalCreateUser
         createUserButton={createUserButton}
