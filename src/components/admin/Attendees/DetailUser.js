@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { devitrackApi } from "../../../apis/devitrackApi";
 import { useDispatch } from "react-redux";
 import { ModalCreateTransactionForNoRegularUser } from "../ui/ModalCreateTransactionForNoRegularUser";
-import { ModalNotification } from "../ui/ModalNotification";
 import { ModalPaidTransaction } from "../ui/ModalPaidTransaction";
 import { Navbar } from "../ui/Navbar";
 import { ReceiversDetailsAssignation } from "./ReceiversDetailsAssignation";
@@ -15,6 +14,7 @@ import {
   onCheckReceiverPaymentIntent,
 } from "../../../store/slices/stripeSlice";
 import "../../../style/component/admin/attendeesInfo.css";
+import { ModalNotification } from "../ui/ModalNotification";
 
 /**
 
@@ -195,7 +195,7 @@ The function used to update user category and send PUT request to the API
           }}
         >
           <h2>Details</h2>
-          <Link to="/attendees">
+          <Link to="/admin/attendees">
             <button
               className="btn btn-delete"
               style={{ width: "fit-content" }}
@@ -277,6 +277,7 @@ The function used to update user category and send PUT request to the API
                         className=""
                         onClick={() => {
                           setCreateTransactionForNoRegularUser(true);
+                          setUserData(user);
                         }}
                       >
                         NEW TRANSACTION <i className="bi bi-plus-circle" />
