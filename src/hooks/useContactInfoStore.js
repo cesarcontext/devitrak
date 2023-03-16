@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../apis/devitrackApi";
@@ -15,13 +15,18 @@ import {
 export const useContactInfoStore = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { eventSelected, provider } = useSelector(
+    (state) => state.providerEvent
+  );
   const { users } = useSelector((state) => state.contactInfo);
+  const [messageUserDataExist, setMessageUserDataExist] = useState("")
   const [visible, setVisible] = useState("none");
   const [visibleButton, setVisibleButton] = useState("content");
   const [userCreatedDisabledInput, setUserCreatedDisabledInput] =
     useState(false);
   const [token, setToken] = useState("");
   const [emailUserRegistered, setEmailUserRegistered] = useState("");
+  const reference = useRef();
 
   /**
    * startSavingContactInfo - funtion to fetch user info and create it in the database
@@ -43,6 +48,8 @@ export const useContactInfoStore = () => {
   }) => {
     try {
       const { data } = await devitrackApi.post("/auth/new", {
+        provider: provider,
+        eventSelected: eventSelected,
         name,
         lastName,
         email,
@@ -143,15 +150,12 @@ export const useContactInfoStore = () => {
    * @returns {Promise}
    */
   const startCheckingUser = async (userInfoEmailCheck) => {
-    console.log("URL", devitrackApi)
-
     try {
       const { data } = await devitrackApi.post("/auth/", {
         userInfoEmailCheck,
       });
 
-
-       /**
+      /**
        * Checks the data. Returns the data object if it was successfull.
        * Otherwise it throws an error including the error message
        * @description data - destructured from fetch response / grant permission to user
@@ -159,22 +163,76 @@ export const useContactInfoStore = () => {
        * @throws {String} the error message and return user to main page where form is displayed
        */
       if (data.ok === true) {
-        localStorage.setItem("uid", data.user.id);
-        localStorage.setItem("token", data.token);
-        setToken(data.token);
-        setEmailUserRegistered(data.user.email);
-        dispatch(
-          onCheckContact({
-            category: data.user.category,
-            email: data.user.email,
-            groupName: data.user.groupName,
-            id: data.id,
-            lastName: data.user.lastName,
-            name: data.user.name,
-            phoneNumber: data.user.phoneNumber,
-            status: data.ok,
-          })
-        );
+        let checkProvider = {};
+        let checkEvent = {};
+        data.user.provider.map((prov) => {
+          if (!checkProvider[prov]) {
+            checkProvider[prov] = 1;
+          }
+        });
+        data.user.eventSelected.map((event) => {
+          if (!checkEvent[event]) {
+            checkEvent[event] = 1;
+          }
+        });
+        let addingEventList = Object.keys(checkEvent);
+        let addingProviderList = Object.keys(checkProvider);
+        for (let event of addingEventList) {
+          for (let prov of addingProviderList) {
+            if (event === eventSelected && prov === provider) {
+              localStorage.setItem("uid", data.user.id);
+              localStorage.setItem("token", data.token);
+              setToken(data.token);
+              setEmailUserRegistered(data.user.email);
+              dispatch(
+                onCheckContact({
+                  category: data.user.category,
+                  email: data.user.email,
+                  groupName: data.user.groupName,
+                  id: data.id,
+                  lastName: data.user.lastName,
+                  name: data.user.name,
+                  phoneNumber: data.user.phoneNumber,
+                  status: data.ok,
+                })
+              );
+            } else {
+              let eventAddedToUserHistory = [...addingEventList, eventSelected];
+              let providerAddedToUserHistory = [
+                ...addingProviderList,
+                provider,
+              ]; 
+              setMessageUserDataExist("Your data exists in our database due to last events")
+              const updateUserEventAttendeed = async() => {
+                await devitrackApi.put(`/auth/${data.user.id}`, {
+                  ...data.user,
+                  provider: providerAddedToUserHistory,
+                  eventSelected: eventAddedToUserHistory,
+                });
+              };
+              setTimeout(() => {
+               updateUserEventAttendeed();
+              }, 5000)
+              
+              localStorage.setItem("uid", data.user.id);
+              localStorage.setItem("token", data.token);
+              setToken(data.token);
+              setEmailUserRegistered(data.user.email);
+              dispatch(
+                onCheckContact({
+                  category: data.user.category,
+                  email: data.user.email,
+                  groupName: data.user.groupName,
+                  id: data.id,
+                  lastName: data.user.lastName,
+                  name: data.user.name,
+                  phoneNumber: data.user.phoneNumber,
+                  status: data.ok,
+                })
+              );
+            }
+          }
+        }
       } else {
         localStorage.setItem("uid", JSON.stringify(""));
         localStorage.setItem("token", "");
@@ -205,6 +263,7 @@ export const useContactInfoStore = () => {
     visible,
     userCreatedDisabledInput,
     emailUserRegistered,
+    messageUserDataExist,
 
     //* Methods
     startSavingContactInfo,
