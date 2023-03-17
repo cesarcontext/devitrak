@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../apis/devitrackApi";
@@ -203,13 +203,14 @@ export const useContactInfoStore = () => {
                 provider,
               ]; 
               setMessageUserDataExist("Your data exists in our database due to last events")
-              const updateUserEventAttendeed = async() => {
+              const updateUserEventAttendeed = useMemo(async() => {
                 await devitrackApi.put(`/auth/${data.user.id}`, {
                   ...data.user,
                   provider: providerAddedToUserHistory,
                   eventSelected: eventAddedToUserHistory,
                 });
-              };
+              },[])
+
               setTimeout(() => {
                updateUserEventAttendeed();
               }, 5000)
