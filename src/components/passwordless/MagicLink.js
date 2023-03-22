@@ -1,10 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import "../../style/component/passwrodless/MagicLink.css";
 
 export const MagicLink = () => {
-  const { provider } = useSelector(state => state.providerEvent)
+  const { provider, eventSelected } = useSelector(state => state.providerEvent)
+  const { users } = useSelector(state => state.contactInfo)
+  const { listOfEvents } = useContactInfoStore
+  console.log("🚀 ~ file: MagicLink.js:11 ~ MagicLink ~ listOfEvents:", listOfEvents)
   /**
    * @description navigate - useNavigate function imported from react-router-dom library
    */
@@ -15,6 +19,11 @@ export const MagicLink = () => {
    * @returns {Promise<void>}
    */
   const handleLogin = async () => {
+    try {
+      
+    } catch (error) {
+      
+    }
     if(provider !== "Context Global") return navigate("/my_profile");
     
     return navigate("/checkout")
