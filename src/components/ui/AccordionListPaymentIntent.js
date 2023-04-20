@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { devitrackApi } from "../../apis/devitrackApi";
 import { Accordion } from "./Accordion";
 import "../../style/component/ui/AccordionListPaymentIntent.css";
+import { Link } from "react-router-dom";
 
 /**
 
@@ -37,7 +38,7 @@ Fetches saved Stripe payment intent data from the API
   let index = 0;
   const noDeletedAccount = 0;
 
-/**
+  /**
 
 Sorts the saved Stripe payment intent data and inserts it into an array
 @function
@@ -69,9 +70,9 @@ Renders the payment intent details and sets the state with the data
 */
   const renderPaymentIntentDetail = async () => {
     let replacement = [];
-    for (let index = 0; index < paymentIntentsToBeRetrieved.length; index++) {
+    for (let data of paymentIntentsToBeRetrieved) {
       const response = await devitrackApi.get(
-        `/stripe/payment_intents/${paymentIntentsToBeRetrieved[index]}`
+        `/stripe/payment_intents/${data}`
       );
       if (response) {
         replacement.push(response.data.paymentIntent);
@@ -133,14 +134,15 @@ Checks if the payment intent array contains data and returns a QR code with the 
     <>
       <div className="accordion-List-payment">
         <h2 className="accordion-header">
-          <p onClick={() => setOpenAccordion(!openAccordion)}>
-            YOUR ORDERS
-            {openAccordion !== false ? (
-              <i className="bi bi-chevron-up" />
-            ) : (
-              <i className="bi bi-chevron-down" />
-            )}
-          </p>
+          
+            <p onClick={() => setOpenAccordion(!openAccordion)}>
+              YOUR ORDERS
+              {openAccordion !== false ? (
+                <i className="bi bi-chevron-up" />
+              ) : (
+                <i className="bi bi-chevron-down" />
+              )}
+            </p>
         </h2>
         {openAccordion === true ? (
           <div className="accordion-collapse collapse show">
@@ -191,6 +193,7 @@ Checks if the payment intent array contains data and returns a QR code with the 
                     );
                   }
                 }
+                return null;
               })}
             </div>
             <div className="accordion-body">
@@ -258,7 +261,7 @@ Checks if the payment intent array contains data and returns a QR code with the 
               })}
             </div>
           </div>
-        ) : null}
+        ) : <Link to="/my_profile"><button className="btn btn-delete" style={{width:"fit-content"}}>RETURN</button></Link>}
       </div>
     </>
   );
