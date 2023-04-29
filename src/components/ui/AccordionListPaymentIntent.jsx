@@ -96,12 +96,6 @@ Sorts the saved Stripe payment intent data and inserts it into an array
   };
   retrievePaymentIntentInfo();
   let totalReceipts = paymentIntentsToBeRetrieved.length + infoDetail.length;
-
-  setTimeout(() => {
-    if(infoDetail.length < 1){
-      navigate("/my_profile")
-    }
-  },10000)
   return (
     <>
       {isLoading && <IconLoadingInsideComponent />}
