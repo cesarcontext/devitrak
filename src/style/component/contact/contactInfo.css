@@ -24,6 +24,8 @@
   }
   input {
     border-radius: 0px;
+    border: transparent;
+    outline: none;
   }
   input::placeholder {
     font-size: 15px;
@@ -53,6 +55,8 @@
   }
   input {
     border-radius: 0px;
+    border: transparent;
+    outline: none;
   }
   input::placeholder {
     font-size: 15px;
@@ -83,6 +87,8 @@
   }
   input {
     border-radius: 0px;
+    border: transparent;
+    outline: none;
   }
   input::placeholder {
     font-size: 15px;

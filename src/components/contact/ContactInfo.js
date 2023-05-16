@@ -1,29 +1,27 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { MagicLink } from "../passwordless/MagicLink";
-import { NavbarBottom } from "../ui/NavbarBottom";
 import { swalErrorMessage } from "../../helper/swalFireMessage";
 import { useContactInfoStore } from "../../hooks/useContactInfoStore";
 import { useStripeHook } from "../../hooks/useStripeHook";
-import { blockLinks } from "../../store/slices/uiSlice";
-import "../../style/component/contact/contactInfo.css";
 import { useNavigate } from "react-router-dom";
-
+import "../../style/component/contact/contactInfo.css";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
+import { NavbarBottom } from "../ui/NavbarBottom";
 
 /**
- * ContactInfo - 
- * @description component to collect user info 
+ * ContactInfo -
+ * @description component to collect user info
  * @component
  * @returns {HTMLBodyElement}
  */
 export const ContactInfo = () => {
   const { startSavingContactInfo, startCheckingUser, users, visibleButton } =
     useContactInfoStore();
-    const { provider } = useSelector(state => state.providerEvent)
+  const { provider } = useSelector((state) => state.providerEvent);
   const { response } = useSelector((state) => state.privacyPolicyUserResponse);
   const { stripeCustomer } = useStripeHook();
-  const dispatch = useDispatch();
-
 
   /**
    * form to create user
@@ -63,29 +61,29 @@ export const ContactInfo = () => {
   useEffect(() => {
     startCheckingUser(formValues.email);
   }, [formValues.email, startCheckingUser]);
-/**
- * validationName - useMemo
- * @callback validationName - the callback that handles the response.
- * @returns {String} 
- */
+  /**
+   * validationName - useMemo
+   * @callback validationName - the callback that handles the response.
+   * @returns {String}
+   */
   const validationName = useMemo(() => {
     return formValues.name.length > 0 ? "" : "is-invalid";
   }, [formValues.name]);
-/**
- * validationLastName - useMemo
- * @callback validationLastName - the callback that handles the response.
- * @returns {String} 
- */
+  /**
+   * validationLastName - useMemo
+   * @callback validationLastName - the callback that handles the response.
+   * @returns {String}
+   */
 
   const validationLastName = useMemo(() => {
     return formValues.lastName.length > 0 ? "" : "is-invalid";
   }, [formValues.lastName]);
 
   /**
- * validationEmail - useMemo
- * @callback validationEmail - the callback that handles the response.
- * @returns {String} 
- */
+   * validationEmail - useMemo
+   * @callback validationEmail - the callback that handles the response.
+   * @returns {String}
+   */
 
   const validationEmail = useMemo(() => {
     return formValues.email.length > 3 &&
@@ -99,17 +97,16 @@ export const ContactInfo = () => {
   }, [formValues.email]);
 
   /**
- * validationPhoneNumber - useMemo
- * @callback validationPhoneNumber - the callback that handles the response.
- * @returns {String} 
- */
+   * validationPhoneNumber - useMemo
+   * @callback validationPhoneNumber - the callback that handles the response.
+   * @returns {String}
+   */
 
   const validationPhoneNumber = useMemo(() => {
     return formValues.phoneNumber.length > 4 ? "" : "is-invalid";
   }, [formValues.phoneNumber]);
 
   const magicLinkParam = formValues.email;
-
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
@@ -127,29 +124,24 @@ export const ContactInfo = () => {
       return swalErrorMessage("Phone number must be provided");
     }
 
-/**
- * hooks imported to pass values needed to create user in database
- */
+    /**
+     * hooks imported to pass values needed to create user in database
+     */
     await startSavingContactInfo({
       ...formValues,
       privacyPolicy: true,
     });
 
     /**
- * hooks imported to pass values needed to create customer in stripe
- */
-    await stripeCustomer(formValues);
-    if(provider !== "Context Global") return navigate("/my_profile");
-    
-    return navigate("/checkout")
+     * hooks imported to pass values needed to create customer in stripe
+     */
+    if (provider === "Context Global") {
+      await stripeCustomer(formValues);
+    }
+    if (provider !== "Context Global") return navigate("/my_profile");
+
+    return navigate("/checkout");
   };
-
-  if (users.status === true) {
-    dispatch(blockLinks("auto"));
-  } else {
-    dispatch(blockLinks("auto"));
-  }
-
 
   return (
     <>
@@ -187,64 +179,74 @@ export const ContactInfo = () => {
                    */}
                   <MagicLink magicLinkParam={magicLinkParam} />
                 </div>
-              ) : null}
-              <div className="container-input">
-                <div className="form-outline">
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="name"
-                    value={formValues.name}
-                    className={`form-control ${validationName} form-control-lg`}
-                    placeholder="First name"
-                    onChange={onInputCHange}
-                    minLength={1}
-                  />
-                </div>
-              </div>
-              <div className="container-input">
-                <div className="form-outline">
-                  <input
-                    type="text"
-                    id="lastName"
-                    className={`form-control ${validationLastName} form-control-lg`}
-                    placeholder="Last name"
-                    onChange={onInputCHange}
-                    name="lastName"
-                    value={formValues.lastName}
-                    minLength={1}
-                  />
-                </div>
-              </div>
-              <div className="container-input">
-                <div className="form-outline">
-                  <input
-                    type="text"
-                    className={`form-control form-control-lg`}
-                    id="groupName"
-                    placeholder="Group name"
-                    onChange={onInputCHange}
-                    name="groupName"
-                    value={formValues.groupName}
-                    minLength={3}
-                  />
-                </div>
-              </div>
-              <div className="container-input">
-                <div className="form-outline">
-                  <input
-                    type="tel"
-                    id="phoneNumber"
-                    className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
-                    placeholder="Phone number | example: 100000000 or 5500000000000"
-                    onChange={onInputCHange}
-                    name="phoneNumber"
-                    value={formValues.phoneNumber}
-                    maxLength={15}
-                    minLength={5}
-                  />
-                </div>
-              </div>
+              ) : (
+                <>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="name"
+                        value={formValues.name}
+                        className={`form-control ${validationName} form-control-lg`}
+                        placeholder="First name"
+                        onChange={onInputCHange}
+                        minLength={1}
+                      />
+                    </div>
+                  </div>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        type="text"
+                        id="lastName"
+                        className={`form-control ${validationLastName} form-control-lg`}
+                        placeholder="Last name"
+                        onChange={onInputCHange}
+                        name="lastName"
+                        value={formValues.lastName}
+                        minLength={1}
+                      />
+                    </div>
+                  </div>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <input
+                        type="text"
+                        className={`form-control form-control-lg`}
+                        id="groupName"
+                        placeholder="Group name"
+                        onChange={onInputCHange}
+                        name="groupName"
+                        value={formValues.groupName}
+                        minLength={3}
+                      />
+                    </div>
+                  </div>
+                  <div className="container-input">
+                    <div className="form-outline">
+                      <PhoneInput
+                        placeholder="Enter phone number"
+                        value={formValues.phoneNumber}
+                        onChange={onInputCHange}
+                        className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                         id="phoneNumber"
+                      />
+                      {/* <input
+                        type="tel"
+                        id="phoneNumber"
+                        className={`form-control ${validationPhoneNumber} form-control-lg phoneNumber`}
+                        placeholder="Phone number | example: 100000000 or 5500000000000"
+                        onChange={onInputCHange}
+                        name="phoneNumber"
+                        value={formValues.phoneNumber}
+                        maxLength={15}
+                        minLength={5}
+                      /> */}
+                    </div>
+                  </div>
+                </>
+              )}
             </form>
           </div>
         </div>
