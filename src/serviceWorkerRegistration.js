@@ -55,7 +55,10 @@ export function register(config) {
 
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
-    .register(swUrl)
+    .register(swUrl, {
+      scope: "./",
+      updateViaCache: "none",
+    })
     .then((registration) => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
@@ -65,12 +68,14 @@ function registerValidSW(swUrl, config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === "installed") {
             if (navigator.serviceWorker.controller) {
-              // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
-              // content until all client tabs are closed.
+              // Unregister the previous service worker
+              navigator.serviceWorker.controller.unregister();
+
+              // Register the updated service worker with network-only strategy
+              navigator.serviceWorker.register(swUrl, { scope: "./" });
+
               console.log(
-                "New content is available and will be used when all " +
-                  "tabs for this page are closed. See https://cra.link/PWA."
+                "New content is available. Please refresh the page to see the latest version."
               );
 
               // Execute callback
@@ -78,10 +83,8 @@ function registerValidSW(swUrl, config) {
                 config.onUpdate(registration);
               }
             } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
-              console.log("Content is cached for offline use.");
+              // Service worker has been installed for the first time
+              console.log("Service worker installed successfully.");
 
               // Execute callback
               if (config && config.onSuccess) {
