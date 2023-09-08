@@ -1,0 +1,32 @@
+.paper-bottom-navigation {
+  display: flex;
+  padding: 8px 16px;
+  min-height: 15dvh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* gap: 24px; */
+  flex-shrink: 0;
+  border-radius: 20px 20px 0px 0px;
+  background: var(--blue-dark-800, #0040c1);
+  box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.05);
+}
+.bottom-navigation-parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  align-self: stretch;
+}
+
+.Mui-selected {
+  display: flex;
+  padding: 8px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex: 1 0 0;
+  border-radius: 8px;
+  background: var(--blue-dark-700, #004eeb);
+}

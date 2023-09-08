@@ -1,0 +1,16 @@
+.css-164jw3e-MuiBottomNavigation-root .bottom-navigation {
+  -ms-flex-pack: center;
+  -ms-flex-direction: column;
+  -webkit-box-align: flex-start;
+  -ms-flex-align: flex-start;
+  display: flex;
+  width: 98%;
+  /* height: 10dvh; */
+  padding: 32px 0px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 20px 20px 0px 0px;
+  background: var(--base-white, #fff);
+  box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.05);
+}

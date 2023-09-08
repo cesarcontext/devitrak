@@ -15,7 +15,7 @@ import { useDeviceCount } from "../../hooks/useDeviceCountStore";
 export const StripeCheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const { device } = useDeviceCount()
+  const { device } = useDeviceCount();
 
   /**
    * message to display based on promise response
@@ -127,7 +127,11 @@ export const StripeCheckoutForm = () => {
         id="submit"
       >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : `Authorize $${device * 200}`}
+          {isLoading ? (
+            <div className="spinner" id="spinner"></div>
+          ) : (
+            `Authorize $${device * 200}`
+          )}
         </span>
       </button>
       {message && <div id="payment-message">{message}</div>}

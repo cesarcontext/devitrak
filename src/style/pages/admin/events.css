@@ -1,8 +1,0 @@
-.events-display{
-    display: grid;
-    gap: 5px;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    width: 70vw;
-    margin: 0 auto;
-}

@@ -1,0 +1,167 @@
+.devitrak-introduction{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.background{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    overflow: hidden;
+}
+
+.background .logo{
+    width: 150px;
+    height:150px;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    animation: scale 3s ease forwards;
+    animation-delay: 1.7s;
+}
+
+.background .logo .brush1{
+    width: 50px;
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+    animation:height 0.5s ease forwards;
+    animation-delay: 4s;
+}
+
+.background .logo .brush1 .color{
+    width: 100%;
+    /* height: 0%; */
+    background-color: rgb(16, 0, 156);
+    position: relative;
+    z-index: 2;
+     animation: moveup 0.5s ease forwards;
+    animation-delay: 1s;
+}
+
+.background .logo .brush2{
+    width: 50px;
+    height: 220px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.background .logo .brush2 .color2{
+    width: 100%;
+    height: 0%;
+    background-color: rgb(16, 0, 156);
+    animation: moveup 0.5s ease forwards;
+    animation-delay: 1s;
+}
+
+.background .logo .brush3{
+    width: 50px;
+    height: 0;
+    position: absolute;
+    z-index: 2;
+    transform: skew(24.4deg);
+    transform-origin: top left;
+    background: rgb(16, 0, 156);;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.33);
+    animation: moveup 0.5s ease forwards;
+    animation-delay: 0.5s;
+}
+
+.lines{
+    width: max-content;
+    height: 100%;
+    display: none;
+    justify-content: space-evenly;
+    position: absolute;
+    z-index: 0;
+}
+
+.lines .line{
+    width: 1px;
+    height: 100%;
+    background: red;
+    margin-right: 1px;
+    animation: margin 2s linear forwards, bgcolor 0.2s linear forwards;
+    animation-delay: 0.2s;
+}
+
+
+/* forward animation starts */
+
+@keyframes moveup{
+    from {
+        height: 0;
+    }to{
+        height: 220px;
+    }
+}
+
+/* reverse animation */
+
+@keyframes movedown {
+    from {
+        height: 220px;
+    }
+    to {
+        height: 0;
+    }
+}
+
+
+/* main animation lines starts  */
+
+@keyframes opacity {
+    0%{
+        opacity: 1;
+    }100%{
+        opacity: 0;
+    }
+}
+
+@keyframes margin {
+    0%{
+        width: 1px;
+        margin-right: 1px;
+        box-shadow: none;
+    }100%{
+        width: 40px;
+        margin-right: var(--m);
+        box-shadow: 0 0 5px rgb(172, 172, 172), 0 0 50px var(--c);
+    }
+}
+
+
+@keyframes bgcolor{
+    0%{
+        background:red
+    }30%{
+        background: radial-gradient(circle, rgba(255, 0, 0, 1) 75%, rgba(0,0 ,0 0.545) 100%);
+    }100%{
+        background: var(--c);
+    }
+}
+
+@keyframes height {
+    0%{
+        width: 50px;
+        height: 220px;
+    }100%{
+        width: max-content;
+        height: 100vh;
+    }
+}
+
+
+@keyframes scale{
+    0%{
+        transform: scale(1);
+    }100%{
+        transform: scale(1.5);
+    }
+}

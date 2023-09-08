@@ -1,0 +1,12 @@
+.grid-parent-logo{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-self: stretch;
+}
+.img-logo-banner {
+  width: 60%;
+  object-fit: contain;
+  /* mix-blend-mode: color-burn; */
+}

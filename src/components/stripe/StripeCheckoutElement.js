@@ -15,7 +15,7 @@ const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
  * @param {String} clientSecret -secret client generate from server 
  * @returns {HTMLBodyElement}
  */
-export const StripeCheckoutElement = ({ clientSecret }) => {
+const StripeCheckoutElement = ({ clientSecret }) => {
   /**
    * @description style and rules for check out element where credit card info will be collected
    * @type {Object} 
@@ -85,3 +85,5 @@ export const StripeCheckoutElement = ({ clientSecret }) => {
     </>
   );
 };
+
+export default StripeCheckoutElement

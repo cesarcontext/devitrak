@@ -1,0 +1,341 @@
+//*table Attendees component
+          {/* <table className="table">
+            <thead
+              style={{
+                position: "sticky",
+                top: "0",
+                background: "white",
+              }}
+            >
+              <tr>
+                <th scope="col">
+                  Name{" "}
+                  {ascendet === true ? (
+                    <i
+                      onClick={() => setAscendet(!ascendet)}
+                      className="bi bi-sort-down"
+                    />
+                  ) : (
+                    <i
+                      onClick={() => setAscendet(!ascendet)}
+                      className="bi bi-sort-up"
+                    />
+                  )}
+                </th>
+                <th scope="col">Email </th>
+                <th scope="col">Details</th>
+              </tr>
+            </thead>
+            {ascendet === true &&
+              users
+                ?.sort((a, b) => a.name.localeCompare(b.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    background = "#ffff";
+                  }
+                  if (item % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+                  if (user.eventSelected === choice) {
+                    return (
+                      <tbody key={user.id}>
+                        <tr style={{ background: `${background}` }}>
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <Link to={`/admin/attendee/:${user.id}`}>
+                              <button
+                                style={{
+                                  width: "100%",
+                                }}
+                                className="btn btn-detail"
+                                onClick={() => {
+                                  setSendObjectIdUser(user.id);
+                                  setUserDetail(user);
+                                }}
+                              >
+                                Details <i className="bi bi-caret-right" />{" "}
+                              </button>
+                            </Link>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  }
+                })}
+            {ascendet === false &&
+              users
+                ?.sort((a, b) => b.name.localeCompare(a.name))
+                ?.map((user, item) => {
+                  let background;
+                  if (item === 0) {
+                    return (background = "#ffff");
+                  }
+                  if (item % 2 === 0) {
+                    return (background = "#F1F6F9");
+                  }
+                  if (user.eventSelected === choice) {
+                    return (
+                      <tbody key={user.id}>
+                        <tr style={{ background: `${background}` }}>
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <Link to={`/admin/attendee/:${user.id}`}>
+                              <button
+                                style={{
+                                  width: "100%",
+                                }}
+                                className="btn btn-detail"
+                                onClick={() => {
+                                  setSendObjectIdUser(user.id);
+                                  setUserDetail(user);
+                                }}
+                              >
+                                Details <i className="bi bi-caret-right" />{" "}
+                              </button>{" "}
+                            </Link>
+                          </td>
+                        </tr>
+                      </tbody>
+                    );
+                  }
+                })}
+          </table> */}
+
+
+//receiver stock page        {/* <div
+          style={{ overflow: "auto" }}
+          className="container-device-info-table"
+        >
+          <table className="table">
+            <caption></caption>
+            <thead
+              style={{
+                position: "sticky",
+                top: "0",
+                background: "white",
+              }}
+            >
+              <tr>
+                <th scope="col">
+                  DEVICE S/N{" "}
+                  {sortUp === true ? (
+                    <i
+                      onClick={() => {
+                        setSortUp(!sortUp);
+                        setSortActivity(null);
+                      }}
+                      className="bi bi-sort-down"
+                    />
+                  ) : (
+                    <i
+                      onClick={() => {
+                        setSortUp(!sortUp);
+                        setSortActivity(null);
+                      }}
+                      className="bi bi-sort-up"
+                    />
+                  )}
+                </th>
+                <th scope="col">ACTIVITY </th>
+                <th scope="col">DETAIL</th>
+              </tr>
+            </thead>
+            {searchTerm === "" &&
+              sortUp === true &&
+              listOfReceiver
+                ?.sort((a, b) => a.device.localeCompare(b.device))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    <tbody key={receiver.id}>
+                      <tr style={{ background: `${background}` }}>
+                        <td>{receiver.device}</td>
+                        <td>{receiver.activity}</td>
+                        <td>
+                          <button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail <i className="bi bi-caret-right" />{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+
+            {searchTerm === "" &&
+              sortUp === false &&
+              listOfReceiver
+                ?.sort((a, b) => b.device.localeCompare(a.device))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    <tbody key={receiver.id}>
+                      <tr style={{ background: `${background}` }}>
+                        <td>{receiver.device}</td>
+                        <td>{receiver.activity}</td>
+                        <td>
+                          <button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail <i className="bi bi-caret-right" />{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+            {searchTerm === "" &&
+              sortUp === null &&
+              sortActivity === true &&
+              listOfReceiver
+                ?.sort((a, b) => a.activity.localeCompare(b.activity))
+                .map((receiver, index) => {
+                  let background;
+                  if (index === 0) {
+                    background = "#ffff";
+                  }
+                  if (index % 2 === 0) {
+                    background = "#F1F6F9";
+                  }
+
+                  return (
+                    <tbody key={receiver.id}>
+                      <tr style={{ background: `${background}` }}>
+                        <td>{receiver.device}</td>
+                        <td>{receiver.activity}</td>
+                        <td>
+                          <button
+                            className="btn btn-detail"
+                            style={{ width: "100%" }}
+                            onClick={() => {
+                              setReceiverId(receiver.id);
+                              setReceiverDetail(receiver.device);
+                            }}
+                          >
+                            Detail <i className="bi bi-caret-right" />{" "}
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+
+            {searchTerm !== "" &&
+              filteredResult.map((receiver) => {
+                return (
+                  <tbody key={receiver.id}>
+                    <tr>
+                      <td>{receiver.device}</td>
+                      <td>{receiver.activity}</td>
+                      <td>
+                        <button
+                          className="btn btn-detail"
+                          style={{ width: "100%" }}
+                          onClick={() => {
+                            setReceiverId(receiver.id);
+                            setReceiverDetail(receiver.device);
+                          }}
+                        >
+                          Detail <i className="bi bi-caret-right" />{" "}
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                );
+              })}
+          </table>
+        </div> */}
+
+
+// useContact => checkUser function          
+ if (prov === provider) {
+              localStorage.setItem("uid", data.user.id);
+              localStorage.setItem("token", data.token);
+              setToken(data.token);
+              setEmailUserRegistered(data.user.email);
+              dispatch(
+                onCheckContact({
+                  category: data.user.category,
+                  email: data.user.email,
+                  groupName: data.user.groupName,
+                  id: data.id,
+                  lastName: data.user.lastName,
+                  name: data.user.name,
+                  phoneNumber: data.user.phoneNumber,
+                  status: data.ok,
+                })
+              );
+            } else {
+              const response = devitrackApi.put(`/auth/${data.user.id}`, {
+                ...data.user,
+                provider: addingProviderList,
+                eventSelected: addingEventList,
+              });
+              if (response) {
+                const { user } = response.data;
+                localStorage.setItem("uid", response.data.user.id);
+                localStorage.setItem("token", response.data.token);
+                dispatch(
+                  onCheckContact({
+                    category: response.data.user.category,
+                    email: response.data.user.email,
+                    groupName: response.data.user.groupName,
+                    id: response.data.id,
+                    lastName: response.data.user.lastName,
+                    name: response.data.user.name,
+                    phoneNumber: response.data.user.phoneNumber,
+                    status: response.data.ok,
+                  })
+                );
+              }
+            }
+
+            //config-overrides.js 
+           const webpack = require('webpack'); 
+module.exports = function override(config) { 
+		const fallback = config.resolve.fallback || {}; 
+		Object.assign(fallback, { 
+    	"crypto": require.resolve("crypto-browserify"), 
+      "stream": require.resolve("stream-browserify"), 
+      "assert": require.resolve("assert"), 
+      "http": require.resolve("stream-http"), 
+      "https": require.resolve("https-browserify"), 
+      "os": require.resolve("os-browserify"), 
+      "url": require.resolve("url") 
+      }) 
+   config.resolve.fallback = fallback; 
+   config.plugins = (config.plugins || []).concat([ 
+   	new webpack.ProvidePlugin({ 
+    	process: 'process/browser', 
+      Buffer: ['buffer', 'Buffer'] 
+    }) 
+   ]) 
+   return config; }

@@ -5,22 +5,26 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { store } from "./store/Store";
+import { store, persistor } from "./store/store.jsx";
 import { PersistGate } from "redux-persist/integration/react";
-import { persistStore } from "redux-persist";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import "./index.css";
 
-const persistor = persistStore(store);
-
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
-        <BrowserRouter>
-          <PersistGate persistor={persistor}>
+      <BrowserRouter>
+        <PersistGate persistor={persistor}>
+          <QueryClientProvider client={queryClient}>
             <App />
-          </PersistGate>
-        </BrowserRouter>
+          </QueryClientProvider>
+        </PersistGate>
+      </BrowserRouter>
     </React.StrictMode>
   </Provider>
 );

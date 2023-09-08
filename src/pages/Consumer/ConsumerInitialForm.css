@@ -1,0 +1,13 @@
+.phone-input-form{
+    border: solid 1px rgba(0, 0, 0, 0.23);
+    border-radius: 12px;
+    padding: 16.5px 14px;
+    margin: 0.1rem auto 0rem;
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+.PhoneInputInput{
+    border: none;
+    outline: none;
+}

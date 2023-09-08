@@ -1,15 +1,10 @@
 import React from "react";
-import { AdminRoutes } from "./routes/AdminRoutes";
-import { UserRoutes } from "./routes/UserRoutes";
+import AuthenticatedRoutes from "./route/AuthenticatedRoutes";
 import "./App.css";
 
-
-function App() {  
+function App() {
   return (
-    <div className="App">
-      <AdminRoutes />
-      <UserRoutes />
-    </div>
+   <AuthenticatedRoutes />
   );
 }
 
