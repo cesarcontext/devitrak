@@ -15,6 +15,8 @@ import { onAddArticleInfo } from "../../store/slides/articleHandlerSlide";
 import DevitrakLogo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
 import { useState } from "react";
+import { Icon } from "@iconify/react";
+const { Meta } = Card;
 const MainPage = () => {
   const { eventInfoDetail } = useSelector((state) => state.event);
   const [search, setSearch] = useState("");
@@ -34,6 +36,18 @@ const MainPage = () => {
       return find;
     };
 
+    const dataToRender = () => {
+      if (search === "") {
+        return findArticlesPerEvent();
+      } else {
+        const searchFound = findArticlesPerEvent()?.filter(
+          (article) =>
+            article.title.toLowerCase().match(search) ||
+            article.body.toLowerCase().match(search)
+        );
+        return searchFound;
+      }
+    };
     const sanitizedData = (props) => ({
       __html: DOMPurify.sanitize(props),
     });
@@ -72,13 +86,13 @@ const MainPage = () => {
             </Typography>
           </Grid>
           <Grid
-              display={"flex"}
-              alignItems={"center"}
-              alignSelf={"stretch"}
-              justifyContent={"center"}
-              item
-              xs={10}
-              margin={"1rem auto"}
+            display={"flex"}
+            alignItems={"center"}
+            alignSelf={"stretch"}
+            justifyContent={"center"}
+            item
+            xs={10}
+            margin={"1rem auto"}
           >
             <Typography
               color={"var(--gray-600, #475467)"}
@@ -130,7 +144,7 @@ const MainPage = () => {
             xs={10}
           >
             {findArticlesPerEvent() || findArticlesPerEvent()?.length > 0 ? (
-              findArticlesPerEvent()?.map((article, index) => {
+              dataToRender()?.map((article, index) => {
                 return (
                   <>
                     <Card
@@ -147,6 +161,13 @@ const MainPage = () => {
                       }}
                       cover={
                         <Grid container>
+                          <Grid
+                            display={"flex"}
+                            alignitems={"center"}
+                            justifyContent={"flex-end"}
+                            item
+                            xs={12}
+                          ></Grid>
                           <Grid
                             display={"flex"}
                             alignitems={"center"}
@@ -190,32 +211,44 @@ const MainPage = () => {
                             <Button
                               onClick={() => articleClicked(article)}
                               style={{
-                                border: "solid 1px var(--gray-900, #f0f0f0)",
+                                border: "transparent",
                                 margin: "0 0 0 0.5rem",
                               }}
                             >
                               <Typography
                                 textTransform={"none"}
-                                color={"var(--gray-900, #101828)"}
-                                textAlign={"center"}
+                                color={"var(--blue-dark-700, #004EEB)"}
+                                textAlign={"left"}
                                 /* Display xs/Semibold */
                                 fontFamily={"Inter"}
-                                fontSize={"12px"}
+                                fontSize={"16px"}
                                 fontStyle={"normal"}
-                                fontWeight={500}
-                                lineHeight={"18px"}
+                                fontWeight={600}
+                                lineHeight={"24px"}
                                 style={{
                                   textWrap: "balance",
                                 }}
                               >
-                                More
+                                Read post{" "}
+                                <Icon
+                                  icon="iconoir:arrow-br"
+                                  color="#6941c6"
+                                  width="20"
+                                  height="20"
+                                  rotate={3}
+                                />
                               </Typography>
                             </Button>
                           </Grid>
                         </Grid>,
                       ]}
                     >
-                      {/* <Meta title={article.title} /> */}
+                      <Meta
+                        style={{
+                          margin: "0 auto 0.5rem",
+                        }}
+                        title={article.title}
+                      />
                       <div
                         dangerouslySetInnerHTML={sanitizedData(article.body)}
                       ></div>

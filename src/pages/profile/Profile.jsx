@@ -12,7 +12,10 @@ import { useForm } from "react-hook-form";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import "./Profile.css";
 import { useNavigate } from "react-router-dom";
-import { persistor } from "../../store/store";
+import { onResetConsumerInfo } from "../../store/slides/consumerSlide";
+import { onHardReset } from "../../store/slides/deviceSlides";
+import { onResetCustomerStripeInfo } from "../../store/slides/stripeSlide";
+import { onResetArticleInfo } from "../../store/slides/articleHandlerSlide";
 const Profile = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const [editSection, setEditSection] = useState(true);
@@ -39,7 +42,10 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    persistor.purge();
+    dispatch(onResetArticleInfo())
+    dispatch(onResetConsumerInfo());
+    dispatch(onHardReset());
+    dispatch(onResetCustomerStripeInfo());
     navigate("/");
   };
   return (

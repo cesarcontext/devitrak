@@ -33,6 +33,13 @@ const deviceSlice = createSlice({
     onAddNewOrderToHistory: (state, { payload }) => {
       state.historyOrder.unshift(payload);
     },
+    onHardReset:(state) => {
+      state.singleDeviceSelection = []
+      state.multipleDeviceSelection = []
+      state.refresh = undefined
+      state.historyOrder = []
+      state.currentOrder = []
+    }
   },
 });
 
@@ -46,6 +53,7 @@ export const {
   onUpdateData,
   onAddNewOrder,
   onAddNewOrderToHistory,
+  onHardReset,
 } = deviceSlice.actions;
 
 export default deviceSlice.reducer;

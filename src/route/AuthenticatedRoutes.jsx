@@ -32,10 +32,13 @@ const AuthenticatedRoutes = () => {
       <header>
         <UpperBanner />
       </header>
-      <main>
-        <Suspense
-          fallback={<LoadingPage />}
-        >
+      <main
+        style={{
+          minHeight: "100svh",
+          minHeight: "100dvh",
+        }}
+      >
+        <Suspense fallback={<LoadingPage />}>
           <Routes>
             <Route path="/" element={<Home />} />{" "}
             <Route path="/initial-form" element={<ConsumerInitialForm />} />{" "}
@@ -55,7 +58,12 @@ const AuthenticatedRoutes = () => {
           </Routes>{" "}
         </Suspense>
       </main>
-      <NavigationBottom />
+      <footer  style={{
+         height: "calc(15svh - 100svh)",
+         height: "calc(15dvh - 100dvh)",
+        }}>
+        <NavigationBottom />
+      </footer>
     </>
   );
 };

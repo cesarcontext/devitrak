@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import {
-  Button,
+  // Button,
   InputLabel,
   OutlinedInput,
   Typography,
@@ -20,7 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
-
+import { nanoid } from "@reduxjs/toolkit";
+import { Button } from "antd";
 const schema = yup
   .object({
     firstName: yup.string().required("first name is required"),
@@ -31,7 +32,15 @@ const schema = yup
       .required("email is required"),
   })
   .required();
+
+const loadingStatus = {
+  idle: false,
+  error: false,
+  loading: true,
+  success: false,
+};
 const ConsumerInitialForm = () => {
+  const [loadingState, setLoadingState] = useState(loadingStatus.idle);
   const {
     register,
     handleSubmit,
@@ -44,7 +53,6 @@ const ConsumerInitialForm = () => {
   const [contactPhoneNumber, setContactPhoneNumber] = useState("");
   const [groupName, setGroupName] = useState("");
   const { choice, company, contactInfo } = useSelector((state) => state.event);
-  const { browser } = useSelector((state) => state.helper);
   const emailSentRef = useRef(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,41 +75,27 @@ const ConsumerInitialForm = () => {
     };
     checkIfConsumerExists();
 
-    // const assignBrowserToUrl = () => {
-    //   if (browser.match("Safari")) {
-    //     return "safari:";
-    //   }
-    //   if (browser.match("Chrome")) {
-    //     return "googlechrome:";
-    //   }
-    //   if (browser.match("Edge")) {
-    //     return "microsoft-edge:";
-    //   }
-    //   if (browser.match("Opera")) {
-    //     return "opera:";
-    //   }
-    //   if (browser.match("Firefox")) {
-    //     return "firefox:";
-    //   }
-    //   return;
-    // };
- 
     const submitEmailToLoginForExistingConsumer = async () => {
       emailSentRef.current = true;
+      setLoadingState(loadingStatus.loading);
+      const eventLinkFormat = choice.replace(" ", "%20");
+      const companyLinkFormat = company.replace(" ", "%20");
       const parametersNeededToLoginLink = {
         consumer: checkIfConsumerExists(),
-        link: `https://app.devitrak.net/authentication?event=${choice.replace(
-          /%20/g,
-          " "
-        )}&company=${company.replace(/%20/g, " ")}&uid=${
+        link: `https://app.devitrak.net/authentication?uis=${nanoid(
+          250
+        )}&event=${eventLinkFormat}&company=${companyLinkFormat}&uid=${
           checkIfConsumerExists().id
-        }`,
+        }&hus=${nanoid(50)}&pmm=${nanoid(30)}`,
         contactInfo: contactInfo.email,
       };
-      await devitrackApi.post(
+      const respo = await devitrackApi.post(
         "/nodemailer/login-existing-consumer",
         parametersNeededToLoginLink
       );
+      if (respo) {
+        setLoadingState(loadingStatus.success);
+      }
     };
 
     const submitNewConsumerInfo = async (data) => {
@@ -146,6 +140,7 @@ const ConsumerInitialForm = () => {
       }
     };
     const resetForm = () => {
+      emailSentRef.current = false;
       return setValue("email", "");
     };
     return (
@@ -292,6 +287,7 @@ const ConsumerInitialForm = () => {
                   <>
                     <Grid item xs={12} margin={"1rem 0"}>
                       <Button
+                        loading={loadingState}
                         onClick={() => submitEmailToLoginForExistingConsumer()}
                         style={{
                           display: "flex",

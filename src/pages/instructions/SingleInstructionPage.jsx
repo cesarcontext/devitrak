@@ -73,7 +73,7 @@ const SingleInstructionPage = () => {
           key={article?.title}
           style={{
             marginTop: 16,
-            marginBottom:"15dvh",
+            marginBottom: "15svh",
             width: "100%",
             whiteSpace: "wrap",
             overflow: "hidden",

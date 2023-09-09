@@ -38,6 +38,5 @@ export const detector = () => {
 
     return match.join(" ");
   })();
-  console.log(navigator.saysWho);
   return navigator.saysWho;
 };

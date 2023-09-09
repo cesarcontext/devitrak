@@ -160,7 +160,7 @@ const OrderFormat = (info) => {
             fontWeight={400}
             lineHeight={"20px"}
             textAlign={"center"}
-            textTransform={"capitalize"}
+            textTransform={"none"}
           >
             Order number: {info.info.paymentIntent}
           </Typography>

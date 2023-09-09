@@ -9,11 +9,14 @@ const consumerSlice = createSlice({
     onAddConsumerInfo: (state, { payload }) => {
       state.consumer = payload;
     },
+    onResetConsumerInfo:(state)=>{
+      state.consumer = undefined
+    }
   },
 });
 
 // action creators are generated for each case reducer function
 
-export const { onAddConsumerInfo } = consumerSlice.actions;
+export const { onAddConsumerInfo, onResetConsumerInfo } = consumerSlice.actions;
 
 export default consumerSlice.reducer;

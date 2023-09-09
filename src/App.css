@@ -1,0 +1,13 @@
+/* 
+footer {
+    display: flex;
+    width: 100%;
+    padding: 8px 16px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    border-radius: 20px 20px 0px 0px;
+    background: var(--blue-dark-800, #0040c1);
+    box-shadow: 0px -4px 4px 0px rgba(0, 0, 0, 0.05);
+  } */

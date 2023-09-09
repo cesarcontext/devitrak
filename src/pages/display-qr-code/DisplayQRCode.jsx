@@ -4,82 +4,89 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../devitrakApi";
 import { Grid, Typography } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
-  const { currentOrder } = useSelector(
-    (state) => state.deviceHandler
-  );
-  const { choice, company, eventInfoDetail } = useSelector(
-    (state) => state.event
-  );
+  const { currentOrder } = useSelector((state) => state.deviceHandler);
+  const { choice, company } = useSelector((state) => state.event);
+  const [qrCodeValue, setQrCodeValue] = useState(undefined);
   const paymentIntentValueRef = useRef(null);
-  const savingPaymentIntentRef = useRef(0);
-
-  const savingStripePaymentIntentMutation = useMutation({
-    mutationFn: (stripeTransactionProfile) =>
-      devitrackApi.post(
-        "/stripe/stripe-transaction-no-regular-user",
-        stripeTransactionProfile
-      ),
-  });
-  const savingTransactionPaymentIntentMutation = useMutation({
-    mutationFn: (transactionProfile) =>
-      devitrackApi.post("/stripe/save-transaction", transactionProfile),
-  });
-
+  const nanoGenerated = useRef(false);
   const foundTotalDeviceNumber = () => {
-    const number = currentOrder?.map((total) =>
-      parseInt(total.deviceNeeded)
-    );
+    const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
   };
   foundTotalDeviceNumber();
-  const generatePaymentIntentForNoDepositRequired = useCallback(async () => {
-    if (savingPaymentIntentRef.current < 1) {
-      const max = 918273645;
-      const transactionGenerated = "pi_" + nanoid(12);
-      paymentIntentValueRef.current = transactionGenerated;
+  const generatePaymentIntentForNoDepositRequired = useCallback(
+    async (props) => {
       const stripeTransactionProfile = {
-        paymentIntent: transactionGenerated,
-        clientSecret:
-          transactionGenerated +
-          "_client_secret_" +
-          Math.floor(Math.random() * max),
+        paymentIntent: props.paymentIntentGenerated,
+        clientSecret: props.clientSecretGenerated,
         device: foundTotalDeviceNumber(),
-        user: "63c05af38e35e500379b5bdd",
+        user: consumer.id,
         provider: company,
         eventSelected: choice,
       };
-      const transactionProfile = {
-        paymentIntent: transactionGenerated,
-        clientSecret:
-          transactionGenerated +
-          "_client_secret_" +
-          Math.floor(Math.random() * max),
-        device: currentOrder,
-        consumerInfo: consumer,
-        provider: company,
-        eventSelected: choice,
-        date: new Date()
-      };
-      savingTransactionPaymentIntentMutation.mutate(transactionProfile);
-
-      // savingStripePaymentIntentMutation.mutate(stripeTransactionProfile);
-      // if (
-      //   (savingStripePaymentIntentMutation.isIdle ||
-      //     savingStripePaymentIntentMutation.isSuccess) &&
-      //   !savingStripePaymentIntentMutation.isError
-      // ) {
-      //   savingTransactionPaymentIntentMutation.mutate(transactionProfile);
-      // }
-      savingPaymentIntentRef.current = 1;
-    }
+      await devitrackApi.post(
+        "/stripe/stripe-transaction-no-regular-user",
+        stripeTransactionProfile
+      );
+    },
+    []
+  );
+  const generateTransactionInfoDetail = useCallback(async (props) => {
+    const transactionProfile = {
+      paymentIntent: props.paymentIntentGenerated,
+      clientSecret: props.clientSecretGenerated,
+      device: currentOrder,
+      consumerInfo: consumer,
+      provider: company,
+      eventSelected: choice,
+      date: new Date(),
+    };
+    await devitrackApi.post("/stripe/save-transaction", transactionProfile);
   }, []);
+
+  const propsToPass = {
+    paymentIntentGenerated: 0,
+    clientSecretGenerated: 0,
+  };
+
   useEffect(() => {
     const controller = new AbortController();
-    generatePaymentIntentForNoDepositRequired();
+    const generator = async () => {
+      if (nanoGenerated.current === false) {
+        propsToPass.paymentIntentGenerated = "pi_" + nanoid(12);
+        propsToPass.clientSecretGenerated = `_client_secret=${nanoid(12)}`;
+        nanoGenerated.current = true;
+      }
+      paymentIntentValueRef.current = propsToPass.paymentIntentGenerated;
+      await generatePaymentIntentForNoDepositRequired(propsToPass);
+      await generateTransactionInfoDetail(propsToPass);
+    };
+    generator();
+    const checkAndRemove = async () => {
+      const savedStripeTransactions = await devitrackApi.get("/admin/users");
+      const savedTransactions = await devitrackApi.get("/stripe/transaction");
+      const check =
+        await savedStripeTransactions.data.stripeTransactions.filter(
+          (transaction) =>
+            transaction.paymentIntent === propsToPass.paymentIntentGenerated
+        );
+      const checkTransactions = await savedTransactions.data.list.filter(
+        (transaction) =>
+          transaction.paymentIntent === propsToPass.paymentIntentGenerated
+      );
+      if (check.length > 1 && checkTransactions.length > 1) {
+        setQrCodeValue(check.at(0));
+        devitrackApi.delete(`/stripe/remove-duplicate/${check.at(0).id}`);
+        devitrackApi.delete(
+          `/transaction/remove-duplicate-transaction/${checkTransactions.at(0).id}`
+        );
+      }
+    };
+    checkAndRemove();
     return () => {
       controller.abort();
     };
@@ -100,9 +107,7 @@ const DisplayQRCode = () => {
           <QRCode
             errorLevel="H"
             value={
-              paymentIntentValueRef.current
-                ? paymentIntentValueRef.current
-                : "https://devitrak.com"
+              qrCodeValue ? qrCodeValue.paymentIntent : "https://devitrak.com"
             }
             // icon="../../assets/devitrak_logo.svg"
           />

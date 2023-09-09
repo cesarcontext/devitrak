@@ -131,6 +131,11 @@ const Home = () => {
             alignItems={"center"}
             justifyContent={"center"}
             margin={"2rem auto"}
+            style={{
+              position: "absolute",
+              top: "25%",
+              bottom: "25%",
+            }}
             container
           >
             <Grid

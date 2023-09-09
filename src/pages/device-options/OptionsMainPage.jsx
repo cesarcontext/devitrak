@@ -1,5 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import { Empty } from "antd";
+import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
@@ -15,8 +17,24 @@ const OptionsMainPage = () => {
   });
 
   const find = savedTransactionsQuery?.data?.data?.list?.filter(
-    (transaction) => transaction.consumerInfo.email === consumer.email
+    (transaction) => transaction?.consumerInfo?.email === consumer?.email
   );
+
+  const removeDuplicateEntries = useCallback(() => {
+    if (find) {
+      const duplicates = {};
+      for (let data of find) {
+        if (!duplicates[data.paymentIntent]) {
+          duplicates[data.paymentIntent] = data;
+        } else {
+          devitrackApi.delete(
+            `/transaction/remove-duplicate-transaction/${data.id}`
+          );
+        }
+      }
+    }
+  }, [find]);
+  removeDuplicateEntries();
   const newOrderSubmit = () => {
     if (consumer) {
       return navigate("/device-selection");
@@ -74,13 +92,32 @@ const OptionsMainPage = () => {
         item
         xs={10}
       >
-        {find?.map((item) => {
-          return (
-            <span key={item.id}>
-              <OrderFormat info={item} />
-            </span>
-          );
-        })}
+        {consumer && find ? (
+          find?.toReversed().map((item) => {
+            return (
+              <span key={item.id}>
+                <OrderFormat info={item} />
+              </span>
+            );
+          })
+        ) : (
+          <Empty
+            description={
+              <Typography
+                color={"var(--gray-600, #475467)"}
+                textAlign={"center"}
+                /* Display xs/Semibold */
+                fontFamily={"Inter"}
+                fontSize={"16px"}
+                fontStyle={"normal"}
+                fontWeight={"400"}
+                lineHeight={"24px"}
+              >
+                No order.
+              </Typography>
+            }
+          ></Empty>
+        )}
       </Grid>
       <Grid
         display={"flex"}

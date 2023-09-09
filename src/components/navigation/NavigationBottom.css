@@ -1,7 +1,7 @@
 .paper-bottom-navigation {
   display: flex;
   padding: 8px 16px;
-  min-height: 15dvh;
+  height: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;

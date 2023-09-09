@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import React, { useRef, useEffect } from "react";
 const IndicatorProgressBottom = () => {
   const urlDetector = window.location.pathname;
-  const currentRef = useRef()
+  const currentRef = useRef();
   const { multipleDeviceSelection } = useSelector(
     (state) => state.deviceHandler
   );
@@ -27,26 +27,24 @@ const IndicatorProgressBottom = () => {
   const stepIndicator = () => {
     switch (urlDetector) {
       case "/initial-form":
-        return currentRef.current=25;
+        return (currentRef.current = 25);
       case "/device-selection":
-        return currentRef.current=50;
+        return (currentRef.current = 50);
       case "/deposit":
-        return currentRef.current=75;
+        return (currentRef.current = 75);
       case "/confirmation-process":
-        return currentRef.current=100;
+        return (currentRef.current = 100);
     }
   };
 
-useEffect(() => {
-  const controller = new AbortController()
-  stepIndicator()
-  return () => {
-    controller.abort()
-  }
-}, [urlDetector])
+  useEffect(() => {
+    const controller = new AbortController();
+    stepIndicator();
+    return () => {
+      controller.abort();
+    };
+  }, [urlDetector]);
 
-console.log(stepIndicator())
-console.log(urlDetector)
   return (
     <BottomNavigation
       key={urlDetector}
@@ -54,7 +52,7 @@ console.log(urlDetector)
       sx={{
         display: "flex",
         width: "100%",
-        // height: "cal(10dvh - 100dvh)",
+        // height: "cal(10svh - 100svh)",
         padding: "32px 0px",
         flexDirection: "column",
         alignItems: "flex-start",

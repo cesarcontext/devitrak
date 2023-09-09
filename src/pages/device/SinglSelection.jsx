@@ -20,10 +20,10 @@ const SingleSelection = () => {
   const navigate = useNavigate();
   const lessNumber = () => {
     if (numberNeeded < 1) return setNumberNeeded(0);
-    return setNumberNeeded(numberNeeded - 1);
+    return setNumberNeeded((parseInt(numberNeeded) - 1));
   };
   const addNumber = () => {
-    return setNumberNeeded(numberNeeded + 1);
+    return setNumberNeeded((parseInt(numberNeeded) + 1));
   };
   const submitDeviceSelectionInfo = (event) => {
     event?.preventDefault();
@@ -45,9 +45,9 @@ const SingleSelection = () => {
       deviceValue: deviceSetup.at(-1).deviceValue,
     }))
     if (!eventInfoDetail.merchant) {
-      return navigate("/qr-code-generation");
+      return navigate(`/qr-code-generation`);
     } else {
-      return navigate("/qr-code-generation");
+      return navigate(`/qr-code-generation`);
     }
   };
   return (

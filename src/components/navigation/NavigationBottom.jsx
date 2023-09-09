@@ -3,68 +3,94 @@ import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const NavigationBottom = () => {
-  const pathName = window.location.pathname
+  const pathName = window.location.pathname;
   const navigate = useNavigate();
 
   return (
-    <Paper
-      variant="outlined"
-      className="paper-bottom-navigation"
+    // <Paper
+    //   variant="outlined"
+    //   sx={{
+    //     display: "flex",
+    //     padding: "8px 16px",
+    //     // height: "15dvh",
+    //     flexDirection: "column",
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     /* gap: 24px; */
+    //     flexShrink: "0",
+    //     borderRadius: "20px 20px 0px 0px",
+    //     background: "var(--blue-dark-800, #0040c1)",
+    //     boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
+    //     aspectRatio: "9/16",
+    //   }}
+    // >
+    <BottomNavigation
+      id="bottonNavigation"
       sx={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        borderRadius: "20px 20px 0px 0px",
         background: "var(--blue-dark-800, #0040c1)",
-        boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
-        padding: "8px 16px",
-        flexShrink: 0,
+        color: "#fff",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "stretch",
+        gap: "24px",
+        minHeight: "15svh",
+        minHeight: "15dvh",
+        padding:"0px 15px 30px",
+        borderRadius:"12px 12px 0 0"
       }}
+      showLabels
     >
-      <BottomNavigation
+      <BottomNavigationAction
         sx={{
-          background: "var(--blue-dark-800, #0040c1)",
+          background: `${
+            pathName === "/device"
+              ? "var(--blue-dark-700, #004EEB)"
+              : "var(--blue-dark-800, #0040c1)"
+          }`,
+          borderRadius: `${pathName === "/device" ? "12px" : "0"}`,
+          aspectRatio: "1/3",
+          height: "60%",
           color: "#fff",
         }}
-        className="bottom-navigation-parent"
-        showLabels
-      >
-        <BottomNavigationAction
+        onClick={() => navigate("/device")}
+        label="Current order"
+        icon={<Icon icon="ep:headset" width="30" height="30" />}
+      />
+      <BottomNavigationAction
         sx={{
-          background:`${pathName === "/device" ? "var(--blue-dark-700, #004EEB)": "var(--blue-dark-800, #0040c1)"}`,
-          borderRadius:`${pathName === "/device" ? "12px": "0"}`,
-          aspectRatio:"1/3",
+          background: `${
+            pathName === "/information"
+              ? "var(--blue-dark-700, #004EEB)"
+              : "var(--blue-dark-800, #0040c1)"
+          }`,
+          borderRadius: `${pathName === "/information" ? "12px" : "0"}`,
+          aspectRatio: "1/3",
+          height: "60%",
           color: "#fff",
         }}
-          onClick={() => navigate("/device")}
-          label="Current order"
-          icon={<Icon icon="ep:headset" width="30" height="30" />}
-        />
-        <BottomNavigationAction
+        onClick={() => navigate("/information")}
+        label="More info"
+        icon={<Icon icon="mdi-light:information" width="30" height="30" />}
+      />
+      <BottomNavigationAction
         sx={{
-          background:`${pathName === "/information" ? "var(--blue-dark-700, #004EEB)": "var(--blue-dark-800, #0040c1)"}`,
-          borderRadius:`${pathName === "/information" ? "12px": "0"}`,
-          aspectRatio:"1/3",
+          background: `${
+            pathName === "/profile"
+              ? "var(--blue-dark-700, #004EEB)"
+              : "var(--blue-dark-800, #0040c1)"
+          }`,
+          borderRadius: `${pathName === "/profile" ? "12px" : "0"}`,
+          aspectRatio: "1/3",
+          height: "60%",
           color: "#fff",
         }}
-          onClick={() => navigate("/information")}
-          label="More info"
-          icon={<Icon icon="mdi-light:information" width="30" height="30" />}
-        />
-        <BottomNavigationAction
-        sx={{
-          background:`${pathName === "/profile" ? "var(--blue-dark-700, #004EEB)": "var(--blue-dark-800, #0040c1)"}`,
-          borderRadius:`${pathName === "/profile" ? "12px": "0"}`,
-          aspectRatio:"1/3",
-          color: "#fff",
-        }}
-          onClick={() => navigate("/profile")}
-          label="My profile"
-          icon={<Icon icon="octicon:person-24" width="30" height="30" />}
-        />
-      </BottomNavigation>
-    </Paper>
+        onClick={() => navigate("/profile")}
+        label="My profile"
+        icon={<Icon icon="octicon:person-24" width="30" height="30" />}
+      />
+    </BottomNavigation>
+    // </Paper>
   );
 };
 

@@ -21,7 +21,7 @@ const MainPage = () => {
           key={"article?.title"}
           style={{
             marginTop: 16,
-            marginBottom: "15dvh",
+            marginBottom: "15svh",
             width: "100%",
             whiteSpace: "wrap",
             overflow: "hidden",
@@ -31,11 +31,11 @@ const MainPage = () => {
           }}
         >
           <Grid container>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
-                textAlign={'center'}
+                textAlign={"center"}
                 fontFamily={"Inter"}
                 fontSize={"16px"}
                 fontStyle={"normal"}
@@ -46,7 +46,7 @@ const MainPage = () => {
                 {eventInfoDetail ? eventInfoDetail?.eventName : ""}
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
@@ -61,7 +61,7 @@ const MainPage = () => {
                 {eventInfoDetail ? eventInfoDetail?.address : ""}
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
@@ -73,10 +73,12 @@ const MainPage = () => {
                 lineHeight={"20px"}
                 color={"var(--gray-700, #344054)"}
               >
-                {eventInfoDetail ? Date(eventInfoDetail?.dateBegin) : new Date()}
+                {eventInfoDetail
+                  ? Date(eventInfoDetail?.dateBegin)
+                  : new Date()}
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
@@ -106,7 +108,7 @@ const MainPage = () => {
                 Contact person
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
@@ -121,7 +123,7 @@ const MainPage = () => {
                 {contactInfo ? contactInfo?.name : "You are not login."}
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto'} item xs={12}>
+            <Grid margin={"0.5rem auto"} item xs={12}>
               {" "}
               <Typography
                 textTransform={"none"}
@@ -133,10 +135,12 @@ const MainPage = () => {
                 lineHeight={"20px"}
                 color={"var(--gray-700, #344054)"}
               >
-                {contactInfo ? contactInfo?.email : "Please return to home page."}
+                {contactInfo
+                  ? contactInfo?.email
+                  : "Please return to home page."}
               </Typography>
             </Grid>
-            <Grid margin={'0.5rem auto 0.5rem'} item xs={12}>
+            <Grid margin={"0.5rem auto 0.5rem"} item xs={12}>
               <Typography
                 textTransform={"none"}
                 textAlign={"center"}
@@ -147,7 +151,9 @@ const MainPage = () => {
                 lineHeight={"20px"}
                 color={"var(--gray-700, #344054)"}
               >
-                {contactInfo ? contactInfo?.phone : "Also, you can double check link/QR Code with staff."}
+                {contactInfo
+                  ? contactInfo?.phone
+                  : "Also, you can double check link/QR Code with staff."}
               </Typography>
             </Grid>
           </Grid>

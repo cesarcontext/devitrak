@@ -9,11 +9,14 @@ const stripeSlice = createSlice({
     onAddCustomerStripeInfo: (state, { payload }) => {
       state.customerStripe = payload;
     },
+    onResetCustomerStripeInfo: (state) => {
+      state.customerStripe = undefined
+    }
   },
 });
 
 // action creators are generated for each case reducer function
 
-export const { onAddCustomerStripeInfo } = stripeSlice.actions;
+export const { onAddCustomerStripeInfo, onResetCustomerStripeInfo } = stripeSlice.actions;
 
 export default stripeSlice.reducer;
