@@ -16,6 +16,8 @@ import { onResetConsumerInfo } from "../../store/slides/consumerSlide";
 import { onHardReset } from "../../store/slides/deviceSlides";
 import { onResetCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import { onResetArticleInfo } from "../../store/slides/articleHandlerSlide";
+import { useMutation } from "@tanstack/react-query";
+import { devitrackApi } from "../../devitrakApi";
 const Profile = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const [editSection, setEditSection] = useState(true);
@@ -29,7 +31,9 @@ const Profile = () => {
     },
   });
   const dispatch = useDispatch();
-
+  const updateProfileDataMutation = useMutation({
+    mutationFn: (newProfile) => devitrackApi.patch(`/auth/${consumer.id}`, newProfile),
+  });
   const handleSaveEdit = () => {
     const check = {
       name: watch("name"),
@@ -37,12 +41,21 @@ const Profile = () => {
       email: watch("email"),
       phoneNumber: watch("phoneNumber"),
     };
-    dispatch(onAddConsumerInfo(check));
-    setEditSection(true);
+    
+    updateProfileDataMutation.mutate(check);
+ dispatch(
+      onAddConsumerInfo({
+        ...consumer,
+        name: check.name,
+        lastName: check.lastName,
+        email: check.email,
+        phoneNumber: check.phoneNumber,
+      })
+    );   setEditSection(true);
   };
 
   const handleLogout = async () => {
-    dispatch(onResetArticleInfo())
+    dispatch(onResetArticleInfo());
     dispatch(onResetConsumerInfo());
     dispatch(onHardReset());
     dispatch(onResetCustomerStripeInfo());
