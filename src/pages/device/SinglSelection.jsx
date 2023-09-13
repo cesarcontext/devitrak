@@ -2,7 +2,6 @@ import {
   Button,
   Grid,
   InputAdornment,
-  InputLabel,
   OutlinedInput,
   Typography,
 } from "@mui/material";
@@ -141,20 +140,6 @@ const SingleSelection = () => {
                 xs={12}
                 margin={"1rem 0"}
               >
-                {/* <InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-                  <Typography
-                    textTransform={"none"}
-                    textAlign={"left"}
-                    fontFamily={"Inter"}
-                    fontSize={"14px"}
-                    fontStyle={"normal"}
-                    fontWeight={500}
-                    lineHeight={"20px"}
-                    color={"var(--gray-700, #344054)"}
-                  >
-                    Amount needed
-                  </Typography>
-                </InputLabel> */}
                 <OutlinedInput
                   value={numberNeeded}
                   name="numberNeeded"
