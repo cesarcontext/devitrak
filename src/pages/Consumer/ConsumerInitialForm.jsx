@@ -555,7 +555,7 @@ const ConsumerInitialForm = () => {
                     </Grid>
                     <Grid item xs={12} margin={"1rem 0"}>
                       <Button
-                        type="submit"
+                        htmlType="submit"
                         style={{
                           display: "flex",
                           padding: "12px 20px",

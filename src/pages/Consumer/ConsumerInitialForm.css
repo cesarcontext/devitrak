@@ -1,8 +1,8 @@
 .phone-input-form{
     border: solid 1px rgba(0, 0, 0, 0.23);
     border-radius: 12px;
-    padding: 16.5px 14px;
-    margin: 0.1rem auto 0rem;
+    padding: 15px 14px;
+    margin: 0rem auto;
     display: flex;
     justify-content: flex-start;
     width: 100%;
@@ -10,8 +10,4 @@
 .PhoneInputInput{
     border: none;
     outline: none;
-}
-
-#root > main > div > div > div > form > div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.css-1m5cpu6-MuiGrid-root > button{
-    
 }
