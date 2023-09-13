@@ -17,8 +17,9 @@ import { Grid, Typography } from "@mui/material";
 import Logo from "../../assets/devitrak_logo.svg";
 import Devitrak from "../../assets/Layer_1.svg";
 import "animate.css";
-import { detector, platform } from "./OperatingSystemDetecting";
+import { detector } from "./OperatingSystemDetecting";
 import { onDetectingBrowser } from "../../store/slides/helperSlide";
+import Cookies from "js-cookie";
 
 const Home = () => {
   const [existingEvent, setExistingEvent] = useState(false);
@@ -84,6 +85,17 @@ const Home = () => {
       controller.abort();
     };
   }, [listOfEventsQuery.isLoading, listOfEventsQuery.data]);
+  const cookies = Cookies.get();
+  const objtToArrCookies = Object.entries(cookies);
+  const removeCookies = useCallback(() => {
+    if (objtToArrCookies.length > 0) {
+      for (let data of objtToArrCookies) {
+        Cookies.remove(`${data.at(0)}`, { path: `${data.at(-1)}` });
+      }
+    }
+    return "no more cookies";
+  }, [objtToArrCookies]);
+  removeCookies();
 
   if (listOfEventsQuery.data) {
     return (

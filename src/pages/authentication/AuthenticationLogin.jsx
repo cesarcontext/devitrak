@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   onAddContactInfo,
@@ -20,6 +20,7 @@ const AuthenticationLogin = () => {
   const event = new URLSearchParams(window.location.search).get("event");
   const company = new URLSearchParams(window.location.search).get("company");
   const consumerId = new URLSearchParams(window.location.search).get("uid");
+  const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const listOfConsumersQuery = useQuery({
@@ -39,74 +40,91 @@ const AuthenticationLogin = () => {
       devitrackApi.patch(`/auth/${consumerProfile.id}`, consumerProfile),
   });
   const finding = listOfEventsQuery?.data?.data?.list;
-  if (listOfConsumersQuery.data) {
-    const foundEventInfo = async () => {
-      const foundData = await finding?.find(
-        (item) =>
-          item.eventInfoDetail.eventName === event && item.company === company
-      );
-      if (foundData) {
-        dispatch(onAddEventData(foundData));
-        dispatch(onAddEventInfoDetail(foundData?.eventInfoDetail));
-        dispatch(onAddEventStaff(foundData?.staff));
-        dispatch(onSelectEvent(foundData?.eventInfoDetail.eventName));
-        dispatch(onSelectCompany(foundData?.company));
-        dispatch(onAddDeviceSetup(foundData?.deviceSetup));
-        dispatch(onAddContactInfo(foundData?.contactInfo));
-        dispatch(onAddSubscriptionInfo(foundData?.subscription));
-        return foundData;
-      }
-    };
-    foundEventInfo();
-    const checkIfConsumerExists = () => {
-      const check = listOfConsumersQuery.data.data.users.find(
-        (consumer) => consumer.id === consumerId
-      );
-      return check;
-    };
-    checkIfConsumerExists();
+  const foundEventInfo = async () => {
+    const foundData = await finding?.find(
+      (item) =>
+        item.eventInfoDetail.eventName === event && item.company === company
+    );
+    if (foundData) {
+      dispatch(onAddEventData(foundData));
+      dispatch(onAddEventInfoDetail(foundData?.eventInfoDetail));
+      dispatch(onAddEventStaff(foundData?.staff));
+      dispatch(onSelectEvent(foundData?.eventInfoDetail.eventName));
+      dispatch(onSelectCompany(foundData?.company));
+      dispatch(onAddDeviceSetup(foundData?.deviceSetup));
+      dispatch(onAddContactInfo(foundData?.contactInfo));
+      dispatch(onAddSubscriptionInfo(foundData?.subscription));
+      return foundData;
+    }
+  };
+  foundEventInfo();
+  const checkIfConsumerExists = () => {
+    const check = listOfConsumersQuery?.data?.data?.users?.find(
+      (consumer) => consumer.id === consumerId
+    );
+    return check;
+  };
+  checkIfConsumerExists();
+  dispatch(onAddConsumerInfo(checkIfConsumerExists()));
 
-    const findingStripeCustomer =
-      stripeCustomersQuery?.data?.data?.stripeCustomerSaved?.find(
-        (customer) => customer.email === checkIfConsumerExists().email
-      );
-    dispatch(onAddCustomerStripeInfo(findingStripeCustomer));
-    const updateConsumerInfoEventAndCompany = () => {
-      const checkCompany = checkIfConsumerExists().provider.some(
+  if (consumer) {
+    const findingStripeCustomer = async () => {
+      const finding =
+        await stripeCustomersQuery?.data?.data?.stripeCustomerSaved?.find(
+          (customer) => customer.email === consumer.email
+        );
+      dispatch(onAddCustomerStripeInfo(finding));
+    };
+    findingStripeCustomer();
+    const updateConsumerInfoEventAndCompany = async () => {
+      const checkCompany = consumer.provider.some(
         (provider) => provider === company
       );
-      const checkEvent = checkIfConsumerExists().eventSelected.some(
-        (item) => item === event
-      );
+      const checkEvent = consumer.eventSelected.some((item) => item === event);
       if (checkCompany && checkEvent) {
-        dispatch(onAddConsumerInfo(checkIfConsumerExists()));
+        return navigate("/device-selection");
+      } else if (!checkCompany && checkEvent) {
+        updatingConsumerInfoMutation.mutate({
+          id: checkIfConsumerExists().id,
+          provider: [...consumer.provider, company],
+        });
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            provider: [...consumer.provider, company],
+          })
+        );
+        return navigate("/device-selection");
+      } else if (!checkEvent && checkCompany) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          eventSelected: [...consumer.eventSelected, event],
+        });
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            eventSelected: [...consumer.eventSelected, event],
+          })
+        );
+        return navigate("/device-selection");
+      } else if (!checkEvent && !checkCompany) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          eventSelected: [...consumer.eventSelected, event],
+          provider: [...consumer.provider, company],
+        });
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            eventSelected: [...consumer.eventSelected, event],
+            provider: [...consumer.provider, company],
+          })
+        );
         return navigate("/device-selection");
       }
-      if (!checkCompany && checkEvent) {
-        updatingConsumerInfoMutation.mutate({
-          id: checkIfConsumerExists().id,
-          provider: [...checkIfConsumerExists().provider, company],
-        });
-      }
-      if (!checkEvent && checkCompany) {
-        updatingConsumerInfoMutation.mutate({
-          id: checkIfConsumerExists().id,
-          eventSelected: [...checkIfConsumerExists().eventSelected, event],
-        });
-      }
-      if (!checkEvent && !checkCompany) {
-        updatingConsumerInfoMutation.mutate({
-          id: checkIfConsumerExists().id,
-          eventSelected: [...checkIfConsumerExists().eventSelected, event],
-          provider: [...checkIfConsumerExists().provider, company],
-        });
-      }
-
-      return navigate("/device-selection");
     };
-
     updateConsumerInfoEventAndCompany();
-    if (listOfConsumersQuery.isLoading || listOfConsumersQuery.isLoading) {
+    if (listOfConsumersQuery.isLoading || listOfConsumersQuery.isFetching) {
       return (
         <Grid container>
           <Grid
