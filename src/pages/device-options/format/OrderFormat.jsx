@@ -58,7 +58,7 @@ const OrderFormat = (info) => {
         result.splice(index, noDelete, data.deviceNeeded);
         index++;
       }
-      return result.reduce((accumulator, current) => accumulator + current, 0);
+      return result.reduce((accumulator, current) => accumulator + current);
     };
     const orderDay = new Date();
     return (
