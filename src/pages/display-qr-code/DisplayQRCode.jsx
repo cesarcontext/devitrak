@@ -1,10 +1,9 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { Avatar, Divider, List, QRCode } from "antd";
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef,useState } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../devitrakApi";
 import { Grid, Typography } from "@mui/material";
-import { useState } from "react";
 
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
@@ -90,7 +89,7 @@ const DisplayQRCode = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, []);// eslint-disable-line no-use-before-define
   return (
     <>
       <Grid
