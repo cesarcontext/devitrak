@@ -22,6 +22,7 @@ import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import { nanoid } from "@reduxjs/toolkit";
 import { Button } from "antd";
+import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 const schema = yup
   .object({
     firstName: yup.string().required("first name is required"),
@@ -74,17 +75,16 @@ const ConsumerInitialForm = () => {
       return check;
     };
     checkIfConsumerExists();
-
     const submitEmailToLoginForExistingConsumer = async () => {
       emailSentRef.current = true;
       setLoadingState(loadingStatus.loading);
-      const eventLinkFormat = choice.replace(" ", "%20");
-      const companyLinkFormat = company.replace(" ", "%20");
       const parametersNeededToLoginLink = {
         consumer: checkIfConsumerExists(),
         link: `https://app.devitrak.net/authentication?uis=${nanoid(
           250
-        )}&event=${eventLinkFormat}&company=${companyLinkFormat}&uid=${
+        )}&event=${encodeURI(choice)}&ssn=${nanoid(
+          120
+        )}&company=${encodeURI(company)}&uid=${
           checkIfConsumerExists().id
         }&hus=${nanoid(50)}&pmm=${nanoid(30)}`,
         contactInfo: contactInfo.email,
@@ -110,17 +110,22 @@ const ConsumerInitialForm = () => {
         eventSelected: [choice],
         group: `${groupName !== "" ? groupName : "No group provided."}`,
       };
-      newConsumerMutation.mutate(newConsumerProfile);
-      if (
-        (newConsumerMutation.isIdle || newConsumerMutation.isSuccess) &&
-        !newConsumerMutation.isError
-      ) {
+      const respNewConsumer = await devitrackApi.post(
+        "/auth/new",
+        newConsumerProfile
+      );
+      if (respNewConsumer) {
         const newStripeCustomerProfile = {
           name: `${data.firstName} ${data.lastName}`,
           email: data.email,
           phoneNumber: contactPhoneNumber,
         };
-        dispatch(onAddConsumerInfo(newConsumerProfile));
+        dispatch(
+          onAddConsumerInfo({
+            ...newConsumerProfile,
+            id: respNewConsumer.data.uid,
+          })
+        );
         const newStripeCustomer = await devitrackApi.post(
           "/stripe/customer",
           newStripeCustomerProfile
@@ -256,7 +261,8 @@ const ConsumerInitialForm = () => {
                         )}
                       </InputAdornment>
                     }
-                    {...register("email")}
+                    {...register("email", { require: true })}
+                    type="email"
                     aria-invalid={errors.email ? true : false}
                     style={{
                       borderRadius: "12px",
@@ -588,17 +594,17 @@ const ConsumerInitialForm = () => {
               </form>
             </Grid>{" "}
           </Grid>
-          {/* <Grid
-            display={"flex"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            marginBottom={2}
-            item
-            xs={12}
-          >
-            <IndicatorProgressBottom current={25} />
-          </Grid>{" "} */}
         </Grid>
+        <Grid
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          marginBottom={2}
+          item
+          xs={12}
+        >
+          <IndicatorProgressBottom current={50} />
+        </Grid>{" "}
       </>
     );
   }
