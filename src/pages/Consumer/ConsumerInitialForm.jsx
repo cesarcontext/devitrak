@@ -12,7 +12,7 @@ import "react-phone-number-input/style.css";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import "./ConsumerInitialForm.css";
 import { useRef, useState } from "react";
 import { devitrackApi } from "../../devitrakApi";
@@ -25,12 +25,12 @@ import { Button } from "antd";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 const schema = yup
   .object({
-    firstName: yup.string().required("first name is required"),
-    lastName: yup.string().required("last name is required"),
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last name is required"),
     email: yup
       .string()
-      .email("email has an invalid format")
-      .required("email is required"),
+      .email("Email has an invalid format")
+      .required("Email is required"),
   })
   .required();
 
@@ -62,11 +62,6 @@ const ConsumerInitialForm = () => {
     queryFn: () => devitrackApi.get("/auth/users"),
   });
 
-  const newConsumerMutation = useMutation({
-    mutationFn: (newConsumerProfile) =>
-      devitrackApi.post("/auth/new", newConsumerProfile),
-  });
-
   if (listOfConsumersQuery.data) {
     const checkIfConsumerExists = () => {
       const check = listOfConsumersQuery?.data?.data?.users?.find(
@@ -82,11 +77,11 @@ const ConsumerInitialForm = () => {
         consumer: checkIfConsumerExists(),
         link: `https://app.devitrak.net/authentication?uis=${nanoid(
           250
-        )}&event=${encodeURI(choice)}&ssn=${nanoid(
-          120
-        )}&company=${encodeURI(company)}&uid=${
-          checkIfConsumerExists().id
-        }&hus=${nanoid(50)}&pmm=${nanoid(30)}`,
+        )}&event=${encodeURI(choice)}&ssn=${nanoid(120)}&company=${encodeURI(
+          company
+        )}&uid=${checkIfConsumerExists().id}&hus=${nanoid(50)}&pmm=${nanoid(
+          30
+        )}`,
         contactInfo: contactInfo.email,
       };
       const respo = await devitrackApi.post(
@@ -272,7 +267,20 @@ const ConsumerInitialForm = () => {
                     placeholder="Enter your email"
                     fullWidth
                   />
-                  {errors?.email?.message}
+                  {errors.email && (
+                    <Typography
+                      textTransform={"none"}
+                      textAlign={"left"}
+                      fontFamily={"Inter"}
+                      fontSize={"14px"}
+                      fontStyle={"normal"}
+                      fontWeight={500}
+                      lineHeight={"20px"}
+                      color={"#ff6363"}
+                    >
+                      **{errors?.email?.message}
+                    </Typography>
+                  )}
                 </Grid>
                 {checkIfConsumerExists() && (
                   <Typography
@@ -421,18 +429,20 @@ const ConsumerInitialForm = () => {
                         placeholder="Enter your first name"
                         fullWidth
                       />
-                      <Typography
-                        textTransform={"none"}
-                        textAlign={"left"}
-                        fontFamily={"Inter"}
-                        fontSize={"14px"}
-                        fontStyle={"normal"}
-                        fontWeight={500}
-                        lineHeight={"20px"}
-                        color={"var(--gray-700, #344054)"}
-                      >
-                        {errors?.firstName?.message}
-                      </Typography>
+                      {errors.firstName && (
+                        <Typography
+                          textTransform={"none"}
+                          textAlign={"left"}
+                          fontFamily={"Inter"}
+                          fontSize={"14px"}
+                          fontStyle={"normal"}
+                          fontWeight={500}
+                          lineHeight={"20px"}
+                          color={"#ff6363"}
+                        >
+                          **{errors?.firstName?.message}
+                        </Typography>
+                      )}
                     </Grid>
                     <Grid
                       display={"flex"}
@@ -472,7 +482,20 @@ const ConsumerInitialForm = () => {
                         placeholder="Enter your last name"
                         fullWidth
                       />
-                      {errors?.lastName?.message}
+                      {errors.lastName && (
+                        <Typography
+                          textTransform={"none"}
+                          textAlign={"left"}
+                          fontFamily={"Inter"}
+                          fontSize={"14px"}
+                          fontStyle={"normal"}
+                          fontWeight={500}
+                          lineHeight={"20px"}
+                          color={"#ff6363"}
+                        >
+                          **{errors?.lastName?.message}
+                        </Typography>
+                      )}
                     </Grid>
                     <Grid
                       display={"flex"}
