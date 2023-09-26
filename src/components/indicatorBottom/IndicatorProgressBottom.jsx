@@ -3,10 +3,9 @@ import { Progress } from "antd";
 import "./IndicatorProgressBottom.css";
 import "./BottomNavigation.css";
 import { useSelector } from "react-redux";
-import React, { useRef, useEffect } from "react";
-const IndicatorProgressBottom = () => {
+import React from "react";
+const IndicatorProgressBottom = ({ current }) => {
   const urlDetector = window.location.pathname;
-  const currentRef = useRef();
   const { multipleDeviceSelection } = useSelector(
     (state) => state.deviceHandler
   );
@@ -24,26 +23,6 @@ const IndicatorProgressBottom = () => {
     }
     return result.reduce((accumulator, current) => accumulator + current, 0);
   };
-  const stepIndicator = () => {
-    switch (urlDetector) {
-      case "/initial-form":
-        return (currentRef.current = 25);
-      case "/device-selection":
-        return (currentRef.current = 50);
-      case "/deposit":
-        return (currentRef.current = 75);
-      case "/confirmation-process":
-        return (currentRef.current = 100);
-    }
-  };
-
-  useEffect(() => {
-    const controller = new AbortController();
-    stepIndicator();
-    return () => {
-      controller.abort();
-    };
-  }, [urlDetector]);
 
   return (
     <BottomNavigation
@@ -52,7 +31,6 @@ const IndicatorProgressBottom = () => {
       sx={{
         display: "flex",
         width: "100%",
-        // height: "cal(10svh - 100svh)",
         padding: "32px 0px",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -96,12 +74,21 @@ const IndicatorProgressBottom = () => {
           </Grid>
         </Grid>
       )}
-      <Progress
-        steps={4}
-        percent={currentRef.current}
-        showInfo={false}
-        size={[85, 10]}
-      />
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"0 auto"}
+        item
+        xs={10}
+      >
+        <Progress
+          steps={2}
+          percent={current}
+          showInfo={false}
+          size={[85, 10]}
+        />
+      </Grid>
     </BottomNavigation>
   );
 };
