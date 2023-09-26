@@ -8,7 +8,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { devitrackApi } from "../../devitrakApi";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Empty } from "antd";
+import { Card, Divider, Empty } from "antd";
 import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
 import { onAddArticleInfo } from "../../store/slides/articleHandlerSlide";
@@ -16,17 +16,18 @@ import DevitrakLogo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
+import SupportMainPage from "../support/SupportMainPage";
 const { Meta } = Card;
 const MainPage = () => {
   const { eventInfoDetail } = useSelector((state) => state.event);
   const [search, setSearch] = useState("");
+  const [current, setCurrent] = useState(1);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const listOfArticlesQuery = useQuery({
     queryKey: ["articles"],
     queryFn: () => devitrackApi.get("/article/articles"),
   });
-
   if (listOfArticlesQuery.data) {
     const findArticlesPerEvent = () => {
       const find = listOfArticlesQuery.data.data.articles.filter(
@@ -35,10 +36,15 @@ const MainPage = () => {
       );
       return find;
     };
+    const itemPerPage = 4;
+    const indexOfLast = current * itemPerPage;
+    const indexOfFirst = indexOfLast - itemPerPage;
+    const currentData = findArticlesPerEvent().slice(indexOfFirst, indexOfLast);
+    const totalPages = findArticlesPerEvent().length / itemPerPage;
 
     const dataToRender = () => {
       if (search === "") {
-        return findArticlesPerEvent();
+        return currentData;
       } else {
         const searchFound = findArticlesPerEvent()?.filter(
           (article) =>
@@ -55,6 +61,20 @@ const MainPage = () => {
     const articleClicked = async (props) => {
       dispatch(onAddArticleInfo(props));
       return navigate(`/information/${props._id}`);
+    };
+    const handlePrevPage = () => {
+      if (current > 0) {
+        return setCurrent(current - 1);
+      } else {
+        return setCurrent(0);
+      }
+    };
+    const handleNextPage = () => {
+      if (current > Math.ceil(findArticlesPerEvent().length)) {
+        return setCurrent(Math.ceil(findArticlesPerEvent().length));
+      } else {
+        return setCurrent(current + 1);
+      }
     };
     return (
       <>
@@ -143,8 +163,8 @@ const MainPage = () => {
             item
             xs={10}
           >
-            {findArticlesPerEvent() || findArticlesPerEvent()?.length > 0 ? (
-              dataToRender()?.map((article, index) => {
+            {findArticlesPerEvent() || dataToRender().length > 0 ? (
+              dataToRender().map((article, index) => {
                 return (
                   <>
                     <Card
@@ -250,6 +270,12 @@ const MainPage = () => {
                         title={article.title}
                       />
                       <div
+                        style={{
+                          height: "15dvh",
+                          height: "15svh",
+                          overflow: "hidden",
+                          zIndex: "0",
+                        }}
                         dangerouslySetInnerHTML={sanitizedData(article.body)}
                       ></div>
                     </Card>
@@ -259,6 +285,107 @@ const MainPage = () => {
             ) : (
               <Empty description={"No articles created for this event."} />
             )}
+          </Grid>
+          <Grid container>
+            <Grid
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              margin={"0 auto"}
+              item
+              xs={10}
+            >
+              <Divider />
+            </Grid>
+            <Grid
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              margin={"0 auto"}
+              item
+              xs={10}
+            >
+              <Button
+                style={{
+                  display: "flex",
+                  padding: "8px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "8px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--gray-300, #D0D5DD)",
+                  background: "var(--base-white, #FFF)",
+                  boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+                }}
+                disabled={current === 1 ? true : false}
+                variant="contained"
+                onClick={() => handlePrevPage()}
+              >
+                <Icon
+                  icon="heroicons-solid:arrow-narrow-right"
+                  color={"#344054"}
+                  rotate={2}
+                  width={20}
+                  height={20}
+                />
+              </Button>
+              <div>
+                <Typography>
+                  Page {Math.ceil(totalPages) > 0 ? current : 0} of{" "}
+                  {Math.ceil(totalPages)}
+                </Typography>
+              </div>
+              <Button
+                style={{
+                  display: "flex",
+                  padding: "8px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "8px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--gray-300, #D0D5DD)",
+                  background: "var(--base-white, #FFF)",
+                  boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+                }}
+                disabled={current === Math.ceil(totalPages) ? true : false}
+                variant="contained"
+                onClick={() => handleNextPage()}
+              >
+                <Icon
+                  icon="heroicons-solid:arrow-narrow-right"
+                  color={"#344054"}
+                  width={20}
+                  height={20}
+                />
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid
+            display={"flex"}
+            flexDirection={"column"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            item
+            xs={10}
+            margin={"1.5rem auto 0"}
+          >
+            <Grid item sx={12}>
+              <Typography
+                color={"var(--gray-700, #344054)"}
+                textAlign={"center"}
+                fontFamily={"Inter"}
+                fontSize={"24px"}
+                fontStyle={"normal"}
+                fontWeight={600}
+                lineHeight={"32px"}
+                style={{
+                  textWrap: "balance",
+                }}
+              >
+                Contact support
+              </Typography>
+            </Grid>
+            <SupportMainPage />
           </Grid>
         </Grid>
       </>
