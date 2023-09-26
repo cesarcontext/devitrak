@@ -1,0 +1,22 @@
+.phone-input-form {
+  border: none;
+  outline: none;
+  padding: 15px 14px;
+  margin: 0rem auto;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+.PhoneInputCountry {
+  display: none;
+}
+.PhoneInputInput {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 25px;
+    width: 50%;
+    position: absolute;
+    left: 25%;
+    right: 25%;
+}
