@@ -1,9 +1,10 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { Avatar, Divider, List, QRCode } from "antd";
-import React, { useCallback, useEffect, useRef,useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../devitrakApi";
 import { Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
@@ -12,6 +13,7 @@ const DisplayQRCode = () => {
   const [qrCodeValue, setQrCodeValue] = useState(undefined);
   const paymentIntentValueRef = useRef(null);
   const nanoGenerated = useRef(false);
+  const navigate = useNavigate()
   const foundTotalDeviceNumber = () => {
     const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
@@ -81,15 +83,24 @@ const DisplayQRCode = () => {
         setQrCodeValue(check.at(0));
         devitrackApi.delete(`/stripe/remove-duplicate/${check.at(0).id}`);
         devitrackApi.delete(
-          `/transaction/remove-duplicate-transaction/${checkTransactions.at(0).id}`
+          `/transaction/remove-duplicate-transaction/${
+            checkTransactions.at(0).id
+          }`
         );
       }
     };
     checkAndRemove();
+
     return () => {
       controller.abort();
     };
-  }, []);// eslint-disable-line no-use-before-define
+  }, []); // eslint-disable-line no-use-before-define
+  const automaticNavigation = () => {
+    setTimeout(() => {
+      navigate("/device");
+    }, 3500);
+  };
+
   return (
     <>
       <Grid
@@ -100,7 +111,22 @@ const DisplayQRCode = () => {
         container
       >
         <Grid marginY={5} item xs={12}>
-          {" "}
+          <Typography
+            textTransform={"none"}
+            color={"var(--gray-900, #101828)"}
+            textAlign={"center"}
+            /* Display xs/Semibold */
+            fontFamily={"Inter"}
+            fontSize={"18px"}
+            fontStyle={"normal"}
+            fontWeight={400}
+            lineHeight={"24px"}
+            style={{
+              textWrap: "balance",
+            }}
+          >
+            We are taking you to the current order page for more information.{automaticNavigation()}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <QRCode
@@ -164,7 +190,7 @@ const DisplayQRCode = () => {
             >
               <List.Item.Meta
                 avatar={<Avatar src={"../../assets/devitrak_logo.svg"} />}
-                title={<a href="https://ant.design">{item.deviceType}</a>}
+                title={<div>{item.deviceType}</div>}
               />
             </List.Item>
           )}
