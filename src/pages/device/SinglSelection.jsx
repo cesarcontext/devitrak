@@ -8,49 +8,95 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import "./DeviceSelection.css";
 import { useState } from "react";
-import { onAddMultipleDeviceSelection, onAddNewOrder, onAddNewOrderToHistory } from "../../store/slides/deviceSlides";
+import {
+  onAddMultipleDeviceSelection,
+  onAddNewOrder,
+  onAddNewOrderToHistory,
+} from "../../store/slides/deviceSlides";
 import { useNavigate } from "react-router-dom";
-
+import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
+import "./DeviceSelection.css";
+import { message } from "antd";
 const SingleSelection = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const { consumer } = useSelector((state) => state.consumer);
   const { deviceSetup, eventInfoDetail } = useSelector((state) => state.event);
   const [numberNeeded, setNumberNeeded] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const lessNumber = () => {
     if (numberNeeded < 1) return setNumberNeeded(0);
-    return setNumberNeeded((parseInt(numberNeeded) - 1));
+    return setNumberNeeded(parseInt(numberNeeded) - 1);
   };
   const addNumber = () => {
-    return setNumberNeeded((parseInt(numberNeeded) + 1));
+    return setNumberNeeded(parseInt(numberNeeded) + 1);
+  };
+  const warning = () => {
+    messageApi.open({
+      type: "warning",
+      content: (
+        <Typography
+          textTransform={"none"}
+          color={"var(--blue-dark-600, #155EEF)"}
+          textAlign={"left"}
+          fontFamily={"Inter"}
+          fontSize={"14px"}
+          fontStyle={"normal"}
+          fontWeight={400}
+          lineHeight={"22px"}
+        >
+          Hi,{" "}
+          <span
+            style={{
+              textTransform: "capitalize",
+            }}
+          >
+            {consumer?.name}
+          </span>!
+          <br />
+           Device selection must be bigger than 0!
+        </Typography>
+      ),
+    });
   };
   const submitDeviceSelectionInfo = (event) => {
     event?.preventDefault();
-    dispatch(
-      onAddMultipleDeviceSelection({
-        deviceType: deviceSetup.at(-1).deviceType,
-        deviceNeeded: numberNeeded,
-        deviceValue: deviceSetup.at(-1).deviceValue,
-      })
-    );
-    dispatch(onAddNewOrder({
-      deviceType: deviceSetup.at(-1).deviceType,
-      deviceNeeded: numberNeeded,
-      deviceValue: deviceSetup.at(-1).deviceValue,
-    }))
-    dispatch(onAddNewOrderToHistory({
-      deviceType: deviceSetup.at(-1).deviceType,
-      deviceNeeded: numberNeeded,
-      deviceValue: deviceSetup.at(-1).deviceValue,
-    }))
-    if (!eventInfoDetail.merchant) {
-      return navigate(`/qr-code-generation`);
-    } else {
-      return navigate(`/qr-code-generation`);
+    if (numberNeeded === 0) {
+      return warning();
+    }
+    if (numberNeeded > 0) {
+      dispatch(
+        onAddMultipleDeviceSelection({
+          deviceType: deviceSetup.at(-1).deviceType,
+          deviceNeeded: numberNeeded,
+          deviceValue: deviceSetup.at(-1).deviceValue,
+        })
+      );
+      dispatch(
+        onAddNewOrder({
+          deviceType: deviceSetup.at(-1).deviceType,
+          deviceNeeded: numberNeeded,
+          deviceValue: deviceSetup.at(-1).deviceValue,
+        })
+      );
+      dispatch(
+        onAddNewOrderToHistory({
+          deviceType: deviceSetup.at(-1).deviceType,
+          deviceNeeded: numberNeeded,
+          deviceValue: deviceSetup.at(-1).deviceValue,
+        })
+      );
+      if (!eventInfoDetail.merchant) {
+        return navigate(`/qr-code-generation`);
+      } else {
+        return navigate(`/qr-code-generation`);
+      }
     }
   };
   return (
     <>
+      {contextHolder}
       <Grid
         display={"flex"}
         flexDirection={"column"}
@@ -143,10 +189,13 @@ const SingleSelection = () => {
                 <OutlinedInput
                   value={numberNeeded}
                   name="numberNeeded"
+                  type="number"
+                  id="input-single-selection"
                   onChange={(e) => setNumberNeeded(e.target.value)}
                   style={{
                     borderRadius: "12px",
                     margin: "0.1rem auto 1rem",
+                    textAlign: "center",
                   }}
                   startAdornment={
                     <InputAdornment
@@ -198,6 +247,23 @@ const SingleSelection = () => {
           </Grid>{" "}
         </Grid>
       </Grid>
+      <Grid
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        marginBottom={2}
+        maxHeight={"15dvh"}
+        style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          right: "0",
+        }}
+        item
+        xs={12}
+      >
+        <IndicatorProgressBottom current={100} />
+      </Grid>{" "}
     </>
   );
 };
