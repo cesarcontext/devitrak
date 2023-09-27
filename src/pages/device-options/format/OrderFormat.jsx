@@ -7,10 +7,6 @@ import { useSelector } from "react-redux";
 import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
 const OrderFormat = (info) => {
-  console.log(
-    "🚀 ~ file: OrderFormat.jsx:10 ~ OrderFormat ~ info:",
-    info.info
-  );
   const { subscription } = useSelector((state) => state.event);
   const _ = require("lodash");
   const assignedDeviceListQuery = useQuery({
@@ -80,14 +76,24 @@ const OrderFormat = (info) => {
     const devicesAssignedInOrder = () => {
       if (groupByEventAssignedDevice[info.info.consumerInfo.email]) {
         const groupByPaymentIntentByConsumer = _.groupBy(
-          groupByEventAssignedDevice[info.info.consumerinfo.email],
+          groupByEventAssignedDevice[info.info.consumerInfo.email],
           "paymentIntent"
         );
         if (groupByPaymentIntentByConsumer[info.info.paymentIntent]) {
-          return groupByPaymentIntentByConsumer[
+          let result = [];
+          let index = 0;
+          let counting = 1;
+          const notDelete = 0;
+          for (let data of groupByPaymentIntentByConsumer[
             info.info.paymentIntent
-          ].device.reduce(
-            (accumulator, { status }) => accumulator + (status === true),
+          ].at(-1).device) {
+            if (data.status === true) {
+              result.splice(index, notDelete, counting);
+              index++;
+            }
+          }
+          return result.reduce(
+            (accumulator, current) => accumulator + current,
             0
           );
         } else {
@@ -103,7 +109,8 @@ const OrderFormat = (info) => {
           info.info.date
             ? `${displayMonth(info.info.date)} ${new Date(
                 info.info.date
-              ).getDay()}, ${new Date(info.info.date).getFullYear()}`
+              ).getDate()}, ${new Date(info.info.date).getFullYear()}
+              `
             : orderDay
         }`}
         extra={verifyStatusOrder("YES")}
@@ -137,10 +144,10 @@ const OrderFormat = (info) => {
           </Grid>
           <Grid
             display={"flex"}
-            justifyContent={"flex-start"}
+            justifyContent={"space-between"}
             alignItems={"center"}
             item
-            xs={10}
+            xs={12}
           >
             <Typography
               width={"100%"}
@@ -157,6 +164,15 @@ const OrderFormat = (info) => {
               {sumDevices() > 1 ? "Devices" : "Device"} in use:{" "}
               {devicesAssignedInOrder()}/{sumDevices()}
             </Typography>
+            {devicesAssignedInOrder() > 0 ? (
+              <Icon
+                icon="fluent:shifts-activity-20-filled"
+                width={25}
+                color="#ff0000"
+              />
+            ) : (
+              <Icon icon="ei:check" width={30} color="#6ce792" />
+            )}
           </Grid>
           <Grid
             display={"flex"}
@@ -207,7 +223,12 @@ const OrderFormat = (info) => {
             item
             xs={10}
           >
-            <QRCode errorLevel="H" value={`${info.info.paymentIntent}`} />
+            <QRCode
+              errorLevel="H"
+              value={`${info.info.paymentIntent}`}
+              icon="https://i.ibb.co/kKktFyw/maskable-icon.png"
+              iconSize={50}
+            />
           </Grid>
           <Typography
             width={"100%"}
