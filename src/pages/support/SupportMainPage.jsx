@@ -110,28 +110,59 @@ const SupportMainPage = () => {
         </Grid>
         <Grid
           display={"flex"}
+          flexDirection={"column"}
           alignItems={"center"}
           justifyContent={"center"}
           item
           xs={12}
           margin={"0.5rem auto 0"}
         >
-          <Typography
-            color={"var(--gray-600, #475467)"}
-            textAlign={"center"}
-            fontFamily={"Inter"}
-            fontSize={"16px"}
-            fontStyle={"normal"}
-            fontWeight={500}
-            lineHeight={"24px"}
-            style={{
-              textWrap: "balance",
-            }}
+          <Grid
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            item
+            xs={12}
+            margin={"0.5rem auto 0"}
           >
-            {Date(`${event.eventInfoDetail.dateBegin}`)}
-            <br />
-            {Date(`${event.eventInfoDetail.dateEnd}`)}
-          </Typography>
+            <Typography
+              color={"var(--gray-600, #475467)"}
+              textAlign={"center"}
+              fontFamily={"Inter"}
+              fontSize={"16px"}
+              fontStyle={"normal"}
+              fontWeight={500}
+              lineHeight={"24px"}
+              style={{
+                textWrap: "balance",
+              }}
+            >
+              {Date(`${event.eventInfoDetail.dateBegin}`)}
+            </Typography>
+          </Grid>
+          <Grid
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            item
+            xs={12}
+            margin={"0.5rem auto 0"}
+          >
+            <Typography
+              color={"var(--gray-600, #475467)"}
+              textAlign={"center"}
+              fontFamily={"Inter"}
+              fontSize={"16px"}
+              fontStyle={"normal"}
+              fontWeight={500}
+              lineHeight={"24px"}
+              style={{
+                textWrap: "balance",
+              }}
+            >
+              {Date(`${event.eventInfoDetail.dateEnd}`)}
+            </Typography>
+          </Grid>
         </Grid>
         <Grid
           display={"flex"}
