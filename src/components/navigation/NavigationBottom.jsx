@@ -15,16 +15,11 @@ const NavigationBottom = () => {
   useEffect(() => {
     const controller = new AbortController();
     setPathRef(window.location.pathname);
-    console.log("window.location.pathname", window.location.pathname);
     return () => {
       controller.abort();
     };
   }, [window.location.pathname]);
 
-  console.log(
-    "listPageNotAllowForNavigation.includes(pathRef)",
-    listPageNotAllowForNavigation.includes(pathRef)
-  );
   const navigate = useNavigate();
 
   return (
@@ -60,7 +55,7 @@ const NavigationBottom = () => {
           color: "#fff",
         }}
         onClick={() => navigate("/device")}
-        label="Current order"
+        label="Current"
         icon={<Icon icon="ep:headset" width="30" height="30" />}
       />
       <BottomNavigationAction
