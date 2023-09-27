@@ -1,54 +1,60 @@
 import { Icon } from "@iconify/react";
-import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NavigationBottom = () => {
-  const pathName = window.location.pathname;
+  const listPageNotAllowForNavigation = [
+    "/initial-form",
+    "/device-selection",
+    "/deposit-payment",
+    "/",
+  ];
+  const [pathRef, setPathRef] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setPathRef(window.location.pathname);
+    console.log("window.location.pathname", window.location.pathname);
+    return () => {
+      controller.abort();
+    };
+  }, [window.location.pathname]);
+
+  console.log(
+    "listPageNotAllowForNavigation.includes(pathRef)",
+    listPageNotAllowForNavigation.includes(pathRef)
+  );
   const navigate = useNavigate();
 
   return (
-    // <Paper
-    //   variant="outlined"
-    //   sx={{
-    //     display: "flex",
-    //     padding: "8px 16px",
-    //     // height: "15dvh",
-    //     flexDirection: "column",
-    //     justifyContent: "center",
-    //     alignItems: "center",
-    //     /* gap: 24px; */
-    //     flexShrink: "0",
-    //     borderRadius: "20px 20px 0px 0px",
-    //     background: "var(--blue-dark-800, #0040c1)",
-    //     boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
-    //     aspectRatio: "9/16",
-    //   }}
-    // >
     <BottomNavigation
       id="bottonNavigation"
       sx={{
         background: "var(--blue-dark-800, #0040c1)",
         color: "#fff",
-        display: "flex",
+        display: `${
+          listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"
+        }`,
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "stretch",
         gap: "24px",
         minHeight: "15svh",
         minHeight: "15dvh",
-        padding:"0px 15px 30px",
-        borderRadius:"12px 12px 0 0"
+        padding: "0px 15px 30px",
+        borderRadius: "12px 12px 0 0",
       }}
       showLabels
     >
       <BottomNavigationAction
         sx={{
           background: `${
-            pathName === "/device"
+            pathRef === "/device"
               ? "var(--blue-dark-700, #004EEB)"
               : "var(--blue-dark-800, #0040c1)"
           }`,
-          borderRadius: `${pathName === "/device" ? "12px" : "0"}`,
+          borderRadius: `${pathRef === "/device" ? "12px" : "0"}`,
           aspectRatio: "1/3",
           height: "60%",
           color: "#fff",
@@ -60,11 +66,11 @@ const NavigationBottom = () => {
       <BottomNavigationAction
         sx={{
           background: `${
-            pathName === "/information"
+            pathRef === "/information"
               ? "var(--blue-dark-700, #004EEB)"
               : "var(--blue-dark-800, #0040c1)"
           }`,
-          borderRadius: `${pathName === "/information" ? "12px" : "0"}`,
+          borderRadius: `${pathRef === "/information" ? "12px" : "0"}`,
           aspectRatio: "1/3",
           height: "60%",
           color: "#fff",
@@ -76,11 +82,11 @@ const NavigationBottom = () => {
       <BottomNavigationAction
         sx={{
           background: `${
-            pathName === "/profile"
+            pathRef === "/profile"
               ? "var(--blue-dark-700, #004EEB)"
               : "var(--blue-dark-800, #0040c1)"
           }`,
-          borderRadius: `${pathName === "/profile" ? "12px" : "0"}`,
+          borderRadius: `${pathRef === "/profile" ? "12px" : "0"}`,
           aspectRatio: "1/3",
           height: "60%",
           color: "#fff",
