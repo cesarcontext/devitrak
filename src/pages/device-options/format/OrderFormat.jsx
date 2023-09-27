@@ -1,11 +1,27 @@
 import { Icon } from "@iconify/react";
 import { Grid, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { Card, QRCode } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
+import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
 const OrderFormat = (info) => {
+  console.log(
+    "🚀 ~ file: OrderFormat.jsx:10 ~ OrderFormat ~ info:",
+    info.info
+  );
   const { subscription } = useSelector((state) => state.event);
+  const _ = require("lodash");
+  const assignedDeviceListQuery = useQuery({
+    queryKey: ["assignedDevice"],
+    queryFn: () => devitrackApi.get("/receiver/receiver-assigned-list"),
+  });
+  const groupByEventAssignedDevice = _.groupBy(
+    assignedDeviceListQuery?.data?.data?.listOfReceivers,
+    "user"
+  );
+
   if (info) {
     const verifyStatusOrder = (props) => {
       return (
@@ -58,7 +74,27 @@ const OrderFormat = (info) => {
         result.splice(index, noDelete, data.deviceNeeded);
         index++;
       }
-      return result.reduce((accumulator, current) => accumulator + current);
+      return result.reduce((accumulator, current) => accumulator + current, 0);
+    };
+
+    const devicesAssignedInOrder = () => {
+      if (groupByEventAssignedDevice[info.info.consumerInfo.email]) {
+        const groupByPaymentIntentByConsumer = _.groupBy(
+          groupByEventAssignedDevice[info.info.consumerinfo.email],
+          "paymentIntent"
+        );
+        if (groupByPaymentIntentByConsumer[info.info.paymentIntent]) {
+          return groupByPaymentIntentByConsumer[
+            info.info.paymentIntent
+          ].device.reduce(
+            (accumulator, { status }) => accumulator + (status === true),
+            0
+          );
+        } else {
+          return 0;
+        }
+      }
+      return 0;
     };
     const orderDay = new Date();
     return (
@@ -97,6 +133,29 @@ const OrderFormat = (info) => {
               textTransform={"capitalize"}
             >
               Total devices: {sumDevices()}
+            </Typography>
+          </Grid>
+          <Grid
+            display={"flex"}
+            justifyContent={"flex-start"}
+            alignItems={"center"}
+            item
+            xs={10}
+          >
+            <Typography
+              width={"100%"}
+              alignSelf={"stretch"}
+              color={"var(--gray-600, #475467)"}
+              fontSize={"16px"}
+              fontFamily={"Inter"}
+              fontStyle={"normal"}
+              fontWeight={400}
+              lineHeight={"24px"}
+              textAlign={"left"}
+              textTransform={"capitalize"}
+            >
+              {sumDevices() > 1 ? "Devices" : "Device"} in use:{" "}
+              {devicesAssignedInOrder()}/{sumDevices()}
             </Typography>
           </Grid>
           <Grid
