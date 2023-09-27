@@ -86,7 +86,7 @@ const IndicatorProgressBottom = ({ current }) => {
           steps={2}
           percent={current}
           showInfo={false}
-          size={[85, 10]}
+          size={[70, 10]}
         />
       </Grid>
     </BottomNavigation>
