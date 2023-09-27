@@ -26,7 +26,7 @@ const AuthenticatedRoutes = () => {
 
   return (
     <>
-      <header>{window.location.pathname !== "/" && <UpperBanner />}</header>
+      <header><UpperBanner /></header>
       <main
         style={{
           minHeight: "80svh",
