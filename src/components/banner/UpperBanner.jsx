@@ -1,13 +1,25 @@
 import { Grid, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
 import Logo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
-import NRFLogo from "../../assets/nrf-logo 1.svg";
 import "./UpperBanner.css"
 const UpperBanner = () => {
+    const listPageNotAllowForNavigation = [
+    "/",
+  ];
+  const [pathRef, setPathRef] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setPathRef(window.location.pathname);
+    return () => {
+      controller.abort();
+    };
+  }, [window.location.pathname]);
   return (
     <Grid
       container
-      display={"flex"}
+      display={listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"}
       justifyContent={"space-around"}
       alignItems={"center"}
       alignSelf={"stretch"}
