@@ -16,9 +16,6 @@ const AuthenticatedRoutes = () => {
   const SingleInstruction = lazy(() =>
     import("../pages/instructions/SingleInstructionPage")
   );
-  // const InformationMainPage = lazy(() =>
-  //   import("../pages/information/MainPage")
-  // );
   const Profile = lazy(() => import("../pages/profile/Profile"));
   const DisplayQRCode = lazy(() =>
     import("../pages/display-qr-code/DisplayQRCode")
@@ -29,9 +26,7 @@ const AuthenticatedRoutes = () => {
 
   return (
     <>
-      <header>
-        <UpperBanner />
-      </header>
+      <header>{window.location.pathname !== "/" && <UpperBanner />}</header>
       <main
         style={{
           minHeight: "80svh",
@@ -58,10 +53,12 @@ const AuthenticatedRoutes = () => {
           </Routes>{" "}
         </Suspense>
       </main>
-      <footer  style={{
-         height: "calc(15svh - 100svh)",
-         height: "calc(15dvh - 100dvh)",
-        }}>
+      <footer
+        style={{
+          height: "calc(15svh - 100svh)",
+          height: "calc(15dvh - 100dvh)",
+        }}
+      >
         <NavigationBottom />
       </footer>
     </>
