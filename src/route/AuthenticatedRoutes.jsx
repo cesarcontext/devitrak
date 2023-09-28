@@ -26,7 +26,9 @@ const AuthenticatedRoutes = () => {
 
   return (
     <>
-      <header><UpperBanner /></header>
+      <header>
+        <UpperBanner />
+      </header>
       <main
         style={{
           minHeight: "80svh",
@@ -49,9 +51,11 @@ const AuthenticatedRoutes = () => {
             <Route path="/information" element={<InformationMainPage />} />{" "} */}
             <Route path="/device" element={<DeviceMainPage />} />{" "}
             <Route path="/profile" element={<Profile />} />{" "}
-            <Route path="/authentication" element={<AuthenticationLogin />} />{" "}
           </Routes>{" "}
         </Suspense>
+        <Routes>
+          <Route path="/authentication" element={<AuthenticationLogin />} />{" "}
+        </Routes>
       </main>
       <footer
         style={{
