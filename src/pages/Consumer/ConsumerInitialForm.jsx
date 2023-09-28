@@ -17,11 +17,10 @@ import "./ConsumerInitialForm.css";
 import { useRef, useState } from "react";
 import { devitrackApi } from "../../devitrakApi";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
-import { nanoid } from "@reduxjs/toolkit";
-import { Button } from "antd";
+import { Button, notification } from "antd";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 const schema = yup
   .object({
@@ -56,7 +55,14 @@ const ConsumerInitialForm = () => {
   const { choice, company, contactInfo } = useSelector((state) => state.event);
   const emailSentRef = useRef(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, msg, dspt) => {
+    api[type]({
+      message: msg,
+      description: dspt,
+    });
+  };
+  // const navigate = useNavigate();
   const listOfConsumersQuery = useQuery({
     queryKey: ["listOfConsumers"],
     queryFn: () => devitrackApi.get("/auth/users"),
@@ -75,13 +81,9 @@ const ConsumerInitialForm = () => {
       setLoadingState(loadingStatus.loading);
       const parametersNeededToLoginLink = {
         consumer: checkIfConsumerExists(),
-        link: `https://app.devitrak.net/authentication?uis=${nanoid(
-          250
-        )}&event=${encodeURI(choice)}&ssn=${nanoid(120)}&company=${encodeURI(
-          company
-        )}&uid=${checkIfConsumerExists().id}&hus=${nanoid(50)}&pmm=${nanoid(
-          30
-        )}`,
+        link: `https://app.devitrak.net/authentication?event=${encodeURI(
+          choice
+        )}&company=${encodeURI(company)}&uid=${checkIfConsumerExists().id}`,
         contactInfo: contactInfo.email,
       };
       const respo = await devitrackApi.post(
@@ -94,6 +96,7 @@ const ConsumerInitialForm = () => {
     };
 
     const submitNewConsumerInfo = async (data) => {
+      emailSentRef.current = true;
       const newConsumerProfile = {
         name: data.firstName,
         lastName: data.lastName,
@@ -135,7 +138,29 @@ const ConsumerInitialForm = () => {
               customerData: newStripeCustomer.data.customer,
             })
           );
-          navigate("/device-selection");
+          const parametersNeededToLoginLink = {
+            consumer: {
+              name: respNewConsumer.data.name,
+              lastName: respNewConsumer.data.lastName,
+              email: respNewConsumer.data.email,
+            },
+            link: `https://app.devitrak.net/authentication?event=${encodeURI(
+              choice
+            )}&company=${encodeURI(company)}&uid=${respNewConsumer.data.uid}`,
+            contactInfo: contactInfo.email,
+          };
+          const respo = await devitrackApi.post(
+            "/nodemailer/login-existing-consumer",
+            parametersNeededToLoginLink
+          );
+          if (respo) {
+            openNotificationWithIcon(
+              "success",
+              "Account created successfully!",
+              "We sent an email to confirm and login."
+            );
+          }
+          // navigate("/device-selection");
         }
       }
     };
@@ -145,6 +170,7 @@ const ConsumerInitialForm = () => {
     };
     return (
       <>
+        {contextHolder}
         <Grid
           display={"flex"}
           flexDirection={"column"}
@@ -292,9 +318,13 @@ const ConsumerInitialForm = () => {
                     fontWeight={400}
                     lineHeight={"20px"}
                   >
-                    Welcome back, {checkIfConsumerExists().name}! Your email is
-                    already in the system. Continue by sending an email to your
-                    inbox that contains a link for you to log in.
+                    Welcome back,{" "}
+                    <span style={{ textTransform: "capitalize" }}>
+                      {checkIfConsumerExists().name}
+                    </span>
+                    ! Your email is already in the system. Continue by sending
+                    an email to your inbox that contains a link for you to log
+                    in.
                   </Typography>
                 )}
                 {checkIfConsumerExists() && (
@@ -417,6 +447,17 @@ const ConsumerInitialForm = () => {
                         </Typography>
                       </InputLabel>
                       <OutlinedInput
+                        disabled={emailSentRef.current}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            {emailSentRef.current === true && (
+                              <Icon
+                                icon="mdi:checkbox-outline"
+                                color="#66c61c"
+                              />
+                            )}
+                          </InputAdornment>
+                        }
                         {...register("firstName")}
                         aria-invalid={errors.firstName ? true : false}
                         style={{
@@ -470,6 +511,17 @@ const ConsumerInitialForm = () => {
                         </Typography>
                       </InputLabel>
                       <OutlinedInput
+                        disabled={emailSentRef.current}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            {emailSentRef.current === true && (
+                              <Icon
+                                icon="mdi:checkbox-outline"
+                                color="#66c61c"
+                              />
+                            )}
+                          </InputAdornment>
+                        }
                         {...register("lastName")}
                         aria-invalid={errors.lastName ? true : false}
                         style={{
@@ -523,6 +575,7 @@ const ConsumerInitialForm = () => {
                       </InputLabel>
 
                       <PhoneInput
+                        disabled={emailSentRef.current}
                         className="phone-input-form"
                         countrySelectProps={{ unicodeFlags: true }}
                         defaultCountry="US"
@@ -569,6 +622,17 @@ const ConsumerInitialForm = () => {
                         </Typography>
                       </InputLabel>
                       <OutlinedInput
+                        disabled={emailSentRef.current}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            {emailSentRef.current === true && (
+                              <Icon
+                                icon="mdi:checkbox-outline"
+                                color="#66c61c"
+                              />
+                            )}
+                          </InputAdornment>
+                        }
                         value={groupName}
                         name="groupName"
                         onChange={(e) => setGroupName(e.target.value)}
