@@ -15,7 +15,7 @@ const UpperBanner = () => {
     return () => {
       controller.abort();
     };
-  }, [window.location.pathname]);
+  }, [window.location.pathname, pathRef]);
   return (
     <Grid
       container
