@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useQuery } from "@tanstack/react-query";
 import "./ConsumerInitialForm.css";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { devitrackApi } from "../../devitrakApi";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -76,6 +76,7 @@ const ConsumerInitialForm = () => {
       return check;
     };
     checkIfConsumerExists();
+
     const submitEmailToLoginForExistingConsumer = async () => {
       emailSentRef.current = true;
       setLoadingState(loadingStatus.loading);
@@ -160,7 +161,6 @@ const ConsumerInitialForm = () => {
               "We sent an email to confirm and login."
             );
           }
-          // navigate("/device-selection");
         }
       }
     };
@@ -650,7 +650,7 @@ const ConsumerInitialForm = () => {
                       <Button
                         htmlType="submit"
                         style={{
-                          display: "flex",
+                          display: `${emailSentRef.current ===false ? 'flex' : 'none'}`,
                           padding: "12px 20px",
                           justifyContent: "center",
                           alignItems: "center",
