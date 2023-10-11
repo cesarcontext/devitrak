@@ -17,7 +17,6 @@ const OrderFormat = (info) => {
     assignedDeviceListQuery?.data?.data?.listOfReceivers,
     "user"
   );
-
   if (info) {
     const verifyStatusOrder = (props) => {
       return (

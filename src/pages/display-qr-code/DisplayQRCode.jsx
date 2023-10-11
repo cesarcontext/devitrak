@@ -13,7 +13,7 @@ const DisplayQRCode = () => {
   const [qrCodeValue, setQrCodeValue] = useState(undefined);
   const paymentIntentValueRef = useRef(null);
   const nanoGenerated = useRef(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const foundTotalDeviceNumber = () => {
     const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
@@ -97,7 +97,7 @@ const DisplayQRCode = () => {
   }, []); // eslint-disable-line no-use-before-define
   const automaticNavigation = () => {
     setTimeout(() => {
-      navigate("/device");
+      navigate("/device", { replace: true });
     }, 3500);
   };
 
@@ -125,7 +125,8 @@ const DisplayQRCode = () => {
               textWrap: "balance",
             }}
           >
-            We are taking you to the current order page for more information.{automaticNavigation()}
+            We are taking you to the current order page for more information.
+            {automaticNavigation()}
           </Typography>
         </Grid>
         <Grid item xs={12}>

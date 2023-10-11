@@ -2,11 +2,9 @@ import { Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import Logo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
-import "./UpperBanner.css"
+import "./UpperBanner.css";
 const UpperBanner = () => {
-    const listPageNotAllowForNavigation = [
-    "/",
-  ];
+  const listPageNotAllowForNavigation = ["/"];
   const [pathRef, setPathRef] = useState(null);
 
   useEffect(() => {
@@ -19,14 +17,20 @@ const UpperBanner = () => {
   return (
     <Grid
       container
-      display={listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"}
+      display={
+        listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"
+      }
       justifyContent={"space-around"}
       alignItems={"center"}
       alignSelf={"stretch"}
       gap={2}
     >
       <Grid item xs={6}>
-        <img className="img-logo-banner" src='https://www.nacsshow.com/App_Themes/NACSShow2023/img/logo.png' alt="nacs-logo" />
+        <img
+          className="img-logo-banner"
+          src="https://www.nacsshow.com/App_Themes/NACSShow2023/img/logo.png"
+          alt="nacs-logo"
+        />
       </Grid>
       <Grid
         display={"flex"}

@@ -40,7 +40,7 @@ const IndicatorProgressBottom = ({ current }) => {
         boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
-      {urlDetector === "/device-selection" && eventInfoDetail.merchant && (
+      {urlDetector === "/deviceSelection" && eventInfoDetail.merchant && (
         <Grid
           style={{
             margin: "1.5rem 0 0.5rem 0",

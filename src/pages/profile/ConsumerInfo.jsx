@@ -66,14 +66,13 @@ const ConsumerInfo = () => {
     dispatch(onResetCustomerStripeInfo());
     navigate("/");
   };
-
   return (
     <Grid
       container
       display={"flex"}
       flexDirection={"column"}
       alignItems={"center"}
-      margin={'0.5rem auto 1.5rem'}
+      margin={"0.5rem auto 1.5rem"}
     >
       <Grid
         display={"flex"}
@@ -169,12 +168,11 @@ const ConsumerInfo = () => {
             lineHeight={"24px"}
             color={"var(--gray-600, #475467)"}
           >
-                      <PhoneInput
+            <PhoneInput
               disabled
               className="phone-input-form"
               value={consumer ? `+${consumer.phoneNumber}` : "+10000000000"}
             />
-            
           </Typography>
         </Grid>
         <OutlinedInput
@@ -305,7 +303,7 @@ const ConsumerInfo = () => {
             lineHeight={"20px"}
             color={"#fff"}
           >
-            {editSection ? "Save" : "Edit contact information" }
+            {editSection ? "Save" : "Edit contact information"}
           </Typography>
         </Button>
         <Button
@@ -317,7 +315,7 @@ const ConsumerInfo = () => {
             gap: "8px",
             borderRadius: "8px",
             border: "1px solid red",
-            margin:"0.5rem auto",
+            margin: "0.5rem auto",
             boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
             width: "100%",
           }}

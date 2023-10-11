@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   onAddContactInfo,
   onAddDeviceSetup,
@@ -17,9 +17,12 @@ import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 
 const AuthenticationLogin = () => {
-  const event = new URLSearchParams(window.location.search).get("event");
-  const company = new URLSearchParams(window.location.search).get("company");
-  const consumerId = new URLSearchParams(window.location.search).get("uid");
+  const { event, company, uid } = useParams();
+  console.log(`${event} - ${company} -${uid}`);
+  // const event = new URLSearchParams(window.location.search).get("event");
+  // const company = new URLSearchParams(window.location.search).get("company");
+  // const consumerId = new URLSearchParams(window.location.search).get("uid");
+  const consumerId = uid;
   const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,7 +85,7 @@ const AuthenticationLogin = () => {
       );
       const checkEvent = consumer.eventSelected.some((item) => item === event);
       if (checkCompany && checkEvent) {
-        return navigate("/device-selection");
+        return navigate("/deviceSelection");
       } else if (!checkCompany && checkEvent) {
         updatingConsumerInfoMutation.mutate({
           id: checkIfConsumerExists().id,
@@ -94,7 +97,7 @@ const AuthenticationLogin = () => {
             provider: [...consumer.provider, company],
           })
         );
-        return navigate("/device-selection");
+        return navigate("/deviceSelection");
       } else if (!checkEvent && checkCompany) {
         updatingConsumerInfoMutation.mutate({
           id: consumer.id,
@@ -106,7 +109,7 @@ const AuthenticationLogin = () => {
             eventSelected: [...consumer.eventSelected, event],
           })
         );
-        return navigate("/device-selection");
+        return navigate("/deviceSelection");
       } else if (!checkEvent && !checkCompany) {
         updatingConsumerInfoMutation.mutate({
           id: consumer.id,
@@ -120,7 +123,7 @@ const AuthenticationLogin = () => {
             provider: [...consumer.provider, company],
           })
         );
-        return navigate("/device-selection");
+        return navigate("/deviceSelection");
       }
     };
     updateConsumerInfoEventAndCompany();

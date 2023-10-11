@@ -40,7 +40,6 @@ const Home = () => {
     );
     return finding;
   }, [
-    listOfEventsQuery.isLoading,
     listOfEventsQuery.data,
     companyUrl,
     eventUrl,

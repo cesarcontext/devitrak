@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const NavigationBottom = () => {
   const listPageNotAllowForNavigation = [
     "/initial-form",
-    "/device-selection",
+    "/deviceSelection",
     "/deposit-payment",
     "/",
   ];

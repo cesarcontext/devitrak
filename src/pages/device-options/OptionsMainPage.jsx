@@ -9,6 +9,7 @@ import OrderFormat from "./format/OrderFormat";
 
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
+  const { choice } = useSelector((state) => state.event);
   const navigate = useNavigate();
 
   const savedTransactionsQuery = useQuery({
@@ -17,7 +18,9 @@ const OptionsMainPage = () => {
   });
 
   const find = savedTransactionsQuery?.data?.data?.list?.filter(
-    (transaction) => transaction?.consumerInfo?.email === consumer?.email
+    (transaction) =>
+      transaction?.consumerInfo?.email === consumer?.email &&
+      transaction.eventSelected === choice
   );
 
   const removeDuplicateEntries = useCallback(() => {
@@ -35,9 +38,10 @@ const OptionsMainPage = () => {
     }
   }, [find]);
   removeDuplicateEntries();
+
   const newOrderSubmit = () => {
     if (consumer) {
-      return navigate("/device-selection");
+      return navigate("/deviceSelection");
     } else {
       return navigate("/initial-form");
     }
@@ -94,6 +98,10 @@ const OptionsMainPage = () => {
       >
         {consumer && find ? (
           find?.toReversed().map((item) => {
+            console.log(
+              "🚀 ~ file: OptionsMainPage.jsx:101 ~ find?.toReversed ~ item:",
+              item
+            );
             return (
               <span key={item.id}>
                 <OrderFormat info={item} />

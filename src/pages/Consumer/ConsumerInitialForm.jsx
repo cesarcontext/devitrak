@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useQuery } from "@tanstack/react-query";
 import "./ConsumerInitialForm.css";
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { devitrackApi } from "../../devitrakApi";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -82,9 +82,9 @@ const ConsumerInitialForm = () => {
       setLoadingState(loadingStatus.loading);
       const parametersNeededToLoginLink = {
         consumer: checkIfConsumerExists(),
-        link: `https://app.devitrak.net/authentication?event=${encodeURI(
+        link: `https://app.devitrak.net/authentication/${encodeURI(
           choice
-        )}&company=${encodeURI(company)}&uid=${checkIfConsumerExists().id}`,
+        )}/${encodeURI(company)}/${checkIfConsumerExists().id}`,
         contactInfo: contactInfo.email,
       };
       const respo = await devitrackApi.post(
@@ -145,13 +145,13 @@ const ConsumerInitialForm = () => {
               lastName: respNewConsumer.data.lastName,
               email: respNewConsumer.data.email,
             },
-            link: `https://app.devitrak.net/authentication?event=${encodeURI(
+            link: `https://app.devitrak.net/authentication/${encodeURI(
               choice
-            )}&company=${encodeURI(company)}&uid=${respNewConsumer.data.uid}`,
+            )}/${encodeURI(company)}/${respNewConsumer.data.uid}`,
             contactInfo: contactInfo.email,
           };
           const respo = await devitrackApi.post(
-            "/nodemailer/login-existing-consumer",
+            "/nodemailer/confirmation-account",
             parametersNeededToLoginLink
           );
           if (respo) {
@@ -618,7 +618,7 @@ const ConsumerInitialForm = () => {
                           lineHeight={"20px"}
                           color={"var(--gray-700, #344054)"}
                         >
-                          Group name
+                          Group name (Optional)
                         </Typography>
                       </InputLabel>
                       <OutlinedInput

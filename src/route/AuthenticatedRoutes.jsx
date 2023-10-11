@@ -4,6 +4,7 @@ import NavigationBottom from "../components/navigation/NavigationBottom";
 import UpperBanner from "../components/banner/UpperBanner";
 import AuthenticationLogin from "../pages/authentication/AuthenticationLogin";
 import LoadingPage from "../pages/loading/LoadingPage";
+import HandleErrorPage from "../pages/HandleErrorPage";
 const AuthenticatedRoutes = () => {
   const ConsumerInitialForm = lazy(() =>
     import("../pages/Consumer/ConsumerInitialForm")
@@ -37,25 +38,44 @@ const AuthenticatedRoutes = () => {
       >
         <Suspense fallback={<LoadingPage />}>
           <Routes>
-            <Route path="/" element={<Home />} />{" "}
-            <Route path="/initial-form" element={<ConsumerInitialForm />} />{" "}
-            <Route path="/device-selection" element={<DeviceSelection />} />{" "}
-            {/* <Route path="/deposit-payment" element={< />} />{" "} */}
+            <Route exact path="/" element={<Home />} />{" "}
+            <Route
+              exact
+              path="/initial-form"
+              element={<ConsumerInitialForm />}
+            />{" "}
+            <Route
+              exact
+              path="/authentication/:event/:company/:uid"
+              element={<AuthenticationLogin />}
+            />{" "}
+            <Route
+              exact
+              path="/deviceSelection"
+              element={<DeviceSelection />}
+            />{" "}
+            {/* <Route exact path="/deposit-payment" element={< />} />{" "} */}
             <Route
               path="/qr-code-generation"
               element={<DisplayQRCode />}
             />{" "}
-            <Route path="/information" element={<InstructionsMainPage />} />{" "}
-            <Route path="/information/:id" element={<SingleInstruction />} />{" "}
-            {/* <Route path="/information" element={<InformationMainPage />} />{" "}
-            <Route path="/information" element={<InformationMainPage />} />{" "} */}
-            <Route path="/device" element={<DeviceMainPage />} />{" "}
-            <Route path="/profile" element={<Profile />} />{" "}
+            <Route exact path="/device" element={<DeviceMainPage />} />{" "}
+            <Route
+              exact
+              path="/information"
+              element={<InstructionsMainPage />}
+            />{" "}
+            <Route
+              exact
+              path="/information/:id"
+              element={<SingleInstruction />}
+            />{" "}
+            {/* <Route exact path="/information" element={<InformationMainPage />} />{" "}
+            <Route exact path="/information" element={<InformationMainPage />} />{" "} */}
+            <Route exact path="/profile" element={<Profile />} />{" "}
+            <Route path="/*" element={<HandleErrorPage />} />
           </Routes>{" "}
         </Suspense>
-        <Routes>
-          <Route path="/authentication" element={<AuthenticationLogin />} />{" "}
-        </Routes>
       </main>
       <footer
         style={{
