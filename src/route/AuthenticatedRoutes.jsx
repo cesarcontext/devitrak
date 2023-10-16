@@ -4,7 +4,6 @@ import NavigationBottom from "../components/navigation/NavigationBottom";
 import UpperBanner from "../components/banner/UpperBanner";
 import AuthenticationLogin from "../pages/authentication/AuthenticationLogin";
 import LoadingPage from "../pages/loading/LoadingPage";
-import HandleErrorPage from "../pages/HandleErrorPage";
 const AuthenticatedRoutes = () => {
   const ConsumerInitialForm = lazy(() =>
     import("../pages/Consumer/ConsumerInitialForm")
@@ -73,7 +72,6 @@ const AuthenticatedRoutes = () => {
             {/* <Route exact path="/information" element={<InformationMainPage />} />{" "}
             <Route exact path="/information" element={<InformationMainPage />} />{" "} */}
             <Route exact path="/profile" element={<Profile />} />{" "}
-            <Route path="/*" element={<HandleErrorPage />} />
           </Routes>{" "}
         </Suspense>
       </main>
