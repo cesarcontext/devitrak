@@ -5,6 +5,17 @@ import "react-phone-number-input/style.css";
 import "./SupportMainPage.css";
 const SupportMainPage = () => {
   const { event } = useSelector((state) => state.event);
+
+  const beginDateRef = Date(event.eventInfoDetail.dateBegin)
+    .split(" ")
+    .slice(0, 4)
+    .join()
+    .replaceAll(",", " ");
+  const endDateRef = Date(event.eventInfoDetail.dateEnd)
+    .split(" ")
+    .slice(0, 4)
+    .join()
+    .replaceAll(",", " ");
   return (
     <Grid
       container
@@ -137,7 +148,7 @@ const SupportMainPage = () => {
                 textWrap: "balance",
               }}
             >
-              {Date(`${event.eventInfoDetail.dateBegin}`)}
+              {beginDateRef}
             </Typography>
           </Grid>
           <Grid
@@ -160,7 +171,7 @@ const SupportMainPage = () => {
                 textWrap: "balance",
               }}
             >
-              {Date(`${event.eventInfoDetail.dateEnd}`)}
+              {endDateRef}
             </Typography>
           </Grid>
         </Grid>
