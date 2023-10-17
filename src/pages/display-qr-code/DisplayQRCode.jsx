@@ -97,8 +97,9 @@ const DisplayQRCode = () => {
   }, []); // eslint-disable-line no-use-before-define
   const automaticNavigation = () => {
     setTimeout(() => {
-      navigate("/device", { replace: true });
-    }, 3500);
+      return navigate("/device", { replace: true });
+    }, 2000);
+    return null
   };
 
   return (
@@ -131,11 +132,12 @@ const DisplayQRCode = () => {
         </Grid>
         <Grid item xs={12}>
           <QRCode
+            bgColor="#fff"
             errorLevel="H"
             value={
               qrCodeValue ? qrCodeValue.paymentIntent : "https://devitrak.com"
             }
-            // icon="../../assets/devitrak_logo.svg"
+            icon="https://i.ibb.co/kKktFyw/maskable-icon.png"
           />
         </Grid>
         <Grid margin={"1rem auto"} item xs={12}>
