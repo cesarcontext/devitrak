@@ -195,24 +195,30 @@ const MainPage = () => {
                             item
                             xs={12}
                           >
-                            <img
-                              style={{
-                                width: "10%",
-                                // height: "20%",
-                                padding: "15px 0",
-                              }}
-                              alt="logo"
-                              src={DevitrakLogo}
-                            />
-                            <img
-                              style={{
-                                width: "25%",
-                                // height: "35%",
-                                padding: "15px 10px 15px 0",
-                              }}
-                              alt="name"
-                              src={DevitrakName}
-                            />
+                            {article.image !== "" ? (
+                              <img alt="post-img" src={article.image} />
+                            ) : (
+                              <>
+                                <img
+                                  style={{
+                                    width: "10%",
+                                    // height: "20%",
+                                    padding: "15px 0",
+                                  }}
+                                  alt="logo"
+                                  src={DevitrakLogo}
+                                />
+                                <img
+                                  style={{
+                                    width: "25%",
+                                    // height: "35%",
+                                    padding: "15px 10px 15px 0",
+                                  }}
+                                  alt="name"
+                                  src={DevitrakName}
+                                />
+                              </>
+                            )}
                           </Grid>
                         </Grid>
                       }

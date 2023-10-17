@@ -83,6 +83,7 @@ const SingleInstructionPage = () => {
             display: "-webkit-box",
             "-webkit-box-orient": "vertical",
           }}
+          cover={article.image !== "" && <img alt="post-img" src={article.image} />}
         >
           <div dangerouslySetInnerHTML={sanitizedData(article?.body)}></div>
         </Card>
