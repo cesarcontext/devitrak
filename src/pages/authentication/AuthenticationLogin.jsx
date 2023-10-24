@@ -15,14 +15,13 @@ import {
 } from "../../store/slides/eventSlide";
 import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
+import { useRef } from "react";
 
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
-  console.log(`${event} - ${company} -${uid}`);
-  // const event = new URLSearchParams(window.location.search).get("event");
-  // const company = new URLSearchParams(window.location.search).get("company");
-  // const consumerId = new URLSearchParams(window.location.search).get("uid");
   const consumerId = uid;
+  const _ = require("lodash");
+  const refUpdate = useRef(false);
   const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,91 +41,180 @@ const AuthenticationLogin = () => {
     mutationFn: (consumerProfile) =>
       devitrackApi.patch(`/auth/${consumerProfile.id}`, consumerProfile),
   });
-  const finding = listOfEventsQuery?.data?.data?.list;
-  const foundEventInfo = async () => {
-    const foundData = await finding?.find(
-      (item) =>
-        item.eventInfoDetail.eventName === event && item.company === company
-    );
-    if (foundData) {
-      dispatch(onAddEventData(foundData));
-      dispatch(onAddEventInfoDetail(foundData?.eventInfoDetail));
-      dispatch(onAddEventStaff(foundData?.staff));
-      dispatch(onSelectEvent(foundData?.eventInfoDetail.eventName));
-      dispatch(onSelectCompany(foundData?.company));
-      dispatch(onAddDeviceSetup(foundData?.deviceSetup));
-      dispatch(onAddContactInfo(foundData?.contactInfo));
-      dispatch(onAddSubscriptionInfo(foundData?.subscription));
-      return foundData;
-    }
-  };
-  foundEventInfo();
-  const checkIfConsumerExists = () => {
-    const check = listOfConsumersQuery?.data?.data?.users?.find(
-      (consumer) => consumer.id === consumerId
-    );
-    return check;
-  };
-  checkIfConsumerExists();
-  dispatch(onAddConsumerInfo(checkIfConsumerExists()));
 
-  if (consumer) {
-    const findingStripeCustomer = async () => {
-      const finding =
-        await stripeCustomersQuery?.data?.data?.stripeCustomerSaved?.find(
-          (customer) => customer.email === consumer.email
-        );
-      dispatch(onAddCustomerStripeInfo(finding));
-    };
-    findingStripeCustomer();
-    const updateConsumerInfoEventAndCompany = async () => {
-      const checkCompany = consumer.provider.some(
-        (provider) => provider === company
+  if (
+    listOfConsumersQuery.data &&
+    listOfEventsQuery.data &&
+    stripeCustomersQuery.data
+  ) {
+    const foundEventInfo = async () => {
+      const groupingByEvents = await _.groupBy(
+        listOfEventsQuery.data.data.list,
+        "eventInfoDetail.eventName"
       );
-      const checkEvent = consumer.eventSelected.some((item) => item === event);
-      if (checkCompany && checkEvent) {
-        return navigate("/deviceSelection");
-      } else if (!checkCompany && checkEvent) {
-        updatingConsumerInfoMutation.mutate({
-          id: checkIfConsumerExists().id,
-          provider: [...consumer.provider, company],
-        });
-        dispatch(
-          onAddConsumerInfo({
-            ...consumer,
-            provider: [...consumer.provider, company],
-          })
+
+      const foundData = await groupingByEvents[event].at(-1);
+      if (foundData) {
+        dispatch(onAddEventData(foundData));
+        dispatch(onAddEventInfoDetail(foundData.eventInfoDetail));
+        dispatch(onAddEventStaff(foundData.staff));
+        dispatch(onSelectEvent(foundData.eventInfoDetail.eventName));
+        dispatch(onSelectCompany(foundData.company));
+        dispatch(onAddDeviceSetup(foundData.deviceSetup));
+        dispatch(onAddContactInfo(foundData.contactInfo));
+        dispatch(onAddSubscriptionInfo(foundData.subscription));
+        return foundData;
+      }
+    };
+    foundEventInfo();
+
+    const checkIfConsumerExists = async () => {
+      const groupingByConsumers = await _.groupBy(
+        listOfConsumersQuery.data.data.users,
+        "id"
+      );
+      const foundConsumerInfo = await groupingByConsumers[consumerId];
+      if (foundConsumerInfo) {
+        dispatch(onAddConsumerInfo(foundConsumerInfo.at(-1)));
+        refUpdate.current = true;
+        return foundConsumerInfo;
+      }
+    };
+    checkIfConsumerExists();
+
+    const foundStripeConsumerAccountInfo = async () => {
+      const groupingByStripeAccount = _.groupBy(
+        stripeCustomersQuery.data.data.stripeCustomerSaved,
+        "email"
+      );
+      if (groupingByStripeAccount) {
+        if (groupingByStripeAccount.hasOwnProperty(consumer.email)) {
+          return dispatch(
+            onAddCustomerStripeInfo(
+              groupingByStripeAccount[consumer.email].at(-1)
+            )
+          );
+        }
+        const newStripeCust = {
+          name: `${consumer.name} ${consumer.lastName}`,
+          email: consumer.email,
+          phone: consumer.phoneNumber,
+        };
+        const respCreateStripeCustomer = await devitrackApi.post(
+          "/stripe/customer",
+          newStripeCust
         );
-        return navigate("/deviceSelection");
-      } else if (!checkEvent && checkCompany) {
-        updatingConsumerInfoMutation.mutate({
-          id: consumer.id,
-          eventSelected: [...consumer.eventSelected, event],
-        });
-        dispatch(
-          onAddConsumerInfo({
-            ...consumer,
+        if (respCreateStripeCustomer) {
+          return dispatch(
+            onAddCustomerStripeInfo({
+              ...respCreateStripeCustomer,
+              name: newStripeCust.name,
+              email: newStripeCust.email,
+              phone: newStripeCust.phone,
+              stripeid: respCreateStripeCustomer.stripeid,
+            })
+          );
+        }
+      }
+    };
+    foundStripeConsumerAccountInfo();
+    const checkUpdateConsumerEventsListInfo = async () => {
+      if (consumer && refUpdate.current) {
+        const { provider, eventSelected } = consumer;
+        const attendedEvents = {};
+        const providerPerEvents = {};
+        for (let data of provider) {
+          if (!providerPerEvents[data]) {
+            providerPerEvents[data] = data;
+          }
+        }
+        for (let data of eventSelected) {
+          if (!attendedEvents[data]) {
+            attendedEvents[data] = data;
+          }
+        }
+
+        if (!attendedEvents.hasOwnProperty(event)) {
+          updatingConsumerInfoMutation.mutate({
+            id: consumer.id,
             eventSelected: [...consumer.eventSelected, event],
-          })
-        );
-        return navigate("/deviceSelection");
-      } else if (!checkEvent && !checkCompany) {
-        updatingConsumerInfoMutation.mutate({
-          id: consumer.id,
-          eventSelected: [...consumer.eventSelected, event],
-          provider: [...consumer.provider, company],
-        });
-        dispatch(
-          onAddConsumerInfo({
-            ...consumer,
-            eventSelected: [...consumer.eventSelected, event],
+          });
+          dispatch(
+            onAddConsumerInfo({
+              ...consumer,
+              eventSelected: [...consumer.eventSelected, event],
+            })
+          );
+        }
+        if (!providerPerEvents.hasOwnProperty(event)) {
+          updatingConsumerInfoMutation.mutate({
+            id: consumer.id,
             provider: [...consumer.provider, company],
-          })
-        );
+          });
+          dispatch(
+            onAddConsumerInfo({
+              ...consumer,
+              provider: [...consumer.provider, company],
+            })
+          );
+        }
+        refUpdate.current = false;
         return navigate("/deviceSelection");
       }
     };
-    updateConsumerInfoEventAndCompany();
+
+    checkUpdateConsumerEventsListInfo();
+    // if (consumer) {
+    //   const updateConsumerInfoEventAndCompany = async () => {
+    //     const checkCompany = consumer.provider.some(
+    //       (provider) => provider === company
+    //     );
+    //     const checkEvent = consumer.eventSelected.some(
+    //       (item) => item === event
+    //     );
+    //     if (checkCompany && checkEvent) {
+    //       return navigate("/deviceSelection");
+    //     } else if (!checkCompany && checkEvent) {
+    //       updatingConsumerInfoMutation.mutate({
+    //         id: checkIfConsumerExists().id,
+    //         provider: [...consumer.provider, company],
+    //       });
+    //       dispatch(
+    //         onAddConsumerInfo({
+    //           ...consumer,
+    //           provider: [...consumer.provider, company],
+    //         })
+    //       );
+    //       return navigate("/deviceSelection");
+    //     } else if (!checkEvent && checkCompany) {
+    //       updatingConsumerInfoMutation.mutate({
+    //         id: consumer.id,
+    //         eventSelected: [...consumer.eventSelected, event],
+    //       });
+    //       dispatch(
+    //         onAddConsumerInfo({
+    //           ...consumer,
+    //           eventSelected: [...consumer.eventSelected, event],
+    //         })
+    //       );
+    //       return navigate("/deviceSelection");
+    //     } else if (!checkEvent && !checkCompany) {
+    //       updatingConsumerInfoMutation.mutate({
+    //         id: consumer.id,
+    //         eventSelected: [...consumer.eventSelected, event],
+    //         provider: [...consumer.provider, company],
+    //       });
+    //       dispatch(
+    //         onAddConsumerInfo({
+    //           ...consumer,
+    //           eventSelected: [...consumer.eventSelected, event],
+    //           provider: [...consumer.provider, company],
+    //         })
+    //       );
+    //       return navigate("/deviceSelection");
+    //     }
+    //   };
+    // updateConsumerInfoEventAndCompany();
     if (listOfConsumersQuery.isLoading || listOfConsumersQuery.isFetching) {
       return (
         <Grid container>
@@ -162,6 +250,7 @@ const AuthenticationLogin = () => {
       );
     }
   }
+  // }
 };
 
 export default AuthenticationLogin;
