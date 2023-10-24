@@ -4,9 +4,16 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
+import { Grid, Typography } from "@mui/material";
+import { Button } from "antd";
+import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 
 const Checkout = () => {
-    const stripe = useStripe();
+  const { clientSecret } = useSelector((state) => state.stripe);
+  const { event } = useSelector((state) => state.event);
+  const { consumer } = useSelector((state) => state.consumer);
+  const stripe = useStripe();
   const elements = useElements();
 
   /**
@@ -92,15 +99,9 @@ const Checkout = () => {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: myUrl + "/confirmation",
+        return_url: myUrl + "/qr-code-generation",
       },
     });
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
       setMessage(error.message);
     } else {
@@ -111,24 +112,145 @@ const Checkout = () => {
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement options={paymentElementStyle} id="payment-element" />
-      <button
-        className="btn"
-        disabled={isLoading || !stripe || !elements}
-        id="submit"
-      >
-        <span id="button-text">
-          {isLoading ? (
-            <div className="spinner" id="spinner"></div>
-          ) : (
-            `Authorize $${""}`
-          )}
-        </span>
-      </button>
-      {message && <div id="payment-message">{message}</div>}
-    </form>
+    <>
+      <Grid container>
+        <Grid
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          margin={"0 auto"}
+          item
+          xs={10}
+          sm={10}
+          md={8}
+          lg={6}
+        >
+          <Typography
+            color={"var(--gray-900, #101828)"}
+            textAlign={"center"}
+            fontFamily={"Inter"}
+            fontSize={"24px"}
+            fontWeight={600}
+            fontStyle={"normal"}
+            lineHeight={"32px"}
+            marginBottom={'2dvh'}
+          >
+            Last step,{" "}
+            <span
+              style={{
+                textTransform: "capitalize",
+              }}
+            >
+              {consumer.name}
+            </span>
+            !
+          </Typography>
+          <Typography
+            color={"var(--gray-600, #475467)"}
+            textAlign={"center"}
+            fontFamily={"Inter"}
+            fontSize={"16px"}
+            fontWeight={400}
+            fontStyle={"normal"}
+            lineHeight={"24px"}
+          >
+            Enter your card details for your deposit. This will get returned to
+            your card once all devices are returned.
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container>
+        <Grid
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          margin={"2dvh auto 0"}
+          item
+          xs={10}
+          sm={10}
+          md={8}
+          lg={6}
+        >
+          <form style={{
+            height:"65svh",
+            overflow:"scroll",
+          }} id="payment-form" onSubmit={handleSubmit}>
+            <PaymentElement
+              options={paymentElementStyle}
+              id="payment-element"
+            />
+            <Button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+                borderRadius: "8px",
+                padding: "8px",
+                border: "1px solid var(--blue-dark-600, #155EEF)",
+                background: "var(--blue-dark-600, #155EEF)",
+                boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
+              }}
+              htmlType="submit"
+              disabled={isLoading || !stripe || !elements}
+            >
+              <span id="button-text">
+                {isLoading ? (
+                  <div className="spinner" id="spinner"></div>
+                ) : (
+                  <Typography
+                    lineHeight={"24px"}
+                    fontSize={"16px"}
+                    fontFamily={"Inter"}
+                    fontWeight={600}
+                    color={"#fff"}
+                  >
+                    Authorize $
+                    {clientSecret.paymentIntent.amount.toString().slice(0, -2)}
+                  </Typography>
+                )}
+              </span>
+            </Button>
+            {message && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  borderRadius: "8px",
+                  padding: "8px",
+                  background: "#f74747",
+                  color: "#fff",
+                  boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
+                }}
+                id="payment-message"
+              >
+                {" "}
+                <Typography color={"#fff"}>{message}</Typography>
+              </div>
+            )}
+          </form>
+        </Grid>
+      </Grid>
+      <Grid container>
+        <Grid
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          marginTop={2}
+          item
+          xs={12}
+        >
+          <IndicatorProgressBottom
+            steps={event.eventInfoDetail.merchant ? 3 : 2}
+            current={100}
+          />
+        </Grid>{" "}
+      </Grid>
+    </>
   );
 };
 
-export default Checkout
+export default Checkout;
