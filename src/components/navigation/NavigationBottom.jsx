@@ -1,25 +1,16 @@
 import { Icon } from "@iconify/react";
 import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NavigationBottom = () => {
   const listPageNotAllowForNavigation = [
     "/initial-form",
     "/deviceSelection",
-    "/deposit-payment",
+    "/payment",
     "/",
   ];
-  const [pathRef, setPathRef] = useState(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    setPathRef(window.location.pathname);
-    return () => {
-      controller.abort();
-    };
-  }, [window.location.pathname]);
-
+  const pathRef =useMemo(() => (window.location.pathname), [window.location.pathname])
   const navigate = useNavigate();
 
   return (

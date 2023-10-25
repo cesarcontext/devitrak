@@ -3,27 +3,17 @@ import { Progress } from "antd";
 import "./IndicatorProgressBottom.css";
 import "./BottomNavigation.css";
 import { useSelector } from "react-redux";
-import React from "react";
-const IndicatorProgressBottom = ({ current }) => {
+import React, { useCallback } from "react";
+const IndicatorProgressBottom = ({ current, steps }) => {
   const urlDetector = window.location.pathname;
-  const { multipleDeviceSelection } = useSelector(
+  const { currentSelectionDevice } = useSelector(
     (state) => state.deviceHandler
   );
-  const { eventInfoDetail } = useSelector((state) => state.event);
-  const sumOfDevicesNeeded = () => {
-    let result = [];
-    let index = 0;
-    for (let data of multipleDeviceSelection) {
-      result.splice(
-        index,
-        0,
-        parseInt(data.deviceNeeded) * parseInt(data.deviceValue)
-      );
-      index++;
-    }
-    return result.reduce((accumulator, current) => accumulator + current, 0);
-  };
-
+  const validPaths = ['/deviceSelection', '/payment']
+  const { eventInfoDetail, deviceSetup } = useSelector((state) => state.event);
+  const sumOfDevicesNeeded = useCallback(() => {
+    return Number(deviceSetup[0].deviceValue) * currentSelectionDevice;
+  }, [currentSelectionDevice, deviceSetup]);
   return (
     <BottomNavigation
       key={urlDetector}
@@ -31,23 +21,23 @@ const IndicatorProgressBottom = ({ current }) => {
       sx={{
         display: "flex",
         width: "100%",
-        padding: "32px 0px",
+        height: "25dvh",
         flexDirection: "column",
         alignItems: "flex-start",
-        gap: "24px",
+        gap: "10px",
         borderRadius: "20px 20px 0px 0px",
         background: "var(--base-white, #fff)",
         boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
-      {urlDetector === "/deviceSelection" && eventInfoDetail.merchant && (
+      {validPaths.includes(urlDetector) && eventInfoDetail.merchant && (
         <Grid
           style={{
-            margin: "1.5rem 0 0.5rem 0",
+            margin: "0rem 0rem 0.5rem",
           }}
           container
         >
-          <Grid item xs={12}>
+          <Grid padding={"0 35px 0 35px"} item xs={12}>
             <Typography
               color={"var(--gray-900, #101828)"}
               /* Display xs/Semibold */
@@ -78,12 +68,12 @@ const IndicatorProgressBottom = ({ current }) => {
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
-        margin={"0 auto"}
+        margin={"0 auto 5svh"}
         item
         xs={10}
       >
         <Progress
-          steps={2}
+          steps={steps}
           percent={current}
           showInfo={false}
           size={[70, 10]}

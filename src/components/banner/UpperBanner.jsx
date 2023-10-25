@@ -1,23 +1,19 @@
 import { Grid, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import Logo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
 import "./UpperBanner.css";
 const UpperBanner = () => {
   const listPageNotAllowForNavigation = ["/"];
-  const [pathRef, setPathRef] = useState(null);
-  const { event } = useSelector((state) => state.event);
-  console.log("🚀 ~ file: UpperBanner.jsx:11 ~ UpperBanner ~ event:", event);
-  useEffect(() => {
-    const controller = new AbortController();
-    setPathRef(window.location.pathname);
-    return () => {
-      controller.abort();
-    };
-  }, [pathRef]);
+  const { eventInfoDetail } = useSelector((state) => state.event);
+  const pathRef = useMemo(
+    () => window.location.pathname,
+    [window.location.pathname]
+  );
   return (
     <Grid
+      key={pathRef}
       container
       display={
         listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"
@@ -28,11 +24,13 @@ const UpperBanner = () => {
       gap={2}
     >
       <Grid item xs={6}>
-        <img
-          className="img-logo-banner"
-          src={event.eventInfoDetail.logo ?? Logo}
-          alt="dynamic-logo-placeholder"
-        />
+        {eventInfoDetail.logo && (
+          <img
+            className="img-logo-banner"
+            src={eventInfoDetail?.logo}
+            alt="dynamic-logo-placeholder"
+          />
+        ) }
       </Grid>
       <Grid
         display={"flex"}
