@@ -11,14 +11,26 @@ const IndicatorProgressBottom = ({ current, steps }) => {
   );
   const validPaths = ['/deviceSelection', '/payment']
   const { eventInfoDetail, deviceSetup } = useSelector((state) => state.event);
+
   const sumOfDevicesNeeded = useCallback(() => {
-    return Number(deviceSetup[0].deviceValue) * currentSelectionDevice;
+    const findRightValueOfDevice = () => {
+      const result = new Set()
+      for (let data of deviceSetup) {
+        if (data.consumerUses) {
+          result.add(Number(data.value))
+        }
+      }
+      const values = [...result]
+      return Math.max(...values)
+    }    
+    return findRightValueOfDevice() * currentSelectionDevice;
   }, [currentSelectionDevice, deviceSetup]);
+  
   return (
     <BottomNavigation
       key={urlDetector}
       className="bottom-navigation"
-      sx={{
+      style={{
         display: "flex",
         width: "100%",
         height: "25dvh",
