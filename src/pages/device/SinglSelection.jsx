@@ -7,20 +7,26 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import "./DeviceSelection.css";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
+  onAddCurrentDeviceSelection,
   onAddMultipleDeviceSelection,
   onAddNewOrder,
   onAddNewOrderToHistory,
 } from "../../store/slides/deviceSlides";
 import { useNavigate } from "react-router-dom";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
-import "./DeviceSelection.css";
 import { message } from "antd";
+import {
+  onAddAmountStripeInfo,
+  onAddPaymentIntent,
+} from "../../store/slides/stripeSlide";
+import { devitrackApi } from "../../devitrakApi";
 const SingleSelection = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { consumer } = useSelector((state) => state.consumer);
   const { deviceSetup, eventInfoDetail } = useSelector((state) => state.event);
+  const { customerStripe } = useSelector((state) => state.stripe);
   const [numberNeeded, setNumberNeeded] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,8 +36,13 @@ const SingleSelection = () => {
     return setNumberNeeded(parseInt(numberNeeded) - 1);
   };
   const addNumber = () => {
-    return setNumberNeeded(parseInt(numberNeeded) + 1);
+    return setNumberNeeded(Number(numberNeeded) + 1);
   };
+  const detectNumberDevice = useCallback(
+    () => dispatch(onAddCurrentDeviceSelection(numberNeeded)),
+    [numberNeeded, dispatch]
+  );
+  detectNumberDevice();
   const warning = () => {
     messageApi.open({
       type: "warning",
@@ -53,44 +64,69 @@ const SingleSelection = () => {
             }}
           >
             {consumer?.name}
-          </span>!
+          </span>
+          !
           <br />
-           Device selection must be bigger than 0!
+          Device selection must be bigger than 0!
         </Typography>
       ),
     });
   };
-  const submitDeviceSelectionInfo = (event) => {
+
+  const retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent = () => {
+    const result = new Set()
+    for(let data of deviceSetup){
+      if(data.consumerUses){
+        result.add(Number(data.value))
+      }
+    }
+    const objToArray = Array.from(result)
+    return Math.max(...objToArray)
+  }
+  const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
     if (numberNeeded === 0) {
       return warning();
     }
-    if (numberNeeded > 0) {
-      dispatch(
-        onAddMultipleDeviceSelection({
-          deviceType: deviceSetup.at(-1).deviceType,
-          deviceNeeded: numberNeeded,
-          deviceValue: deviceSetup.at(-1).deviceValue,
-        })
+    const stripeProfile = {
+      customerEmail: consumer.email,
+      customerId: customerStripe.stripeid,
+      device: numberNeeded * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+    };
+    if (numberNeeded > 0 && consumer) {
+      const respStripe = await devitrackApi.post(
+        "/stripe/create-payment-intent",
+        stripeProfile
       );
-      dispatch(
-        onAddNewOrder({
-          deviceType: deviceSetup.at(-1).deviceType,
-          deviceNeeded: numberNeeded,
-          deviceValue: deviceSetup.at(-1).deviceValue,
-        })
-      );
-      dispatch(
-        onAddNewOrderToHistory({
-          deviceType: deviceSetup.at(-1).deviceType,
-          deviceNeeded: numberNeeded,
-          deviceValue: deviceSetup.at(-1).deviceValue,
-        })
-      );
-      if (!eventInfoDetail.merchant) {
-        return navigate(`/qr-code-generation`);
-      } else {
-        return navigate(`/qr-code-generation`);
+      if (respStripe) {
+        dispatch(
+          onAddMultipleDeviceSelection({
+            // deviceType: deviceSetup.at(-1).deviceType,
+            deviceNeeded: numberNeeded,
+            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+          })
+        );
+        dispatch(
+          onAddNewOrder({
+            // deviceType: deviceSetup.at(-1).deviceType,
+            deviceNeeded: numberNeeded,
+            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+          })
+        );
+        dispatch(
+          onAddNewOrderToHistory({
+            // deviceType: deviceSetup.at(-1).deviceType,
+            deviceNeeded: numberNeeded,
+            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+          })
+        );
+        dispatch(onAddPaymentIntent(respStripe.data));
+        dispatch(onAddAmountStripeInfo(Number(numberNeeded)));
+        if (!eventInfoDetail.merchant) {
+          return navigate(`/qr-code-generation`);
+        } else {
+          return navigate(`/payment`);
+        }
       }
     }
   };
@@ -109,6 +145,8 @@ const SingleSelection = () => {
           display={"flex"}
           justifyContent={"center"}
           alignSelf={"stretch"}
+          height={"50svh"}
+          margin={"0 auto 8svh"}
           gap={2}
           container
         >
@@ -120,6 +158,7 @@ const SingleSelection = () => {
                 alignItems: "center",
               }}
               className="form"
+              id="3"
             >
               <Grid
                 display={"flex"}
@@ -251,18 +290,13 @@ const SingleSelection = () => {
         display={"flex"}
         alignItems={"center"}
         justifyContent={"center"}
-        marginBottom={2}
-        maxHeight={"15dvh"}
-        style={{
-          position: "absolute",
-          bottom: "0",
-          left: "0",
-          right: "0",
-        }}
         item
         xs={12}
       >
-        <IndicatorProgressBottom current={100} />
+        <IndicatorProgressBottom
+          steps={eventInfoDetail.merchant ? 3 : 2}
+          current={eventInfoDetail.merchant ? 75 : 100}
+        />
       </Grid>{" "}
     </>
   );
