@@ -14,9 +14,5 @@
     border: none;
     outline: none;
     background: transparent;
-    padding: 25px;
-    width: 50%;
-    position: absolute;
-    left: 25%;
-    right: 25%;
+    text-align: center;
 }
