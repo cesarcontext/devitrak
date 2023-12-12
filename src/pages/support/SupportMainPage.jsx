@@ -6,16 +6,19 @@ import "./SupportMainPage.css";
 const SupportMainPage = () => {
   const { event } = useSelector((state) => state.event);
 
-  const beginDateRef = Date(event.eventInfoDetail.dateBegin)
+  const beginDateRef = new Date(`${event.eventInfoDetail.dateBegin}`)
+    .toString()
     .split(" ")
-    .slice(0, 4)
+    .slice(0, 5)
     .join()
     .replaceAll(",", " ");
-  const endDateRef = Date(event.eventInfoDetail.dateEnd)
+  const endDateRef = new Date(`${event.eventInfoDetail.dateEnd}`)
+    .toString()
     .split(" ")
-    .slice(0, 4)
+    .slice(0, 5)
     .join()
     .replaceAll(",", " ");
+
   return (
     <Grid
       container
@@ -181,6 +184,8 @@ const SupportMainPage = () => {
           justifyContent={"center"}
           item
           xs={12}
+          sm={12}
+          md={6}
           margin={"1rem auto 0"}
         >
           <Typography
@@ -198,7 +203,7 @@ const SupportMainPage = () => {
             <PhoneInput
               disabled
               className="phone-input-form"
-              value={event.eventInfoDetail.phoneNumber}
+              value={`${event.eventInfoDetail.phoneNumber}`}
             />
           </Typography>
         </Grid>
