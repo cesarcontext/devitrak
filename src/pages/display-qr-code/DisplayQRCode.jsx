@@ -29,7 +29,13 @@ const DisplayQRCode = () => {
   const clientSecret = new URLSearchParams(window.location.search).get(
     "payment_intent_client_secret"
   );
-
+const formattingConsumerInfo = () => {
+  const template = {
+    ...consumer,
+    uid:formattingConsumerInfo().uid
+  }
+  return template
+}
   const foundTotalDeviceNumber = () => {
     const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
@@ -41,7 +47,7 @@ const DisplayQRCode = () => {
       paymentIntent: payment_intent,
       clientSecret: clientSecret,
       device: foundTotalDeviceNumber(),
-      user: consumer.id,
+      user:formattingConsumerInfo().uid,
       provider: company,
       eventSelected: choice,
     };
@@ -56,7 +62,7 @@ const DisplayQRCode = () => {
       paymentIntent: propsToPass.current.paymentIntentGenerated,
       clientSecret: propsToPass.current.clientSecretGenerated,
       device: foundTotalDeviceNumber(),
-      user: consumer.id,
+      user:formattingConsumerInfo().uid,
       provider: company,
       eventSelected: choice,
     };

@@ -11,12 +11,16 @@ const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { choice } = useSelector((state) => state.event);
   const navigate = useNavigate();
-
+  const _ = require('lodash')
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
     queryFn: () => devitrackApi.get("/stripe/transaction"),
   });
 
+  const findOrderPerConsumer = () => {
+    const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
+    console.log("🚀 ~ file: OptionsMainPage.jsx:22 ~ findOrderPerConsumer ~ groupingByCompany:", groupingByCompany)
+  }
   const find = savedTransactionsQuery?.data?.data?.list?.filter(
     (transaction) =>
       transaction?.consumerInfo?.email === consumer?.email &&
@@ -98,10 +102,6 @@ const OptionsMainPage = () => {
       >
         {consumer && find ? (
           find?.toReversed().map((item) => {
-            console.log(
-              "🚀 ~ file: OptionsMainPage.jsx:101 ~ find?.toReversed ~ item:",
-              item
-            );
             return (
               <span key={item.id}>
                 <OrderFormat info={item} />

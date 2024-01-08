@@ -1,9 +1,10 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useMemo } from "react";
 import { Route, Routes } from "react-router-dom";
 import NavigationBottom from "../components/navigation/NavigationBottom";
 import UpperBanner from "../components/banner/UpperBanner";
 import AuthenticationLogin from "../pages/authentication/AuthenticationLogin";
 import LoadingPage from "../pages/loading/LoadingPage";
+import DepositElement from "../pages/stripe/DepositElement";
 const AuthenticatedRoutes = () => {
   const ConsumerInitialForm = lazy(() =>
     import("../pages/Consumer/ConsumerInitialForm")
@@ -23,62 +24,72 @@ const AuthenticatedRoutes = () => {
   const DeviceMainPage = lazy(() =>
     import("../pages/device-options/OptionsMainPage")
   );
-
+  const listPageNotAllowForNavigation = [
+    "/initial-form",
+    "/deviceSelection",
+    "/payment",
+    "/",
+  ];
+  const pathRef = useMemo(
+    () => window.location.pathname,
+    [window.location.pathname]
+  );
   return (
     <>
-      <header>
+      <header style={{
+          height: "10svh",
+          height: "10dvh",
+        }}>
         <UpperBanner />
       </header>
       <main
         style={{
-          minHeight: "80svh",
-          minHeight: "80dvh",
+          minHeight: "90svh",
+          minHeight: "90dvh",
         }}
       >
         <Suspense fallback={<LoadingPage />}>
           <Routes>
-            <Route exact path="/" element={<Home />} />{" "}
+            <Route exact path="/" element={<Home />} />
             <Route
               exact
               path="/initial-form"
               element={<ConsumerInitialForm />}
-            />{" "}
+            />
             <Route
               exact
               path="/authentication/:event/:company/:uid"
               element={<AuthenticationLogin />}
-            />{" "}
+            />
             <Route
               exact
               path="/deviceSelection"
               element={<DeviceSelection />}
-            />{" "}
-            {/* <Route exact path="/deposit-payment" element={< />} />{" "} */}
-            <Route
-              path="/qr-code-generation"
-              element={<DisplayQRCode />}
-            />{" "}
-            <Route exact path="/device" element={<DeviceMainPage />} />{" "}
+            />
+            <Route exact path="/payment" element={<DepositElement />} />
+            <Route path="/qr-code-generation" element={<DisplayQRCode />} />
+            <Route exact path="/device" element={<DeviceMainPage />} />
             <Route
               exact
               path="/information"
               element={<InstructionsMainPage />}
-            />{" "}
+            />
             <Route
               exact
               path="/information/:id"
               element={<SingleInstruction />}
-            />{" "}
-            {/* <Route exact path="/information" element={<InformationMainPage />} />{" "}
-            <Route exact path="/information" element={<InformationMainPage />} />{" "} */}
-            <Route exact path="/profile" element={<Profile />} />{" "}
-          </Routes>{" "}
+            />
+            <Route exact path="/profile" element={<Profile />} />
+          </Routes>
         </Suspense>
       </main>
       <footer
         style={{
           height: "calc(15svh - 100svh)",
           height: "calc(15dvh - 100dvh)",
+          display: `${
+            listPageNotAllowForNavigation.includes(pathRef) && "none"
+          }`,
         }}
       >
         <NavigationBottom />

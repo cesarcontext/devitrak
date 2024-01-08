@@ -16,7 +16,7 @@ const NavigationBottom = () => {
   return (
     <BottomNavigation
       id="bottonNavigation"
-      sx={{
+      style={{
         background: "var(--blue-dark-800, #0040c1)",
         color: "#fff",
         display: `${
@@ -34,7 +34,7 @@ const NavigationBottom = () => {
       showLabels
     >
       <BottomNavigationAction
-        sx={{
+        style={{
           background: `${
             pathRef === "/device"
               ? "var(--blue-dark-700, #004EEB)"
@@ -50,7 +50,7 @@ const NavigationBottom = () => {
         icon={<Icon icon="ep:headset" width="30" height="30" />}
       />
       <BottomNavigationAction
-        sx={{
+      style={{
           background: `${
             pathRef === "/information"
               ? "var(--blue-dark-700, #004EEB)"
@@ -66,7 +66,7 @@ const NavigationBottom = () => {
         icon={<Icon icon="mdi-light:information" width="30" height="30" />}
       />
       <BottomNavigationAction
-        sx={{
+        style={{
           background: `${
             pathRef === "/profile"
               ? "var(--blue-dark-700, #004EEB)"

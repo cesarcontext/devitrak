@@ -75,14 +75,15 @@ const SingleSelection = () => {
 
   const retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent = () => {
     const result = new Set()
-    for(let data of deviceSetup){
-      if(data.consumerUses){
+    for (let data of deviceSetup) {
+      if (data.consumerUses !== "Sale") {
         result.add(Number(data.value))
       }
     }
     const objToArray = Array.from(result)
     return Math.max(...objToArray)
   }
+
   const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
     if (numberNeeded === 0) {
@@ -91,7 +92,7 @@ const SingleSelection = () => {
     const stripeProfile = {
       customerEmail: consumer.email,
       customerId: customerStripe.stripeid,
-      device: numberNeeded * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+      device: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() ? numberNeeded * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() : 0,
     };
     if (numberNeeded > 0 && consumer) {
       const respStripe = await devitrackApi.post(

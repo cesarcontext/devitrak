@@ -375,7 +375,7 @@ const MainPage = () => {
             xs={10}
             margin={"1.5rem auto 0"}
           >
-            <Grid item sx={12}>
+            <Grid item xs={12}>
               <Typography
                 color={"var(--gray-700, #344054)"}
                 textAlign={"center"}

@@ -3,34 +3,36 @@ import {
   Grid,
   InputAdornment,
   OutlinedInput,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import PhoneInput from "react-phone-number-input";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
+import { onResetArticleInfo } from "../../store/slides/articleHandlerSlide";
 import {
   onAddConsumerInfo,
-  onResetConsumerInfo,
+  onResetConsumerInfo
 } from "../../store/slides/consumerSlide";
-import { useForm } from "react-hook-form";
-import { onResetArticleInfo } from "../../store/slides/articleHandlerSlide";
 import { onHardReset } from "../../store/slides/deviceSlides";
-import { onResetCustomerStripeInfo } from "../../store/slides/stripeSlide";
-import PhoneInput from "react-phone-number-input";
-
+import {
+  onAddAmountStripeInfo,
+  onAddPaymentIntent,
+  onResetCustomerStripeInfo
+} from "../../store/slides/stripeSlide";
 const ConsumerInfo = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const [editSection, setEditSection] = useState(false);
   const navigate = useNavigate();
   const { register, watch } = useForm({
     defaultValues: {
-      name: `${consumer ? consumer.name : "Your name"}`,
-      lastName: `${consumer ? consumer.lastName : "Your last name"}`,
-      email: `${consumer ? consumer.email : "Your email"}`,
-      phoneNumber: `${consumer ? consumer.phoneNumber : "Your phone number"}`,
+      name: `${consumer.name ? consumer.name : "Your name"}`,
+      lastName: `${consumer.lastName ? consumer.lastName : "Your last name"}`,
+      email: `${consumer.email ? consumer.email : "Your email"}`,
+      phoneNumber: `${consumer.phoneNumber ? `${consumer.phoneNumber}` : "Your phone number"}`,
     },
   });
   const dispatch = useDispatch();
@@ -60,10 +62,12 @@ const ConsumerInfo = () => {
   };
 
   const handleLogout = async () => {
-    dispatch(onResetArticleInfo());
     dispatch(onResetConsumerInfo());
+    dispatch(onResetArticleInfo());
     dispatch(onHardReset());
-    dispatch(onResetCustomerStripeInfo());
+    dispatch(onAddPaymentIntent(undefined));
+    dispatch(onAddAmountStripeInfo(0));
+    dispatch(onResetCustomerStripeInfo())
     navigate("/");
   };
   return (
@@ -171,7 +175,10 @@ const ConsumerInfo = () => {
             <PhoneInput
               disabled
               className="phone-input-form"
-              value={consumer ? `+${consumer.phoneNumber}` : "+10000000000"}
+              value={consumer.hasOwnProperty(`phoneNumber`) ? `+${consumer.phoneNumber}` : "+10000000000"}
+              style={{
+                textAlign:"center"
+              }}
             />
           </Typography>
         </Grid>

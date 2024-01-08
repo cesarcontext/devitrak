@@ -121,20 +121,16 @@ const AuthenticationLogin = () => {
     const checkUpdateConsumerEventsListInfo = async () => {
       if (consumer && refUpdate.current) {
         const { provider, eventSelected } = consumer;
-        const attendedEvents = {};
-        const providerPerEvents = {};
+        const attendedEvents = new Set();
+        const providerPerEvents = new Set();
         for (let data of provider) {
-          if (!providerPerEvents[data]) {
-            providerPerEvents[data] = data;
-          }
+          providerPerEvents.add(data)
         }
         for (let data of eventSelected) {
-          if (!attendedEvents[data]) {
-            attendedEvents[data] = data;
-          }
+          attendedEvents.add(data)
         }
 
-        if (!attendedEvents.hasOwnProperty(event)) {
+        if (!attendedEvents.has(event)) {
           updatingConsumerInfoMutation.mutate({
             id: consumer.id,
             eventSelected: [...consumer.eventSelected, event],
@@ -146,7 +142,7 @@ const AuthenticationLogin = () => {
             })
           );
         }
-        if (!providerPerEvents.hasOwnProperty(event)) {
+        if (!providerPerEvents.has(company)) {
           updatingConsumerInfoMutation.mutate({
             id: consumer.id,
             provider: [...consumer.provider, company],

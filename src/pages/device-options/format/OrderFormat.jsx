@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
 const OrderFormat = (info) => {
+  console.log("🚀 ~ file: OrderFormat.jsx:10 ~ OrderFormat ~ info:", info)
   const { subscription } = useSelector((state) => state.event);
   const _ = require("lodash");
   const assignedDeviceListQuery = useQuery({

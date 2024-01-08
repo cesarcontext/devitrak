@@ -3,6 +3,7 @@ import SupportMainPage from "../support/SupportMainPage";
 import ConsumerInfo from "./ConsumerInfo";
 import CurrentOrder from "./CurrentOrder";
 import OrderHistory from "./OrderHistory";
+import PaymentInformation from "./PaymentInformation";
 import "./Profile.css";
 
 const Profile = () => {
@@ -14,10 +15,59 @@ const Profile = () => {
       flexDirection={"column"}
       container
     >
-      <ConsumerInfo />
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      >
+        <ConsumerInfo />
+      </Grid>
       {/* <CurrentOrder /> */}
-      <OrderHistory />
-      <SupportMainPage />
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      >
+        <OrderHistory />
+      </Grid>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      >
+        <PaymentInformation />
+      </Grid>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      >
+        <SupportMainPage />
+      </Grid>
     </Grid>
   );
 };

@@ -22,6 +22,7 @@ import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import { Button, notification } from "antd";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
+import { useNavigate } from "react-router-dom";
 const schema = yup
   .object({
     firstName: yup.string().required("First name is required"),
@@ -50,11 +51,13 @@ const ConsumerInitialForm = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const _ = require('lodash')
   const [contactPhoneNumber, setContactPhoneNumber] = useState("");
   const [groupName, setGroupName] = useState("");
-  const { choice, company, contactInfo } = useSelector((state) => state.event);
+  const { choice, company, contactInfo, event } = useSelector((state) => state.event);
   const emailSentRef = useRef(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, msg, dspt) => {
     api[type]({
@@ -62,7 +65,6 @@ const ConsumerInitialForm = () => {
       description: dspt,
     });
   };
-  // const navigate = useNavigate();
   const listOfConsumersQuery = useQuery({
     queryKey: ["listOfConsumers"],
     queryFn: () => devitrackApi.get("/auth/users"),
@@ -70,32 +72,56 @@ const ConsumerInitialForm = () => {
 
   if (listOfConsumersQuery.data) {
     const checkIfConsumerExists = () => {
-      const check = listOfConsumersQuery?.data?.data?.users?.find(
-        (consumer) => consumer.email === watch("email")
-      );
-      return check;
+      const groupingByEmail = _.groupBy(listOfConsumersQuery?.data?.data?.users, "email")
+      const consumerData = groupingByEmail[watch('email')]
+      // const check = listOfConsumersQuery?.data?.data?.users?.find(
+      //   (consumer) => consumer.email === watch("email")
+      // );
+      return consumerData?.at(-1);
     };
     checkIfConsumerExists();
 
     const submitEmailToLoginForExistingConsumer = async () => {
       emailSentRef.current = true;
       setLoadingState(loadingStatus.loading);
+      if (!event.eventInfoDetail.merchant) {
+        const parametersNeededToLoginLink = {
+          consumer: checkIfConsumerExists(),
+          link: `https://app.devitrak.net/authentication/${encodeURI(
+            choice
+          )}/${encodeURI(company)}/${checkIfConsumerExists().id}`,
+          contactInfo: contactInfo.email,
+        };
+        const respo = await devitrackApi.post(
+          "/nodemailer/login-existing-consumer",
+          parametersNeededToLoginLink
+        );
+        if (respo) {
+          return setLoadingState(loadingStatus.success);
+        }
+      }
+      return navigate(`/authentication/${event.eventInfoDetail.eventName}/${event.company}/${checkIfConsumerExists().id}`)
+    };
+
+    const emailConfirmationForNewConsumer = async (props) => {
       const parametersNeededToLoginLink = {
-        consumer: checkIfConsumerExists(),
+        consumer: {
+          name: props.name,
+          lastName: props.lastName,
+          email: props.email,
+        },
         link: `https://app.devitrak.net/authentication/${encodeURI(
           choice
-        )}/${encodeURI(company)}/${checkIfConsumerExists().id}`,
+        )}/${encodeURI(company)}/${props.uid}`,
         contactInfo: contactInfo.email,
       };
       const respo = await devitrackApi.post(
-        "/nodemailer/login-existing-consumer",
+        "/nodemailer/confirmation-account",
         parametersNeededToLoginLink
       );
-      if (respo) {
-        setLoadingState(loadingStatus.success);
-      }
-    };
-
+      if (respo) return true
+      return false
+    }
     const submitNewConsumerInfo = async (data) => {
       emailSentRef.current = true;
       const newConsumerProfile = {
@@ -139,28 +165,37 @@ const ConsumerInitialForm = () => {
               customerData: newStripeCustomer.data.customer,
             })
           );
-          const parametersNeededToLoginLink = {
-            consumer: {
-              name: respNewConsumer.data.name,
-              lastName: respNewConsumer.data.lastName,
-              email: respNewConsumer.data.email,
-            },
-            link: `https://app.devitrak.net/authentication/${encodeURI(
-              choice
-            )}/${encodeURI(company)}/${respNewConsumer.data.uid}`,
-            contactInfo: contactInfo.email,
-          };
-          const respo = await devitrackApi.post(
-            "/nodemailer/confirmation-account",
-            parametersNeededToLoginLink
-          );
-          if (respo) {
-            openNotificationWithIcon(
-              "success",
-              "Account created successfully!",
-              "We sent an email to confirm and login."
-            );
+
+          // const parametersNeededToLoginLink = {
+          //   consumer: {
+          //     name: respNewConsumer.data.name,
+          //     lastName: respNewConsumer.data.lastName,
+          //     email: respNewConsumer.data.email,
+          //   },
+          //   link: `https://app.devitrak.net/authentication/${encodeURI(
+          //     choice
+          //   )}/${encodeURI(company)}/${respNewConsumer.data.uid}`,
+          //   contactInfo: contactInfo.email ?? "info@devitrak.com",
+          // };
+          // const respo = await devitrackApi.post(
+          //   "/nodemailer/confirmation-account",
+          //   parametersNeededToLoginLink
+          // );
+          if (event.eventInfoDetail.merchant) {
+            if (emailConfirmationForNewConsumer(respNewConsumer.data)) {
+              openNotificationWithIcon(
+                "success",
+                "Account created successfully!",
+                "We're taking you to the next step."
+              );
+              return navigate('/deviceSelection')
+            }
           }
+          return openNotificationWithIcon(
+            "success",
+            "Account created successfully!",
+            "We sent an email to confirm and login."
+          );
         }
       }
     };
@@ -341,16 +376,14 @@ const ConsumerInitialForm = () => {
                           gap: "8px",
                           alignSelf: "stretch",
                           borderRadius: "8px",
-                          border: `${
-                            emailSentRef.current === true
-                              ? "1px solid var(--gray-300, #D0D5DD)"
-                              : "1px solid var(--blue-dark-600, #155EEF)"
-                          }`,
-                          background: `${
-                            emailSentRef.current === true
-                              ? "var(--base-white, #FFF)"
-                              : "var(--blue-dark-600, #155EEF)"
-                          }`,
+                          border: `${emailSentRef.current === true
+                            ? "1px solid var(--gray-300, #D0D5DD)"
+                            : "1px solid var(--blue-dark-600, #155EEF)"
+                            }`,
+                          background: `${emailSentRef.current === true
+                            ? "var(--base-white, #FFF)"
+                            : "var(--blue-dark-600, #155EEF)"
+                            }`,
                           boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
                           width: "100%",
                         }}
@@ -362,13 +395,13 @@ const ConsumerInitialForm = () => {
                           fontStyle={"normal"}
                           fontWeight={600}
                           lineHeight={"24px"}
-                          color={`${
-                            emailSentRef.current === true
-                              ? "var(--gray-700, #344054)"
-                              : "var(--base-white, #FFF)"
-                          }`}
+                          color={`${emailSentRef.current === true
+                            ? "var(--gray-700, #344054)"
+                            : "var(--base-white, #FFF)"
+                            }`}
                         >
-                          {emailSentRef.current === true
+                          
+                          {event.eventInfoDetail.merchant ? "Next step" : emailSentRef.current === true
                             ? "Send email again"
                             : "Send login email"}
                         </Typography>
@@ -650,7 +683,7 @@ const ConsumerInitialForm = () => {
                       <Button
                         htmlType="submit"
                         style={{
-                          display: `${emailSentRef.current ===false ? 'flex' : 'none'}`,
+                          display: `${emailSentRef.current === false ? 'flex' : 'none'}`,
                           padding: "12px 20px",
                           justifyContent: "center",
                           alignItems: "center",
@@ -686,11 +719,10 @@ const ConsumerInitialForm = () => {
           display={"flex"}
           alignItems={"center"}
           justifyContent={"center"}
-          marginBottom={2}
           item
           xs={12}
         >
-          <IndicatorProgressBottom current={50} />
+          <IndicatorProgressBottom steps={event.eventInfoDetail.merchant ? 3 : 2} current={event.eventInfoDetail.merchant ? 35 : 50} />
         </Grid>{" "}
       </>
     );

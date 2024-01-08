@@ -1,9 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap");
 
 body {
-  min-height: 80svh;
-  min-height: 80dvh;
-  min-height: 80vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  min-height: 100vh;
   max-width: 1440px;
   min-width: 320px;
   margin: 0 auto;
