@@ -17,12 +17,12 @@ import "./ConsumerInitialForm.css";
 import { useRef, useState } from "react";
 import { devitrackApi } from "../../devitrakApi";
 import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import { Button, notification } from "antd";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 import { useNavigate } from "react-router-dom";
+import _ from 'lodash'
 const schema = yup
   .object({
     firstName: yup.string().required("First name is required"),
@@ -51,7 +51,6 @@ const ConsumerInitialForm = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const _ = require('lodash')
   const [contactPhoneNumber, setContactPhoneNumber] = useState("");
   const [groupName, setGroupName] = useState("");
   const { choice, company, contactInfo, event } = useSelector((state) => state.event);
@@ -84,13 +83,14 @@ const ConsumerInitialForm = () => {
     const submitEmailToLoginForExistingConsumer = async () => {
       emailSentRef.current = true;
       setLoadingState(loadingStatus.loading);
-      if (!event.eventInfoDetail.merchant) {
+      if (event.eventInfoDetail.merchant) {
         const parametersNeededToLoginLink = {
           consumer: checkIfConsumerExists(),
           link: `https://app.devitrak.net/authentication/${encodeURI(
             choice
           )}/${encodeURI(company)}/${checkIfConsumerExists().id}`,
           contactInfo: contactInfo.email,
+          company: event.company
         };
         const respo = await devitrackApi.post(
           "/nodemailer/login-existing-consumer",
@@ -114,6 +114,8 @@ const ConsumerInitialForm = () => {
           choice
         )}/${encodeURI(company)}/${props.uid}`,
         contactInfo: contactInfo.email,
+        event: event.eventInfoDetail.eventName,
+        company: event.company
       };
       const respo = await devitrackApi.post(
         "/nodemailer/confirmation-account",
@@ -165,23 +167,7 @@ const ConsumerInitialForm = () => {
               customerData: newStripeCustomer.data.customer,
             })
           );
-
-          // const parametersNeededToLoginLink = {
-          //   consumer: {
-          //     name: respNewConsumer.data.name,
-          //     lastName: respNewConsumer.data.lastName,
-          //     email: respNewConsumer.data.email,
-          //   },
-          //   link: `https://app.devitrak.net/authentication/${encodeURI(
-          //     choice
-          //   )}/${encodeURI(company)}/${respNewConsumer.data.uid}`,
-          //   contactInfo: contactInfo.email ?? "info@devitrak.com",
-          // };
-          // const respo = await devitrackApi.post(
-          //   "/nodemailer/confirmation-account",
-          //   parametersNeededToLoginLink
-          // );
-          if (event.eventInfoDetail.merchant) {
+          if (!event.eventInfoDetail.merchant) {
             if (emailConfirmationForNewConsumer(respNewConsumer.data)) {
               openNotificationWithIcon(
                 "success",
@@ -203,6 +189,7 @@ const ConsumerInitialForm = () => {
       emailSentRef.current = false;
       return setValue("email", "");
     };
+
     return (
       <>
         {contextHolder}
@@ -227,7 +214,7 @@ const ConsumerInitialForm = () => {
               justifyContent={"center"}
               marginBottom={3}
               item
-              xs={10}
+              xs={11} sm={11} md={6} lg={6}
             >
               <form
                 style={{
@@ -312,7 +299,7 @@ const ConsumerInitialForm = () => {
                     disabled={emailSentRef.current}
                     endAdornment={
                       <InputAdornment position="end">
-                        {emailSentRef.current === true && (
+                        {emailSentRef.current && (
                           <Icon icon="mdi:checkbox-outline" color="#66c61c" />
                         )}
                       </InputAdornment>
@@ -376,11 +363,11 @@ const ConsumerInitialForm = () => {
                           gap: "8px",
                           alignSelf: "stretch",
                           borderRadius: "8px",
-                          border: `${emailSentRef.current === true
+                          border: `${emailSentRef.current
                             ? "1px solid var(--gray-300, #D0D5DD)"
                             : "1px solid var(--blue-dark-600, #155EEF)"
                             }`,
-                          background: `${emailSentRef.current === true
+                          background: `${emailSentRef.current
                             ? "var(--base-white, #FFF)"
                             : "var(--blue-dark-600, #155EEF)"
                             }`,
@@ -395,13 +382,13 @@ const ConsumerInitialForm = () => {
                           fontStyle={"normal"}
                           fontWeight={600}
                           lineHeight={"24px"}
-                          color={`${emailSentRef.current === true
+                          color={`${emailSentRef.current
                             ? "var(--gray-700, #344054)"
                             : "var(--base-white, #FFF)"
                             }`}
                         >
-                          
-                          {event.eventInfoDetail.merchant ? "Next step" : emailSentRef.current === true
+
+                          {!event.eventInfoDetail.merchant ? "Next step" : emailSentRef.current
                             ? "Send email again"
                             : "Send login email"}
                         </Typography>
@@ -483,7 +470,7 @@ const ConsumerInitialForm = () => {
                         disabled={emailSentRef.current}
                         endAdornment={
                           <InputAdornment position="end">
-                            {emailSentRef.current === true && (
+                            {emailSentRef.current && (
                               <Icon
                                 icon="mdi:checkbox-outline"
                                 color="#66c61c"
@@ -547,7 +534,7 @@ const ConsumerInitialForm = () => {
                         disabled={emailSentRef.current}
                         endAdornment={
                           <InputAdornment position="end">
-                            {emailSentRef.current === true && (
+                            {emailSentRef.current && (
                               <Icon
                                 icon="mdi:checkbox-outline"
                                 color="#66c61c"
@@ -589,6 +576,7 @@ const ConsumerInitialForm = () => {
                       justifyContent={"center"}
                       item
                       xs={12}
+                      margin={"1rem 0"}
                     >
                       <InputLabel
                         style={{ marginBottom: "3px", width: "100%" }}
@@ -609,12 +597,14 @@ const ConsumerInitialForm = () => {
 
                       <PhoneInput
                         disabled={emailSentRef.current}
+
                         className="phone-input-form"
                         countrySelectProps={{ unicodeFlags: true }}
                         defaultCountry="US"
                         placeholder="Enter your phone number"
                         value={contactPhoneNumber}
                         onChange={setContactPhoneNumber}
+                        style={{ margin: "0.1rem auto 1rem", }}
                       />
                       <Typography
                         textTransform={"none"}
@@ -658,7 +648,7 @@ const ConsumerInitialForm = () => {
                         disabled={emailSentRef.current}
                         endAdornment={
                           <InputAdornment position="end">
-                            {emailSentRef.current === true && (
+                            {emailSentRef.current && (
                               <Icon
                                 icon="mdi:checkbox-outline"
                                 color="#66c61c"
@@ -683,7 +673,7 @@ const ConsumerInitialForm = () => {
                       <Button
                         htmlType="submit"
                         style={{
-                          display: `${emailSentRef.current === false ? 'flex' : 'none'}`,
+                          display: `${emailSentRef.current ? 'none' : 'flex'}`,
                           padding: "12px 20px",
                           justifyContent: "center",
                           alignItems: "center",

@@ -6,12 +6,11 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import OrderFormat from "./format/OrderFormat";
-
+import _ from 'lodash'
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { choice } = useSelector((state) => state.event);
   const navigate = useNavigate();
-  const _ = require('lodash')
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
     queryFn: () => devitrackApi.get("/stripe/transaction"),
@@ -19,7 +18,6 @@ const OptionsMainPage = () => {
 
   const findOrderPerConsumer = () => {
     const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
-    console.log("🚀 ~ file: OptionsMainPage.jsx:22 ~ findOrderPerConsumer ~ groupingByCompany:", groupingByCompany)
   }
   const find = savedTransactionsQuery?.data?.data?.list?.filter(
     (transaction) =>

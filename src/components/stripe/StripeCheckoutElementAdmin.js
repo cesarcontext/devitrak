@@ -2,7 +2,7 @@ import React from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { StripeCheckoutFormAdmin } from "./StripeCheckoutFormAdmin";
-const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
+const stripePromise = loadStripe(`${import.meta.env.VITE_APP_STRIPE_PUBLIC_KEY}`);
 
 /**
  * @description StripeChecoutElementAdmin - Elements display after verify a valid clientSecret
@@ -12,14 +12,14 @@ const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
  */
 export const StripeCheckoutElementAdmin = ({ clientSecret, total }) => {
 
-    /**
-   * @description style and rules for check out element where credit card info will be collected
-   * @type {Object} 
-   * @property {String} theme - theme of the checkout element
-   * @property {String} labels - attribute for lables in the inputs of the checkout element
-   * @property {Object} variables - variables of css for teh entires elements
-   * @property {Object} rules - variables of css applied based on criterios
-   */
+  /**
+ * @description style and rules for check out element where credit card info will be collected
+ * @type {Object} 
+ * @property {String} theme - theme of the checkout element
+ * @property {String} labels - attribute for lables in the inputs of the checkout element
+ * @property {Object} variables - variables of css for teh entires elements
+ * @property {Object} rules - variables of css applied based on criterios
+ */
   const appearance = {
     theme: "flat",
     labels: "floating",

@@ -9,7 +9,7 @@ Axios instance for accessing Devitrack API.
 */
 import axios from "axios";
 
-const url = process.env.REACT_APP_URL
+const url = import.meta.env.VITE_APP_URL
 export const devitrackApi = axios.create({
   baseURL: url,
 });

@@ -1,22 +1,19 @@
 import { Grid, Typography } from "@mui/material";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import Logo from "../../assets/devitrak_logo.svg";
 import DevitrakName from "../../assets/Layer_1.svg";
 import "./UpperBanner.css";
 const UpperBanner = () => {
   const listPageNotAllowForNavigation = ["/"];
   const { eventInfoDetail } = useSelector((state) => state.event);
-  const pathRef = useMemo(
-    () => window.location.pathname,
-    [window.location.pathname]
-  );
+  const location = useLocation()
   return (
     <Grid
-      key={pathRef}
+      key={location.key}
       container
       display={
-        listPageNotAllowForNavigation.includes(pathRef) ? "none" : "flex"
+        listPageNotAllowForNavigation.some(element => element === location.pathname) ? "none" : "flex"
       }
       justifyContent={"space-around"}
       alignItems={"center"}
@@ -30,7 +27,7 @@ const UpperBanner = () => {
             src={eventInfoDetail?.logo}
             alt="dynamic-logo-placeholder"
           />
-        ) }
+        )}
       </Grid>
       <Grid
         display={"flex"}

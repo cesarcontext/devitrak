@@ -105,9 +105,8 @@ const ConsumerInfo = () => {
             lineHeight={"28px"}
             color={"var(--gray-900, #101828)"}
           >
-            {`${consumer ? consumer.name : "Your name"}, ${
-              consumer ? consumer.lastName : "Your last"
-            }`}
+            {`${consumer ? consumer.name : "Your name"}, ${consumer ? consumer.lastName : "Your last"
+              }`}
           </Typography>
         </Grid>
         <Grid
@@ -177,7 +176,7 @@ const ConsumerInfo = () => {
               className="phone-input-form"
               value={consumer.hasOwnProperty(`phoneNumber`) ? `+${consumer.phoneNumber}` : "+10000000000"}
               style={{
-                textAlign:"center"
+                textAlign: "center"
               }}
             />
           </Typography>
@@ -284,6 +283,34 @@ const ConsumerInfo = () => {
           fullWidth
         />
         <Button
+          style={{
+            display: `${!editSection ? "none" : "flex"}`,
+            padding: "12px 20px",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "8px",
+            borderRadius: "8px",
+            border: "1px solid var(--blue-dark-600, #ff3838)",
+            background: "var(--blue-dark-600, #ff3838)",
+            boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+            width: "100%",
+            margin: "0 0 5px 0"
+          }}
+          onClick={() => setEditSection(false)}
+        >
+          <Typography
+            textTransform={"none"}
+            fontFamily={"Inter"}
+            fontSize={"18px"}
+            fontStyle={"normal"}
+            fontWeight={600}
+            lineHeight={"20px"}
+            color={"#fff"}
+          >
+            Cancel
+          </Typography>
+        </Button>
+        <Button
           disabled={consumer ? false : true}
           style={{
             display: "flex",
@@ -315,7 +342,7 @@ const ConsumerInfo = () => {
         </Button>
         <Button
           style={{
-            display: "flex",
+            display: `${!editSection ? "flex" : "none"}`,
             padding: "12px 20px",
             justifyContent: "center",
             alignItems: "center",

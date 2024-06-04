@@ -2,10 +2,9 @@ import { Grid, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import CreditCardIcons from "../../components/CreditCardIcons";
-
+import _ from "lodash"
 const PaymentInformation = () => {
   let creditCardInfoLastOrder = [];
-  const _ = require("lodash");
   const { transactionsHistory } = useSelector((state) => state.stripe);
   const sortTransactionHistory = () => {
     const groupingByDeposit = _.groupBy(transactionsHistory, "deposit");

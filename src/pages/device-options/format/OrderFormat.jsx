@@ -2,22 +2,29 @@ import { Icon } from "@iconify/react";
 import { Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Card, QRCode } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
+import _ from 'lodash'
 const OrderFormat = (info) => {
-  console.log("🚀 ~ file: OrderFormat.jsx:10 ~ OrderFormat ~ info:", info)
-  const { subscription } = useSelector((state) => state.event);
-  const _ = require("lodash");
+  const { subscription, choice } = useSelector((state) => state.event);
   const assignedDeviceListQuery = useQuery({
     queryKey: ["assignedDevice"],
-    queryFn: () => devitrackApi.get("/receiver/receiver-assigned-list"),
+    queryFn: () => devitrackApi.post("/receiver/receiver-assigned-list", {
+      user: info.info.consumerInfo.email,
+      eventSelected:choice,
+    }),
+    enabled: false,
+    refetchOnMount: false
   });
-  const groupByEventAssignedDevice = _.groupBy(
-    assignedDeviceListQuery?.data?.data?.listOfReceivers,
-    "user"
-  );
+  useEffect(() => {
+    const controller = new AbortController()
+    assignedDeviceListQuery.refetch()
+    return () => {
+      controller.abort()
+    }
+  }, [])
   if (info) {
     const verifyStatusOrder = (props) => {
       return (
@@ -28,20 +35,18 @@ const OrderFormat = (info) => {
             display: "flex",
             padding: "2px 8px",
             alignItems: "center",
-            background: `${
-              props === "NO"
-                ? "var(--blue-50, #EFF8FF)"
-                : "var(--success-50, #ECFDF3)"
-            }`,
+            background: `${props === "NO"
+              ? "var(--blue-50, #EFF8FF)"
+              : "var(--success-50, #ECFDF3)"
+              }`,
             width: "fit-content",
           }}
         >
           <Typography
-            color={`${
-              props === "NO"
-                ? "var(--blue-700, #175CD3)"
-                : "var(--success-700, #027A48)"
-            }`}
+            color={`${props === "NO"
+              ? "var(--blue-700, #175CD3)"
+              : "var(--success-700, #027A48)"
+              }`}
             fontSize={"12px"}
             fontFamily={"Inter"}
             fontStyle={"normal"}
@@ -74,9 +79,9 @@ const OrderFormat = (info) => {
     };
 
     const devicesAssignedInOrder = () => {
-      if (groupByEventAssignedDevice[info.info.consumerInfo.email]) {
+      if (assignedDeviceListQuery.data) {
         const groupByPaymentIntentByConsumer = _.groupBy(
-          groupByEventAssignedDevice[info.info.consumerInfo.email],
+          assignedDeviceListQuery.data.data.listOfReceivers,
           "paymentIntent"
         );
         if (groupByPaymentIntentByConsumer[info.info.paymentIntent]) {
@@ -84,10 +89,8 @@ const OrderFormat = (info) => {
           let index = 0;
           let counting = 1;
           const notDelete = 0;
-          for (let data of groupByPaymentIntentByConsumer[
-            info.info.paymentIntent
-          ].at(-1).device) {
-            if (data.status === true) {
+          for (let data of groupByPaymentIntentByConsumer[info.info.paymentIntent]) {
+            if (data.device.status === true) {
               result.splice(index, notDelete, counting);
               index++;
             }
@@ -105,14 +108,13 @@ const OrderFormat = (info) => {
     const orderDay = new Date();
     return (
       <Card
-        title={`${
-          info.info.date
-            ? `${displayMonth(info.info.date)} ${new Date(
-                info.info.date
-              ).getDate()}, ${new Date(info.info.date).getFullYear()}
+        title={`${info.info.date
+          ? `${displayMonth(info.info.date)} ${new Date(
+            info.info.date
+          ).getDate()}, ${new Date(info.info.date).getFullYear()}
               `
-            : orderDay
-        }`}
+          : orderDay
+          }`}
         extra={verifyStatusOrder("YES")}
         style={{
           width: 300,

@@ -98,7 +98,6 @@ const TableMultipleDeviceType = () => {
       }
     )
   );
-  console.log("🚀 ~ file: TableMultipleDeviceType.jsx:101 ~ TableMultipleDeviceType ~ dataSource:", dataSource)
   const dispatch = useDispatch();
   const handleDelete = (key) => {
     const newData = dataSource.filter((item) => item.key !== key);

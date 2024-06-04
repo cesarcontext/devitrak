@@ -37,15 +37,15 @@ const AuthenticatedRoutes = () => {
   return (
     <>
       <header style={{
-          height: "10svh",
-          height: "10dvh",
+          height: "5svh",
+          height: "5dvh",
         }}>
         <UpperBanner />
       </header>
       <main
         style={{
-          minHeight: "90svh",
-          minHeight: "90dvh",
+          minHeight: "80svh",
+          minHeight: "80dvh",
         }}
       >
         <Suspense fallback={<LoadingPage />}>
@@ -85,8 +85,8 @@ const AuthenticatedRoutes = () => {
       </main>
       <footer
         style={{
-          height: "calc(15svh - 100svh)",
-          height: "calc(15dvh - 100dvh)",
+          height: "15svh",
+          height: "15dvh",
           display: `${
             listPageNotAllowForNavigation.includes(pathRef) && "none"
           }`,

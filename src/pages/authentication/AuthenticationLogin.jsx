@@ -16,11 +16,10 @@ import {
 import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import { useRef } from "react";
-
+import _ from "lodash"
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
   const consumerId = uid;
-  const _ = require("lodash");
   const refUpdate = useRef(false);
   const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
@@ -98,7 +97,7 @@ const AuthenticationLogin = () => {
         const newStripeCust = {
           name: `${consumer.name} ${consumer.lastName}`,
           email: consumer.email,
-          phone: consumer.phoneNumber,
+          phone: `${consumer.phoneNumber}`,
         };
         const respCreateStripeCustomer = await devitrackApi.post(
           "/stripe/customer",
@@ -155,7 +154,7 @@ const AuthenticationLogin = () => {
           );
         }
         refUpdate.current = false;
-        return navigate("/deviceSelection");
+        return navigate("/device");
       }
     };
 

@@ -4,7 +4,8 @@ import { Table } from "antd";
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApi } from "../../devitrakApi";
-import { onAddTransactionHistory } from "../../store/slides/stripeSlide";
+import { onAddTransactionHistory } from "../../store/slides/stripeSlide"
+import _ from "lodash"
 import "./Profile.css";
 const OrderHistory = () => {
   const [tableResult, setTableResult] = useState([]);
@@ -12,7 +13,6 @@ const OrderHistory = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { event } = useSelector((state) => state.event);
   const renderTimeRef = useRef(true);
-  const _ = require("lodash");
   const dispatch = useDispatch();
   const transactionQuery = useQuery({
     queryKey: ["listOfTransactions"],

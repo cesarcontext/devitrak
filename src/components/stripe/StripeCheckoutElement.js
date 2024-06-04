@@ -8,7 +8,7 @@ import { StripeCheckoutForm } from "./StripeCheckForm";
  * @component
  * @type {Promise}
  */
-const stripePromise = loadStripe(`${process.env.REACT_APP_STRIPE_PUBLIC_KEY}`);
+const stripePromise = loadStripe(`${import.meta.env.VITE_APP_STRIPE_PUBLIC_KEY}`);
 
 /**
  * 

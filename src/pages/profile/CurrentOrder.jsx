@@ -3,11 +3,11 @@ import { Grid, Typography } from "@mui/material";
 import { Avatar, QRCode } from "antd";
 import { useSelector } from "react-redux";
 import FormatCurrentOrder from "./FormatCurrentOrder";
+import _ from "lodash";
 import "./Profile.css";
 
 const CurrentOrder = () => {
   const { transactionsHistory } = useSelector((state) => state.stripe);
-  const _ = require("lodash");
   const sortTransactionHistory = () => {
     const groupingByDeposit = _.groupBy(transactionsHistory, "deposit");
     if (groupingByDeposit.hasOwnProperty("deposit")) {

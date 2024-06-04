@@ -27,7 +27,6 @@ const MultipleSelection = () => {
   );
   const [numberNeeded, setNumberNeeded] = useState(0);
   const [deviceTypeSelected, setDeviceTypeSelected] = useState(null);
-  console.log("🚀 ~ file: MultipleSelection.jsx:30 ~ MultipleSelection ~ deviceTypeSelected:", deviceTypeSelected)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const lessNumber = () => {
@@ -39,7 +38,6 @@ const MultipleSelection = () => {
   };
   const onChange = (value) => {
     const valueParse = JSON.parse(value)
-    console.log("🚀 ~ file: MultipleSelection.jsx:44 ~ onChange ~ valueParse:", valueParse)
     return setDeviceTypeSelected(valueParse);
   };
 

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
+import _ from "lodash"
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { currentOrder } = useSelector((state) => state.deviceHandler);
@@ -22,32 +23,38 @@ const DisplayQRCode = () => {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const _ = require("lodash");
   const payment_intent = new URLSearchParams(window.location.search).get(
     "payment_intent"
   );
   const clientSecret = new URLSearchParams(window.location.search).get(
     "payment_intent_client_secret"
   );
-const formattingConsumerInfo = () => {
-  const template = {
-    ...consumer,
-    uid:formattingConsumerInfo().uid
+  const formattingConsumerInfo = () => {
+    const template = {
+      ...consumer,
+      uid: formattingConsumerInfo().uid
+    }
+    return template
   }
-  return template
-}
   const foundTotalDeviceNumber = () => {
     const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
   };
-  foundTotalDeviceNumber();
+
+  useEffect(() => {
+    const controller = new AbortController()
+    foundTotalDeviceNumber()
+    return () => {
+      controller.abort()
+    }
+  }, [])
 
   const storeStripePaymentIntent = useCallback(async () => {
     const stripeTransactionProfile = {
       paymentIntent: payment_intent,
       clientSecret: clientSecret,
       device: foundTotalDeviceNumber(),
-      user:formattingConsumerInfo().uid,
+      user: formattingConsumerInfo().uid,
       provider: company,
       eventSelected: choice,
     };
@@ -62,7 +69,7 @@ const formattingConsumerInfo = () => {
       paymentIntent: propsToPass.current.paymentIntentGenerated,
       clientSecret: propsToPass.current.clientSecretGenerated,
       device: foundTotalDeviceNumber(),
-      user:formattingConsumerInfo().uid,
+      user: formattingConsumerInfo().uid,
       provider: company,
       eventSelected: choice,
     };
@@ -101,20 +108,27 @@ const formattingConsumerInfo = () => {
     }
   }, [])
 
-  if (payment_intent && clientSecret) {
-    if (storingRef.current) {
-      propsToPass.current = {
-        paymentIntentGenerated: payment_intent,
-        clientSecretGenerated: clientSecret,
-      };
-      storeStripePaymentIntent();
-      generateTransactionInfoDetail(propsToPass);
-      setQrCodeValue(payment_intent);
-      storingRef.current = false;
+  useEffect(() => {
+    const controller = new AbortController()
+    if (payment_intent && clientSecret) {
+      if (storingRef.current) {
+        propsToPass.current = {
+          paymentIntentGenerated: payment_intent,
+          clientSecretGenerated: clientSecret,
+        };
+        storeStripePaymentIntent();
+        generateTransactionInfoDetail(propsToPass);
+        setQrCodeValue(payment_intent);
+        storingRef.current = false;
+      }
+    } else {
+      generator()
     }
-  } else {
-    generator()
-  }
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
 
   const checkAndRemove = async () => {
     const savedStripeTransactions = await devitrackApi.get("/admin/users");
