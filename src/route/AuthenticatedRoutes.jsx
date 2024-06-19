@@ -1,7 +1,7 @@
-import { Suspense, lazy, useMemo } from "react";
-import { Route, Routes } from "react-router-dom";
-import NavigationBottom from "../components/navigation/NavigationBottom";
+import { lazy, Suspense } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import UpperBanner from "../components/banner/UpperBanner";
+import NavigationBottom from "../components/navigation/NavigationBottom";
 import AuthenticationLogin from "../pages/authentication/AuthenticationLogin";
 import LoadingPage from "../pages/loading/LoadingPage";
 import DepositElement from "../pages/stripe/DepositElement";
@@ -30,21 +30,16 @@ const AuthenticatedRoutes = () => {
     "/payment",
     "/",
   ];
-  const pathRef = useMemo(
-    () => window.location.pathname,
-    [window.location.pathname]
-  );
+  const pathRef = useLocation()
   return (
     <>
       <header style={{
-          height: "5svh",
-          height: "5dvh",
-        }}>
+        height: "5dvh",
+      }}>
         <UpperBanner />
       </header>
       <main
         style={{
-          minHeight: "80svh",
           minHeight: "80dvh",
         }}
       >
@@ -84,12 +79,11 @@ const AuthenticatedRoutes = () => {
         </Suspense>
       </main>
       <footer
+        key={pathRef.key}
         style={{
-          height: "15svh",
-          height: "15dvh",
-          display: `${
-            listPageNotAllowForNavigation.includes(pathRef) && "none"
-          }`,
+          height: "20dvh",
+          display: `${listPageNotAllowForNavigation.includes(pathRef.pathname) && "none"
+            }`,
         }}
       >
         <NavigationBottom />

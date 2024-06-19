@@ -82,17 +82,17 @@ const ConsumerInitialForm = () => {
     return () => {
       controller.abort()
     }
-  }, [isValidEmail(), watch('email').length])
+  }, [isValidEmail(), String(watch('email')).length])
 
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
     setLoadingState(loadingStatus.loading);
-    if (event.eventInfoDetail.merchant) {
+    if (!event.eventInfoDetail.merchant) {
       const parametersNeededToLoginLink = {
         consumer: consumerInfoFound,
         link: `https://app.devitrak.net/authentication/${encodeURI(
           choice
-        )}/${encodeURI(company)}/${checkIfConsumerExists().id}`,
+        )}/${encodeURI(company)}/${consumerInfoFound[0].id}`,
         contactInfo: contactInfo.email,
         company: event.company
       };
@@ -104,7 +104,7 @@ const ConsumerInitialForm = () => {
         return setLoadingState(loadingStatus.success);
       }
     }
-    return navigate(`/authentication/${event.eventInfoDetail.eventName}/${event.company}/${checkIfConsumerExists().id}`)
+    return navigate(`/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound[0].id}`)
   };
 
   const emailConfirmationForNewConsumer = async (props) => {

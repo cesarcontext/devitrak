@@ -77,7 +77,6 @@ const MainPage = () => {
       }
     };
     return (
-      <>
         <Grid margin={"3rem auto 5rem"} container>
           <Grid
             display={"flex"}
@@ -278,7 +277,6 @@ const MainPage = () => {
                       <div
                         style={{
                           height: "15dvh",
-                          height: "15svh",
                           overflow: "hidden",
                           zIndex: "0",
                         }}
@@ -394,7 +392,6 @@ const MainPage = () => {
             <SupportMainPage />
           </Grid>
         </Grid>
-      </>
     );
   }
 };

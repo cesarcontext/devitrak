@@ -1,11 +1,12 @@
 import { BottomNavigation, Grid, Typography } from "@mui/material";
 import { Progress } from "antd";
-import "./IndicatorProgressBottom.css";
-import "./BottomNavigation.css";
-import { useSelector } from "react-redux";
 import React, { useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import "./BottomNavigation.css";
+import "./IndicatorProgressBottom.css";
 const IndicatorProgressBottom = ({ current, steps }) => {
-  const urlDetector = window.location.pathname;
+  const urlDetector = useLocation();
   const { currentSelectionDevice } = useSelector(
     (state) => state.deviceHandler
   );
@@ -26,9 +27,10 @@ const IndicatorProgressBottom = ({ current, steps }) => {
     return findRightValueOfDevice() * currentSelectionDevice;
   }, [currentSelectionDevice, deviceSetup]);
   
+  
   return (
     <BottomNavigation
-      key={urlDetector}
+      key={urlDetector.key}
       className="bottom-navigation"
       style={{
         display: "flex",
@@ -42,7 +44,7 @@ const IndicatorProgressBottom = ({ current, steps }) => {
         boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
       }}
     >
-      {validPaths.includes(urlDetector) && eventInfoDetail.merchant && (
+      {validPaths.includes(urlDetector.pathname) && eventInfoDetail.merchant && (
         <Grid
           style={{
             margin: "0rem 0rem 0.5rem",

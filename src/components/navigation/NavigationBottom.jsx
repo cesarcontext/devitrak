@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react";
-import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
-import { PersonProfileIcon } from "../icons/Icons";
+import { BottomNavigation } from "@mui/material";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { PersonProfileIcon, ProfileIcon } from "../icons/Icons";
 
 const NavigationBottom = () => {
   const location = useLocation()
@@ -33,51 +33,65 @@ const NavigationBottom = () => {
         }}
         showLabels
       >
-        <BottomNavigationAction
-          style={{
-            background: `${location.pathname === "/device"
-              ? "var(--blue-dark-700, #004EEB)"
-              : "var(--blue-dark-800, #0040c1)"
-              }`,
-            borderRadius: `${location.pathname === "/device" ? "12px" : "0"}`,
-            aspectRatio: "1/3",
-            height: "60%",
-            color: "#fff",
+        <NavLink
+          to={'/device'}
+          style={({ isActive }) => {
+            return {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              background: isActive ? "var(--blue-dark-700, #004EEB)" : "var(--blue-dark-800, #0040c1)",
+              padding: "8px 12px",
+              margin: "20px 0 0",
+              borderRadius: `${isActive ? "12px" : "0"}`,
+              alignSelf: "stretch",
+              height: "10dvh",
+              color: "#fff",
+            }
           }}
-          onClick={() => navigate("/device")}
-          label="Current"
-          icon={<Icon icon="ep:headset" width="30" height="30" />}
-        />
-        <BottomNavigationAction
-          style={{
-            background: `${location.pathname === "/information"
-              ? "var(--blue-dark-700, #004EEB)"
-              : "var(--blue-dark-800, #0040c1)"
-              }`,
-            borderRadius: `${location.pathname === "/information" ? "12px" : "0"}`,
-            aspectRatio: "1/3",
-            height: "60%",
-            color: "#fff",
+        ><Icon icon="ep:headset" width="30" height="30" />
+          <p style={{ fontSize: "12px", lineHeight: "16px", fontFamily: "Inter", fontStyle: "normal", textDecoration: "none", fontWeight: 400, display: "flex", justifyContent: "center", alignItems: "center" }}>Devices</p></NavLink>
+        <NavLink
+          to={'/information'}
+          style={({ isActive }) => {
+            return {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              background: isActive ? "var(--blue-dark-700, #004EEB)" : "var(--blue-dark-800, #0040c1)",
+              padding: "8px 12px",
+              margin: "20px 0 0",
+              borderRadius: `${isActive ? "12px" : "0"}`,
+              alignSelf: "stretch",
+              height: "10dvh",
+              color: "#fff",
+            }
           }}
-          onClick={() => navigate("/information")}
-          label="More info"
-          icon={<Icon icon="mdi-light:information" width="30" height="30" />}
-        />
-        <BottomNavigationAction
-          style={{
-            background: `${location.pathname === "/profile"
-              ? "var(--blue-dark-700, #004EEB)"
-              : "var(--blue-dark-800, #0040c1)"
-              }`,
-            borderRadius: `${location.pathname === "/profile" ? "12px" : "0"}`,
-            aspectRatio: "1/3",
-            height: "60%",
-            color: "#fff",
+        ><Icon icon="mdi-light:information" width="30" height="30" />
+          <p style={{ fontSize: "12px", lineHeight: "16px", fontFamily: "Inter", fontStyle: "normal", textDecoration: "none", fontWeight: 400, display: "flex", justifyContent: "center", alignItems: "center" }}>More info</p></NavLink>
+
+        <NavLink
+          to={'/profile'}
+          style={({ isActive }) => {
+            return {
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              background: isActive ? "var(--blue-dark-700, #004EEB)" : "var(--blue-dark-800, #0040c1)",
+              padding: "8px 12px",
+              margin: "20px 0 0",
+              borderRadius: `${isActive ? "12px" : "0"}`,
+              alignSelf: "stretch",
+              height: "10dvh",
+              color: "#fff",
+            }
           }}
-          onClick={() => navigate("/profile")}
-          label="My profile"
-          icon={<PersonProfileIcon />}
-        />
+        ><ProfileIcon />
+          <p style={{ fontSize: "12px", lineHeight: "16px", fontFamily: "Inter", fontStyle: "normal", textDecoration: "none", fontWeight: 400, display: "flex", justifyContent: "center", alignItems: "center" }}>Profile</p>
+        </NavLink>
       </BottomNavigation>
     }</>
   );

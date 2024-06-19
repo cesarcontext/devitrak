@@ -15,7 +15,7 @@ import {
 } from "../../store/slides/eventSlide";
 import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import _ from "lodash"
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
@@ -26,20 +26,41 @@ const AuthenticationLogin = () => {
   const navigate = useNavigate();
   const listOfConsumersQuery = useQuery({
     queryKey: ["listOfConsumers"],
-    queryFn: () => devitrackApi.get("/auth/users"),
+    queryFn: () => devitrackApi.post("/auth/user-query", {
+      id: uid
+    }),
+    enabled: false,
+    refetchOnMount: false
   });
   const listOfEventsQuery = useQuery({
     queryKey: ["events"],
-    queryFn: () => devitrackApi.get("/event/event-list"),
+    queryFn: () => devitrackApi.post("/event/event-list", {
+      'eventInfoDetail.eventName': event,
+      company: company
+    }),
+    enabled: false,
+    refetchOnMount: false
   });
   const stripeCustomersQuery = useQuery({
     queryKey: ["stripeCustomers"],
     queryFn: () => devitrackApi.get("/stripe/customers"),
+    enabled: false,
+    refetchOnMount: false
   });
   const updatingConsumerInfoMutation = useMutation({
     mutationFn: (consumerProfile) =>
       devitrackApi.patch(`/auth/${consumerProfile.id}`, consumerProfile),
   });
+
+  useEffect(() => {
+    const controller = new AbortController()
+    listOfConsumersQuery.refetch()
+    listOfEventsQuery.refetch()
+    stripeCustomersQuery.refetch()
+    return () => {
+      controller.abort()
+    }
+  }, [])
 
   if (
     listOfConsumersQuery.data &&

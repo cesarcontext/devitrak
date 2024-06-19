@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import { Avatar, Divider, List, QRCode } from "antd";
-import React, { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
