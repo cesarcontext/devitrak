@@ -32,7 +32,7 @@ const AuthenticatedRoutes = () => {
   ];
   const pathRef = useLocation()
   return (
-    <>
+    <div style={{width:"100%"}}>
       <header style={{
         height: "5dvh",
       }}>
@@ -88,7 +88,7 @@ const AuthenticatedRoutes = () => {
       >
         <NavigationBottom />
       </footer>
-    </>
+    </div>
   );
 };
 
