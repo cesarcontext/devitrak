@@ -16,7 +16,7 @@ const OrderHistory = () => {
   const dispatch = useDispatch();
   const transactionQuery = useQuery({
     queryKey: ["listOfTransactions"],
-    queryFn: () => devitrackApi.post("/stripe/transaction", {
+    queryFn: () => devitrackApi.post("/transaction/transaction", {
       "consumerInfo.email": consumer.email
     }),
     refetchOnMount: false,
@@ -32,20 +32,21 @@ const OrderHistory = () => {
 
   const columns = [
     {
-      title: "Transaction ID",
+      title: "Transaction",
       dataIndex: "paymentIntent",
+      key:"paymentIntent",
       sorter: {
         compare: (a, b) => a.paymentIntent - b.paymentIntent,
       },
     },
     {
-      title: "Deposit amount",
+      title: "Deposit",
       dataIndex: "amount",
       align: "right",
       sorter: {
         compare: (a, b) => a.amount - b.amount,
       },
-      render: (amount) => (
+      render: (amount, record) => (
         <span>
           <Typography>${amount}</Typography>
         </span>
@@ -76,6 +77,7 @@ const OrderHistory = () => {
     const filterData = async () => {
       try {
         const ref = new Map();
+        const ref2 = new Set()
         if (findingTransactionPerConsumerPerEvent() && renderTimeRef.current) {
           for (let data of findingTransactionPerConsumerPerEvent()) {
             if (data.paymentIntent.length > 15) {
@@ -140,7 +142,7 @@ const OrderHistory = () => {
           justifyContent={"flex-start"}
           alignItems={"center"}
           item
-          xs={10}
+          xs={12}
         >
           <Typography
             textTransform={"none"}
@@ -162,7 +164,7 @@ const OrderHistory = () => {
           justifyContent={"center"}
           alignItems={"center"}
           item
-          xs={10}
+          xs={12}
         >
           <Table
             pagination={{
