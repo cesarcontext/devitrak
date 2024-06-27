@@ -13,7 +13,12 @@ const OptionsMainPage = () => {
   const navigate = useNavigate();
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
-    queryFn: () => devitrackApi.get("/stripe/transaction"),
+    queryFn: () => devitrackApi.post("/stripe/transaction", {
+      "consumerInfo.email": consumer.email,
+      eventSelected: choice
+    }),
+    enabled:false,
+    refetchOnMount:false
   });
 
   const findOrderPerConsumer = () => {
