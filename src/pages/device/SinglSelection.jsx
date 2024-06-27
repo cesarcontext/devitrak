@@ -91,7 +91,7 @@ const SingleSelection = () => {
     }
     const stripeProfile = {
       customerEmail: consumer.email,
-      customerId: customerStripe.stripeid,
+      // customerId: customerStripe.stripeid,
       device: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() ? numberNeeded * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() : 0,
     };
     if (numberNeeded > 0 && consumer) {
@@ -123,10 +123,10 @@ const SingleSelection = () => {
         );
         dispatch(onAddPaymentIntent(respStripe.data));
         dispatch(onAddAmountStripeInfo(Number(numberNeeded)));
-        if (!eventInfoDetail.merchant) {
-          return navigate(`/qr-code-generation`);
-        } else {
+        if (eventInfoDetail.merchant) {
           return navigate(`/payment`);
+        } else {
+          return navigate(`/qr-code-generation`);
         }
       }
     }
@@ -190,7 +190,6 @@ const SingleSelection = () => {
                   >
                     {consumer?.name}
                   </span>
-                  ! Select amount{" "}
                 </Typography>
               </Grid>
               <Grid
@@ -213,7 +212,7 @@ const SingleSelection = () => {
                   fontWeight={500}
                   lineHeight={"24px"}
                 >
-                  Select the amount of device you need.
+                  Select how many devices you need.
                 </Typography>
               </Grid>
 
