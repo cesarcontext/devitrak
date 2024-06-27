@@ -1,7 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Empty } from "antd";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
@@ -13,14 +13,21 @@ const OptionsMainPage = () => {
   const navigate = useNavigate();
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
-    queryFn: () => devitrackApi.post("/stripe/transaction", {
+    queryFn: () => devitrackApi.post("/transaction/transaction", {
       "consumerInfo.email": consumer.email,
       eventSelected: choice
     }),
-    enabled:false,
+    // enabled:false,
     refetchOnMount:false
   });
 
+  useEffect(() => {
+    const controller = new AbortController()
+  savedTransactionsQuery.refetch()
+    return () => {
+      controller.abort()
+    }
+  }, [])
   const findOrderPerConsumer = () => {
     const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
   }
