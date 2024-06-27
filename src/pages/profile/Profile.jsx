@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import SupportMainPage from "../support/SupportMainPage";
 import ConsumerInfo from "./ConsumerInfo";
-import CurrentOrder from "./CurrentOrder";
 import OrderHistory from "./OrderHistory";
 import PaymentInformation from "./PaymentInformation";
 import "./Profile.css";
