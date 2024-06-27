@@ -87,24 +87,25 @@ const ConsumerInitialForm = () => {
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
     setLoadingState(loadingStatus.loading);
-    if (!event.eventInfoDetail.merchant) {
-      const parametersNeededToLoginLink = {
-        consumer: consumerInfoFound,
-        link: `https://app.devitrak.net/authentication/${encodeURI(
-          choice
-        )}/${encodeURI(company)}/${consumerInfoFound[0].id}`,
-        contactInfo: contactInfo.email,
-        company: event.company
-      };
-      const respo = await devitrackApi.post(
-        "/nodemailer/login-existing-consumer",
-        parametersNeededToLoginLink
-      );
-      if (respo) {
-        return setLoadingState(loadingStatus.success);
-      }
+    if (event.eventInfoDetail.merchant) {
+      return navigate(`/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound[0].id}`)
     }
-    return navigate(`/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound[0].id}`)
+    const parametersNeededToLoginLink = {
+      consumer: consumerInfoFound,
+      link: `https://app.devitrak.net/authentication/${encodeURI(
+        choice
+      )}/${encodeURI(company)}/${consumerInfoFound[0].id}`,
+      contactInfo: contactInfo.email,
+      company: event.company
+    };
+    const respo = await devitrackApi.post(
+      "/nodemailer/login-existing-consumer",
+      parametersNeededToLoginLink
+    );
+    if (respo) {
+      return setLoadingState(loadingStatus.success);
+    }
+
   };
 
   const emailConfirmationForNewConsumer = async (props) => {
@@ -205,7 +206,7 @@ const ConsumerInitialForm = () => {
   };
 
   const renderButtonTitle = () => {
-    if (!event.eventInfoDetail.merchant) {
+    if (event.eventInfoDetail.merchant) {
       return "Next step"
     } else {
       if (emailSentRef.current) {
