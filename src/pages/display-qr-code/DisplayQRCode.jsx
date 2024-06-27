@@ -132,8 +132,8 @@ const DisplayQRCode = () => {
 
   const checkAndRemove = async () => {
     const savedStripeTransactions = await devitrackApi.get("/admin/users");
-    const savedTransactions = await devitrackApi.post("/stripe/transaction", {
-      "eventSelected":choice
+    const savedTransactions = await devitrackApi.post("/transaction/transaction", {
+      "eventSelected": choice
     });
     const groupingStripeTransactionByEvent = _.groupBy(
       savedStripeTransactions.data.stripeTransactions,
