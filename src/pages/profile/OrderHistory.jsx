@@ -1,7 +1,7 @@
 import { Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Table } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddTransactionHistory } from "../../store/slides/stripeSlide"
@@ -16,8 +16,20 @@ const OrderHistory = () => {
   const dispatch = useDispatch();
   const transactionQuery = useQuery({
     queryKey: ["listOfTransactions"],
-    queryFn: () => devitrackApi.get("/stripe/transaction"),
+    queryFn: () => devitrackApi.post("/stripe/transaction", {
+      "consumerInfo.email": consumer.email
+    }),
+    refetchOnMount: false,
+    enabled: false
   });
+  useEffect(() => {
+    const controller = new AbortController()
+    transactionQuery.refetch()
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
   const columns = [
     {
       title: "Transaction ID",
