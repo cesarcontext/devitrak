@@ -7,6 +7,7 @@ import { devitrackApi } from "../../devitrakApi";
 import { onAddTransactionHistory } from "../../store/slides/stripeSlide"
 import _ from "lodash"
 import "./Profile.css";
+import isOlderThanOneYear from "../../components/utils/checkDateInReferenceOfToday";
 const OrderHistory = () => {
   const [tableResult, setTableResult] = useState([]);
   const [dataToHistoryRecord, setDataToHistoryRecord] = useState([]);
@@ -34,7 +35,7 @@ const OrderHistory = () => {
     {
       title: "Transaction",
       dataIndex: "paymentIntent",
-      key:"paymentIntent",
+      key: "paymentIntent",
       sorter: {
         compare: (a, b) => a.paymentIntent - b.paymentIntent,
       },
@@ -56,28 +57,23 @@ const OrderHistory = () => {
 
   if (transactionQuery.data) {
     const findingTransactionPerConsumerPerEvent = () => {
-      const groupingByCompany = _.groupBy(
-        transactionQuery.data.data.list,
-        "provider"
-      );
-      const groupingByEvents = _.groupBy(
-        groupingByCompany[event.company],
-        "eventSelected"
-      );
-      const groupingByConsumerEmail = _.groupBy(
-        groupingByEvents[event.eventInfoDetail.eventName],
-        "consumerInfo.email"
-      );
-      if (groupingByConsumerEmail[consumer.email])
-        return groupingByConsumerEmail[consumer.email];
-      return [];
+      if (transactionQuery.data) {
+        const result = new Set()
+        const data = transactionQuery.data.data.list
+        for (let item of data) {
+          if (!isOlderThanOneYear(item.date)) {
+            result.add(item)
+          }
+        }
+        return Array.from(result)
+      }
+      return []
     };
     findingTransactionPerConsumerPerEvent();
 
     const filterData = async () => {
       try {
         const ref = new Map();
-        const ref2 = new Set()
         if (findingTransactionPerConsumerPerEvent() && renderTimeRef.current) {
           for (let data of findingTransactionPerConsumerPerEvent()) {
             if (data.paymentIntent.length > 15) {
@@ -88,9 +84,9 @@ const OrderHistory = () => {
                 ref.set(resp.data.paymentIntent.id, {
                   ...resp.data.paymentIntent,
                   paymentIntent: resp.data.paymentIntent.id,
-                  amount: resp.data.paymentIntent.amount_capturable
-                    .toString()
-                    .slice(0, -2),
+                  amount: resp.data.paymentIntent.amount_capturable !== 0 ?
+                    resp.data.paymentIntent.amount_capturable.toString()
+                      .slice(0, -2) : '0',
                   deposit: "deposit",
                 });
               }
@@ -103,21 +99,17 @@ const OrderHistory = () => {
             }
           }
         }
-        const addingResult = [];
-        const addingHistoryResult = [];
-        let index = 0;
+        const addingResult = new Set();
+        let addingHistoryResult = [];
         for (let [key, value] of ref.entries()) {
-          addingResult.splice(index, 0, {
+          addingResult.add({
             paymentIntent: key,
             amount: value.amount,
-          });
-
-          setTableResult(addingResult.toReversed());
-          addingHistoryResult.splice(index, 0, value);
+          })
+          setTableResult(Array.from(addingResult).toReversed());
+          addingHistoryResult = [...addingHistoryResult, value];
           setDataToHistoryRecord(addingHistoryResult.toReversed());
-          index++;
         }
-
         renderTimeRef.current = false;
         dispatch(onAddTransactionHistory(dataToHistoryRecord));
       } catch (error) {
