@@ -9,33 +9,33 @@ import OrderFormat from "./format/OrderFormat";
 import _ from 'lodash'
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
-  const { choice } = useSelector((state) => state.event);
+  // const { choice } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
     queryFn: () => devitrackApi.post("/transaction/transaction", {
       "consumerInfo.email": consumer.email,
-      eventSelected: choice
+      // eventSelected: choice
     }),
-    // enabled:false,
-    refetchOnMount:false
+    refetchOnMount: false
   });
 
   useEffect(() => {
     const controller = new AbortController()
-  savedTransactionsQuery.refetch()
+    savedTransactionsQuery.refetch()
     return () => {
       controller.abort()
     }
   }, [])
-  const findOrderPerConsumer = () => {
-    const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
-  }
-  const find = savedTransactionsQuery?.data?.data?.list?.filter(
-    (transaction) =>
-      transaction?.consumerInfo?.email === consumer?.email &&
-      transaction.eventSelected === choice
-  );
+  // const findOrderPerConsumer = () => {
+  //   const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
+  // }
+  const find = savedTransactionsQuery?.data?.data?.list
+  // ?.filter(
+  //   (transaction) =>
+  //     transaction?.consumerInfo?.email === consumer?.email &&
+  //     transaction.eventSelected === choice
+  // );
 
   const removeDuplicateEntries = useCallback(() => {
     if (find) {
@@ -77,30 +77,35 @@ const OptionsMainPage = () => {
         item
         xs={10}
       >
-        <Typography
-          color={"var(--gray-900, #101828)"}
-          textAlign={"center"}
-          /* Display xs/Semibold */
-          fontFamily={"Inter"}
-          fontSize={"24px"}
-          fontStyle={"normal"}
-          fontWeight={"600"}
-          lineHeight={"32px"}
+        <h1
+          style={{
+            color: "var(--gray-900, #101828)",
+            textAlign: "center",
+            /* Display xs/Semibold */
+            fontFamily: "Inter",
+            fontSize: "24px",
+            fontStyle: "normal",
+            fontWeight: "600",
+            lineHeight: "32px",
+          }}
         >
           Order details
-        </Typography>
-        <Typography
-          color={"var(--gray-600, #475467)"}
-          textAlign={"center"}
-          /* Display xs/Semibold */
-          fontFamily={"Inter"}
-          fontSize={"16px"}
-          fontStyle={"normal"}
-          fontWeight={"400"}
-          lineHeight={"24px"}
+        </h1>
+        <h4
+          style={{
+
+            color: "var(--gray-600, #475467)",
+            textAlign: "center",
+            /* Display xs/Semibold */
+            fontFamily: "Inter",
+            fontSize: "16px",
+            fontStyle: "normal",
+            fontWeight: "400",
+            lineHeight: "24px",
+          }}
         >
           View your current orders and request more.
-        </Typography>
+        </h4>
       </Grid>
       <Grid
         display={"flex"}
@@ -121,18 +126,19 @@ const OptionsMainPage = () => {
         ) : (
           <Empty
             description={
-              <Typography
-                color={"var(--gray-600, #475467)"}
-                textAlign={"center"}
+              <h1 style={{
+                color: "var(--gray-600, #475467)",
+                textAlign: "center",
                 /* Display xs/Semibold */
-                fontFamily={"Inter"}
-                fontSize={"16px"}
-                fontStyle={"normal"}
-                fontWeight={"400"}
-                lineHeight={"24px"}
+                fontFamily: "Inter",
+                fontSize: "16px",
+                fontStyle: "normal",
+                fontWeight: "400",
+                lineHeight: "24px",
+              }}
               >
                 No order.
-              </Typography>
+              </h1>
             }
           ></Empty>
         )}
@@ -153,7 +159,7 @@ const OptionsMainPage = () => {
             padding: "12px 20px",
             justifyContent: "center",
             alignItems: "center",
-            gap: "8px",
+            // gap: "8px",
             borderRadius: "8px",
             border: "1px solid var(--blue-dark-600, #155EEF)",
             background: "var(--blue-dark-600, #155EEF)",
@@ -162,13 +168,15 @@ const OptionsMainPage = () => {
           }}
         >
           <Typography
-            textTransform={"none"}
-            fontFamily={"Inter"}
-            fontSize={"18px"}
-            fontStyle={"normal"}
-            fontWeight={600}
-            lineHeight={"20px"}
-            color={"#fff"}
+            style={{
+              textTransform: "none",
+              fontFamily: "Inter",
+              fontSize: "18px",
+              fontStyle: "normal",
+              fontWeight: 600,
+              lineHeight: "20px",
+              color: "#fff",
+            }}
           >
             Create new order
           </Typography>
