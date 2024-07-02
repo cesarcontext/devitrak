@@ -13,9 +13,8 @@ const OrderFormat = (info) => {
     queryKey: ["assignedDevice"],
     queryFn: () => devitrackApi.post("/receiver/receiver-assigned-list", {
       user: info.info.consumerInfo.email,
-      eventSelected:choice,
+      eventSelected: choice,
     }),
-    enabled: false,
     refetchOnMount: false
   });
   useEffect(() => {
@@ -69,11 +68,8 @@ const OrderFormat = (info) => {
     const sumDevices = () => {
       const { device } = info.info;
       let result = [];
-      let index = 0;
-      const noDelete = 0;
       for (let data of device) {
-        result.splice(index, noDelete, data.deviceNeeded);
-        index++;
+        result = [...result, data.deviceNeeded];
       }
       return result.reduce((accumulator, current) => accumulator + current, 0);
     };
@@ -120,52 +116,64 @@ const OrderFormat = (info) => {
           width: 300,
           margin: "0.5rem auto 1rem",
         }}
+        styles={{
+          header: {
+            borderBottom: "transparent",
+            color: "#6941c6"
+          }
+        }}
       >
         <Grid container>
           <Grid
             display={"flex"}
             justifyContent={"flex-start"}
             alignItems={"center"}
+            margin={'0 0 -15px'}
             item
             xs={10}
           >
-            <Typography
-              width={"100%"}
-              alignSelf={"stretch"}
-              color={"var(--gray-900, #101828)"}
-              fontSize={"18px"}
-              fontFamily={"Inter"}
-              fontStyle={"normal"}
-              fontWeight={500}
-              lineHeight={"28px"}
-              textAlign={"left"}
-              textTransform={"capitalize"}
+            <p
+              style={{
+                width: "100%",
+                alignSelf: "stretch",
+                color: "var(--gray-900, #101828)",
+                fontSize: "18px",
+                fontFamily: "Inter",
+                fontStyle: "normal",
+                fontWeight: 700,
+                lineHeight: "28px",
+                textAlign: "left",
+                textTransform: "none",
+              }}
             >
               Total devices: {sumDevices()}
-            </Typography>
+            </p>
           </Grid>
           <Grid
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
+            margin={'0 0 -15px'}
             item
             xs={12}
           >
-            <Typography
-              width={"100%"}
-              alignSelf={"stretch"}
-              color={"var(--gray-600, #475467)"}
-              fontSize={"16px"}
-              fontFamily={"Inter"}
-              fontStyle={"normal"}
-              fontWeight={400}
-              lineHeight={"24px"}
-              textAlign={"left"}
-              textTransform={"capitalize"}
+            <p
+              style={{
+                width: "100%",
+                alignSelf: "stretch",
+                color: "var(--gray-600, #475467)",
+                fontSize: "16px",
+                fontFamily: "Inter",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "24px",
+                textAlign: "left",
+                textTransform: "none",
+              }}
             >
               {sumDevices() > 1 ? "Devices" : "Device"} in use:{" "}
               {devicesAssignedInOrder()}/{sumDevices()}
-            </Typography>
+            </p>
             {devicesAssignedInOrder() > 0 ? (
               <Icon
                 icon="fluent:shifts-activity-20-filled"
@@ -183,39 +191,22 @@ const OrderFormat = (info) => {
             item
             xs={10}
           >
-            <Typography
-              width={"100%"}
-              alignSelf={"stretch"}
-              color={"var(--gray-600, #475467)"}
-              fontSize={"16px"}
-              fontFamily={"Inter"}
-              fontStyle={"normal"}
-              fontWeight={400}
-              lineHeight={"24px"}
-              textAlign={"left"}
-              textTransform={"capitalize"}
+            <p
+              style={{
+                width: "100%",
+                alignSelf: "stretch",
+                color: "var(--gray-600, #475467)",
+                fontSize: "16px",
+                fontFamily: "Inter",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "24px",
+                textAlign: "left",
+                textTransform: "none",
+              }}
             >
               Deposit amount: {subscription.id === 1 ? "$0" : null}
-            </Typography>
-          </Grid>
-          <Grid
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            item
-            xs={10}
-          >
-            <Typography
-              width={"100%"}
-              color={""}
-              fontSize={"12px"}
-              fontFamily={"Inter"}
-              fontStyle={"normal"}
-              fontWeight={500}
-              lineHeight={"18px"}
-              textAlign={"left"}
-              textTransform={"capitalize"}
-            ></Typography>
+            </p>
           </Grid>
           <Grid
             display={"flex"}
@@ -232,20 +223,22 @@ const OrderFormat = (info) => {
               iconSize={50}
             />
           </Grid>
-          <Typography
-            width={"100%"}
-            alignSelf={"stretch"}
-            color={"var(--gray-600, #475467)"}
-            fontSize={"14px"}
-            fontFamily={"Inter"}
-            fontStyle={"normal"}
-            fontWeight={400}
-            lineHeight={"20px"}
-            textAlign={"center"}
-            textTransform={"none"}
+          <p
+            style={{
+              width: "100%",
+              alignSelf: "stretch",
+              color: "var(--gray-600, #475467)",
+              fontSize: "14px",
+              fontFamily: "Inter",
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "20px",
+              textAlign: "center",
+              textTransform: "none",
+            }}
           >
             Order number: {info.info.paymentIntent}
-          </Typography>
+          </p>
         </Grid>
       </Card>
     );
