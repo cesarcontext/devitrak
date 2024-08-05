@@ -69,7 +69,7 @@ const OrderFormat = (info) => {
       const { device } = info.info;
       let result = [];
       for (let data of device) {
-        result = [...result, data.deviceNeeded];
+        result = [...result, Number(data.deviceNeeded)];
       }
       return result.reduce((accumulator, current) => accumulator + current, 0);
     };
