@@ -55,14 +55,14 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
     setLoadingState(loadingStatus.loading);
     if (event.eventInfoDetail.merchant) {
       return navigate(
-        `/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound[0].id}`
+        `/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound.id}`
       );
     } else {
       const parametersNeededToLoginLink = {
-        consumer: checkArray(consumerInfoFound),
+        consumer: consumerInfoFound,
         link: `https://app.devitrak.net/authentication/${encodeURI(
           choice
-        )}/${encodeURI(company)}/${consumerInfoFound[0].id}`,
+        )}/${encodeURI(company)}/${consumerInfoFound.id}`,
         contactInfo: contactInfo.email,
         company: event.company,
       };
@@ -262,7 +262,7 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
               >
                 Welcome back,{" "}
                 <span style={{ textTransform: "capitalize" }}>
-                  {checkArray(consumerInfoFound).name}
+                  {consumerInfoFound.name}
                 </span>{" "}
                 ! Your email is already in the system. Continue by sending an
                 email to your inbox that contains a link for you to log in.
