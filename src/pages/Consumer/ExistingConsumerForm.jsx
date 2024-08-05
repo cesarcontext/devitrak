@@ -10,20 +10,12 @@ import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorP
 import { checkArray } from "../../components/utils/checkArray";
 import { devitrackApi } from "../../devitrakApi";
 import "./ConsumerInitialForm.css";
-import { isValidEmail } from "../../components/utils/isValidEmail";
 
-const loadingStatus = {
-  idle: false,
-  error: false,
-  loading: true,
-  success: false,
-};
 const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
-  const [loadingState, setLoadingState] = useState(loadingStatus.idle);
+  const [loadingState, setLoadingState] = useState(false);
   const consumerInfoFound = checkArray(props);
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -52,32 +44,42 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
 
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
-    setLoadingState(loadingStatus.loading);
-    if (event.eventInfoDetail.merchant) {
-      return navigate(
-        `/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound.id}`
-      );
-    } else {
-      const parametersNeededToLoginLink = {
-        consumer: consumerInfoFound,
-        link: `https://app.devitrak.net/authentication/${encodeURI(
-          choice
-        )}/${encodeURI(company)}/${consumerInfoFound.id}`,
-        contactInfo: contactInfo.email,
-        company: event.company,
-      };
-      const respo = await devitrackApi.post(
-        "/nodemailer/login-existing-consumer",
-        parametersNeededToLoginLink
-      );
-      if (respo) {
-        openNotificationWithIcon(
-          "success",
-          "Email sent!",
-          "We sent an email to login to event."
+    setLoadingState(true);
+    try {
+      if (event.eventInfoDetail.merchant) {
+        return navigate(
+          `/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound.id}`
         );
-        return setLoadingState(loadingStatus.success);
+      } else {
+        const parametersNeededToLoginLink = {
+          consumer: consumerInfoFound,
+          link: `https://app.devitrak.net/authentication/${encodeURI(
+            choice
+          )}/${encodeURI(company)}/${consumerInfoFound.id}`,
+          contactInfo: contactInfo.email,
+          company: event.company,
+        };
+        const respo = await devitrackApi.post(
+          "/nodemailer/login-existing-consumer",
+          parametersNeededToLoginLink
+        );
+        if (respo) {
+          openNotificationWithIcon(
+            "success",
+            "Email sent!",
+            "We sent an email to login to event."
+          );
+          return setLoadingState(false);
+        }
       }
+    } catch (error) {
+      console.log("error", error)
+      openNotificationWithIcon(
+        "error",
+        "Something went wrong.",
+        "Please try later."
+      );
+      setLoadingState(false);
     }
   };
 
