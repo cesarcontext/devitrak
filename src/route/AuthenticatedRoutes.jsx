@@ -7,7 +7,7 @@ import LoadingPage from "../pages/loading/LoadingPage";
 import DepositElement from "../pages/stripe/DepositElement";
 const AuthenticatedRoutes = () => {
   const ConsumerInitialForm = lazy(() =>
-    import("../pages/Consumer/ConsumerInitialForm")
+    import("../pages/Consumer/MainPage")
   );
   const DeviceSelection = lazy(() => import("../pages/device/DeviceSelection"));
   const Home = lazy(() => import("../pages/home/Home"));
