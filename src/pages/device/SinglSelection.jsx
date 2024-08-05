@@ -86,15 +86,15 @@ const SingleSelection = () => {
 
   const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
-    if (numberNeeded === 0) {
+    if (Number(numberNeeded) === 0) {
       return warning();
     }
     const stripeProfile = {
       customerEmail: consumer.email,
       // customerId: customerStripe.stripeid,
-      device: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() ? numberNeeded * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() : 0,
+      device: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() ? Number(numberNeeded) * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() : 0,
     };
-    if (numberNeeded > 0 && consumer) {
+    if (Number(numberNeeded) > 0 && consumer) {
       const respStripe = await devitrackApi.post(
         "/stripe/create-payment-intent",
         stripeProfile
@@ -103,21 +103,21 @@ const SingleSelection = () => {
         dispatch(
           onAddMultipleDeviceSelection({
             // deviceType: deviceSetup.at(-1).deviceType,
-            deviceNeeded: numberNeeded,
+            deviceNeeded: Number(numberNeeded),
             deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
         dispatch(
           onAddNewOrder({
             // deviceType: deviceSetup.at(-1).deviceType,
-            deviceNeeded: numberNeeded,
+            deviceNeeded: Number(numberNeeded),
             deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
         dispatch(
           onAddNewOrderToHistory({
             // deviceType: deviceSetup.at(-1).deviceType,
-            deviceNeeded: numberNeeded,
+            deviceNeeded: Number(numberNeeded),
             deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
