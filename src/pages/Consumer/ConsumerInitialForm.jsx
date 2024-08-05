@@ -152,6 +152,12 @@ const ConsumerInitialForm = () => {
         email: data.email,
         phoneNumber: contactPhoneNumber,
       };
+      await devitrackApi.post('/db_consumer/new_consumer', {
+        first_name: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: contactPhoneNumber,
+      })
       dispatch(
         onAddConsumerInfo({
           ...newConsumerProfile,
