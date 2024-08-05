@@ -36,7 +36,6 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
   const emailSentRef = {
     current: false,
   };
-  console.log(emailSentRef);
   const {
     register,
     handleSubmit,
@@ -64,7 +63,6 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       email: watch("email"),
     });
     if (checking.data) {
-      console.log(checking.data.users);
       return setConsumerInfoFound(checking.data.users);
     }
   };
