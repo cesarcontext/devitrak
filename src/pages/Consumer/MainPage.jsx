@@ -1,8 +1,7 @@
 import { Grid } from "@mui/material";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "react-phone-number-input/style.css";
 import { useSelector } from "react-redux";
-import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 import ConsumerInitialForm from "./ConsumerInitialForm";
 import "./ConsumerInitialForm.css";
 import ExistingConsumerForm from "./ExistingConsumerForm";
