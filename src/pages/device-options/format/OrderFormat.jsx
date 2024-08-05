@@ -6,24 +6,25 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
-import _ from 'lodash'
+import _ from "lodash";
 const OrderFormat = (info) => {
   const { subscription, choice } = useSelector((state) => state.event);
   const assignedDeviceListQuery = useQuery({
     queryKey: ["assignedDevice"],
-    queryFn: () => devitrackApi.post("/receiver/receiver-assigned-list", {
-      user: info.info.consumerInfo.email,
-      eventSelected: choice,
-    }),
-    refetchOnMount: false
+    queryFn: () =>
+      devitrackApi.post("/receiver/receiver-assigned-list", {
+        user: info.info.consumerInfo.email,
+        eventSelected: choice,
+      }),
+    refetchOnMount: false,
   });
   useEffect(() => {
-    const controller = new AbortController()
-    assignedDeviceListQuery.refetch()
+    const controller = new AbortController();
+    assignedDeviceListQuery.refetch();
     return () => {
-      controller.abort()
-    }
-  }, [])
+      controller.abort();
+    };
+  }, []);
   if (info) {
     const verifyStatusOrder = (props) => {
       return (
@@ -34,18 +35,16 @@ const OrderFormat = (info) => {
             display: "flex",
             padding: "2px 8px",
             alignItems: "center",
-            background: `${props === "NO"
-              ? "var(--blue-50, #EFF8FF)"
-              : "var(--success-50, #ECFDF3)"
-              }`,
+            background: `${
+              props ? "var(--blue-50, #EFF8FF)" : "var(--success-50, #ECFDF3)"
+            }`,
             width: "fit-content",
           }}
         >
           <Typography
-            color={`${props === "NO"
-              ? "var(--blue-700, #175CD3)"
-              : "var(--success-700, #027A48)"
-              }`}
+            color={`${
+              props ? "var(--blue-700, #175CD3)" : "var(--success-700, #027A48)"
+            }`}
             fontSize={"12px"}
             fontFamily={"Inter"}
             fontStyle={"normal"}
@@ -57,9 +56,9 @@ const OrderFormat = (info) => {
             <Icon
               icon="tabler:point-filled"
               rotate={3}
-              color={`${props === "NO" ? "#2E90FA" : "#12B76A"}`}
+              color={`${props ? "#2E90FA" : "#12B76A"}`}
             />
-            {props === "NO" ? "Completed" : "Active"}
+            {props ? "Completed" : "Active"}
           </Typography>
         </span>
       );
@@ -85,7 +84,9 @@ const OrderFormat = (info) => {
           let index = 0;
           let counting = 1;
           const notDelete = 0;
-          for (let data of groupByPaymentIntentByConsumer[info.info.paymentIntent]) {
+          for (let data of groupByPaymentIntentByConsumer[
+            info.info.paymentIntent
+          ]) {
             if (data.device.status === true) {
               result.splice(index, notDelete, counting);
               index++;
@@ -104,14 +105,15 @@ const OrderFormat = (info) => {
     const orderDay = new Date();
     return (
       <Card
-        title={`${info.info.date
-          ? `${displayMonth(info.info.date)} ${new Date(
-            info.info.date
-          ).getDate()}, ${new Date(info.info.date).getFullYear()}
+        title={`${
+          info.info.date
+            ? `${displayMonth(info.info.date)} ${new Date(
+                info.info.date
+              ).getDate()}, ${new Date(info.info.date).getFullYear()}
               `
-          : orderDay
-          }`}
-        extra={verifyStatusOrder("YES")}
+            : orderDay
+        }`}
+        extra={verifyStatusOrder(info.active)}
         style={{
           width: 300,
           margin: "0.5rem auto 1rem",
@@ -119,8 +121,8 @@ const OrderFormat = (info) => {
         styles={{
           header: {
             borderBottom: "transparent",
-            color: "#6941c6"
-          }
+            color: "#6941c6",
+          },
         }}
       >
         <Grid container>
@@ -128,7 +130,7 @@ const OrderFormat = (info) => {
             display={"flex"}
             justifyContent={"flex-start"}
             alignItems={"center"}
-            margin={'0 0 -15px'}
+            margin={"0 0 -15px"}
             item
             xs={10}
           >
@@ -153,7 +155,7 @@ const OrderFormat = (info) => {
             display={"flex"}
             justifyContent={"space-between"}
             alignItems={"center"}
-            margin={'0 0 -15px'}
+            margin={"0 0 -15px"}
             item
             xs={12}
           >
