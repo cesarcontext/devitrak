@@ -73,16 +73,17 @@ const SingleSelection = () => {
     });
   };
 
-  const retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent = () => {
-    const result = new Set()
-    for (let data of deviceSetup) {
-      if (data.consumerUses !== "Sale") {
-        result.add(Number(data.value))
+  const retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent =
+    () => {
+      const result = new Set();
+      for (let data of deviceSetup) {
+        if (data.consumerUses !== "Sale") {
+          result.add(Number(data.value));
+        }
       }
-    }
-    const objToArray = Array.from(result)
-    return Math.max(...objToArray)
-  }
+      const objToArray = Array.from(result);
+      return Math.max(...objToArray);
+    };
 
   const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
@@ -92,7 +93,11 @@ const SingleSelection = () => {
     const stripeProfile = {
       customerEmail: consumer.email,
       // customerId: customerStripe.stripeid,
-      device: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() ? Number(numberNeeded) * retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent() : 0,
+      device:
+        retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent()
+          ? Number(numberNeeded) *
+            retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent()
+          : 0,
     };
     if (Number(numberNeeded) > 0 && consumer) {
       const respStripe = await devitrackApi.post(
@@ -104,21 +109,24 @@ const SingleSelection = () => {
           onAddMultipleDeviceSelection({
             // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
-            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+            deviceValue:
+              retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
         dispatch(
           onAddNewOrder({
             // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
-            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+            deviceValue:
+              retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
         dispatch(
           onAddNewOrderToHistory({
             // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
-            deviceValue: retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
+            deviceValue:
+              retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
           })
         );
         dispatch(onAddPaymentIntent(respStripe.data));
@@ -152,7 +160,7 @@ const SingleSelection = () => {
           container
         >
           <Grid display={"flex"} justifyContent={"center"} item xs={10}>
-            <form
+            <div
               style={{
                 width: "100%",
                 justifyContent: "center",
@@ -237,17 +245,60 @@ const SingleSelection = () => {
                     textAlign: "center",
                   }}
                   startAdornment={
-                    <InputAdornment
+                    <button
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "transparent",
+                        outline: "none",
+                        margin: 0,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "10px 20px 10px 10px",
+                        width: "100%",
+                      }}
                       onClick={() => lessNumber()}
-                      position="start"
                     >
-                      <Typography fontSize={"24px"}>-</Typography>
-                    </InputAdornment>
+                      <Typography
+                        fontSize={"24px"}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          margin: "auto",
+                        }}
+                      >
+                        -
+                      </Typography>
+                    </button>
                   }
                   endAdornment={
-                    <InputAdornment onClick={() => addNumber()} position="end">
-                      <Typography fontSize={"24px"}>+</Typography>
-                    </InputAdornment>
+                    <button
+                      style={{
+                        backgroundColor: "transparent",
+                        border: "transparent",
+                        outline: "none",
+                        margin: 0,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "10px 10px 10px 20px",
+                        width: "100%",
+                      }}
+                      onClick={() => addNumber()}
+                    >
+                      <Typography
+                        fontSize={"24px"}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          margin: "auto",
+                        }}
+                      >
+                        +
+                      </Typography>
+                    </button>
                   }
                   fullWidth
                 />
@@ -282,7 +333,7 @@ const SingleSelection = () => {
                   </Typography>
                 </Button>
               </Grid>
-            </form>
+            </div>
           </Grid>{" "}
         </Grid>
       </Grid>
