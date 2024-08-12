@@ -31,7 +31,7 @@ const NavigationBottom = () => {
           padding: "0px 15px 30px",
           borderRadius: "12px 12px 0 0",
         }}
-        showLabels
+        showlabels
       >
         <NavLink
           to={'/device'}

@@ -1,11 +1,10 @@
 import React from "react";
-import AuthenticatedRoutes from "./route/AuthenticatedRoutes";
 import "./App.css";
+import AuthenticatedRoutes from "./route/AuthenticatedRoutes";
 
 function App() {
   return (
-   <AuthenticatedRoutes />
-  );
+    <AuthenticatedRoutes />);
 }
 
 export default App;

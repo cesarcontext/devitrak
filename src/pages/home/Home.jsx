@@ -26,7 +26,6 @@ const Home = () => {
   const companyUrl = new URLSearchParams(window.location.search).get("company");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const listOfEventsQuery = useQuery({
     queryKey: ["listOfEvents"],
     queryFn: () => devitrackApi.post("/event/event-list", {
@@ -194,7 +193,6 @@ const Home = () => {
     );
   }
 };
-
 export default Home;
 
 
