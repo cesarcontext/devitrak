@@ -105,7 +105,7 @@ const Checkout = () => {
     if (error.type === "card_error" || error.type === "validation_error") {
       setMessage(error.message);
     } else {
-      setMessage("An unexpected error occurred.");
+      setMessage(`An unexpected error occurred.`);
     }
 
     setIsLoading(false);
@@ -121,8 +121,8 @@ const Checkout = () => {
           justifyContent={"center"}
           margin={"0 auto"}
           item
-          xs={10}
-          sm={10}
+          xs={11}
+          sm={11}
           md={8}
           lg={6}
         >
@@ -134,7 +134,7 @@ const Checkout = () => {
             fontWeight={600}
             fontStyle={"normal"}
             lineHeight={"32px"}
-            marginBottom={'2dvh'}
+            marginBottom={"2dvh"}
           >
             Last step,{" "}
             <span
@@ -167,15 +167,20 @@ const Checkout = () => {
           justifyContent={"center"}
           margin={"2dvh auto 0"}
           item
-          xs={10}
-          sm={10}
+          xs={11}
+          sm={11}
           md={8}
           lg={6}
         >
-          <form style={{
-            height:"65svh",
-            overflow:"scroll",
-          }} id="payment-form" onSubmit={handleSubmit}>
+          <form
+            style={{
+              height: "65svh",
+              width: "100%",
+              overflow: "scroll",
+            }}
+            id="payment-form"
+            onSubmit={handleSubmit}
+          >
             <PaymentElement
               options={paymentElementStyle}
               id="payment-element"
