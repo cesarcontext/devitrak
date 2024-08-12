@@ -20,9 +20,10 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
     formState: { errors },
     setValue,
   } = useForm();
-  const { choice, company, contactInfo, event } = useSelector(
+  const { contactInfo, event } = useSelector(
     (state) => state.event
   );
+  const { company } = useSelector(state => state.company)
   const emailSentRef = useRef(false);
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
@@ -48,14 +49,12 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
     try {
       if (event.eventInfoDetail.merchant) {
         return navigate(
-          `/authentication/${event.eventInfoDetail.eventName}/${event.company}/${consumerInfoFound.id}`
+          `/authentication/${event.id}/${company.id}/${consumerInfoFound.id}`
         );
       } else {
         const parametersNeededToLoginLink = {
           consumer: consumerInfoFound,
-          link: `https://app.devitrak.net/authentication/${encodeURI(
-            choice
-          )}/${encodeURI(company)}/${consumerInfoFound.id}`,
+          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerInfoFound.id}`,
           contactInfo: contactInfo.email,
           company: event.company,
         };
