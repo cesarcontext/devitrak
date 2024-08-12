@@ -19,6 +19,9 @@ import Devitrak from "../../assets/Layer_1.svg";
 import "animate.css";
 import { detector } from "./OperatingSystemDetecting";
 import { onDetectingBrowser } from "../../store/slides/helperSlide";
+import { checkArray } from "../../components/utils/checkArray";
+import { onAddCompanyInfo } from "../../store/slides/companySlide";
+import { onResetConsumerInfo } from "../../store/slides/consumerSlide";
 
 const Home = () => {
   const [existingEvent, setExistingEvent] = useState(false);
@@ -29,39 +32,53 @@ const Home = () => {
 
   const listOfEventsQuery = useQuery({
     queryKey: ["listOfEvents"],
-    queryFn: () => devitrackApi.post("/event/event-list", {
-      'eventInfoDetail.eventName': eventUrl,
-      company: companyUrl
-    }),
-    // enabled: false,
-    refetchOnMount: false
+    queryFn: () =>
+      devitrackApi.post("/event/event-list", {
+        _id: eventUrl,
+      }),
+    refetchOnMount: false,
+  });
+  const companyEventQuery = useQuery({
+    queryKey: ["companyInfoEvent"],
+    queryFn: () =>
+      devitrackApi.post("/company/search-company", {
+        _id: companyUrl,
+      }),
+    refetchOnMount: false,
   });
 
   useEffect(() => {
-    const controller = new AbortController()
-    listOfEventsQuery.refetch()
+    const controller = new AbortController();
+    listOfEventsQuery.refetch();
+    companyEventQuery.refetch();
+
     return () => {
-      controller.abort()
+      controller.abort();
+    };
+  }, [listOfEventsQuery.isLoading, companyEventQuery.isLoading]);
+
+  const companyInformation = useCallback(() => {
+    if (companyEventQuery.data) {
+      const companyInfo = checkArray(companyEventQuery.data.data.company);
+      return companyInfo;
     }
-  }, [])
+    return null;
+  }, [companyEventQuery.data, companyUrl, eventUrl]);
+  companyInformation();
 
   const foundEventInfo = useCallback(() => {
-    const finding = listOfEventsQuery?.data?.data?.list?.find(
-      (event) =>
-        event.eventInfoDetail.eventName === eventUrl &&
-        event.company === companyUrl
-    );
-    return finding;
-  }, [
-    listOfEventsQuery.data,
-    companyUrl,
-    eventUrl,
-  ]);
+    if (listOfEventsQuery.data) {
+      const eventInfo = checkArray(listOfEventsQuery.data.data.list);
+      return eventInfo;
+    }
+    return null;
+  }, [listOfEventsQuery.data, companyUrl, eventUrl]);
   foundEventInfo();
 
   const addEventInfoAndNavigate = () => {
-    if (foundEventInfo()) {
+    if (foundEventInfo() && companyInformation()) {
       if (foundEventInfo()?.active) {
+        dispatch(onAddCompanyInfo(companyInformation()));
         dispatch(onAddEventData(foundEventInfo()));
         dispatch(onAddEventInfoDetail(foundEventInfo().eventInfoDetail));
         dispatch(onAddEventStaff(foundEventInfo().staff));
@@ -71,6 +88,7 @@ const Home = () => {
         dispatch(onAddContactInfo(foundEventInfo().contactInfo));
         dispatch(onAddSubscriptionInfo(foundEventInfo().subscription));
         setTimeout(() => {
+          dispatch(onResetConsumerInfo())
           navigate("/initial-form");
         }, 2000);
       } else {
@@ -120,7 +138,8 @@ const Home = () => {
                   textDecoration: "underline",
                 }}
               >
-                {eventUrl} is already ended or does not exist.
+                {foundEventInfo().eventInfoDetail.eventName} is already ended or
+                does not exist.
               </Typography>
             </Grid>
           </Grid>
@@ -197,28 +216,26 @@ const Home = () => {
 
 export default Home;
 
+// dispatch(onAddEventData(foundEventInfo()));
+// dispatch(onAddEventInfoDetail(foundEventInfo().eventInfoDetail));
+// dispatch(onAddEventStaff(foundEventInfo().staff));
+// dispatch(onSelectEvent(foundEventInfo().eventInfoDetail.eventName));
+// dispatch(onSelectCompany(foundEventInfo().company));
+// dispatch(onAddDeviceSetup(foundEventInfo().deviceSetup));
+// dispatch(onAddContactInfo(foundEventInfo().contactInfo));
+// dispatch(onAddSubscriptionInfo(foundEventInfo().subscription));
+// setTimeout(() => {
+//   navigate("/initial-form");
+// }, 2000);
 
-      // dispatch(onAddEventData(foundEventInfo()));
-      // dispatch(onAddEventInfoDetail(foundEventInfo().eventInfoDetail));
-      // dispatch(onAddEventStaff(foundEventInfo().staff));
-      // dispatch(onSelectEvent(foundEventInfo().eventInfoDetail.eventName));
-      // dispatch(onSelectCompany(foundEventInfo().company));
-      // dispatch(onAddDeviceSetup(foundEventInfo().deviceSetup));
-      // dispatch(onAddContactInfo(foundEventInfo().contactInfo));
-      // dispatch(onAddSubscriptionInfo(foundEventInfo().subscription));
-      // setTimeout(() => {
-      //   navigate("/initial-form");
-      // }, 2000);
-
-  // const cookies = Cookies.get();
-  // const objtToArrCookies = Object.entries(cookies);
-  // const removeCookies = useCallback(() => {
-  //   if (objtToArrCookies.length > 0) {
-  //     for (let data of objtToArrCookies) {
-  //       Cookies.remove(`${data.at(0)}`, { path: `${data.at(-1)}` });
-  //     }
-  //   }
-  //   return "no more cookies";
-  // }, [objtToArrCookies]);
-  // removeCookies();
-
+// const cookies = Cookies.get();
+// const objtToArrCookies = Object.entries(cookies);
+// const removeCookies = useCallback(() => {
+//   if (objtToArrCookies.length > 0) {
+//     for (let data of objtToArrCookies) {
+//       Cookies.remove(`${data.at(0)}`, { path: `${data.at(-1)}` });
+//     }
+//   }
+//   return "no more cookies";
+// }, [objtToArrCookies]);
+// removeCookies();
