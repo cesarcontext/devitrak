@@ -26,6 +26,13 @@ const OrderFormat = (info) => {
     };
   }, []);
   if (info) {
+    const renderingTransactionID = (props) => {
+      if (String(props).toLowerCase().includes("cash")) {
+        const splitting = String(props).split("**");
+        return `pi_cash_amount_${splitting.at(-1)}`;
+      }
+      return props;
+    };
     const verifyStatusOrder = (props) => {
       return (
         <span
@@ -239,7 +246,7 @@ const OrderFormat = (info) => {
               textTransform: "none",
             }}
           >
-            Order number: {info.info.paymentIntent}
+            Order number: {renderingTransactionID(info.info.paymentIntent)}
           </p>
         </Grid>
       </Card>
