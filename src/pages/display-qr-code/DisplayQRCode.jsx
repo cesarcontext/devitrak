@@ -6,17 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
-import _ from "lodash"
+import _ from "lodash";
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { currentOrder } = useSelector((state) => state.deviceHandler);
-  const { choice, company } = useSelector((state) => state.event);
+  const { choice } = useSelector((state) => state.event);
+  const { company } = useSelector((state) => state.company);
   const [qrCodeValue, setQrCodeValue] = useState(undefined);
   const paymentIntentValueRef = useRef(null);
   const nanoGenerated = useRef(false);
   const storingRef = useRef(true);
   const transactionRef = useRef(true);
-  const count = useRef(0)
+  const count = useRef(0);
   const propsToPass = useRef({
     paymentIntentGenerated: "pi_" + nanoid(12),
     clientSecretGenerated: `_client_secret=${nanoid(12)}`,
@@ -32,22 +33,22 @@ const DisplayQRCode = () => {
   const formattingConsumerInfo = () => {
     const template = {
       ...consumer,
-      uid: formattingConsumerInfo().uid
-    }
-    return template
-  }
+      uid: formattingConsumerInfo().uid,
+    };
+    return template;
+  };
   const foundTotalDeviceNumber = () => {
     const number = currentOrder?.map((total) => parseInt(total.deviceNeeded));
     return number.reduce((accumulator, current) => accumulator + current, 0);
   };
 
   useEffect(() => {
-    const controller = new AbortController()
-    foundTotalDeviceNumber()
+    const controller = new AbortController();
+    foundTotalDeviceNumber();
     return () => {
-      controller.abort()
-    }
-  }, [])
+      controller.abort();
+    };
+  }, []);
 
   const storeStripePaymentIntent = useCallback(async () => {
     const stripeTransactionProfile = {
@@ -55,8 +56,9 @@ const DisplayQRCode = () => {
       clientSecret: clientSecret,
       device: foundTotalDeviceNumber(),
       user: formattingConsumerInfo().uid,
-      provider: company,
+      provider: company.company_name,
       eventSelected: choice,
+      company: company.id,
     };
     await devitrackApi.post(
       "/stripe/stripe-transaction",
@@ -70,8 +72,9 @@ const DisplayQRCode = () => {
       clientSecret: propsToPass.current.clientSecretGenerated,
       device: foundTotalDeviceNumber(),
       user: formattingConsumerInfo().uid,
-      provider: company,
+      provider: company.company_name,
       eventSelected: choice,
+      company: company.id,
     };
     await devitrackApi.post(
       "/stripe/stripe-transaction-no-regular-user",
@@ -86,9 +89,10 @@ const DisplayQRCode = () => {
         clientSecret: propsToPass.current.clientSecretGenerated,
         device: currentOrder[0],
         consumerInfo: consumer,
-        provider: company,
+        provider: company.company_name,
         eventSelected: choice,
         date: new Date(),
+        company: company.id,
       };
       await devitrackApi.post("/stripe/save-transaction", transactionProfile);
       return (transactionRef.current = false);
@@ -98,18 +102,19 @@ const DisplayQRCode = () => {
   const generator = useCallback(async () => {
     if (nanoGenerated.current === false) {
       setQrCodeValue(propsToPass.current.paymentIntentGenerated);
-      paymentIntentValueRef.current = propsToPass.current.paymentIntentGenerated;
+      paymentIntentValueRef.current =
+        propsToPass.current.paymentIntentGenerated;
       if (count.current === 0) {
         generatePaymentIntentForNoDepositRequired();
-        generateTransactionInfoDetail()
-        count.current = 1
-      };
-      return nanoGenerated.current = true;
+        generateTransactionInfoDetail();
+        count.current = 1;
+      }
+      return (nanoGenerated.current = true);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const controller = new AbortController()
+    const controller = new AbortController();
     if (payment_intent && clientSecret) {
       if (storingRef.current) {
         propsToPass.current = {
@@ -122,19 +127,22 @@ const DisplayQRCode = () => {
         storingRef.current = false;
       }
     } else {
-      generator()
+      generator();
     }
 
     return () => {
-      controller.abort()
-    }
-  }, [])
+      controller.abort();
+    };
+  }, []);
 
   const checkAndRemove = async () => {
     const savedStripeTransactions = await devitrackApi.get("/admin/users");
-    const savedTransactions = await devitrackApi.post("/transaction/transaction", {
-      "eventSelected": choice
-    });
+    const savedTransactions = await devitrackApi.post(
+      "/transaction/transaction",
+      {
+        eventSelected: choice,
+      }
+    );
     const groupingStripeTransactionByEvent = _.groupBy(
       savedStripeTransactions.data.stripeTransactions,
       "eventSelected"
@@ -267,7 +275,14 @@ const DisplayQRCode = () => {
           >
             <List.Item.Meta
               avatar={<Avatar src={"../../assets/devitrak_logo.svg"} />}
-              title={<div><p>{foundTotalDeviceNumber() > 1 ? "Devices" : "Device"} required</p></div>}
+              title={
+                <div>
+                  <p>
+                    {foundTotalDeviceNumber() > 1 ? "Devices" : "Device"}{" "}
+                    required
+                  </p>
+                </div>
+              }
             />
           </List.Item>
         )}
@@ -278,20 +293,20 @@ const DisplayQRCode = () => {
 };
 
 export default DisplayQRCode;
-    // const check = await savedStripeTransactions.data.stripeTransactions.filter(
-    //   (transaction) =>
-    //     transaction.paymentIntent === propsToPass.paymentIntentGenerated
-    // );
-    // const checkTransactions = await savedTransactions.data.list.filter(
-    //   (transaction) =>
-    //     transaction.paymentIntent === propsToPass.paymentIntentGenerated
-    // );
-    // if (check.length > 1 && checkTransactions.length > 1) {
-    //   setQrCodeValue(check.at(0));
-    //   devitrackApi.delete(`/stripe/remove-duplicate/${check.at(0).id}`);
-    //   devitrackApi.delete(
-    //     `/transaction/remove-duplicate-transaction/${
-    //       checkTransactions.at(0).id
-    //     }`
-    //   );
-    // }
+// const check = await savedStripeTransactions.data.stripeTransactions.filter(
+//   (transaction) =>
+//     transaction.paymentIntent === propsToPass.paymentIntentGenerated
+// );
+// const checkTransactions = await savedTransactions.data.list.filter(
+//   (transaction) =>
+//     transaction.paymentIntent === propsToPass.paymentIntentGenerated
+// );
+// if (check.length > 1 && checkTransactions.length > 1) {
+//   setQrCodeValue(check.at(0));
+//   devitrackApi.delete(`/stripe/remove-duplicate/${check.at(0).id}`);
+//   devitrackApi.delete(
+//     `/transaction/remove-duplicate-transaction/${
+//       checkTransactions.at(0).id
+//     }`
+//   );
+// }

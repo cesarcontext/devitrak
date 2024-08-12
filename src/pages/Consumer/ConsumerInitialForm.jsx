@@ -46,7 +46,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
   });
   const [contactPhoneNumber, setContactPhoneNumber] = useState("");
   const [groupName, setGroupName] = useState("");
-  const { choice, company, contactInfo, event } = useSelector(
+  const { contactInfo, event } = useSelector(
     (state) => state.event
   );
   const dispatch = useDispatch();
@@ -82,9 +82,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
         lastName: props.lastName,
         email: props.email,
       },
-      link: `https://app.devitrak.net/authentication/${encodeURI(
-        choice
-      )}/${encodeURI(company)}/${props.uid}`,
+      link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${props.uid}`,
       contactInfo: contactInfo.email,
       event: event.eventInfoDetail.eventName,
       company: event.company,
@@ -159,7 +157,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
             "Account created successfully!",
             "We sent an email to confirm and login."
           );
-          return navigate("/deviceSelection");
+          return navigate("/deviceSelect");
         }
       }
     }

@@ -1,42 +1,37 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Empty } from "antd";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import OrderFormat from "./format/OrderFormat";
-import _ from 'lodash'
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
-  // const { choice } = useSelector((state) => state.event);
   const navigate = useNavigate();
+  const todayRef = new Date();
+  todayRef.setFullYear(todayRef.getFullYear() - 1);
   const savedTransactionsQuery = useQuery({
     queryKey: ["transactions"],
-    queryFn: () => devitrackApi.post("/transaction/transaction", {
-      "consumerInfo.email": consumer.email,
-      // eventSelected: choice
-    }),
-    refetchOnMount: false
+    queryFn: () =>
+      devitrackApi.post("/transaction/transaction", {
+        "consumerInfo.email": consumer.email,
+        created_at: { $gte: new Date(todayRef).getTime() },
+      }),
+    refetchOnMount: false,
   });
 
   useEffect(() => {
-    const controller = new AbortController()
-    savedTransactionsQuery.refetch()
+    const controller = new AbortController();
+    savedTransactionsQuery.refetch();
     return () => {
-      controller.abort()
-    }
-  }, [])
-  // const findOrderPerConsumer = () => {
-  //   const groupingByCompany = _.groupBy(savedTransactionsQuery?.data?.data?.list, "eventSelected")
-  // }
-  const find = savedTransactionsQuery?.data?.data?.list
-  // ?.filter(
-  //   (transaction) =>
-  //     transaction?.consumerInfo?.email === consumer?.email &&
-  //     transaction.eventSelected === choice
-  // );
-
+      controller.abort();
+    };
+  }, []);
+  const parentRef = useRef();
+  const find = savedTransactionsQuery?.data?.data?.list;
   const removeDuplicateEntries = useCallback(() => {
     if (find) {
       const duplicates = {};
@@ -60,6 +55,25 @@ const OptionsMainPage = () => {
       return navigate("/initial-form");
     }
   };
+  const renderingData = () => {
+    if (
+      Array.isArray(savedTransactionsQuery?.data?.data?.list) &&
+      savedTransactionsQuery?.data?.data?.list.length > 0
+    ) {
+      return find.toReversed();
+    }
+    return [];
+  };
+
+  const rowRenderer = ({ index, style }) => {
+    const item = renderingData()[index];
+    console.log(item);
+    return (
+      <div key={item.id} style={style}>
+        <OrderFormat info={item} />
+      </div>
+    );
+  };
 
   return (
     <Grid
@@ -81,7 +95,6 @@ const OptionsMainPage = () => {
           style={{
             color: "var(--gray-900, #101828)",
             textAlign: "center",
-            /* Display xs/Semibold */
             fontFamily: "Inter",
             fontSize: "24px",
             fontStyle: "normal",
@@ -93,10 +106,8 @@ const OptionsMainPage = () => {
         </h1>
         <h4
           style={{
-
             color: "var(--gray-600, #475467)",
             textAlign: "center",
-            /* Display xs/Semibold */
             fontFamily: "Inter",
             fontSize: "16px",
             fontStyle: "normal",
@@ -116,26 +127,35 @@ const OptionsMainPage = () => {
         xs={10}
       >
         {consumer && find ? (
-          find?.toReversed().map((item) => {
-            return (
-              <span key={item.id}>
-                <OrderFormat info={item} />
-              </span>
-            );
-          })
+          <div style={{ flex: "1 1 auto", width: 300, height: 450 }}>
+            <AutoSizer>
+              {({ scaledWidth, scaledHeight }) => (
+                <List
+                  height={scaledHeight}
+                  itemCount={renderingData().length}
+                  itemSize={450}
+                  width={scaledWidth}
+                  itemData={rowRenderer}
+                >
+                  {rowRenderer}
+                </List>
+              )}
+            </AutoSizer>
+          </div>
         ) : (
           <Empty
             description={
-              <h1 style={{
-                color: "var(--gray-600, #475467)",
-                textAlign: "center",
-                /* Display xs/Semibold */
-                fontFamily: "Inter",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: "400",
-                lineHeight: "24px",
-              }}
+              <h1
+                style={{
+                  color: "var(--gray-600, #475467)",
+                  textAlign: "center",
+                  /* Display xs/Semibold */
+                  fontFamily: "Inter",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: "400",
+                  lineHeight: "24px",
+                }}
               >
                 No order.
               </h1>

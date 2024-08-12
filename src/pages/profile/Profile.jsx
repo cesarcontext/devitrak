@@ -16,9 +16,10 @@ const Profile = () => {
     >
       <Grid
         display={"flex"}
+        flexDirection={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        margin={"auto"}
+        // margin={"auto"}
         item
         xs={12}
         sm={12}
@@ -26,47 +27,44 @@ const Profile = () => {
         lg={4}
       >
         <ConsumerInfo />
-      </Grid>
-      {/* <CurrentOrder /> */}
-      <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      >
         <OrderHistory />
-      </Grid>
-      <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      >
         <PaymentInformation />
-      </Grid>
-      <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      >
         <SupportMainPage />
       </Grid>
+      {/* <CurrentOrder /> */}
+      {/* <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      ></Grid>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      ></Grid>
+      <Grid
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        margin={"auto"}
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={4}
+      ></Grid> */}
     </Grid>
   );
 };

@@ -84,7 +84,8 @@ const ConsumerInfo = () => {
         alignItems={"center"}
         margin={"1rem auto 0rem"}
         item
-        xs={12}
+          sm={12}
+          xs={12}
       >
         <Grid
           display={"flex"}
@@ -92,6 +93,7 @@ const ConsumerInfo = () => {
           alignItems={"center"}
           margin={"0.5rem auto 0rem"}
           item
+          sm={12}
           xs={12}
         >
           {" "}
@@ -115,6 +117,7 @@ const ConsumerInfo = () => {
           alignItems={"center"}
           margin={"0.5rem auto 0rem"}
           item
+          sm={12}
           xs={12}
         >
           <Typography
@@ -136,6 +139,7 @@ const ConsumerInfo = () => {
           alignItems={"center"}
           margin={"0.5rem auto 0rem"}
           item
+          sm={12}
           xs={12}
         >
           {" "}
@@ -158,6 +162,7 @@ const ConsumerInfo = () => {
           alignItems={"center"}
           margin={"0.5rem auto 0.5rem"}
           item
+          sm={12}
           xs={12}
         >
           {" "}
