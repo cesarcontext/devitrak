@@ -16,6 +16,7 @@ import eventSlide from "./slides/eventSlide";
 import articleHandlerSlide from "./slides/articleHandlerSlide";
 import stripeSlide from "./slides/stripeSlide";
 import helperSlide from "./slides/helperSlide";
+import companySlide from "./slides/companySlide";
 
 const persistConfig = {
   key: "root",
@@ -25,10 +26,11 @@ const persistConfig = {
 const reducers = combineReducers({
   consumer: consumerSlide,
   deviceHandler: deviceSlides,
-  event:eventSlide,
+  event: eventSlide,
   articleHandler: articleHandlerSlide,
   stripe: stripeSlide,
   helper: helperSlide,
+  company: companySlide,
 });
 
 const persistedReducers = persistReducer(persistConfig, reducers);
@@ -43,6 +45,6 @@ const store = configureStore({
     }),
 });
 
-let persistor = persistStore(store)
+let persistor = persistStore(store);
 
-export { store, persistor }
+export { store, persistor };
