@@ -92,7 +92,6 @@ const SingleSelection = () => {
     }
     const stripeProfile = {
       customerEmail: consumer.email,
-      // customerId: customerStripe.stripeid,
       device:
         retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent()
           ? Number(numberNeeded) *
@@ -107,7 +106,6 @@ const SingleSelection = () => {
       if (respStripe) {
         dispatch(
           onAddMultipleDeviceSelection({
-            // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
             deviceValue:
               retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
@@ -115,7 +113,6 @@ const SingleSelection = () => {
         );
         dispatch(
           onAddNewOrder({
-            // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
             deviceValue:
               retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
@@ -123,7 +120,6 @@ const SingleSelection = () => {
         );
         dispatch(
           onAddNewOrderToHistory({
-            // deviceType: deviceSetup.at(-1).deviceType,
             deviceNeeded: Number(numberNeeded),
             deviceValue:
               retrieveRightValueWhenThereAreMoreThanOneDeviceSetForConsumerInEvent(),
@@ -236,7 +232,7 @@ const SingleSelection = () => {
                 <OutlinedInput
                   value={numberNeeded}
                   name="numberNeeded"
-                  type="number"
+                  type="text"
                   id="input-single-selection"
                   onChange={(e) => setNumberNeeded(e.target.value)}
                   style={{
