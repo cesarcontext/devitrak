@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { devitrackApi, devitrackAWSApi } from "../../devitrakApi";
+import { devitrackApi } from "../../devitrakApi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
@@ -32,29 +32,17 @@ const Home = () => {
   const listOfEventsQuery = useQuery({
     queryKey: ["listOfEvents"],
     queryFn: () =>
-      devitrackAWSApi.post(
-        "/consumers/events/check-event/",
-        JSON.stringify({
-          props: {
-            _id: eventUrl,
-          },
-          collection: "events",
-        })
-      ),
+      devitrackApi.post("/event/event-list", {
+        _id: eventUrl,
+      }),
     refetchOnMount: false,
   });
   const companyEventQuery = useQuery({
     queryKey: ["companyInfoEvent"],
     queryFn: () =>
-      devitrackAWSApi.post(
-        "/consumers/company/check-company/",
-        JSON.stringify({
-          props: {
-            _id: companyUrl,
-          },
-          collection: "companies",
-        })
-      ),
+      devitrackApi.post("/company/search-company", {
+        _id: companyUrl,
+      }),
     refetchOnMount: false,
   });
 
@@ -69,9 +57,8 @@ const Home = () => {
   }, [listOfEventsQuery.isLoading, companyEventQuery.isLoading]);
 
   const companyInformation = useCallback(() => {
-    if (companyEventQuery.data.data.statusCode >= 200 && companyEventQuery.data.data.statusCode < 300) {
-      const companyDataFound = JSON.parse(companyEventQuery.data.data.body)
-      const companyInfo = checkArray(companyDataFound);
+    if (companyEventQuery.data) {
+      const companyInfo = checkArray(companyEventQuery.data.data.company);
       return companyInfo;
     }
     return null;
@@ -79,9 +66,8 @@ const Home = () => {
   companyInformation();
 
   const foundEventInfo = useCallback(() => {
-    if (listOfEventsQuery.data.data.statusCode >= 200 && listOfEventsQuery.data.data.statusCode < 300) {
-      const eventDataFound = JSON.parse(listOfEventsQuery.data.data.body)
-      const eventInfo = checkArray(eventDataFound);
+    if (listOfEventsQuery.data) {
+      const eventInfo = checkArray(listOfEventsQuery.data.data.list);
       return eventInfo;
     }
     return null;
@@ -227,27 +213,3 @@ const Home = () => {
   }
 };
 export default Home;
-
-// dispatch(onAddEventData(foundEventInfo()));
-// dispatch(onAddEventInfoDetail(foundEventInfo().eventInfoDetail));
-// dispatch(onAddEventStaff(foundEventInfo().staff));
-// dispatch(onSelectEvent(foundEventInfo().eventInfoDetail.eventName));
-// dispatch(onSelectCompany(foundEventInfo().company));
-// dispatch(onAddDeviceSetup(foundEventInfo().deviceSetup));
-// dispatch(onAddContactInfo(foundEventInfo().contactInfo));
-// dispatch(onAddSubscriptionInfo(foundEventInfo().subscription));
-// setTimeout(() => {
-//   navigate("/initial-form");
-// }, 2000);
-
-// const cookies = Cookies.get();
-// const objtToArrCookies = Object.entries(cookies);
-// const removeCookies = useCallback(() => {
-//   if (objtToArrCookies.length > 0) {
-//     for (let data of objtToArrCookies) {
-//       Cookies.remove(`${data.at(0)}`, { path: `${data.at(-1)}` });
-//     }
-//   }
-//   return "no more cookies";
-// }, [objtToArrCookies]);
-// removeCookies();
