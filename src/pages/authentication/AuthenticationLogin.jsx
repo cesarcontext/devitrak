@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { devitrackApi } from "../../devitrakApi";
+import { devitrackApi, devitrackAWSApi } from "../../devitrakApi";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,12 +15,12 @@ import {
 } from "../../store/slides/eventSlide";
 import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
-import { useCallback, useEffect, useRef } from "react";
-import _ from "lodash";
+import { useEffect, useRef } from "react";
 import { checkArray } from "../../components/utils/checkArray";
 import { onAddCompanyInfo } from "../../store/slides/companySlide";
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
+  console.log(event, company, uid);
   const refUpdate = useRef(false);
   const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
@@ -28,34 +28,49 @@ const AuthenticationLogin = () => {
   const listOfConsumersQuery = useQuery({
     queryKey: ["listOfConsumers"],
     queryFn: () =>
-      devitrackApi.post("/auth/user-query", {
-        _id: uid,
-      }),
-    enabled: false,
+      devitrackAWSApi.post(
+        "/consumers/check-existing-consumer",
+        JSON.stringify({
+          props: {
+            _id: uid,
+          },
+          collection: "users",
+        })
+      ),
     refetchOnMount: false,
   });
   const listOfEventsQuery = useQuery({
     queryKey: ["events"],
     queryFn: () =>
-      devitrackApi.post("/event/event-list", {
-        _id: event,
-      }),
-    enabled: false,
+      devitrackAWSApi.post(
+        "/consumers/events/check-event/",
+        JSON.stringify({
+          props: {
+            _id: event,
+          },
+          collection: "events",
+        })
+      ),
     refetchOnMount: false,
   });
   const stripeCustomersQuery = useQuery({
     queryKey: ["stripeCustomers"],
     queryFn: () => devitrackApi.get("/stripe/customers"),
-    enabled: false,
     refetchOnMount: false,
   });
 
   const companyEventQuery = useQuery({
     queryKey: ["companyInfoEvent"],
     queryFn: () =>
-      devitrackApi.post("/company/search-company", {
-        _id: company,
-      }),
+      devitrackAWSApi.post(
+        "/consumers/company/check-company/",
+        JSON.stringify({
+          props: {
+            _id: company,
+          },
+          collection: "companies",
+        })
+      ),
     refetchOnMount: false,
   });
 
@@ -74,6 +89,9 @@ const AuthenticationLogin = () => {
       controller.abort();
     };
   }, []);
+  console.log(listOfConsumersQuery);
+  console.log(listOfEventsQuery);
+  console.log(companyEventQuery);
 
   if (
     listOfConsumersQuery.data &&
@@ -82,7 +100,8 @@ const AuthenticationLogin = () => {
     companyEventQuery.data
   ) {
     const foundEventInfo = async () => {
-      const foundData = checkArray(listOfEventsQuery.data.data.list);
+      const eventInfoFound = JSON.parse(listOfEventsQuery.data.data.body)
+      const foundData = checkArray(eventInfoFound);
       if (foundData) {
         dispatch(onAddEventData(foundData));
         dispatch(onAddEventInfoDetail(foundData.eventInfoDetail));
@@ -99,9 +118,8 @@ const AuthenticationLogin = () => {
     foundEventInfo();
 
     const checkIfConsumerExists = async () => {
-      const foundConsumerInfo = checkArray(
-        listOfConsumersQuery.data.data.users
-      );
+      const customerInfoFound = JSON.parse(listOfConsumersQuery.data.data.body)
+      const foundConsumerInfo = checkArray(customerInfoFound);
       if (foundConsumerInfo) {
         dispatch(onAddConsumerInfo(foundConsumerInfo));
         refUpdate.current = true;
@@ -146,7 +164,8 @@ const AuthenticationLogin = () => {
 
     const companyInformation = () => {
       if (companyEventQuery.data) {
-        const companyInfo = checkArray(companyEventQuery.data.data.company);
+        const companyInfoFound = JSON.parse(companyEventQuery.data.data.body)
+        const companyInfo = checkArray(companyInfoFound);
         return dispatch(onAddCompanyInfo(companyInfo));
       }
       return null;
@@ -174,12 +193,18 @@ const AuthenticationLogin = () => {
           companyPerProvider.add(data);
         }
 
-        if (!attendedEvents.has(checkArray(listOfEventsQuery.data.data.list).eventInfoDetail.eventName)) {
+        if (
+          !attendedEvents.has(
+            checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
+              .eventName
+          )
+        ) {
           updatingConsumerInfoMutation.mutate({
             id: consumer.id,
             eventSelected: [
               ...consumer.eventSelected,
-              checkArray(listOfEventsQuery.data.data.list).eventInfoDetail.eventName,
+              checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
+                .eventName,
             ],
           });
           dispatch(
@@ -187,7 +212,8 @@ const AuthenticationLogin = () => {
               ...consumer,
               eventSelected: [
                 ...consumer.eventSelected,
-                checkArray(listOfEventsQuery.data.data.list).eventInfoDetail.eventName,
+                checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
+                  .eventName,
               ],
             })
           );

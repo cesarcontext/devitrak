@@ -126,7 +126,7 @@ const OptionsMainPage = () => {
         item
         xs={10}
       >
-        {consumer && find ? (
+        {consumer.uid && renderingData().length > 0 ? (
           <div style={{ flex: "1 1 auto", width: 300, height: 450 }}>
             <AutoSizer>
               {({ scaledWidth, scaledHeight }) => (

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { devitrackApi } from "../../devitrakApi";
+import { devitrackApi, devitrackAWSApi } from "../../devitrakApi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
@@ -32,17 +32,29 @@ const Home = () => {
   const listOfEventsQuery = useQuery({
     queryKey: ["listOfEvents"],
     queryFn: () =>
-      devitrackApi.post("/event/event-list", {
-        _id: eventUrl,
-      }),
+      devitrackAWSApi.post(
+        "/consumers/events/check-event/",
+        JSON.stringify({
+          props: {
+            _id: eventUrl,
+          },
+          collection: "events",
+        })
+      ),
     refetchOnMount: false,
   });
   const companyEventQuery = useQuery({
     queryKey: ["companyInfoEvent"],
     queryFn: () =>
-      devitrackApi.post("/company/search-company", {
-        _id: companyUrl,
-      }),
+      devitrackAWSApi.post(
+        "/consumers/company/check-company/",
+        JSON.stringify({
+          props: {
+            _id: companyUrl,
+          },
+          collection: "companies",
+        })
+      ),
     refetchOnMount: false,
   });
 
@@ -57,8 +69,9 @@ const Home = () => {
   }, [listOfEventsQuery.isLoading, companyEventQuery.isLoading]);
 
   const companyInformation = useCallback(() => {
-    if (companyEventQuery.data) {
-      const companyInfo = checkArray(companyEventQuery.data.data.company);
+    if (companyEventQuery.data.data.statusCode >= 200 && companyEventQuery.data.data.statusCode < 300) {
+      const companyDataFound = JSON.parse(companyEventQuery.data.data.body)
+      const companyInfo = checkArray(companyDataFound);
       return companyInfo;
     }
     return null;
@@ -66,8 +79,9 @@ const Home = () => {
   companyInformation();
 
   const foundEventInfo = useCallback(() => {
-    if (listOfEventsQuery.data) {
-      const eventInfo = checkArray(listOfEventsQuery.data.data.list);
+    if (listOfEventsQuery.data.data.statusCode >= 200 && listOfEventsQuery.data.data.statusCode < 300) {
+      const eventDataFound = JSON.parse(listOfEventsQuery.data.data.body)
+      const eventInfo = checkArray(eventDataFound);
       return eventInfo;
     }
     return null;

@@ -20,10 +20,8 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
     formState: { errors },
     setValue,
   } = useForm();
-  const { contactInfo, event } = useSelector(
-    (state) => state.event
-  );
-  const { company } = useSelector(state => state.company)
+  const { event } = useSelector((state) => state.event);
+  const { company } = useSelector((state) => state.company);
   const emailSentRef = useRef(false);
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
@@ -42,20 +40,20 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
       controller.abort();
     };
   }, [consumerInfoFound.email, Array.isArray(props)]);
-
+  console.log(consumerInfoFound);
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
     setLoadingState(true);
     try {
       if (event.eventInfoDetail.merchant) {
         return navigate(
-          `/authentication/${event.id}/${company.id}/${consumerInfoFound.id}`
+          `/authentication/${event.id}/${company.id}/${consumerInfoFound._id}`
         );
       } else {
         const parametersNeededToLoginLink = {
           consumer: consumerInfoFound,
-          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerInfoFound.id}`,
-          contactInfo: contactInfo.email,
+          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerInfoFound._id}`,
+          contactInfo: event.contactInfo.email,
           company: event.company,
         };
         const respo = await devitrackApi.post(
@@ -72,7 +70,7 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
         }
       }
     } catch (error) {
-      console.log("error", error)
+      console.log("error", error);
       openNotificationWithIcon(
         "error",
         "Something went wrong.",
