@@ -20,37 +20,36 @@ import { checkArray } from "../../components/utils/checkArray";
 import { onAddCompanyInfo } from "../../store/slides/companySlide";
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
-  console.log(event, company, uid);
   const refUpdate = useRef(false);
   const { consumer } = useSelector((state) => state.consumer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const consumerInfoFound = async () => {
+    const formatProps = {
+      props: { _id: uid },
+      collection: "users",
+    };
+    const checking = await devitrackAWSApi
+      .post("/consumers/check-existing-consumer/", JSON.stringify(formatProps))
+      .then((data) => data);
+    const consumerInfo = await checking.data;
+    return consumerInfo;
+  };
+
   const listOfConsumersQuery = useQuery({
     queryKey: ["listOfConsumers"],
     queryFn: () =>
-      devitrackAWSApi.post(
-        "/consumers/check-existing-consumer",
-        JSON.stringify({
-          props: {
-            _id: uid,
-          },
-          collection: "users",
-        })
-      ),
+      devitrackApi.post("/auth/user-query", {
+        _id: uid,
+      }),
     refetchOnMount: false,
   });
   const listOfEventsQuery = useQuery({
     queryKey: ["events"],
     queryFn: () =>
-      devitrackAWSApi.post(
-        "/consumers/events/check-event/",
-        JSON.stringify({
-          props: {
-            _id: event,
-          },
-          collection: "events",
-        })
-      ),
+      devitrackApi.post("/event/event-list", {
+        _id: event,
+      }),
     refetchOnMount: false,
   });
   const stripeCustomersQuery = useQuery({
@@ -62,15 +61,9 @@ const AuthenticationLogin = () => {
   const companyEventQuery = useQuery({
     queryKey: ["companyInfoEvent"],
     queryFn: () =>
-      devitrackAWSApi.post(
-        "/consumers/company/check-company/",
-        JSON.stringify({
-          props: {
-            _id: company,
-          },
-          collection: "companies",
-        })
-      ),
+      devitrackApi.post("/company/search-company", {
+        _id: company,
+      }),
     refetchOnMount: false,
   });
 
@@ -85,14 +78,11 @@ const AuthenticationLogin = () => {
     listOfEventsQuery.refetch();
     stripeCustomersQuery.refetch();
     companyEventQuery.refetch();
+    consumerInfoFound();
     return () => {
       controller.abort();
     };
   }, []);
-  console.log(listOfConsumersQuery);
-  console.log(listOfEventsQuery);
-  console.log(companyEventQuery);
-
   if (
     listOfConsumersQuery.data &&
     listOfEventsQuery.data &&
@@ -100,8 +90,7 @@ const AuthenticationLogin = () => {
     companyEventQuery.data
   ) {
     const foundEventInfo = async () => {
-      const eventInfoFound = JSON.parse(listOfEventsQuery.data.data.body)
-      const foundData = checkArray(eventInfoFound);
+      const foundData = checkArray(listOfEventsQuery.data.data.list);
       if (foundData) {
         dispatch(onAddEventData(foundData));
         dispatch(onAddEventInfoDetail(foundData.eventInfoDetail));
@@ -118,8 +107,9 @@ const AuthenticationLogin = () => {
     foundEventInfo();
 
     const checkIfConsumerExists = async () => {
-      const customerInfoFound = JSON.parse(listOfConsumersQuery.data.data.body)
-      const foundConsumerInfo = checkArray(customerInfoFound);
+      const foundConsumerInfo = checkArray(
+        listOfConsumersQuery.data.data.users
+      );
       if (foundConsumerInfo) {
         dispatch(onAddConsumerInfo(foundConsumerInfo));
         refUpdate.current = true;
@@ -164,8 +154,7 @@ const AuthenticationLogin = () => {
 
     const companyInformation = () => {
       if (companyEventQuery.data) {
-        const companyInfoFound = JSON.parse(companyEventQuery.data.data.body)
-        const companyInfo = checkArray(companyInfoFound);
+        const companyInfo = checkArray(companyEventQuery.data.data.company);
         return dispatch(onAddCompanyInfo(companyInfo));
       }
       return null;
@@ -298,7 +287,6 @@ const AuthenticationLogin = () => {
       );
     }
   }
-  // }
 };
 
 export default AuthenticationLogin;
