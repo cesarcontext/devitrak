@@ -96,21 +96,31 @@ const Checkout = () => {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: myUrl + "/qr-code-generation",
+        // We don't need return_url because we'll handle navigation manually
+        return_url: window.location.href = myUrl + "/qr-code-generation"
       },
+      redirect: "if_required", // Only redirect if needed, otherwise handle manually
     });
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message);
+      } else {
+        setMessage("An unexpected error occurred.");
+      }
+    } else if (paymentIntent.status === "succeeded") {
+      setMessage("Payment succeeded!");
+      window.location.href = myUrl + "/qr-code-generation"; // Manually redirect
+    } else if (paymentIntent.status === "processing") {
+      setMessage("Your payment is processing.");
     } else {
-      setMessage(`An unexpected error occurred.`);
+      setMessage("Something went wrong.");
     }
 
     setIsLoading(false);
   };
-
   return (
     <>
       <Grid container>
