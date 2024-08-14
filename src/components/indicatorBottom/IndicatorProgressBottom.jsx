@@ -1,6 +1,6 @@
 import { BottomNavigation, Grid, Typography } from "@mui/material";
 import { Progress } from "antd";
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import "./BottomNavigation.css";
@@ -35,7 +35,7 @@ const IndicatorProgressBottom = ({ current, steps }) => {
       style={{
         display: "flex",
         width: "100%",
-        height: "25dvh",
+        height: "20dvh",
         flexDirection: "column",
         alignItems: "flex-start",
         gap: "10px",
@@ -82,7 +82,7 @@ const IndicatorProgressBottom = ({ current, steps }) => {
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
-        margin={"0 auto 5svh"}
+        margin={"auto"}
         item
         xs={10}
       >
