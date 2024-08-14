@@ -40,19 +40,19 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
       controller.abort();
     };
   }, [consumerInfoFound.email, Array.isArray(props)]);
-  console.log(consumerInfoFound);
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
     setLoadingState(true);
+    const consumerID = consumerInfoFound._id ?? consumerInfoFound.id;
     try {
       if (event.eventInfoDetail.merchant) {
         return navigate(
-          `/authentication/${event.id}/${company.id}/${consumerInfoFound._id}`
+          `/authentication/${event.id}/${company.id}/${consumerID}`
         );
       } else {
         const parametersNeededToLoginLink = {
           consumer: consumerInfoFound,
-          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerInfoFound._id}`,
+          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerID}`,
           contactInfo: event.contactInfo.email,
           company: event.company,
         };

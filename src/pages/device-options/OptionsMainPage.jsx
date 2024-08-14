@@ -1,13 +1,13 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Empty } from "antd";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { FixedSizeList as List } from "react-window";
 import { devitrackApi } from "../../devitrakApi";
 import OrderFormat from "./format/OrderFormat";
-import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const navigate = useNavigate();
@@ -30,7 +30,6 @@ const OptionsMainPage = () => {
       controller.abort();
     };
   }, []);
-  const parentRef = useRef();
   const find = savedTransactionsQuery?.data?.data?.list;
   const removeDuplicateEntries = useCallback(() => {
     if (find) {
@@ -64,10 +63,8 @@ const OptionsMainPage = () => {
     }
     return [];
   };
-
   const rowRenderer = ({ index, style }) => {
     const item = renderingData()[index];
-    console.log(item);
     return (
       <div key={item.id} style={style}>
         <OrderFormat info={item} />
@@ -126,7 +123,7 @@ const OptionsMainPage = () => {
         item
         xs={10}
       >
-        {consumer.uid && renderingData().length > 0 ? (
+        {consumer.email && renderingData().length > 0 ? (
           <div style={{ flex: "1 1 auto", width: 300, height: 450 }}>
             <AutoSizer>
               {({ scaledWidth, scaledHeight }) => (
@@ -135,7 +132,6 @@ const OptionsMainPage = () => {
                   itemCount={renderingData().length}
                   itemSize={450}
                   width={scaledWidth}
-                  itemData={rowRenderer}
                 >
                   {rowRenderer}
                 </List>

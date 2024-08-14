@@ -4,6 +4,7 @@ import ConsumerInfo from "./ConsumerInfo";
 import OrderHistory from "./OrderHistory";
 import PaymentInformation from "./PaymentInformation";
 import "./Profile.css";
+import { Divider } from "antd";
 
 const Profile = () => {
   return (
@@ -27,8 +28,11 @@ const Profile = () => {
         lg={4}
       >
         <ConsumerInfo />
+        <Divider />
         <OrderHistory />
+        <Divider />
         <PaymentInformation />
+        <Divider />
         <SupportMainPage />
       </Grid>
       {/* <CurrentOrder /> */}
