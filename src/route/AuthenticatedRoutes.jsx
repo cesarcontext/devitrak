@@ -6,9 +6,7 @@ import AuthenticationLogin from "../pages/authentication/AuthenticationLogin";
 import LoadingPage from "../pages/loading/LoadingPage";
 import DepositElement from "../pages/stripe/DepositElement";
 const AuthenticatedRoutes = () => {
-  const ConsumerInitialForm = lazy(() =>
-    import("../pages/Consumer/MainPage")
-  );
+  const ConsumerInitialForm = lazy(() => import("../pages/Consumer/MainPage"));
   const DeviceSelection = lazy(() => import("../pages/device/DeviceSelection"));
   const Home = lazy(() => import("../pages/home/Home"));
   const InstructionsMainPage = lazy(() =>
@@ -30,12 +28,14 @@ const AuthenticatedRoutes = () => {
     "/payment",
     "/",
   ];
-  const pathRef = useLocation()
+  const pathRef = useLocation();
   return (
-    <div style={{width:"100%"}}>
-      <header style={{
-        height: "5dvh",
-      }}>
+    <div key={pathRef.key} style={{ width: "100%" }}>
+      <header
+        style={{
+          height: "5dvh",
+        }}
+      >
         <UpperBanner />
       </header>
       <main
@@ -82,8 +82,9 @@ const AuthenticatedRoutes = () => {
         key={pathRef.key}
         style={{
           height: "20dvh",
-          display: `${listPageNotAllowForNavigation.includes(pathRef.pathname) && "none"
-            }`,
+          display: `${
+            listPageNotAllowForNavigation.includes(pathRef.pathname) && "none"
+          }`,
         }}
       >
         <NavigationBottom />
