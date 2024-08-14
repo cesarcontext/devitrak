@@ -48,5 +48,9 @@
 }
 
 #input-single-selection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: auto;
 }
