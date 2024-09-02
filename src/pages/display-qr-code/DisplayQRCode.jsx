@@ -33,7 +33,7 @@ const DisplayQRCode = () => {
   const formattingConsumerInfo = () => {
     const template = {
       ...consumer,
-      uid: formattingConsumerInfo().uid,
+      uid: consumer.uid ?? consumer.id,
     };
     return template;
   };
@@ -88,7 +88,7 @@ const DisplayQRCode = () => {
         paymentIntent: propsToPass.current.paymentIntentGenerated,
         clientSecret: propsToPass.current.clientSecretGenerated,
         device: currentOrder[0],
-        consumerInfo: consumer,
+        consumerInfo: formattingConsumerInfo(),
         provider: company.company_name,
         eventSelected: choice,
         date: new Date(),
@@ -219,7 +219,7 @@ const DisplayQRCode = () => {
           value={
             qrCodeValue ? qrCodeValue.paymentIntent : "https://devitrak.com"
           }
-          icon="https://i.ibb.co/kKktFyw/maskable-icon.png"
+          icon="https://devitrakadmindashboardlogotesting.s3.amazonaws.com/maskable_icon_white_background.png"
         />
       </Grid>
       <Grid margin={"1rem auto"} item xs={12}>
