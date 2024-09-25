@@ -59,20 +59,11 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       props: { email: emailValue },
       collection: "users",
     };
-    const checking = await devitrackAWSApi.post(
-      "/consumers/check-existing-consumer/",
-      JSON.stringify(formatProps)
-    );
-    // const checking = await devitrackApi.post("/auth/user-query", {
-    //   email: watch("email"),
-    // });
-    if (
-      checking.data.statusCode >= 200 &&
-      checking.data.statusCode < 300 &&
-      JSON.parse(checking.data.body).length > 0
-    ) {
-      const userInfoFound = JSON.parse(checking.data.body);
-      return setConsumerInfoFound(userInfoFound);
+    const checking = await devitrackApi.post("/auth/user-query", {
+      email: watch("email"),
+    });
+    if (checking.status === 200) {
+      return setConsumerInfoFound(checking.data.users);
     }
   };
 
@@ -119,16 +110,13 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       },
       collection: "users",
     };
-    const respNewConsumer = await devitrackAWSApi.post(
-      "/consumers/new-consumer/",
-      JSON.stringify(newConsumerProfile)
+    const respNewConsumer = await devitrackApi.post(
+      "/auth/new",
+      newConsumerProfile
     );
-    if (
-      respNewConsumer.data.statusCode >= 200 &&
-      respNewConsumer.data.statusCode < 300
-    ) {
-      const { body } = respNewConsumer.data;
-      const consumerInfoParsed = JSON.parse(body);
+    if (respNewConsumer.data) {
+      // const { body } = respNewConsumer.data;
+      // const consumerInfoParsed = JSON.parse(body);
       const newStripeCustomerProfile = {
         name: `${data.firstName} ${data.lastName}`,
         email: data.email,
@@ -142,8 +130,8 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       });
       dispatch(
         onAddConsumerInfo({
-          ...consumerInfoParsed,
-          id: consumerInfoParsed.uid ?? consumerInfoParsed._id,
+          ...newConsumerProfile,
+          id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
           sqlInfo: {},
         })
       );
