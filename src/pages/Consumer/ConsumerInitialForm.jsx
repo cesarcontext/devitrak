@@ -94,26 +94,49 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
   };
   const submitNewConsumerInfo = async (data) => {
     emailSentRef.current = true;
+    // const newConsumerProfile = {
+    //   consumer: {
+    //     name: data.firstName,
+    //     lastName: data.lastName,
+    //     email: data.email,
+    //     phoneNumber: contactPhoneNumber,
+    //     privacyPolicy: true,
+    //     category: "Regular",
+    //     provider: [company.company_name],
+    //     eventSelected: [event.eventInfoDetail.eventName],
+    //     company_providers: [company.id],
+    //     event_providers: [event.id],
+    //     group: data.groupName,
+    //   },
+    //   collection: "users",
+    // };
     const newConsumerProfile = {
-      consumer: {
-        name: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phoneNumber: contactPhoneNumber,
-        privacyPolicy: true,
-        category: "Regular",
-        provider: [company.company_name],
-        eventSelected: [event.eventInfoDetail.eventName],
-        company_providers: [company.id],
-        event_providers: [event.id],
-        group: data.groupName,
-      },
-      collection: "users",
+      name: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phoneNumber: contactPhoneNumber,
+      privacyPolicy: true,
+      category: "Regular",
+      provider: [company.company_name],
+      eventSelected: [event.eventInfoDetail.eventName],
+      company_providers: [company.id],
+      event_providers: [event.id],
+      group: data.groupName,
     };
-    const respNewConsumer = await devitrackApi.post(
-      "/auth/new",
-      newConsumerProfile
-    );
+
+    const respNewConsumer = await devitrackApi.post("/auth/new", {
+      name: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phoneNumber: contactPhoneNumber,
+      privacyPolicy: true,
+      category: "Regular",
+      provider: [company.company_name],
+      eventSelected: [event.eventInfoDetail.eventName],
+      company_providers: [company.id],
+      event_providers: [event.id],
+      group: data.groupName,
+    });
     if (respNewConsumer.data) {
       // const { body } = respNewConsumer.data;
       // const consumerInfoParsed = JSON.parse(body);
