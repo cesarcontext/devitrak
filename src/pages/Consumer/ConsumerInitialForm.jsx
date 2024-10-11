@@ -121,7 +121,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       eventSelected: [event.eventInfoDetail.eventName],
       company_providers: [company.id],
       event_providers: [event.id],
-      group: data.groupName,
+      group: [data.groupName],
     };
 
     const respNewConsumer = await devitrackApi.post("/auth/new", {
