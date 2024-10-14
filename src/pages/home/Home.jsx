@@ -87,7 +87,7 @@ const Home = () => {
         dispatch(onAddContactInfo(foundEventInfo().contactInfo));
         dispatch(onAddSubscriptionInfo(foundEventInfo().subscription));
         setTimeout(() => {
-          dispatch(onResetConsumerInfo())
+          dispatch(onResetConsumerInfo());
           navigate("/initial-form");
         }, 2000);
       } else {
@@ -105,7 +105,7 @@ const Home = () => {
   }, [listOfEventsQuery.isLoading, listOfEventsQuery.data]);
   if (listOfEventsQuery.data) {
     return (
-      <Grid container>
+      <Grid margin={"auto"} container>
         {existingEvent && (
           <Grid
             display={"flex"}
@@ -148,11 +148,9 @@ const Home = () => {
           flexDirection={"column"}
           alignItems={"center"}
           justifyContent={"center"}
-          margin={"2rem auto"}
+          margin={"auto"} //2rem auto
           style={{
-            position: "absolute",
-            top: "25%",
-            bottom: "25%",
+            height: "100svh",
           }}
           container
         >
