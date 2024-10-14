@@ -88,7 +88,7 @@ const DisplayQRCode = () => {
         paymentIntent: propsToPass.current.paymentIntentGenerated,
         clientSecret: propsToPass.current.clientSecretGenerated,
         device: currentOrder[0],
-        consumerInfo: formattingConsumerInfo(),
+        consumerInfo: {...consumer, uid: consumer.uid ?? consumer.id, id:consumer.id ?? consumer.uid},
         provider: company.company_name,
         eventSelected: choice,
         date: new Date(),
