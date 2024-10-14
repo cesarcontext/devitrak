@@ -102,7 +102,8 @@ const SingleSelection = () => {
         "/stripe/create-payment-intent",
         stripeProfile
       );
-      if (respStripe) {
+      console.log("🚀 ~ file: SingleSelection.jsx:109 ~ submitDeviceSelectionInfo ~ respStripe", respStripe);
+      if (respStripe.data) {
         dispatch(
           onAddMultipleDeviceSelection({
             deviceNeeded: Number(numberNeeded),
