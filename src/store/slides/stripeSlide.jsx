@@ -6,7 +6,7 @@ const stripeSlice = createSlice({
     customerStripe: undefined,
     amount: 0,
     clientSecret: undefined,
-    transactionsHistory: undefined
+    transactionsHistory: undefined,
   },
   reducers: {
     onAddCustomerStripeInfo: (state, { payload }) => {
@@ -21,15 +21,27 @@ const stripeSlice = createSlice({
     onAddPaymentIntent: (state, { payload }) => {
       state.clientSecret = payload;
     },
-    onAddTransactionHistory:(state, { payload }) => {
-      state.transactionsHistory = payload
-    }
+    onAddTransactionHistory: (state, { payload }) => {
+      state.transactionsHistory = payload;
+    },
+    onHardResetStripe: (state) => {
+      state.customerStripe = undefined;
+      state.amount = 0;
+      state.clientSecret = undefined;
+      state.transactionsHistory = undefined;
+    },
   },
 });
 
 // action creators are generated for each case reducer function
 
-export const { onAddCustomerStripeInfo, onResetCustomerStripeInfo, onAddAmountStripeInfo, onAddPaymentIntent, onAddTransactionHistory } =
-  stripeSlice.actions;
+export const {
+  onAddCustomerStripeInfo,
+  onResetCustomerStripeInfo,
+  onAddAmountStripeInfo,
+  onAddPaymentIntent,
+  onAddTransactionHistory,
+  onHardResetStripe,
+} = stripeSlice.actions;
 
 export default stripeSlice.reducer;

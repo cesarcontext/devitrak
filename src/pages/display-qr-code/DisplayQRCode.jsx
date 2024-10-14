@@ -33,7 +33,7 @@ const DisplayQRCode = () => {
   const formattingConsumerInfo = () => {
     const template = {
       ...consumer,
-      uid: formattingConsumerInfo().uid,
+      uid: consumer.uid ?? consumer.id,
     };
     return template;
   };

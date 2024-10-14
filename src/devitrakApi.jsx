@@ -16,6 +16,9 @@ export const devitrackApi = axios.create({
 });
 export const devitrackAWSApi = axios.create({
   baseURL: aws_api,
+  headers:{
+    'Authorization': `Bearer ${import.meta.env.VITE_APP_AWS_AUTH_TOKEN}`
+  }
 });
 
 export const devitrackApiAdmin = axios.create({

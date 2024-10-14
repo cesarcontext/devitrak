@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 import { isValidEmail } from "../../components/utils/isValidEmail";
-import { devitrackApi, devitrackAWSApi } from "../../devitrakApi";
+import { devitrackApi } from "../../devitrakApi";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import "./ConsumerInitialForm.css";
@@ -59,20 +59,11 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       props: { email: emailValue },
       collection: "users",
     };
-    const checking = await devitrackAWSApi.post(
-      "/consumers/check-existing-consumer/",
-      JSON.stringify(formatProps)
-    );
-    // const checking = await devitrackApi.post("/auth/user-query", {
-    //   email: watch("email"),
-    // });
-    if (
-      checking.data.statusCode >= 200 &&
-      checking.data.statusCode < 300 &&
-      JSON.parse(checking.data.body).length > 0
-    ) {
-      const userInfoFound = JSON.parse(checking.data.body);
-      return setConsumerInfoFound(userInfoFound);
+    const checking = await devitrackApi.post("/auth/user-query", {
+      email: watch("email"),
+    });
+    if (checking.status === 200) {
+      return setConsumerInfoFound(checking.data.users);
     }
   };
 
@@ -153,6 +144,8 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       });
       dispatch(
         onAddConsumerInfo({
+          ...newConsumerProfile,
+          id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
           ...newConsumerProfile,
           id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
           sqlInfo: {},

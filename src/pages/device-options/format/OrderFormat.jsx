@@ -228,7 +228,7 @@ const OrderFormat = (info) => {
             <QRCode
               errorLevel="H"
               value={`${info.info.paymentIntent}`}
-              icon="https://i.ibb.co/kKktFyw/maskable-icon.png"
+              icon="https://devitrakadmindashboardlogotesting.s3.amazonaws.com/maskable_icon_white_background.png"
               iconSize={50}
             />
           </Grid>

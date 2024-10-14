@@ -15,13 +15,15 @@ import {
 } from "../../store/slides/eventSlide";
 import { Grid, Typography } from "@mui/material";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { checkArray } from "../../components/utils/checkArray";
 import { onAddCompanyInfo } from "../../store/slides/companySlide";
+import Loading from "../../components/animations/Loading";
 const AuthenticationLogin = () => {
   const { event, company, uid } = useParams();
   const refUpdate = useRef(false);
   const { consumer } = useSelector((state) => state.consumer);
+  const [consumerInfoRetrieve, setConsumerInfoRetrieve] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const consumerInfoFound = async () => {
@@ -52,12 +54,6 @@ const AuthenticationLogin = () => {
       }),
     refetchOnMount: false,
   });
-  const stripeCustomersQuery = useQuery({
-    queryKey: ["stripeCustomers"],
-    queryFn: () => devitrackApi.get("/stripe/customers"),
-    refetchOnMount: false,
-  });
-
   const companyEventQuery = useQuery({
     queryKey: ["companyInfoEvent"],
     queryFn: () =>
@@ -76,61 +72,82 @@ const AuthenticationLogin = () => {
     const controller = new AbortController();
     listOfConsumersQuery.refetch();
     listOfEventsQuery.refetch();
-    stripeCustomersQuery.refetch();
     companyEventQuery.refetch();
     consumerInfoFound();
     return () => {
       controller.abort();
     };
   }, []);
-  if (
-    listOfConsumersQuery.data &&
-    listOfEventsQuery.data &&
-    stripeCustomersQuery.data &&
-    companyEventQuery.data
-  ) {
-    const foundEventInfo = async () => {
-      const foundData = checkArray(listOfEventsQuery.data.data.list);
-      if (foundData) {
-        dispatch(onAddEventData(foundData));
-        dispatch(onAddEventInfoDetail(foundData.eventInfoDetail));
-        dispatch(onAddEventStaff(foundData.staff));
-        dispatch(onSelectEvent(foundData.eventInfoDetail.eventName));
-        dispatch(onSelectCompany(foundData.company));
-        dispatch(onAddDeviceSetup(foundData.deviceSetup));
-        dispatch(onAddContactInfo(foundData.contactInfo));
-        dispatch(onAddSubscriptionInfo(foundData.subscription));
-        return foundData;
-      }
-      return null;
-    };
+  // if (
+  //   listOfConsumersQuery.data &&
+  //   listOfEventsQuery.data &&
+  //   companyEventQuery.data
+  // ) {
+  const foundEventInfo = async () => {
+    const foundData = checkArray(listOfEventsQuery.data.data.list);
+    if (foundData) {
+      dispatch(onAddEventData(foundData));
+      dispatch(onAddEventInfoDetail(foundData.eventInfoDetail));
+      dispatch(onAddEventStaff(foundData.staff));
+      dispatch(onSelectEvent(foundData.eventInfoDetail.eventName));
+      dispatch(onSelectCompany(foundData.company));
+      dispatch(onAddDeviceSetup(foundData.deviceSetup));
+      dispatch(onAddContactInfo(foundData.contactInfo));
+      dispatch(onAddSubscriptionInfo(foundData.subscription));
+      return foundData;
+    }
+    return null;
+  };
+
+  const checkIfConsumerExists = async () => {
+    const foundConsumerInfo = checkArray(
+      listOfConsumersQuery?.data?.data?.users
+    );
+    if (foundConsumerInfo) {
+      refUpdate.current = true;
+      return setConsumerInfoRetrieve(foundConsumerInfo);
+    }
+    return null;
+  };
+  const companyInformation = () => {
+    if (companyEventQuery.data) {
+      const companyInfo = checkArray(companyEventQuery.data.data.company);
+      return dispatch(onAddCompanyInfo(companyInfo));
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
     foundEventInfo();
-
-    const checkIfConsumerExists = async () => {
-      const foundConsumerInfo = checkArray(
-        listOfConsumersQuery.data.data.users
-      );
-      if (foundConsumerInfo) {
-        dispatch(onAddConsumerInfo(foundConsumerInfo));
-        refUpdate.current = true;
-        return foundConsumerInfo;
-      }
-      return null;
-    };
     checkIfConsumerExists();
+    companyInformation();
 
-    const foundStripeConsumerAccountInfo = async () => {
-      if (stripeCustomersQuery.data) {
+    return () => {
+      controller.abort();
+    };
+  }, [
+    listOfConsumersQuery.data &&
+      listOfEventsQuery.data &&
+      companyEventQuery.data,
+  ]);
+
+  const foundStripeConsumerAccountInfo = async () => {
+    if (consumerInfoFound) {
+      const stripeCustomer = await devitrackApi.post("/stripe/customers", {
+        email: consumerInfoRetrieve.email,
+      });
+      if (stripeCustomer.data.ok) {
         const stripeCustomerInfo = checkArray(
-          stripeCustomersQuery.data.data.stripeCustomerSaved
+          stripeCustomer?.data?.data?.stripeCustomerSaved
         );
         if (stripeCustomerInfo) {
           return dispatch(onAddCustomerStripeInfo(stripeCustomerInfo));
         } else {
           const newStripeCust = {
-            name: `${consumer.name} ${consumer.lastName}`,
-            email: consumer.email,
-            phone: `${consumer.phoneNumber}`,
+            name: `${consumerInfoRetrieve.name} ${consumerInfoRetrieve.lastName}`,
+            email: consumerInfoRetrieve.email,
+            phone: `${consumerInfoRetrieve.phoneNumber}`,
           };
           const respCreateStripeCustomer = await devitrackApi.post(
             "/stripe/customer",
@@ -149,144 +166,157 @@ const AuthenticationLogin = () => {
           }
         }
       }
-    };
+    }
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
     foundStripeConsumerAccountInfo();
-
-    const companyInformation = () => {
-      if (companyEventQuery.data) {
-        const companyInfo = checkArray(companyEventQuery.data.data.company);
-        return dispatch(onAddCompanyInfo(companyInfo));
-      }
-      return null;
+    return () => {
+      controller.abort();
     };
-    companyInformation();
-    const checkUpdateConsumerEventsListInfo = async () => {
-      if (consumer && refUpdate.current) {
-        const { provider, eventSelected, company_providers, event_providers } =
-          consumer;
-        const attendedEvents = new Set();
-        const providerPerEvents = new Set();
-        const attendedEventProvider = new Set();
-        const companyPerProvider = new Set();
+  }, [consumerInfoRetrieve]);
 
-        for (let data of provider) {
+  const checkUpdateConsumerEventsListInfo = async () => {
+    if (consumer && refUpdate.current) {
+      const { provider, eventSelected, company_providers, event_providers } =
+        consumer;
+      const attendedEvents = new Set();
+      const providerPerEvents = new Set();
+      const attendedEventProvider = new Set();
+      const companyPerProvider = new Set();
+
+      for (let data of provider) {
+        if (!providerPerEvents.has(data)) {
           providerPerEvents.add(data);
         }
-        for (let data of eventSelected) {
+      }
+      for (let data of eventSelected) {
+        if (!attendedEvents.has(data)) {
           attendedEvents.add(data);
         }
-        for (let data of event_providers) {
+      }
+      for (let data of event_providers) {
+        if (!attendedEventProvider.has(data)) {
           attendedEventProvider.add(data);
         }
-        for (let data of company_providers) {
+      }
+      for (let data of company_providers) {
+        if (!companyPerProvider.has(data)) {
           companyPerProvider.add(data);
         }
+      }
 
-        if (
-          !attendedEvents.has(
-            checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
-              .eventName
-          )
-        ) {
-          updatingConsumerInfoMutation.mutate({
-            id: consumer.id,
+      if (
+        !attendedEvents.has(
+          checkArray(listOfEventsQuery.data.data.list).eventInfoDetail.eventName
+        )
+      ) {
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
             eventSelected: [
               ...consumer.eventSelected,
               checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
                 .eventName,
             ],
-          });
-          dispatch(
-            onAddConsumerInfo({
-              ...consumer,
-              eventSelected: [
-                ...consumer.eventSelected,
-                checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
-                  .eventName,
-              ],
-            })
-          );
-        }
-        if (!providerPerEvents.has(companyInformation().company_name)) {
-          updatingConsumerInfoMutation.mutate({
-            id: consumer.id,
-            provider: [...consumer.provider, companyInformation().company_name],
-          });
-          dispatch(
-            onAddConsumerInfo({
-              ...consumer,
-              provider: [
-                ...consumer.provider,
-                companyInformation().company_name,
-              ],
-            })
-          );
-        }
-        if (!attendedEventProvider.has(event)) {
-          updatingConsumerInfoMutation.mutate({
-            id: consumer.id,
-            event_providers: [...consumer.event_providers, event],
-          });
-          dispatch(
-            onAddConsumerInfo({
-              ...consumer,
-              event_providers: [...consumer.event_providers, event],
-            })
-          );
-        }
-        if (!providerPerEvents.has(company)) {
-          updatingConsumerInfoMutation.mutate({
-            id: consumer.id,
-            company_providers: [...consumer.company_providers, company],
-          });
-          dispatch(
-            onAddConsumerInfo({
-              ...consumer,
-              company_providers: [...consumer.company_providers, company],
-            })
-          );
-        }
-
-        refUpdate.current = false;
-        return navigate("/device");
+          })
+        );
       }
-    };
-    checkUpdateConsumerEventsListInfo();
+      if (!providerPerEvents.has(companyInformation().company_name)) {
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            provider: [...consumer.provider, companyInformation().company_name],
+          })
+        );
+      }
+      if (!attendedEventProvider.has(event)) {
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            event_providers: [...consumer.event_providers, event],
+          })
+        );
+      }
+      if (!providerPerEvents.has(company)) {
+        dispatch(
+          onAddConsumerInfo({
+            ...consumer,
+            company_providers: [...consumer.company_providers, company],
+          })
+        );
+      }
+      updatingConsumerInfoMutation.mutate({
+        id: consumer.id,
+        company_providers: [...consumer.company_providers, company],
+        event_providers: [...consumer.event_providers, event],
+        provider: [...consumer.provider, companyInformation().company_name],
+        eventSelected: [
+          ...consumer.eventSelected,
+          checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
+            .eventName,
+        ],
+      });
 
-    if (listOfConsumersQuery.isLoading || listOfConsumersQuery.isFetching) {
-      return (
-        <Grid container>
-          <Grid
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            alignSelf={"stretch"}
-            justifyContent={"center"}
-            item
-            xs={12}
-            margin={"15rem 0"}
-          >
-            {" "}
-            <Typography
-              color={"var(--gray-900, #101828)"}
-              textAlign={"center"}
-              fontFamily={"Inter"}
-              fontSize={"24px"}
-              fontStyle={"normal"}
-              fontWeight={600}
-              lineHeight={"32px"}
-              style={{
-                textWrap: "balance",
-              }}
-            >
-              Please give us a moment while we&apos;re authenticating your
-              account.
-            </Typography>
-          </Grid>
-        </Grid>
-      );
+      refUpdate.current = false;
     }
-  }
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    checkUpdateConsumerEventsListInfo();
+    setTimeout(() => {
+      return navigate("/device");
+    }, 4500);
+    return () => {
+      controller.abort();
+    };
+  }, [listOfConsumersQuery.data]);
+
+  // if (listOfConsumersQuery.isLoading || listOfConsumersQuery.isFetching) {
+  return (
+    <Grid container>
+      <Grid
+        display={"flex"}
+        flexDirection={"column"}
+        alignItems={"center"}
+        alignSelf={"stretch"}
+        justifyContent={"center"}
+        item
+        xs={12}
+        margin={"15rem 0"}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "auto",
+            height: "20svh",
+            width: "20svh",
+          }}
+        >
+          <Loading />
+        </div>
+        <Typography
+          color={"var(--gray-900, #101828)"}
+          textAlign={"center"}
+          fontFamily={"Inter"}
+          fontSize={"18px"}
+          fontStyle={"normal"}
+          fontWeight={600}
+          lineHeight={"20px"}
+          style={{
+            textWrap: "balance",
+          }}
+        >
+          Please give us a moment while we&apos;re authenticating your account.
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+  // }
+  // }
 };
 
 export default AuthenticationLogin;

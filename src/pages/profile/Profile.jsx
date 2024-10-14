@@ -35,40 +35,6 @@ const Profile = () => {
         <Divider />
         <SupportMainPage />
       </Grid>
-      {/* <CurrentOrder /> */}
-      {/* <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      ></Grid>
-      <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      ></Grid>
-      <Grid
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        margin={"auto"}
-        item
-        xs={12}
-        sm={12}
-        md={6}
-        lg={4}
-      ></Grid> */}
     </Grid>
   );
 };

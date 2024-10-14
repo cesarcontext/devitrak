@@ -3,7 +3,7 @@ import {
   Grid,
   InputAdornment,
   OutlinedInput,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -15,14 +15,17 @@ import { devitrackApi } from "../../devitrakApi";
 import { onResetArticleInfo } from "../../store/slides/articleHandlerSlide";
 import {
   onAddConsumerInfo,
-  onResetConsumerInfo
+  onResetConsumerInfo,
 } from "../../store/slides/consumerSlide";
 import { onHardReset } from "../../store/slides/deviceSlides";
 import {
   onAddAmountStripeInfo,
   onAddPaymentIntent,
-  onResetCustomerStripeInfo
+  onHardResetStripe,
+  onResetCustomerStripeInfo,
 } from "../../store/slides/stripeSlide";
+import { persistor } from "../../store/store";
+import { onResetCompanyInfo } from "../../store/slides/companySlide";
 const ConsumerInfo = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const [editSection, setEditSection] = useState(false);
@@ -32,7 +35,9 @@ const ConsumerInfo = () => {
       name: `${consumer.name ? consumer.name : "Your name"}`,
       lastName: `${consumer.lastName ? consumer.lastName : "Your last name"}`,
       email: `${consumer.email ? consumer.email : "Your email"}`,
-      phoneNumber: `${consumer.phoneNumber ? `${consumer.phoneNumber}` : "Your phone number"}`,
+      phoneNumber: `${
+        consumer.phoneNumber ? `${consumer.phoneNumber}` : "Your phone number"
+      }`,
     },
   });
   const dispatch = useDispatch();
@@ -63,11 +68,14 @@ const ConsumerInfo = () => {
 
   const handleLogout = async () => {
     dispatch(onResetConsumerInfo());
+    dispatch(onResetCompanyInfo());
     dispatch(onResetArticleInfo());
     dispatch(onHardReset());
     dispatch(onAddPaymentIntent(undefined));
     dispatch(onAddAmountStripeInfo(0));
-    dispatch(onResetCustomerStripeInfo())
+    dispatch(onResetCustomerStripeInfo());
+    dispatch(onHardResetStripe());
+    persistor.purge();
     navigate("/");
   };
   return (
@@ -84,8 +92,8 @@ const ConsumerInfo = () => {
         alignItems={"center"}
         margin={"1rem auto 0rem"}
         item
-          sm={12}
-          xs={12}
+        sm={12}
+        xs={12}
       >
         <Grid
           display={"flex"}
@@ -107,8 +115,9 @@ const ConsumerInfo = () => {
             lineHeight={"28px"}
             color={"var(--gray-900, #101828)"}
           >
-            {`${consumer ? consumer.name : "Your name"}, ${consumer ? consumer.lastName : "Your last"
-              }`}
+            {`${consumer ? consumer.name : "Your name"}, ${
+              consumer ? consumer.lastName : "Your last"
+            }`}
           </Typography>
         </Grid>
         <Grid
@@ -179,9 +188,13 @@ const ConsumerInfo = () => {
             <PhoneInput
               disabled
               className="phone-input-form"
-              value={consumer.hasOwnProperty(`phoneNumber`) ? `+${consumer.phoneNumber}` : "+10000000000"}
+              value={
+                consumer.hasOwnProperty(`phoneNumber`)
+                  ? `+${consumer.phoneNumber}`
+                  : "+10000000000"
+              }
               style={{
-                textAlign: "center"
+                textAlign: "center",
               }}
             />
           </Typography>
@@ -299,7 +312,7 @@ const ConsumerInfo = () => {
             background: "var(--blue-dark-600, #ff3838)",
             boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
             width: "100%",
-            margin: "0 0 5px 0"
+            margin: "0 0 5px 0",
           }}
           onClick={() => setEditSection(false)}
         >

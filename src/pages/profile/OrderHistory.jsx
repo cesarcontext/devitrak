@@ -9,6 +9,7 @@ import isOlderThanOneYear from "../../components/utils/checkDateInReferenceOfTod
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import Loading from "../../components/animations/Loading";
+import { Divider } from "antd";
 
 const OrderHistory = () => {
   const [tableResult, setTableResult] = useState([]);
@@ -111,6 +112,7 @@ const OrderHistory = () => {
             paymentId: key,
           }),
           amount: value.amount,
+          date: value.date,
         });
         setTableResult(Array.from(addingResult).toReversed());
         addingHistoryResult = [...addingHistoryResult, value];
@@ -136,6 +138,11 @@ const OrderHistory = () => {
 
   const rowRenderer = ({ index, style }) => {
     const item = tableResult[index];
+    let dateFormat = "";
+    if (item.date) {
+      const date = item.date.split(":");
+      dateFormat = `${date[0]}:${[date[1]]}`;
+    }
     return (
       <div
         key={item.id}
@@ -143,59 +150,56 @@ const OrderHistory = () => {
         style={{
           ...style,
           width: "100%",
+          height: "auto",
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <p
+        <div
           style={{
             width: "100%",
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             alignItems: "center",
-            border: "solid 0.01",
           }}
         >
-          {item.paymentIntent}
-        </p>
+          <p
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              border: "solid 0.01",
+            }}
+          >
+            {item.paymentIntent}
+          </p>
+          <p
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              border: "solid 0.01",
+            }}
+          >
+            <strong>${item.amount}</strong>
+          </p>
+        </div>
         <p
           style={{
             width: "100%",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            border: "solid 0.01",
+            textAlign: "left",
           }}
         >
-          <strong>${item.amount}</strong>
+          Date: {item.date && dateFormat}
         </p>
+        <br/>
       </div>
     );
   };
-  // const columns = [
-  //   {
-  //     title: "Transaction",
-  //     dataIndex: "paymentIntent",
-  //     key: "paymentIntent",
-  //     sorter: {
-  //       compare: (a, b) => a.paymentIntent - b.paymentIntent,
-  //     },
-  //   },
-  //   {
-  //     title: "Deposit",
-  //     dataIndex: "amount",
-  //     align: "right",
-  //     sorter: {
-  //       compare: (a, b) => a.amount - b.amount,
-  //     },
-  //     render: (amount, record) => (
-  //       <span>
-  //         <Typography>${amount}</Typography>
-  //       </span>
-  //     ),
-  //   },
-  // ];
 
   return (
     <Grid
@@ -263,17 +267,6 @@ const OrderHistory = () => {
             </AutoSizer>
           </div>
         )}{" "}
-        {/* <Table
-            pagination={{
-              position: ["bottomCenter"],
-            }}
-            style={{
-              width: "100%",
-            }}
-            columns={columns}
-            dataSource={tableResult}
-            onChange={""}
-          /> */}
       </Grid>
     </Grid>
   );

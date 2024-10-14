@@ -1,32 +1,31 @@
 import {
   Button,
   Grid,
-  InputAdornment,
   OutlinedInput,
-  Typography,
+  Typography
 } from "@mui/material";
+import { message } from "antd";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./DeviceSelection.css";
-import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
+import { devitrackApi } from "../../devitrakApi";
 import {
   onAddCurrentDeviceSelection,
   onAddMultipleDeviceSelection,
   onAddNewOrder,
   onAddNewOrderToHistory,
 } from "../../store/slides/deviceSlides";
-import { useNavigate } from "react-router-dom";
-import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
-import { message } from "antd";
 import {
   onAddAmountStripeInfo,
   onAddPaymentIntent,
 } from "../../store/slides/stripeSlide";
-import { devitrackApi } from "../../devitrakApi";
+import "./DeviceSelection.css";
 const SingleSelection = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { consumer } = useSelector((state) => state.consumer);
   const { deviceSetup, eventInfoDetail } = useSelector((state) => state.event);
-  const { customerStripe } = useSelector((state) => state.stripe);
+  // const { customerStripe } = useSelector((state) => state.stripe);
   const [numberNeeded, setNumberNeeded] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -77,7 +76,7 @@ const SingleSelection = () => {
     () => {
       const result = new Set();
       for (let data of deviceSetup) {
-        if (data.consumerUses !== "Sale") {
+        if (data.consumerUses) {
           result.add(Number(data.value));
         }
       }
@@ -85,7 +84,7 @@ const SingleSelection = () => {
       return Math.max(...objToArray);
     };
 
-  const submitDeviceSelectionInfo = async (event) => {
+    const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
     if (Number(numberNeeded) === 0) {
       return warning();
