@@ -4,12 +4,13 @@ import { notification } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-phone-number-input/style.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 import { checkArray } from "../../components/utils/checkArray";
 import { devitrackApi } from "../../devitrakApi";
 import "./ConsumerInitialForm.css";
+import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 
 const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -24,6 +25,7 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
   const { company } = useSelector((state) => state.company);
   const emailSentRef = useRef(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, msg, dspt) => {
     api[type]({
@@ -40,10 +42,12 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
       controller.abort();
     };
   }, [consumerInfoFound.email, Array.isArray(props)]);
+  const origin = window.location.origin;
   const submitEmailToLoginForExistingConsumer = async () => {
     emailSentRef.current = true;
     setLoadingState(true);
     const consumerID = consumerInfoFound._id ?? consumerInfoFound.id;
+    dispatch(onAddConsumerInfo(consumerInfoFound))
     try {
       if (event.eventInfoDetail.merchant) {
         return navigate(
@@ -52,7 +56,7 @@ const ExistingConsumerForm = ({ props, setConsumerInfoFound }) => {
       } else {
         const parametersNeededToLoginLink = {
           consumer: consumerInfoFound,
-          link: `https://app.devitrak.net/authentication/${event.id}/${company.id}/${consumerID}`,
+          link: `${origin}/authentication/${event.id}/${company.id}/${consumerID}`,
           contactInfo: event.contactInfo.email,
           company: event.company,
         };
