@@ -73,18 +73,6 @@ const MainPage = () => {
           )}
         </Grid>
       </Grid>
-      {/* <Grid
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        item
-        xs={12}
-      >
-        <IndicatorProgressBottom
-          steps={event.eventInfoDetail.merchant ? 3 : 2}
-          current={event.eventInfoDetail.merchant ? 35 : 50}
-        />
-      </Grid>{" "} */}
     </>
   );
   // }
