@@ -29,7 +29,6 @@ const Home = () => {
   const companyUrl = new URLSearchParams(window.location.search).get("company");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const listOfEventsQuery = useQuery({
     queryKey: ["listOfEvents"],
     queryFn: () =>
@@ -213,5 +212,4 @@ const Home = () => {
     );
   }
 };
-
 export default Home;
