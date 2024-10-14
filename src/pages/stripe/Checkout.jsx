@@ -185,8 +185,9 @@ const Checkout = () => {
           <form
             style={{
               height: "65svh",
-              width: "100%",
+              width: "100vw",
               overflow: "scroll",
+              padding:"15px 8px"
             }}
             id="payment-form"
             onSubmit={handleSubmit}
@@ -206,6 +207,7 @@ const Checkout = () => {
                 border: "1px solid var(--blue-dark-600, #155EEF)",
                 background: "var(--blue-dark-600, #155EEF)",
                 boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
+                margin:"1rem 0 0"
               }}
               htmlType="submit"
               disabled={isLoading || !stripe || !elements}
