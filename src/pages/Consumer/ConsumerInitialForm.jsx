@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import IndicatorProgressBottom from "../../components/indicatorBottom/IndicatorProgressBottom";
 import { isValidEmail } from "../../components/utils/isValidEmail";
-import { devitrackApi, devitrackAWSApi } from "../../devitrakApi";
+import { devitrackApi } from "../../devitrakApi";
 import { onAddConsumerInfo } from "../../store/slides/consumerSlide";
 import { onAddCustomerStripeInfo } from "../../store/slides/stripeSlide";
 import "./ConsumerInitialForm.css";
