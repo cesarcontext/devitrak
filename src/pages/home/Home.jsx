@@ -125,17 +125,16 @@ const Home = () => {
             justifyContent={"center"}
             item
             xs={10}
-            // margin={"2rem 0"}
+          // margin={"2rem 0"}
           >
             {existingEvent && (
               <Alert
-                message={`${
-                  foundEventInfo().eventInfoDetail.eventName
-                } is already ended or
+                message={`${foundEventInfo().eventInfoDetail.eventName
+                  } is already ended or
                 does not exist.
 `}
                 type="error"
-                style={{margin:"0 auto 2rem"}}
+                style={{ margin: "0 auto 2rem", position: "absolute", top: "5px", left: 0, right: 0 }}
               />
             )}
             <Typography
