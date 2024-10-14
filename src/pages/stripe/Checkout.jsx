@@ -95,24 +95,28 @@ const Checkout = () => {
     }
 
     setIsLoading(true);
-
+    const linkRedirected = myUrl + `/qr-code-generation`
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // We don't need return_url because we'll handle navigation manually
-        return_url: window.location.href = myUrl + "/qr-code-generation"
+        return_url: linkRedirected
       },
       redirect: "if_required", // Only redirect if needed, otherwise handle manually
     });
     if (error) {
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
-      } else {
+      }
+      else if (error.code === "payment_intent_unexpected_state") {
+        return window.location.href = linkRedirected; // Manually redirect
+      }
+      else {
         setMessage("An unexpected error occurred.");
       }
-    } else if (paymentIntent.status === "succeeded") {
+    } else if (paymentIntent.status === "succeeded" || paymentIntent.status === "requires_capture") {
       setMessage("Payment succeeded!");
-      window.location.href = myUrl + "/qr-code-generation"; // Manually redirect
+      return window.location.href = linkRedirected; // Manually redirect
     } else if (paymentIntent.status === "processing") {
       setMessage("Your payment is processing.");
     } else {
@@ -187,7 +191,7 @@ const Checkout = () => {
               height: "65svh",
               width: "100vw",
               overflow: "scroll",
-              padding:"15px 8px"
+              padding: "15px 8px"
             }}
             id="payment-form"
             onSubmit={handleSubmit}
@@ -207,7 +211,7 @@ const Checkout = () => {
                 border: "1px solid var(--blue-dark-600, #155EEF)",
                 background: "var(--blue-dark-600, #155EEF)",
                 boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
-                margin:"1rem 0 0"
+                margin: "1rem 0 0"
               }}
               htmlType="submit"
               disabled={isLoading || !stripe || !elements}
