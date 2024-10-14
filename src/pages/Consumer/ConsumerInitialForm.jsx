@@ -103,32 +103,43 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
   };
   const submitNewConsumerInfo = async (data) => {
     emailSentRef.current = true;
+    // const newConsumerProfile = {
+    //   consumer: {
+    //     name: data.firstName,
+    //     lastName: data.lastName,
+    //     email: data.email,
+    //     phoneNumber: contactPhoneNumber,
+    //     privacyPolicy: true,
+    //     category: "Regular",
+    //     provider: [company.company_name],
+    //     eventSelected: [event.eventInfoDetail.eventName],
+    //     company_providers: [company.id],
+    //     event_providers: [event.id],
+    //     group: data.groupName,
+    //   },
+    //   collection: "users",
+    // };
+
     const newConsumerProfile = {
-      consumer: {
-        name: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phoneNumber: contactPhoneNumber,
-        privacyPolicy: true,
-        category: "Regular",
-        provider: [company.company_name],
-        eventSelected: [event.eventInfoDetail.eventName],
-        company_providers: [company.id],
-        event_providers: [event.id],
-        group: data.groupName,
-      },
-      collection: "users",
+      name: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      phoneNumber: contactPhoneNumber,
+      privacyPolicy: true,
+      category: "Regular",
+      provider: [company.company_name],
+      eventSelected: [event.eventInfoDetail.eventName],
+      company_providers: [company.id],
+      event_providers: [event.id],
+      group: [data.groupName],
     };
-    const respNewConsumer = await devitrackAWSApi.post(
-      "/consumers/new-consumer/",
-      JSON.stringify(newConsumerProfile)
+
+    const respNewConsumer = await devitrackApi.post(
+      "/auth/new",
+      newConsumerProfile
     );
     if (
-      respNewConsumer.data.statusCode >= 200 &&
-      respNewConsumer.data.statusCode < 300
-    ) {
-      const { body } = respNewConsumer.data;
-      const consumerInfoParsed = JSON.parse(body);
+      respNewConsumer.data) {
       const newStripeCustomerProfile = {
         name: `${data.firstName} ${data.lastName}`,
         email: data.email,
@@ -142,8 +153,8 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       });
       dispatch(
         onAddConsumerInfo({
-          ...consumerInfoParsed,
-          id: consumerInfoParsed.uid ?? consumerInfoParsed._id,
+          ...newConsumerProfile,
+          id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
           sqlInfo: {},
         })
       );
@@ -174,8 +185,8 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
             "Account created successfully!",
             "We sent an email to confirm and login."
           );
-          return navigate("/device");
         }
+        return navigate("/device");
       }
     }
   };
@@ -459,239 +470,3 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
 };
 
 export default ConsumerInitialForm;
-
-{
-  /* <Grid
-display={"flex"}
-flexDirection={"column"}
-alignItems={"center"}
-justifyContent={"center"}
-item
-xs={12}
-margin={"1rem 0"}
->
-<InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-  <p
-    style={{
-      textTransform: "none",
-      textAlign: "left",
-      fontFamily: "Inter",
-      fontSize: "14px",
-      fontStyle: "normal",
-      fontWeight: 500,
-      lineHeight: "20px",
-      color: "var(--gray-700, #344054)",
-    }}
-  >
-    Email
-  </p>
-</InputLabel>
-<OutlinedInput
-  required
-  disabled={emailSentRef.current}
-  endAdornment={
-    <InputAdornment position="end">
-      {emailSentRef.current && (
-        <Icon icon="mdi:checkbox-outline" color="#66c61c" />
-      )}
-    </InputAdornment>
-  }
-  {...register("email", { require: true })}
-  type="email"
-  style={{
-    borderRadius: "12px",
-    border: `${errors.email && "solid 1px #004EEB"}`,
-    margin: "0.1rem auto 1rem",
-  }}
-  placeholder="Enter your email"
-  fullWidth
-/>
-</Grid>
-<Grid
-display={"flex"}
-flexDirection={"column"}
-alignItems={"center"}
-justifyContent={"center"}
-item
-xs={12}
-margin={"1rem 0"}
->
-<InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-  <p
-    style={{
-      textTransform: "none",
-      textAlign: "left",
-      fontFamily: "Inter",
-      fontSize: "14px",
-      fontStyle: "normal",
-      fontWeight: 500,
-      lineHeight: "20px",
-      color: "var(--gray-700, #344054)",
-    }}
-  >
-    First name
-  </p>
-</InputLabel>
-<OutlinedInput
-  required
-  disabled={emailSentRef.current}
-  endAdornment={
-    <InputAdornment position="end">
-      {emailSentRef.current && (
-        <Icon icon="mdi:checkbox-outline" color="#66c61c" />
-      )}
-    </InputAdornment>
-  }
-  {...register("firstName")}
-  style={{
-    borderRadius: "12px",
-    margin: "0.1rem auto 1rem",
-    display: "flex",
-    justifyContent: "flex-start",
-  }}
-  placeholder="Enter your first name"
-  fullWidth
-/>
-</Grid>
-<Grid
-display={"flex"}
-flexDirection={"column"}
-alignItems={"center"}
-justifyContent={"center"}
-item
-xs={12}
-margin={"1rem 0"}
->
-<InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-  <Typography
-    textTransform={"none"}
-    textAlign={"left"}
-    fontFamily={"Inter"}
-    fontSize={"14px"}
-    fontStyle={"normal"}
-    fontWeight={500}
-    lineHeight={"20px"}
-    color={"var(--gray-700, #344054)"}
-  >
-    Last name
-  </Typography>
-</InputLabel>
-<OutlinedInput
-  required
-  disabled={emailSentRef.current}
-  endAdornment={
-    <InputAdornment position="end">
-      {emailSentRef.current && (
-        <Icon icon="mdi:checkbox-outline" color="#66c61c" />
-      )}
-    </InputAdornment>
-  }
-  {...register("lastName")}
-  style={{
-    borderRadius: "12px",
-    margin: "0.1rem auto 1rem",
-    display: "flex",
-    justifyContent: "flex-start",
-  }}
-  placeholder="Enter your last name"
-  fullWidth
-/>
-</Grid>
-<Grid
-display={"flex"}
-flexDirection={"column"}
-alignItems={"center"}
-justifyContent={"center"}
-item
-xs={12}
-margin={"1rem 0"}
->
-<InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-  <Typography
-    textTransform={"none"}
-    textAlign={"left"}
-    fontFamily={"Inter"}
-    fontSize={"14px"}
-    fontStyle={"normal"}
-    fontWeight={500}
-    lineHeight={"20px"}
-    color={"var(--gray-700, #344054)"}
-  >
-    Phone number
-  </Typography>
-</InputLabel>
-
-<PhoneInput
-  disabled={emailSentRef.current}
-  className="phone-input-form"
-  countrySelectProps={{ unicodeFlags: true }}
-  defaultCountry="US"
-  placeholder="Enter your phone number"
-  value={contactPhoneNumber}
-  onChange={setContactPhoneNumber}
-  style={{ margin: "0.1rem auto 1rem" }}
-/>
-<p
-  style={{
-    textTransform: "none",
-    textAlign: "left",
-    fontFamily: "Inter",
-    fontSize: "14px",
-    fontStyle: "normal",
-    fontWeight: 400,
-    lineHeight: "20px",
-    color: "var(--gray-700, #344054)",
-  }}
->
-  {contactPhoneNumber}
-</p>
-</Grid>
-<Grid
-display={"flex"}
-flexDirection={"column"}
-alignItems={"center"}
-justifyContent={"center"}
-item
-xs={12}
-margin={"1rem 0"}
->
-<InputLabel style={{ marginBottom: "3px", width: "100%" }}>
-  <p
-    style={{
-      textTransform: "none",
-      textAlign: "left",
-      fontFamily: "Inter",
-      fontSize: "14px",
-      fontStyle: "normal",
-      fontWeight: 500,
-      lineHeight: "20px",
-      color: "var(--gray-700, #344054)",
-    }}
-  >
-    Group name ("Unknown" applicable)
-  </p>
-</InputLabel>
-<OutlinedInput
-  required
-  disabled={emailSentRef.current}
-  endAdornment={
-    <InputAdornment position="end">
-      {emailSentRef.current && (
-        <Icon icon="mdi:checkbox-outline" color="#66c61c" />
-      )}
-    </InputAdornment>
-  }
-  value={groupName}
-  name="groupName"
-  onChange={(e) => setGroupName(e.target.value)}
-  style={{
-    borderRadius: "12px",
-    margin: "0.1rem auto 1rem",
-    display: "flex",
-    justifyContent: "flex-start",
-  }}
-  placeholder="Enter your group name"
-  fullWidth
-/>
-</Grid> */
-}
