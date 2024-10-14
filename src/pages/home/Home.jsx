@@ -22,6 +22,7 @@ import { onDetectingBrowser } from "../../store/slides/helperSlide";
 import { checkArray } from "../../components/utils/checkArray";
 import { onAddCompanyInfo } from "../../store/slides/companySlide";
 import { onResetConsumerInfo } from "../../store/slides/consumerSlide";
+import { Alert } from "antd";
 
 const Home = () => {
   const [existingEvent, setExistingEvent] = useState(false);
@@ -106,43 +107,6 @@ const Home = () => {
   if (listOfEventsQuery.data) {
     return (
       <Grid margin={"auto"} container>
-        {existingEvent && (
-          <Grid
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            margin={"2rem auto"}
-            container
-          >
-            <Grid
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              item
-              xs={10}
-              margin={"1rem 0"}
-            >
-              <Typography
-                color={"red"}
-                textAlign={"center"}
-                fontFamily={"Inter"}
-                fontSize={"14px"}
-                fontStyle={"normal"}
-                fontWeight={500}
-                lineHeight={"20px"}
-                style={{
-                  textWrap: "balance",
-                  textDecoration: "underline",
-                }}
-              >
-                {foundEventInfo().eventInfoDetail.eventName} is already ended or
-                does not exist.
-              </Typography>
-            </Grid>
-          </Grid>
-        )}
         <Grid
           display={"flex"}
           flexDirection={"column"}
@@ -161,9 +125,19 @@ const Home = () => {
             justifyContent={"center"}
             item
             xs={10}
-            margin={"2rem 0"}
+            // margin={"2rem 0"}
           >
-            {" "}
+            {existingEvent && (
+              <Alert
+                message={`${
+                  foundEventInfo().eventInfoDetail.eventName
+                } is already ended or
+                does not exist.
+`}
+                type="error"
+                style={{margin:"0 auto 2rem"}}
+              />
+            )}
             <Typography
               color={"var(--gray-900, #101828)"}
               textAlign={"center"}
