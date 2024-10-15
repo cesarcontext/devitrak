@@ -6,7 +6,7 @@ import { useState } from "react";
 import { onAddConsumerInfo } from '../../../store/slides/consumerSlide'
 const CheckEventGroupName = ({ openModal, setOpenModal }) => {
   const { consumer } = useSelector((state) => state.consumer);
-  const [value, setValue] = useState(consumer.groupName.at(-1) ?? "");
+  const [value, setValue] = useState(consumer?.groupName?.at(-1) ?? "");
   const dispatch = useDispatch();
   const sanitizingEventGroupName = (eventGroupName) => {
     const check = new Map();
