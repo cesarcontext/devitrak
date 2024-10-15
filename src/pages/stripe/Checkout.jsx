@@ -32,60 +32,15 @@ const Checkout = () => {
       return;
     }
 
-    stripe.retrievePaymentIntent(clientSecret.clientSecret).then(({ paymentIntent }) => {
-      if (!paymentIntent) {
-        setMessage("Something went wrong.");
-        return;
-      }
-
-      switch (paymentIntent.status) {
-        case "succeeded":
-          setMessage("Payment succeeded!");
-          break;
-        case "processing":
-          setMessage("Your payment is processing.");
-          break;
-        // case "requires_payment_method":
-        //   setMessage("Your payment was not successful, please try again.");
-        //   break;
-        default:
+    stripe
+      .retrievePaymentIntent(clientSecret.clientSecret)
+      .then(({ paymentIntent }) => {
+        if (!paymentIntent) {
           setMessage("Something went wrong.");
-          break;
-      }
-    });
+          return;
+        }
+      });
   }, [stripe, clientSecret.clientSecret]);
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!stripe || !elements) {
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-
-  //   const { error, paymentIntent } = await stripe.confirmPayment({
-  //     elements,
-  //     confirmParams: {
-  //       // Modify this to use window.top.location to avoid iframe security issues
-  //       return_url: `${window.top.location.origin}/qr-code-generation`,
-  //     },
-  //     redirect: "always", // Always redirect, otherwise handle manually
-  //   });
-
-  //   if (error) {
-  //     setMessage(error.message || "An unexpected error occurred.");
-  //   } else if (paymentIntent?.status === "succeeded") {
-  //     setMessage("Payment succeeded!");
-  //     window.location.href = `${window.top.location.origin}/qr-code-generation`; // Manually redirect
-  //   } else if (paymentIntent?.status === "processing") {
-  //     setMessage("Your payment is processing.");
-  //   } else {
-  //     setMessage("Something went wrong.");
-  //   }
-
-  //   setIsLoading(false);
-  // };
 
   const iFrameStyle = {
     base: {
@@ -117,28 +72,27 @@ const Checkout = () => {
     }
 
     setIsLoading(true);
-    const linkRedirected = window.location.origin + `/qr-code-generation`
+    const linkRedirected = window.location.origin + `/qr-code-generation`;
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // We don't need return_url because we'll handle navigation manually
-        return_url: linkRedirected
+        return_url: linkRedirected,
       },
       redirect: "if_required", // Only redirect if needed, otherwise handle manually
     });
     if (error) {
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
-      }
-      // else if (error.code === "payment_intent_unexpected_state") {
-      //   return window.location.href = linkRedirected; // Manually redirect
-      // }
-      else {
+      } else {
         setMessage("An unexpected error occurred.");
       }
-    } else if (paymentIntent.status === "succeeded" || paymentIntent.status === "requires_capture") {
+    } else if (
+      paymentIntent.status === "succeeded" ||
+      paymentIntent.status === "requires_capture"
+    ) {
       setMessage("Payment succeeded!");
-      return window.location.href = linkRedirected; // Manually redirect
+      return (window.location.href = linkRedirected); // Manually redirect
     } else if (paymentIntent.status === "processing") {
       setMessage("Your payment is processing.");
     } else {
@@ -213,7 +167,7 @@ const Checkout = () => {
               height: "65svh",
               width: "100vw",
               overflow: "scroll",
-              padding: "15px 8px"
+              padding: "15px 8px",
             }}
             id="payment-form"
             onSubmit={handleSubmit}
@@ -231,9 +185,13 @@ const Checkout = () => {
                 borderRadius: "8px",
                 padding: "8px",
                 border: "1px solid var(--blue-dark-600, #155EEF)",
-                background: `${isLoading ? "var(--Blue-dark-100, #D1E0FF)" : "var(--bluedark600, #155EEF)"}`,
+                background: `${
+                  isLoading
+                    ? "var(--Blue-dark-100, #D1E0FF)"
+                    : "var(--bluedark600, #155EEF)"
+                }`,
                 boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
-                margin: "1rem 0 0"
+                margin: "1rem 0 0",
               }}
               htmlType="submit"
               disabled={isLoading || !stripe || !elements}
@@ -259,13 +217,14 @@ const Checkout = () => {
             {message && (
               <div
                 style={{
+                  margin:"0.5rem auto 0",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   width: "100%",
                   borderRadius: "8px",
                   padding: "8px",
-                  background: "#f74747",
+                  background: `${message !== "Payment succeeded!" ? "#f74747" :"var(--success700"}`,
                   color: "#fff",
                   boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
                 }}
