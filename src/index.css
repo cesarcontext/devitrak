@@ -113,6 +113,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   font-family: "Inter", serif;
+  margin: auto;
   line-height: 20px;
 }
 
@@ -136,6 +137,7 @@ body {
   font-weight: 600;
   font-family: "Inter", serif;
   line-height: 20px;
+  margin: auto;
 }
 
 .subtitle {
