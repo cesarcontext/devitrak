@@ -45,15 +45,15 @@ const Checkout = () => {
         case "processing":
           setMessage("Your payment is processing.");
           break;
-        case "requires_payment_method":
-          setMessage("Your payment was not successful, please try again.");
-          break;
+        // case "requires_payment_method":
+        //   setMessage("Your payment was not successful, please try again.");
+        //   break;
         default:
           setMessage("Something went wrong.");
           break;
       }
     });
-  }, [stripe, clientSecret]);
+  }, [stripe, clientSecret.clientSecret]);
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();

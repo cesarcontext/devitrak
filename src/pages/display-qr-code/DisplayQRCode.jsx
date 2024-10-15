@@ -179,10 +179,10 @@ const DisplayQRCode = () => {
   checkAndRemove();
 
   const automaticNavigation = () => {
-    // setTimeout(() => {
-    //   dispatch(onAddPaymentIntent(undefined));
-    //   return navigate("/device", { replace: true });
-    // }, 2000);
+    setTimeout(() => {
+      dispatch(onAddPaymentIntent(undefined));
+      return navigate("/device", { replace: true });
+    }, 2000);
     return null;
   };
 
