@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
-import _ from "lodash";
+import { groupBy} from "lodash";
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { currentOrder } = useSelector((state) => state.deviceHandler);
@@ -143,14 +143,14 @@ const DisplayQRCode = () => {
         eventSelected: choice,
       }
     );
-    const groupingStripeTransactionByEvent = _.groupBy(
+    const groupingStripeTransactionByEvent = groupBy(
       savedStripeTransactions.data.stripeTransactions,
       "eventSelected"
     );
     const refDataStripeTransaction = Object.values(
       groupingStripeTransactionByEvent[choice]
     );
-    const groupingTransactionByEvent = _.groupBy(
+    const groupingTransactionByEvent = groupBy(
       savedTransactions.data.list,
       "eventSelected"
     );
@@ -178,10 +178,10 @@ const DisplayQRCode = () => {
   checkAndRemove();
 
   const automaticNavigation = () => {
-    setTimeout(() => {
-      dispatch(onAddPaymentIntent(undefined));
-      return navigate("/device", { replace: true });
-    }, 2000);
+    // setTimeout(() => {
+    //   dispatch(onAddPaymentIntent(undefined));
+    //   return navigate("/device", { replace: true });
+    // }, 2000);
     return null;
   };
 
@@ -293,20 +293,3 @@ const DisplayQRCode = () => {
 };
 
 export default DisplayQRCode;
-// const check = await savedStripeTransactions.data.stripeTransactions.filter(
-//   (transaction) =>
-//     transaction.paymentIntent === propsToPass.paymentIntentGenerated
-// );
-// const checkTransactions = await savedTransactions.data.list.filter(
-//   (transaction) =>
-//     transaction.paymentIntent === propsToPass.paymentIntentGenerated
-// );
-// if (check.length > 1 && checkTransactions.length > 1) {
-//   setQrCodeValue(check.at(0));
-//   devitrackApi.delete(`/stripe/remove-duplicate/${check.at(0).id}`);
-//   devitrackApi.delete(
-//     `/transaction/remove-duplicate-transaction/${
-//       checkTransactions.at(0).id
-//     }`
-//   );
-// }
