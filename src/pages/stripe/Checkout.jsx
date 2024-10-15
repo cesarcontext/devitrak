@@ -231,12 +231,13 @@ const Checkout = () => {
                 borderRadius: "8px",
                 padding: "8px",
                 border: "1px solid var(--blue-dark-600, #155EEF)",
-                background: "var(--blue-dark-600, #155EEF)",
+                background: `${isLoading ? "var(--Blue-dark-100, #D1E0FF)" : "var(--bluedark600, #155EEF)"}`,
                 boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
                 margin: "1rem 0 0"
               }}
               htmlType="submit"
               disabled={isLoading || !stripe || !elements}
+              loading={isLoading}
             >
               <span id="button-text">
                 {isLoading ? (
