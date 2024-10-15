@@ -6,12 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { devitrackApi } from "../../devitrakApi";
 import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
-import { groupBy} from "lodash";
+import { groupBy } from "lodash";
 const DisplayQRCode = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const { currentOrder } = useSelector((state) => state.deviceHandler);
   const { choice } = useSelector((state) => state.event);
   const { company } = useSelector((state) => state.company);
+  const { clientSecret } = useSelector((state) => state.stripe)
   const [qrCodeValue, setQrCodeValue] = useState(undefined);
   const paymentIntentValueRef = useRef(null);
   const nanoGenerated = useRef(false);
@@ -24,12 +25,12 @@ const DisplayQRCode = () => {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const payment_intent = new URLSearchParams(window.location.search).get(
-    "payment_intent"
-  );
-  const clientSecret = new URLSearchParams(window.location.search).get(
-    "payment_intent_client_secret"
-  );
+  // const payment_intent = new URLSearchParams(window.location.search).get(
+  //   "payment_intent"
+  // );
+  // const clientSecret = new URLSearchParams(window.location.search).get(
+  //   "payment_intent_client_secret"
+  // );
   const formattingConsumerInfo = () => {
     const template = {
       ...consumer,
@@ -52,8 +53,8 @@ const DisplayQRCode = () => {
 
   const storeStripePaymentIntent = useCallback(async () => {
     const stripeTransactionProfile = {
-      paymentIntent: payment_intent,
-      clientSecret: clientSecret,
+      paymentIntent: clientSecret.payment_intent_id,
+      clientSecret: clientSecret.clientSecret,
       device: foundTotalDeviceNumber(),
       user: formattingConsumerInfo().uid,
       provider: company.company_name,
@@ -115,15 +116,15 @@ const DisplayQRCode = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    if (payment_intent && clientSecret) {
+    if (clientSecret.payment_intent_id && clientSecret.clientSecret) {
       if (storingRef.current) {
         propsToPass.current = {
-          paymentIntentGenerated: payment_intent,
-          clientSecretGenerated: clientSecret,
+          paymentIntentGenerated: clientSecret.payment_intent_id,
+          clientSecretGenerated: clientSecret.clientSecret,
         };
         storeStripePaymentIntent();
         generateTransactionInfoDetail(propsToPass);
-        setQrCodeValue(payment_intent);
+        setQrCodeValue(clientSecret.payment_intent_id);
         storingRef.current = false;
       }
     } else {
