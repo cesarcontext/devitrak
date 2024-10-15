@@ -6,8 +6,11 @@
     display: flex;
     justify-content: flex-start;
     width: 100%;
+    background-color: var(--basewhite);
 }
 .PhoneInputInput{
     border: none;
     outline: none;
+    background-color: var(--basewhite);
 }
+
