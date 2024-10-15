@@ -130,9 +130,9 @@ const Checkout = () => {
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
       }
-      else if (error.code === "payment_intent_unexpected_state") {
-        return window.location.href = linkRedirected; // Manually redirect
-      }
+      // else if (error.code === "payment_intent_unexpected_state") {
+      //   return window.location.href = linkRedirected; // Manually redirect
+      // }
       else {
         setMessage("An unexpected error occurred.");
       }
