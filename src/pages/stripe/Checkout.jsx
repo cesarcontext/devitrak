@@ -28,24 +28,16 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (!stripe) {
+    if (!stripe || !clientSecret) {
       return;
     }
 
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    );
+    stripe.retrievePaymentIntent(clientSecret.clientSecret).then(({ paymentIntent }) => {
+      if (!paymentIntent) {
+        setMessage("Something went wrong.");
+        return;
+      }
 
-    if (!clientSecret) {
-      return;
-    }
-
-    /**
-     * promise to retrieve paymentIntent generated
-     * @param {String}
-     * @returns {Promise}
-     */
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       switch (paymentIntent.status) {
         case "succeeded":
           setMessage("Payment succeeded!");
@@ -61,9 +53,39 @@ const Checkout = () => {
           break;
       }
     });
-  }, [stripe]);
+  }, [stripe, clientSecret]);
 
-  const myUrl = window.location.origin;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Modify this to use window.top.location to avoid iframe security issues
+        return_url: `${window.top.location.origin}/qr-code-generation`,
+      },
+      redirect: "always", // Always redirect, otherwise handle manually
+    });
+
+    if (error) {
+      setMessage(error.message || "An unexpected error occurred.");
+    } else if (paymentIntent?.status === "succeeded") {
+      setMessage("Payment succeeded!");
+      window.location.href = `${window.top.location.origin}/qr-code-generation`; // Manually redirect
+    } else if (paymentIntent?.status === "processing") {
+      setMessage("Your payment is processing.");
+    } else {
+      setMessage("Something went wrong.");
+    }
+
+    setIsLoading(false);
+  };
 
   const iFrameStyle = {
     base: {
@@ -85,41 +107,6 @@ const Checkout = () => {
 
   const paymentElementStyle = {
     style: iFrameStyle,
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // We don't need return_url because we'll handle navigation manually
-        return_url: window.location.href = myUrl + "/qr-code-generation"
-      },
-      redirect: "if_required", // Only redirect if needed, otherwise handle manually
-    });
-    if (error) {
-      if (error.type === "card_error" || error.type === "validation_error") {
-        setMessage(error.message);
-      } else {
-        setMessage("An unexpected error occurred.");
-      }
-    } else if (paymentIntent.status === "succeeded") {
-      setMessage("Payment succeeded!");
-      window.location.href = myUrl + "/qr-code-generation"; // Manually redirect
-    } else if (paymentIntent.status === "processing") {
-      setMessage("Your payment is processing.");
-    } else {
-      setMessage("Something went wrong.");
-    }
-
-    setIsLoading(false);
   };
   return (
     <>
@@ -187,7 +174,7 @@ const Checkout = () => {
               height: "65svh",
               width: "100vw",
               overflow: "scroll",
-              padding:"15px 8px"
+              padding: "15px 8px",
             }}
             id="payment-form"
             onSubmit={handleSubmit}
@@ -207,7 +194,7 @@ const Checkout = () => {
                 border: "1px solid var(--blue-dark-600, #155EEF)",
                 background: "var(--blue-dark-600, #155EEF)",
                 boxShadow: "0px -4px 4px 0px rgba(0, 0, 0, 0.05)",
-                margin:"1rem 0 0"
+                margin: "1rem 0 0",
               }}
               htmlType="submit"
               disabled={isLoading || !stripe || !elements}
