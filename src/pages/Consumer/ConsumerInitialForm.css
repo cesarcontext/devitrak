@@ -12,5 +12,6 @@
     border: none;
     outline: none;
     background-color: var(--basewhite);
+    color: var(--baseblack);
 }
 

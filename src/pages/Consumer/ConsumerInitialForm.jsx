@@ -353,9 +353,9 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
                         placeholder="Enter your phone number"
                         value={contactPhoneNumber}
                         onChange={setContactPhoneNumber}
-                        style={{ margin: "0.1rem auto 1rem" }}
+                        style={{ margin: "0.1rem auto 1rem", backgroundColor:"var(--basewhite)" }}
                       />
-                      <p style={{ ...styleTypography, fontWeight: 400 }}>
+                      <p style={{ ...styleTypography, fontWeight: 400, margin:"0.2rem auto 0" }}>
                         {contactPhoneNumber}
                       </p>
                     </Grid>
