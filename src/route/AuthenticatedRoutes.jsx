@@ -40,7 +40,8 @@ const AuthenticatedRoutes = () => {
       </header>
       <main
         style={{
-          minHeight: "80dvh",
+          // minHeight: "80dvh",
+          minHeight:"calc(100dvh - 5dvh - 20dvh)",
         }}
       >
         <Suspense fallback={<LoadingPage />}>
