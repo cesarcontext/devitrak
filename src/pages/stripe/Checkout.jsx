@@ -55,37 +55,37 @@ const Checkout = () => {
     });
   }, [stripe, clientSecret]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
-    if (!stripe || !elements) {
-      return;
-    }
+  //   if (!stripe || !elements) {
+  //     return;
+  //   }
 
-    setIsLoading(true);
+  //   setIsLoading(true);
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Modify this to use window.top.location to avoid iframe security issues
-        return_url: `${window.top.location.origin}/qr-code-generation`,
-      },
-      redirect: "always", // Always redirect, otherwise handle manually
-    });
+  //   const { error, paymentIntent } = await stripe.confirmPayment({
+  //     elements,
+  //     confirmParams: {
+  //       // Modify this to use window.top.location to avoid iframe security issues
+  //       return_url: `${window.top.location.origin}/qr-code-generation`,
+  //     },
+  //     redirect: "always", // Always redirect, otherwise handle manually
+  //   });
 
-    if (error) {
-      setMessage(error.message || "An unexpected error occurred.");
-    } else if (paymentIntent?.status === "succeeded") {
-      setMessage("Payment succeeded!");
-      window.location.href = `${window.top.location.origin}/qr-code-generation`; // Manually redirect
-    } else if (paymentIntent?.status === "processing") {
-      setMessage("Your payment is processing.");
-    } else {
-      setMessage("Something went wrong.");
-    }
+  //   if (error) {
+  //     setMessage(error.message || "An unexpected error occurred.");
+  //   } else if (paymentIntent?.status === "succeeded") {
+  //     setMessage("Payment succeeded!");
+  //     window.location.href = `${window.top.location.origin}/qr-code-generation`; // Manually redirect
+  //   } else if (paymentIntent?.status === "processing") {
+  //     setMessage("Your payment is processing.");
+  //   } else {
+  //     setMessage("Something went wrong.");
+  //   }
 
-    setIsLoading(false);
-  };
+  //   setIsLoading(false);
+  // };
 
   const iFrameStyle = {
     base: {
