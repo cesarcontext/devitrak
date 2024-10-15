@@ -117,7 +117,7 @@ const Checkout = () => {
     }
 
     setIsLoading(true);
-    const linkRedirected = myUrl + `/qr-code-generation`
+    const linkRedirected = window.location.origin + `/qr-code-generation`
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {

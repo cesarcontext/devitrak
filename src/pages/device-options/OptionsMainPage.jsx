@@ -2,15 +2,17 @@ import { Button, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Empty } from "antd";
 import { useCallback, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
 import { devitrackApi } from "../../devitrakApi";
 import OrderFormat from "./format/OrderFormat";
+import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const todayRef = new Date();
   todayRef.setFullYear(todayRef.getFullYear() - 1);
   const savedTransactionsQuery = useQuery({
@@ -26,6 +28,7 @@ const OptionsMainPage = () => {
   useEffect(() => {
     const controller = new AbortController();
     savedTransactionsQuery.refetch();
+    dispatch(onAddPaymentIntent(undefined))
     return () => {
       controller.abort();
     };
