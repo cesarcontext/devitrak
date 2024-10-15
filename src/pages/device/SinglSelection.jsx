@@ -1,9 +1,4 @@
-import {
-  Button,
-  Grid,
-  OutlinedInput,
-  Typography
-} from "@mui/material";
+import { Button, Grid, OutlinedInput, Typography } from "@mui/material";
 import { message } from "antd";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,12 +16,13 @@ import {
   onAddPaymentIntent,
 } from "../../store/slides/stripeSlide";
 import "./DeviceSelection.css";
+import CheckEventGroupName from "./components/CheckEventGroupName";
 const SingleSelection = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { consumer } = useSelector((state) => state.consumer);
   const { deviceSetup, eventInfoDetail } = useSelector((state) => state.event);
-  // const { customerStripe } = useSelector((state) => state.stripe);
   const [numberNeeded, setNumberNeeded] = useState(0);
+  const [openModal, setOpenModal] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -84,7 +80,7 @@ const SingleSelection = () => {
       return Math.max(...objToArray);
     };
 
-    const submitDeviceSelectionInfo = async (event) => {
+  const submitDeviceSelectionInfo = async (event) => {
     event?.preventDefault();
     if (Number(numberNeeded) === 0) {
       return warning();
@@ -102,7 +98,6 @@ const SingleSelection = () => {
         "/stripe/create-payment-intent",
         stripeProfile
       );
-      console.log("🚀 ~ file: SingleSelection.jsx:109 ~ submitDeviceSelectionInfo ~ respStripe", respStripe);
       if (respStripe.data) {
         dispatch(
           onAddMultipleDeviceSelection({
@@ -262,6 +257,7 @@ const SingleSelection = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           margin: "auto",
+                          color: "var(--gray600)",
                         }}
                       >
                         -
@@ -290,6 +286,7 @@ const SingleSelection = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           margin: "auto",
+                          color: "var(--gray600)",
                         }}
                       >
                         +
@@ -345,6 +342,12 @@ const SingleSelection = () => {
           current={eventInfoDetail.merchant ? 75 : 100}
         />
       </Grid>{" "}
+      {openModal && (
+        <CheckEventGroupName
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+        />
+      )}
     </>
   );
 };
