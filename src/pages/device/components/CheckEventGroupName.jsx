@@ -50,6 +50,7 @@ const CheckEventGroupName = ({ openModal, setOpenModal }) => {
       return closeModal();
     }
   };
+  const data = consumer?.groupName ?? []
   return (
     <Modal
       open={openModal}
@@ -63,7 +64,7 @@ const CheckEventGroupName = ({ openModal, setOpenModal }) => {
           <h4 style={styleH4}>Event Group Name</h4>
           <AutoComplete
             value={value}
-            options={sanitizingEventGroupName(consumer.groupName).map(
+            options={sanitizingEventGroupName(data).map(
               (item) => {
                 return { value: item };
               }
