@@ -6,9 +6,9 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { devitrackApi } from "../../../devitrakApi";
 import displayMonth from "./DisplayingMonth";
-import _ from "lodash";
+import { groupBy } from "lodash";
 const OrderFormat = (info) => {
-  const { subscription, choice } = useSelector((state) => state.event);
+  const { choice } = useSelector((state) => state.event);
   const assignedDeviceListQuery = useQuery({
     queryKey: ["assignedDevice"],
     queryFn: () =>
@@ -82,7 +82,7 @@ const OrderFormat = (info) => {
 
     const devicesAssignedInOrder = () => {
       if (assignedDeviceListQuery.data) {
-        const groupByPaymentIntentByConsumer = _.groupBy(
+        const groupByPaymentIntentByConsumer = groupBy(
           assignedDeviceListQuery.data.data.listOfReceivers,
           "paymentIntent"
         );
@@ -110,6 +110,15 @@ const OrderFormat = (info) => {
       return 0;
     };
     const orderDay = new Date();
+
+    const deposit = () => {
+      const { device } = info.info;
+      if (device[0].deviceNeeded > 0) {
+        return device[0].deviceNeeded * device[0].deviceValue;
+      } else {
+        return device[0].deviceValue;
+      }
+    };
     return (
       <Card
         title={`${
@@ -214,7 +223,8 @@ const OrderFormat = (info) => {
                 textTransform: "none",
               }}
             >
-              Deposit amount: {subscription.id === 1 ? "$0" : null}
+              Deposit amount: ${deposit()}
+              {/* {subscription.id === 1 ? "$0" : null} */}
             </p>
           </Grid>
           <Grid
