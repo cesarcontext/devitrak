@@ -38,42 +38,40 @@ const MainPage = () => {
     }
   };
   return (
-    <>
+    <Grid
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      margin={"0 0 2rem"}
+      gap={2}
+      container
+    >
       <Grid
         display={"flex"}
-        flexDirection={"column"}
         justifyContent={"center"}
-        alignItems={"center"}
-        margin={"0 0 2rem"}
+        alignSelf={"stretch"}
         gap={2}
         container
       >
-        <Grid
-          display={"flex"}
-          justifyContent={"center"}
-          alignSelf={"stretch"}
-          gap={2}
-          container
-        >
-          {consumerInfoFound.length > 0 ? (
-            <ExistingConsumerForm
-              props={consumerInfoFound}
-              resetForm={resetForm}
-              renderButtonTitle={renderButtonTitle}
-              setConsumerInfoFound={setConsumerInfoFound}
-              emailSentRef={emailSentRef}
-            />
-          ) : (
-            <ConsumerInitialForm
-              resetForm={resetForm}
-              renderButtonTitle={renderButtonTitle}
-              setConsumerInfoFound={setConsumerInfoFound}
-              emailSentRef={emailSentRef}
-            />
-          )}
-        </Grid>
+        {consumerInfoFound.length > 0 ? (
+          <ExistingConsumerForm
+            props={consumerInfoFound}
+            resetForm={resetForm}
+            renderButtonTitle={renderButtonTitle}
+            setConsumerInfoFound={setConsumerInfoFound}
+            emailSentRef={emailSentRef}
+          />
+        ) : (
+          <ConsumerInitialForm
+            resetForm={resetForm}
+            renderButtonTitle={renderButtonTitle}
+            setConsumerInfoFound={setConsumerInfoFound}
+            emailSentRef={emailSentRef}
+          />
+        )}
       </Grid>
-    </>
+    </Grid>
   );
   // }
 };
