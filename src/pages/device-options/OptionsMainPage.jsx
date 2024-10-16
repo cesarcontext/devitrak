@@ -11,6 +11,7 @@ import OrderFormat from "./format/OrderFormat";
 import { onAddPaymentIntent } from "../../store/slides/stripeSlide";
 const OptionsMainPage = () => {
   const { consumer } = useSelector((state) => state.consumer);
+  const { event } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const todayRef = new Date();
@@ -20,7 +21,8 @@ const OptionsMainPage = () => {
     queryFn: () =>
       devitrackApi.post("/transaction/transaction", {
         "consumerInfo.email": consumer.email,
-        created_at: { $gte: new Date(todayRef).getTime() },
+        eventSelected:event.eventInfoDetail.eventName,  
+        // created_at: { $gte: new Date(todayRef).getTime() }, //search by date in range of a year back from today
       }),
     refetchOnMount: false,
   });
