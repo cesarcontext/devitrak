@@ -187,24 +187,16 @@ const AuthenticationLogin = () => {
       const companyPerProvider = new Set();
 
       for (let data of provider) {
-        if (!providerPerEvents.has(data)) {
-          providerPerEvents.add(data);
-        }
+        providerPerEvents.add(data);
       }
       for (let data of eventSelected) {
-        if (!attendedEvents.has(data)) {
-          attendedEvents.add(data);
-        }
+        attendedEvents.add(data);
       }
       for (let data of event_providers) {
-        if (!attendedEventProvider.has(data)) {
-          attendedEventProvider.add(data);
-        }
+        attendedEventProvider.add(data);
       }
       for (let data of company_providers) {
-        if (!companyPerProvider.has(data)) {
-          companyPerProvider.add(data);
-        }
+        companyPerProvider.add(data);
       }
 
       if (
@@ -212,6 +204,14 @@ const AuthenticationLogin = () => {
           checkArray(listOfEventsQuery.data.data.list).eventInfoDetail.eventName
         )
       ) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          eventSelected: [
+            ...consumer.eventSelected,
+            checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
+              .eventName,
+          ],
+        });
         dispatch(
           onAddConsumerInfo({
             ...consumer,
@@ -224,6 +224,10 @@ const AuthenticationLogin = () => {
         );
       }
       if (!providerPerEvents.has(companyInformation().company_name)) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          provider: [...consumer.provider, companyInformation().company_name],
+        });
         dispatch(
           onAddConsumerInfo({
             ...consumer,
@@ -232,6 +236,10 @@ const AuthenticationLogin = () => {
         );
       }
       if (!attendedEventProvider.has(event)) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          event_providers: [...consumer.event_providers, event],
+        });
         dispatch(
           onAddConsumerInfo({
             ...consumer,
@@ -240,6 +248,10 @@ const AuthenticationLogin = () => {
         );
       }
       if (!providerPerEvents.has(company)) {
+        updatingConsumerInfoMutation.mutate({
+          id: consumer.id,
+          company_providers: [...consumer.company_providers, company],
+        });
         dispatch(
           onAddConsumerInfo({
             ...consumer,
@@ -247,27 +259,16 @@ const AuthenticationLogin = () => {
           })
         );
       }
-      updatingConsumerInfoMutation.mutate({
-        id: consumer.id,
-        company_providers: [...consumer.company_providers, company],
-        event_providers: [...consumer.event_providers, event],
-        provider: [...consumer.provider, companyInformation().company_name],
-        eventSelected: [
-          ...consumer.eventSelected,
-          checkArray(listOfEventsQuery.data.data.list).eventInfoDetail
-            .eventName,
-        ],
-      });
-
       refUpdate.current = false;
     }
   };
+  
   useEffect(() => {
     const controller = new AbortController();
     checkUpdateConsumerEventsListInfo();
     setTimeout(() => {
       return navigate("/device");
-    }, 4500);
+    }, 3500);
     return () => {
       controller.abort();
     };
