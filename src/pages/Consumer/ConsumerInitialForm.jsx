@@ -162,41 +162,41 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       //   newConsumerProfile
       // );
       const responseData = await awsFetchResponse.json();
-      console.log(responseData);
+      // console.log(responseData);
       if (responseData.statusCode === 200) {
         const responseDataBody = JSON.parse(responseData.body);
-        const newStripeCustomerProfile = {
-          name: `${data.firstName} ${data.lastName}`,
+        //   const newStripeCustomerProfile = {
+        //     name: `${data.firstName} ${data.lastName}`,
+        //     email: data.email,
+        //     phoneNumber: contactPhoneNumber,
+        //   };
+        const sqlDbNewConsumerAWS = {
+          first_name: data.firstName,
+          last_name: data.lastName,
           email: data.email,
-          phoneNumber: contactPhoneNumber,
+          phone_number: contactPhoneNumber,
         };
-      const sqlDbNewConsumerAWS = {
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        phone_number: contactPhoneNumber,
-      };
-      const sqlRegistrationResponse = await fetch(
-        "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/sql-db-new-consumer",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(sqlDbNewConsumerAWS),
-        }
-      );
+        const sqlRegistrationResponse = await fetch(
+          "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/sql-db-new-consumer",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sqlDbNewConsumerAWS),
+          }
+        );
 
-      const responseSQLQuery = await sqlRegistrationResponse.json();
-      console.log("responseSQLQuery", responseSQLQuery);
-      // console.log(responseSQLQuery);
-      //   await devitrackApi.post("/db_consumer/new_consumer", {
-      //     first_name: data.firstName,
-      //     last_name: data.lastName,
-      //     email: data.email,
-      //     phone_number: contactPhoneNumber,
-      //   });
-      const sqlResponseBody = JSON.parse(responseSQLQuery.body);
+        const responseSQLQuery = await sqlRegistrationResponse.json();
+        //   console.log("responseSQLQuery", responseSQLQuery);
+        // console.log(responseSQLQuery);
+        //   await devitrackApi.post("/db_consumer/new_consumer", {
+        //     first_name: data.firstName,
+        //     last_name: data.lastName,
+        //     email: data.email,
+        //     phone_number: contactPhoneNumber,
+        //   });
+        const sqlResponseBody = JSON.parse(responseSQLQuery.body);
         dispatch(
           onAddConsumerInfo({
             ...newConsumerProfileAWS,
@@ -206,37 +206,56 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
             },
           })
         );
-      //   const newStripeCustomer = await devitrackApi.post(
-      //     "/stripe/customer",
-      //     newStripeCustomerProfile
-      //   );
-      //   if (newStripeCustomer) {
-      //     dispatch(
-      //       onAddCustomerStripeInfo({
-      //         customerName: newStripeCustomer.data.fullName,
-      //         customerEmail: newStripeCustomer.data.email,
-      //         customerPhone: newStripeCustomer.data.phone,
-      //         stripeID: newStripeCustomer.data.id,
-      //         customerData: newStripeCustomer.data.customer,
-      //       })
-      //     );
-      //     if (!event.eventInfoDetail.merchant) {
-      //       emailConfirmationForNewConsumer(consumerInfoParsed);
-      //       return openNotificationWithIcon(
-      //         "success",
-      //         "Account created successfully!",
-      //         "We're taking you to the next step."
-      //       );
-      //     } else {
-      //       openNotificationWithIcon(
-      //         "success",
-      //         "Account created successfully!",
-      //         "We sent an email to confirm and login."
-      //       );
-      //     }
-      //     setIsLoading(false);
-      //     return navigate("/device");
-      //   }
+        const stripeNewCustomer = {
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          phone: contactPhoneNumber,
+        };
+
+        const stripeNewConsumerRegistrationFetch = await fetch(
+          "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/stripe_new_customer",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(stripeNewCustomer),
+          }
+        );
+        const stripeResponse = await stripeNewConsumerRegistrationFetch.json();
+        //   const newStripeCustomer = await devitrackApi.post(
+        //     "/stripe/customer",
+        //     newStripeCustomerProfile
+        //   );
+        if (stripeResponse.statusCode === 200) {
+          const stripeResponseBody = JSON.parse(stripeResponse.body);
+          console.log("stripeResponseBody", stripeResponseBody);
+          dispatch(
+            onAddCustomerStripeInfo({
+              customerName: stripeNewCustomer,
+              customerEmail: stripeNewCustomer.email,
+              customerPhone: stripeNewCustomer.phone,
+              stripeID: stripeResponseBody.id,
+              customerData: stripeResponseBody.customer,
+            })
+          );
+          if (!event.eventInfoDetail.merchant) {
+            emailConfirmationForNewConsumer(consumerInfoParsed);
+            return openNotificationWithIcon(
+              "success",
+              "Account created successfully!",
+              "We're taking you to the next step."
+            );
+          } else {
+            openNotificationWithIcon(
+              "success",
+              "Account created successfully!",
+              "We sent an email to confirm and login."
+            );
+          }
+          setIsLoading(false);
+          return navigate("/device");
+        }
       }
     } catch (error) {
       setIsLoading(false);
