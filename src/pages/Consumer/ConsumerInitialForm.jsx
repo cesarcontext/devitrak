@@ -56,34 +56,35 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
   const checkIfConsumerExists = async () => {
     //https://9dsiqsqjtk.execute-api.us-east-1.amazonaws.com/prod/devitrak/consumers/check-existing-consumer/
     const emailValue = watch("email");
-    console.log(emailValue);
     const formatProps = {
       props: { email: emailValue },
       collection: "users",
     };
 
-    const awsResponse = await fetch(
-      "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/check-consumer",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formatProps),
-      }
-    );
+    if (isValidEmail(emailValue) && watch("firstName").length > 0) {
+      const awsResponse = await fetch(
+        "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/check-consumer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formatProps),
+        }
+      );
 
-    const data = await awsResponse.json();
-    // const checking = await devitrackApi.post("/auth/user-query", {
-    //   email: watch("email"),
-    // });
-  
-    if (data.statusCode === 200) {
-      console.log(data)
-      const body = JSON.parse(data.body);
-      return setConsumerInfoFound([
-        { ...body[0], id: body[0]._id ?? body[0].id },
-      ]);
+      const data = await awsResponse.json();
+      // const checking = await devitrackApi.post("/auth/user-query", {
+      //   email: watch("email"),
+      // });
+
+      if (data.statusCode === 200) {
+        console.log(data);
+        const body = JSON.parse(data.body);
+        return setConsumerInfoFound([
+          { ...body[0], id: body[0]._id ?? body[0].id },
+        ]);
+      }
     }
   };
 
@@ -116,93 +117,126 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
     try {
       setIsLoading(true);
       emailSentRef.current = true;
-      // const newConsumerProfile = {
-      //   consumer: {
-      //     name: data.firstName,
-      //     lastName: data.lastName,
-      //     email: data.email,
-      //     phoneNumber: contactPhoneNumber,
-      //     privacyPolicy: true,
-      //     category: "Regular",
-      //     provider: [company.company_name],
-      //     eventSelected: [event.eventInfoDetail.eventName],
-      //     company_providers: [company.id],
-      //     event_providers: [event.id],
-      //     group: data.groupName,
-      //   },
-      //   collection: "users",
-      // };
-
-      const newConsumerProfile = {
-        name: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phoneNumber: contactPhoneNumber,
-        privacyPolicy: true,
-        category: "Regular",
-        provider: [company.company_name],
-        eventSelected: [event.eventInfoDetail.eventName],
-        company_providers: [company.id],
-        event_providers: [event.id],
-        group: [data.groupName],
+      const newConsumerProfileAWS = {
+        consumer: {
+          name: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: contactPhoneNumber,
+          privacyPolicy: true,
+          category: "Regular",
+          provider: [company.company_name],
+          eventSelected: [event.eventInfoDetail.eventName],
+          company_providers: [company.id],
+          event_providers: [event.id],
+          group: data.groupName !== "" ? data.groupName : "Not Applicable",
+        },
+        collection: "users",
       };
 
-      const respNewConsumer = await devitrackApi.post(
-        "/auth/new",
-        newConsumerProfile
+      // const newConsumerProfile = {
+      //   name: data.firstName,
+      //   lastName: data.lastName,
+      //   email: data.email,
+      //   phoneNumber: contactPhoneNumber,
+      //   privacyPolicy: true,
+      //   category: "Regular",
+      //   provider: [company.company_name],
+      //   eventSelected: [event.eventInfoDetail.eventName],
+      //   company_providers: [company.id],
+      //   event_providers: [event.id],
+      //   group: data.groupName !== "" ? data.groupName : "Not Applicable",
+      // };
+      const awsFetchResponse = await fetch(
+        "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/new-consumer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newConsumerProfileAWS),
+        }
       );
-      if (respNewConsumer.data) {
+      // const respNewConsumer = await devitrackApi.post(
+      //   "/auth/new",
+      //   newConsumerProfile
+      // );
+      const responseData = await awsFetchResponse.json();
+      console.log(responseData);
+      if (responseData.statusCode === 200) {
+        const responseDataBody = JSON.parse(responseData.body);
         const newStripeCustomerProfile = {
           name: `${data.firstName} ${data.lastName}`,
           email: data.email,
           phoneNumber: contactPhoneNumber,
         };
-        await devitrackApi.post("/db_consumer/new_consumer", {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone_number: contactPhoneNumber,
-        });
+      const sqlDbNewConsumerAWS = {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        email: data.email,
+        phone_number: contactPhoneNumber,
+      };
+      const sqlRegistrationResponse = await fetch(
+        "https://lxcly5fbd5.execute-api.us-east-1.amazonaws.com/dev/sql-db-new-consumer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sqlDbNewConsumerAWS),
+        }
+      );
+
+      const responseSQLQuery = await sqlRegistrationResponse.json();
+      console.log("responseSQLQuery", responseSQLQuery);
+      // console.log(responseSQLQuery);
+      //   await devitrackApi.post("/db_consumer/new_consumer", {
+      //     first_name: data.firstName,
+      //     last_name: data.lastName,
+      //     email: data.email,
+      //     phone_number: contactPhoneNumber,
+      //   });
+      const sqlResponseBody = JSON.parse(responseSQLQuery.body);
         dispatch(
           onAddConsumerInfo({
-            ...newConsumerProfile,
-            id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
-            ...newConsumerProfile,
-            id: respNewConsumer.data.uid ?? respNewConsumer.data.id,
-            sqlInfo: {},
+            ...newConsumerProfileAWS,
+            id: responseDataBody.uid ?? responseDataBody.id,
+            sqlInfo: {
+              id: sqlResponseBody.insertId,
+            },
           })
         );
-        const newStripeCustomer = await devitrackApi.post(
-          "/stripe/customer",
-          newStripeCustomerProfile
-        );
-        if (newStripeCustomer) {
-          dispatch(
-            onAddCustomerStripeInfo({
-              customerName: newStripeCustomer.data.fullName,
-              customerEmail: newStripeCustomer.data.email,
-              customerPhone: newStripeCustomer.data.phone,
-              stripeID: newStripeCustomer.data.id,
-              customerData: newStripeCustomer.data.customer,
-            })
-          );
-          if (!event.eventInfoDetail.merchant) {
-            emailConfirmationForNewConsumer(consumerInfoParsed);
-            return openNotificationWithIcon(
-              "success",
-              "Account created successfully!",
-              "We're taking you to the next step."
-            );
-          } else {
-            openNotificationWithIcon(
-              "success",
-              "Account created successfully!",
-              "We sent an email to confirm and login."
-            );
-          }
-          setIsLoading(false);
-          return navigate("/device");
-        }
+      //   const newStripeCustomer = await devitrackApi.post(
+      //     "/stripe/customer",
+      //     newStripeCustomerProfile
+      //   );
+      //   if (newStripeCustomer) {
+      //     dispatch(
+      //       onAddCustomerStripeInfo({
+      //         customerName: newStripeCustomer.data.fullName,
+      //         customerEmail: newStripeCustomer.data.email,
+      //         customerPhone: newStripeCustomer.data.phone,
+      //         stripeID: newStripeCustomer.data.id,
+      //         customerData: newStripeCustomer.data.customer,
+      //       })
+      //     );
+      //     if (!event.eventInfoDetail.merchant) {
+      //       emailConfirmationForNewConsumer(consumerInfoParsed);
+      //       return openNotificationWithIcon(
+      //         "success",
+      //         "Account created successfully!",
+      //         "We're taking you to the next step."
+      //       );
+      //     } else {
+      //       openNotificationWithIcon(
+      //         "success",
+      //         "Account created successfully!",
+      //         "We sent an email to confirm and login."
+      //       );
+      //     }
+      //     setIsLoading(false);
+      //     return navigate("/device");
+      //   }
       }
     } catch (error) {
       setIsLoading(false);
@@ -227,6 +261,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       type: "email",
       placeholder: "Enter your email",
       ifPhone: false,
+      isRequired: true,
       ifQuestionMark: false,
       questionMark: "",
     },
@@ -236,6 +271,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       type: "text",
       placeholder: "Enter your first name",
       ifPhone: false,
+      isRequired: true,
       ifQuestionMark: false,
       questionMark: "",
     },
@@ -245,6 +281,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       type: "text",
       placeholder: "Enter your first name",
       ifPhone: false,
+      isRequired: true,
       ifQuestionMark: false,
       questionMark: "",
     },
@@ -261,6 +298,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
       type: "text",
       placeholder: "Enter your group name",
       ifPhone: false,
+      isRequired: false,
       ifQuestionMark: true,
       questionMark: '("Unknown" applicable)',
     },
@@ -416,7 +454,7 @@ const ConsumerInitialForm = ({ setConsumerInfoFound }) => {
                         </Typography>
                       </InputLabel>
                       <OutlinedInput
-                        required
+                        required={item.isRequired}
                         disabled={emailSentRef.current}
                         type={item.type}
                         endAdornment={
